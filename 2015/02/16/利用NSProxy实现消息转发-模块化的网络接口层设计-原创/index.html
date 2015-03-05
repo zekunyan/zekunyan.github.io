@@ -1,0 +1,423 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>利用NSProxy实现消息转发-模块化的网络接口层设计-原创 | 土土哥的技术Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前言之前在做项目的时候，所有业务的网络接口方法，全部都写在了一个文件里面，一开始还好，毕竟每个方法的代码也只是十几行，增加、修改也比较容易。但是随着接口的增多，这个文件慢慢居然超过了1000行，里面几十个方法都写在一起，实在是不好维护。  
+虽然保持这样也没有什么，多用用Cmd+F就能找到。但是，真是越看越不顺眼😳， 代码一定要有“美感”啊~😝
+所以在查阅了大量文章后，终于想出了本文即将说明的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="利用NSProxy实现消息转发-模块化的网络接口层设计-原创">
+<meta property="og:url" content="http://tutuge.me/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/index.html">
+<meta property="og:site_name" content="土土哥的技术Blog">
+<meta property="og:description" content="前言之前在做项目的时候，所有业务的网络接口方法，全部都写在了一个文件里面，一开始还好，毕竟每个方法的代码也只是十几行，增加、修改也比较容易。但是随着接口的增多，这个文件慢慢居然超过了1000行，里面几十个方法都写在一起，实在是不好维护。  
+虽然保持这样也没有什么，多用用Cmd+F就能找到。但是，真是越看越不顺眼😳， 代码一定要有“美感”啊~😝
+所以在查阅了大量文章后，终于想出了本文即将说明的">
+<meta property="og:image" content="http://zorrochen.qiniudn.com/blog_ios_http_proxy_1_1.jpg">
+<meta property="og:image" content="http://zorrochen.qiniudn.com/blog_ios_http_proxy_1_2.jpg">
+<meta property="og:image" content="http://zorrochen.qiniudn.com/blog_ios_http_proxy_1_3.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="利用NSProxy实现消息转发-模块化的网络接口层设计-原创">
+<meta name="twitter:description" content="前言之前在做项目的时候，所有业务的网络接口方法，全部都写在了一个文件里面，一开始还好，毕竟每个方法的代码也只是十几行，增加、修改也比较容易。但是随着接口的增多，这个文件慢慢居然超过了1000行，里面几十个方法都写在一起，实在是不好维护。  
+虽然保持这样也没有什么，多用用Cmd+F就能找到。但是，真是越看越不顺眼😳， 代码一定要有“美感”啊~😝
+所以在查阅了大量文章后，终于想出了本文即将说明的">
+  
+    <link rel="alternative" href="/atom.xml" title="土土哥的技术Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">土土哥的技术Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="http://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="tutuge.me">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-利用NSProxy实现消息转发-模块化的网络接口层设计-原创" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/" class="article-date">
+  <time datetime="2015-02-16T10:52:08.000Z" itemprop="datePublished">2015-02-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      利用NSProxy实现消息转发-模块化的网络接口层设计-原创
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言">前言</h2><p>之前在做项目的时候，所有业务的网络接口方法，全部都写在了一个文件里面，一开始还好，毕竟每个方法的代码也只是十几行，增加、修改也比较容易。但是随着接口的增多，这个文件慢慢居然超过了1000行，里面几十个方法都写在一起，实在是不好维护。  </p>
+<p>虽然保持这样也没有什么，多用用Cmd+F就能找到。但是，真是越看越不顺眼😳， 代码一定要有“美感”啊~😝</p>
+<p>所以在查阅了大量文章后，终于想出了本文即将说明的办法，越发觉得Objective-C的“消息”机制是多么的赞~😚</p>
+<h2 id="Github_示例">Github 示例</h2><p>贴上本文中的示例工程：<a href="https://github.com/zekunyan/HttpProxyExample" target="_blank" rel="external">https://github.com/zekunyan/HttpProxyExample</a></p>
+<h2 id="问题">问题</h2><p>先抛出问题。  </p>
+<p>一款互联网应用，免不了要跟服务器打交道，在iOS项目中，最有名的网络库应该就是<a href="https://github.com/AFNetworking/AFNetworking" target="_blank" rel="external">AFNetworking</a>了。所以，很多人就会利用AFnetworking提供的Get、Post等基本Http请求接口，封装自己的网络接口层代码，我自己在项目中也是这么做的。  </p>
+<p>但是，AFNetworking只是提供了Get、Post、Json传输等基本的Http请求方法，所以一旦落实到具体的业务相关的请求上，我们要为每个请求（URL）都写一个单独的接口方法。</p>
+<p><strong>那么，问题就来了</strong>  </p>
+<p>业务相关的接口那么多，举个例子，什么“通过用户ID获取用户基本信息”、“获取用户的所有评论”等，每个请求都是一个方法，这么多方法该怎么组织呢？全部放在一起？那这个接口类岂不是会非常乱？不放在一起？那岂不是会有很多个网络请求类？(至于要不要统一接口入口，我想这个根据项目来决定吧=。=)</p>
+<h2 id="需求">需求</h2><ul>
+<li>所有网络接口都从统一的类调用，如HttpProxy。</li>
+<li>网络接口的具体实现，按照业务划分到不同的类中，如“<strong>UserHttpHandler</strong>”、“<strong>CommentHttpHandler</strong>”。</li>
+</ul>
+<p>其实，按照面向对象的原则，就是接口代理类<strong>HttpProxy</strong>拥有若干个按照业务划分的接口（Interface），这些接口的所有方法组成了网络层的不同的Http请求。如下图：</p>
+<p><img src="http://zorrochen.qiniudn.com/blog_ios_http_proxy_1_1.jpg" alt="image"></p>
+<p>那么，调用的时候，所有接口都用HttpProxy调用，如：</p>
+<pre><code><span class="comment">//实际调用的是UserHttpHandler类的方法</span>
+<span class="attr_selector">[[HttpProxy sharedInstance]</span> <span class="tag">getUserWithID</span>:@<span class="tag">100</span>];
+
+<span class="comment">//实际调用的是CommentHttpHandler类的方法</span>
+<span class="attr_selector">[[HttpProxy sharedInstance]</span> <span class="tag">getCommentsWithDate</span><span class="pseudo">:date</span>];
+</code></pre><h2 id="关键">关键</h2><p>根据前面的描述，我们可以得出，关键就是：<strong>消息转发（Message Forward）</strong></p>
+<p>Objective-C里面没有我们传统的“方法调用”，取而代之的是“消息”，所有的方法都是通过向对象发送“消息”实现调用的。而这个机制，也就为我们的实现提供了方便。</p>
+<p>也就是说：我们要将发给“<strong>HttpProxy</strong>”的消息，让HttpProxy转发给真正能接受这个消息的对象，HttpProxy就是个<strong>代理</strong>。</p>
+<p>苹果已经给我们提供了这个“代理”类了-NSProxy。</p>
+<h2 id="NSProxy">NSProxy</h2><p>什么是NSProxy：</p>
+<ul>
+<li>NSProxy没有父类，是顶级类(根类)，跟NSObject同等地位。</li>
+<li>NSProxy和NSObject都实现了“<strong>NSObject</strong> Protocol”。</li>
+<li>NSProxy设计时就是以“抽象类”设计的，专门为<strong>转发消息</strong>而生。</li>
+</ul>
+<p>实现要求:</p>
+<ol>
+<li>继承NSProxy的子类要实现自己的初始化方法，如“init”、“initWith”。</li>
+<li>重写“<strong> - forwardInvocation: </strong>”和“<strong> - methodSignatureForSelector: </strong>”方法，完成消息转发。</li>
+</ol>
+<p>详细内容参考Apple的<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Reference/Foundation/Classes/NSProxy_Class/index.html#//apple_ref/occ/instm/NSProxy/forwardInvocation:" target="_blank" rel="external">文档</a>。</p>
+<h2 id="实现">实现</h2><h3 id="定义">定义</h3><p>先不管HttpProxy，咱们看看具体的接口，先举两个例子：</p>
+<pre><code><span class="comment">//UserHttpHandler.h</span>
+<span class="comment">//用户相关接口</span>
+<span class="variable">@protocol</span> UserHttpHandler &lt;NSObject&gt;
+- (void)<span class="attribute">getUserWithID</span>:(NSNumber *)userID;
+<span class="variable">@end</span>
+
+<span class="comment">//CommentHttpHandler.h</span>
+<span class="comment">//评论相关接口</span>
+<span class="variable">@protocol</span> CommentHttpHandler &lt;NSObject&gt;
+- (void)<span class="attribute">getCommentsWithDate</span>:(NSDate *)date;
+<span class="variable">@end</span>
+</code></pre><p>好的，接口有了，我们的HttpProxy类应该“实现”了这两个接口。<br>然后，最好是单例类，所以还要有个获取单例的方法。<br>最后，还需要一个向HttpProxy注册具体实现了接口Protocol的方法。</p>
+<p>所以，HttpProxy应该是这个样子的：</p>
+<pre><code><span class="comment">//HttpProxy.h</span>
+
+<span class="comment">//1. 继承了NSproxy。 2. “实现”了网络接口Protocol</span>
+<span class="annotation">@interface</span> <span class="string">HttpProxy :</span> NSProxy &lt;UserHttpHandler, CommentHttpHandler&gt;
+
+<span class="comment">//获取单例</span>
++ (instancetype)sharedInstance;
+
+<span class="comment">//注册具体实现类</span>
+- (<span class="typename">void</span>)<span class="string">registerHttpProtocol:</span>(Protocol *)httpProtocol <span class="string">handler:</span>(id)handler;
+
+<span class="annotation">@end</span>
+</code></pre><h3 id="找到消息对应的实现类对象">找到消息对应的实现类对象</h3><p>如何在HttpProxy做消息转发时，找到某个消息对应的真正的实现类对象呢？</p>
+<p>最好的办法就是保存每个接口方法到其实现类对象的映射，可以用Dictionary保存，关系如下图：</p>
+<p><img src="http://zorrochen.qiniudn.com/blog_ios_http_proxy_1_2.jpg" alt="image"></p>
+<p>所以，<strong>registerHttpProtocol:handler:</strong>方法的职责就是：</p>
+<ol>
+<li>遍历Protocol的所有方法（利用Objective-C的<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html" target="_blank" rel="external">Runtime功能</a>）。</li>
+<li>保存Protocol所有方法到实现类的对象的映射关系。（用方法的字符串表示作为key，实现类对象为value）</li>
+</ol>
+<p>所以，HttpProxy应该持有一个Dictionary的实例，用于保存映射关系，HttpProxy的实现部分如：</p>
+<pre><code><span class="comment">//HttpProxy.m</span>
+
+<span class="variable">@interface</span> HttpProxy ()
+<span class="comment">//保存映射关系的字典。</span>
+<span class="variable">@property</span>(strong, nonatomic) NSMutableDictionary *selToHandlerMap;
+<span class="variable">@end</span>
+</code></pre><p>注册方法实现如下：</p>
+<pre><code>- (<span class="type">void</span>)registerHttpProtocol:(<span class="type">Protocol</span> *)httpProtocol handler:(id)handler {
+    unsigned <span class="type">int</span> numberOfMethods = <span class="number">0</span>;
+
+    //<span class="type">Get</span> all methods <span class="keyword">in</span> protocol
+    struct objc_method_description *methods = protocol_copyMethodDescriptionList(
+            httpProtocol, <span class="type">YES</span>, <span class="type">YES</span>, &amp;numberOfMethods);
+
+    //<span class="type">Register</span> protocol methods
+    <span class="keyword">for</span> (unsigned <span class="type">int</span> i = <span class="number">0</span>; i &lt; numberOfMethods; i++) {
+        struct objc_method_description <span class="keyword">method</span> = methods[i];
+        [_selToHandlerMap setValue:handler forKey:<span class="type">NSStringFromSelector</span>(<span class="keyword">method</span>.name)];
+    }
+}
+</code></pre><h3 id="实现消息的转发">实现消息的转发</h3><p>我们已经可以注册接口、保存映射关系了，剩下的就是重写NSProxy的两个方法，以实现消息的转发，至于这两个方法具体作用是什么，读者可以自行查阅相关资料。如下：</p>
+<pre><code><span class="comment">//HttpProxy.m</span>
+
+<span class="comment">//获取Method signature</span>
+- (NSMethodSignature *)<span class="string">methodSignatureForSelector:</span>(SEL)sel {
+
+    <span class="comment">//获取method的字符串表示</span>
+    NSString *methodsName = NSStringFromSelector(sel);
+
+    <span class="comment">//查找对应实现类对象</span>
+    id handler = [_selToHandlerMap <span class="string">valueForKey:</span>methodsName];
+
+    <span class="comment">//再次检查handler是否可以相应此消息</span>
+    <span class="keyword">if</span> (handler != nil &amp;&amp; [handler <span class="string">respondsToSelector:</span>sel]) {
+        <span class="keyword">return</span> [handler <span class="string">methodSignatureForSelector:</span>sel];
+    } <span class="keyword">else</span> {
+        <span class="keyword">return</span> [<span class="keyword">super</span> <span class="string">methodSignatureForSelector:</span>sel];
+    }
+}
+
+<span class="comment">//转发方法消息</span>
+- (<span class="typename">void</span>)<span class="string">forwardInvocation:</span>(NSInvocation *)invocation {
+    NSString *methodsName = NSStringFromSelector(invocation.selector);
+    id handler = [_selToHandlerMap <span class="string">valueForKey:</span>methodsName];
+
+    <span class="keyword">if</span> (handler != nil &amp;&amp; [handler <span class="string">respondsToSelector:</span>invocation.selector]) {
+        [invocation <span class="string">invokeWithTarget:</span>handler];
+    } <span class="keyword">else</span> {
+        [<span class="keyword">super</span> <span class="string">forwardInvocation:</span>invocation];
+    }
+}
+</code></pre><h2 id="Example">Example</h2><p>看看如何使用HttpProxy：</p>
+<pre><code><span class="comment">//初始化，注册Protocol对应的实现类对象</span>
+<span class="attr_selector">[[HttpProxy sharedInstance]</span> <span class="tag">registerHttpProtocol</span>:@<span class="tag">protocol</span>(UserHttpHandler) <span class="tag">handler</span>:<span class="attr_selector">[UserHttpHandlerImp new]</span>];
+<span class="attr_selector">[[HttpProxy sharedInstance]</span> <span class="tag">registerHttpProtocol</span>:@<span class="tag">protocol</span>(CommentHttpHandler) <span class="tag">handler</span>:<span class="attr_selector">[CommentHttpHandlerImp new]</span>];
+
+<span class="comment">//调用</span>
+<span class="attr_selector">[[HttpProxy sharedInstance]</span> <span class="tag">getUserWithID</span>:@<span class="tag">100</span>];
+<span class="attr_selector">[[HttpProxy sharedInstance]</span> <span class="tag">getCommentsWithDate</span>:<span class="attr_selector">[NSDate new]</span>];
+</code></pre><h2 id="总结">总结</h2><p>所有的代码及示例都提交到Github了，<a href="https://github.com/zekunyan/HttpProxyExample" target="_blank" rel="external">HttpProxyExample</a>。</p>
+<p>总的来说，就是利用Objective-C的“消息”机制，继承NSProxy抽象类，实现自己定义的转发机制，将网络接口层的各个方法的实现与声明分离，提升项目代码的可维护性，更加模块化。如下图表示:</p>
+<p><img src="http://zorrochen.qiniudn.com/blog_ios_http_proxy_1_3.jpg" alt="image"></p>
+<p>以上，就是我自己在项目中，利用NSProxy设计并实现的网络接口层结构。💪</p>
+<p>从了解NSProxy、Runtime到设计、实现出这个网络层架构，着实花了点时间，收获真是不少。其实像这种纯代码层次的重构，很多人会觉得“吃力不讨好”😨，但我觉得，正是这样，才能真正让自己提升。</p>
+<p>代码是具有美感的！嗯！😝</p>
+<h2 id="参考">参考</h2><ul>
+<li><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Reference/Foundation/Classes/NSProxy_Class/index.html#//apple_ref/occ/instm/NSProxy" target="_blank" rel="external">NSProxy Class Reference</a></li>
+<li><a href="http://objectivetoast.com/2014/05/12/nsproxy-nsobjects-lesser-known-sibling/" target="_blank" rel="external">NSProxy, NSObject’s Lesser-Known Sibling</a></li>
+<li><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html" target="_blank" rel="external">Objective-C Runtime Programming Guide</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://tutuge.me/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/" data-id="ci6we3k4v0009us6udl2rnc01" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://tutuge.me/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/原创/">原创</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/02/18/NSString的Copy与内存分配/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">
+        
+          NSString的Copy与内存分配
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/02/14/Effective-Objective-C-读书笔记-Item-3/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">Effective-Objective-C-读书笔记-Item-3</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/" data-title="利用NSProxy实现消息转发-模块化的网络接口层设计-原创" data-url="http://tutuge.me/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/"></div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/">iOS</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/原创/">原创</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/审核/">审核</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开源/">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/杂烩/">杂烩</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/笔记/">笔记</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Android/" style="font-size: 10px;">Android</a><a href="/tags/iOS/" style="font-size: 16.67px;">iOS</a><a href="/tags/原创/" style="font-size: 20px;">原创</a><a href="/tags/审核/" style="font-size: 10px;">审核</a><a href="/tags/开源/" style="font-size: 10px;">开源</a><a href="/tags/杂烩/" style="font-size: 10px;">杂烩</a><a href="/tags/笔记/" style="font-size: 13.33px;">笔记</a><a href="/tags/翻译/" style="font-size: 13.33px;">翻译</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2015/03/01/Entity和Model的不同-关于代码的数据层/">Entity和Model的不同-关于代码的数据层</a>
+          </li>
+        
+          <li>
+            <a href="/2015/02/28/一次审核被拒的经历-关于iCloud到底应该备份什么数据/">一次审核被拒的经历-关于iCloud到底应该备份什么数据</a>
+          </li>
+        
+          <li>
+            <a href="/2015/02/19/Block类型变量-缓存Http请求与回调/">Block类型变量-缓存Http请求与回调</a>
+          </li>
+        
+          <li>
+            <a href="/2015/02/19/提升UITableView性能-复杂页面的优化/">提升UITableView性能-复杂页面的优化</a>
+          </li>
+        
+          <li>
+            <a href="/2015/02/18/NSString的Copy与内存分配/">NSString的Copy与内存分配</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2015 燕泽堃<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"tutuge"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>window._bd_share_config={"common":{},"share":{"bdCustomStyle":"/css/bdshare.css"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+</div>
+</body>
+</html>
