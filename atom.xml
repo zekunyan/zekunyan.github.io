@@ -4,7 +4,7 @@
   <subtitle><![CDATA[iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://tutuge.me/"/>
-  <updated>2015-03-01T17:01:00.000Z</updated>
+  <updated>2015-03-06T01:18:56.000Z</updated>
   <id>http://tutuge.me/</id>
   
   <author>
@@ -13,6 +13,23 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[关于评论不见了=。=]]></title>
+    <link href="http://tutuge.me/2015/03/06/%E5%85%B3%E4%BA%8E%E8%AF%84%E8%AE%BA%E4%B8%8D%E8%A7%81%E4%BA%86/"/>
+    <id>http://tutuge.me/2015/03/06/关于评论不见了/</id>
+    <published>2015-03-06T01:09:32.000Z</published>
+    <updated>2015-03-06T01:18:56.000Z</updated>
+    <content type="html"><![CDATA[<p>前天升级了一次Hexo，原来的主题说啥也用不了了=。=（前端知识不足，正在补~）导致只能换主题，多说的评论就这样不见了。。。原来有留言的各位筒子，没看到，不好意思啊=。=</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>前天升级了一次Hexo，原来的主题说啥也用不了了=。=（前端知识不足，正在补~）导致只能换主题，多说的评论就这样不见了。。。原来有留言的各位筒子，没看到，不好意思啊=。=</p>
+]]>
+    </summary>
+    
+      <category term="杂烩" scheme="http://tutuge.me/tags/%E6%9D%82%E7%83%A9/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[Entity和Model的不同-关于代码的数据层]]></title>
