@@ -72,6 +72,90 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-Effective-Objective-C-读书笔记-Item-1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/05/Effective-Objective-C-读书笔记-Item-1/" class="article-date">
+  <time datetime="2015-02-04T17:17:08.000Z" itemprop="datePublished">2015-02-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/05/Effective-Objective-C-读书笔记-Item-1/">Effective-Objective-C-读书笔记-Item-1</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言">前言</h2><p>一直都在做项目，没什么时间作总结，感觉很不是滋味。现在放假了，嗯，终于有时间了~~哈哈（天生程序猿一枚好不好=。=）<br>最近开始读英文版的Effective Objective-C 2.0，觉得不错，就总结些东西，分享给各位读者吧。</p>
+<h2 id="Item_1_-_Familiarize_Yourself_with_Objective-C’s_Roots">Item 1 - Familiarize Yourself with Objective-C’s Roots</h2><p>第一章的目的，就是让大家熟悉Objective-C，自然，标题的意思也就是“了解Objective-C的基本概念”，不多说，开写。</p>
+<h2 id="消息与运行时">消息与运行时</h2><p>总的来说，Objective-C跟C++、Java这些面向对象的语言是非常相似的，但是还是有许多不同的地方。如果你是第一次看到Objective-C的语法，一定觉得非常奇怪，因为Objective-C使用的是基于消息（Message）的框架，而不是传统的方法、函数调用。如下：</p>
+<pre><code><span class="comment">//Objective-C</span>
+Person *person = [Person <span class="keyword">new</span>];
+[person <span class="string">setName:</span>@<span class="string">"tutuge"</span> <span class="string">age:</span><span class="number">24</span>];
+
+<span class="comment">//Java</span>
+Person person = <span class="keyword">new</span> Person();
+person.setNameAndAge(<span class="string">"tutuge"</span>, <span class="number">24</span>);
+
+<span class="comment">//C++</span>
+Person *person = <span class="keyword">new</span> Person;
+person-&gt;setNameAndAge(<span class="string">"tutuge"</span>, <span class="number">24</span>);
+</code></pre><p>很奇怪是不是，各种中括号。但是我觉得，Objective—C这么设计就是为了时刻提醒你，“我是基于消息机制的！”。消息，的确是Objective-C与Java、C++这种语言最大的不同，而且，这种不同远不止在语法上面。简单来说如下两点：</p>
+<ul>
+<li><strong>基于消息的调用：</strong> 所有的函数调用都是在“运行时”决定的。</li>
+<li><strong>基于方法的调用：</strong> 所有的函数调用都是在“编译时”决定的，就是编译器编译时决定的。</li>
+</ul>
+<p>其实，连被调方法的对象类型，都是在运行时决定的。所以说，Objective-C的运行时系统，担负了绝大部分的工作。这么设计的优点，举个例子，就是当运行时系统升级时，原有的代码不用重新编译即可“享受”升级带来的好处。</p>
+<h2 id="C的超集">C的超集</h2><p>Objective-C是C语言的超集，所以C语言所具有的一切特性，Objective-C都可以兼容，充分理解C语言的内存模型，对理解Objective-C很有帮助。如下：</p>
+<pre><code>NSString *<span class="keyword">str</span> = @<span class="string">"a string"</span>;
+</code></pre><p>这一行代码跟C语言没有什么不同，（忽略@符号=。=），原理跟C语言也是一致的，就是str指针是NSString类型的指针，指向了一块存着字符串“a string”的内存区域。不同的是，在Objective-C里，所有的对象只可以声明为指针类型，所以如下代码是不合理的：</p>
+<pre><code>NSString <span class="keyword">str</span>;
+</code></pre><p>为了更充分的理解，咱们看看如下例子：</p>
+<pre><code>NSString <span class="keyword">*</span>str1 = <span class="comment">@"a string";</span>
+NSString <span class="keyword">*</span>str2 = str1;
+</code></pre><p>熟悉C语言的朋友应该知道这是怎么回事，内存当中只有一块区域储存着“a string”这个字符串，str1、str2都是指向着这个区域的字符串指针。如下图：</p>
+<p><img src="http://zorrochen.qiniudn.com/blog_effective_objective_c_item_1_1.jpg" alt="image"></p>
+<ul>
+<li>str1、str2都在栈内存上分配的，就是字符串（NSString）类型的指针。</li>
+<li>“a string”字符串实际储存在堆内存上。</li>
+<li>str1、str2均指向同一块内存区域。</li>
+</ul>
+<p>此处的栈内存、堆内存跟C语言中的概念也是一样的，不同的是，在Objective-C中，我们不用手动去malloc、free内存，Objective-C使用内存计数计数帮我们管理内存。</p>
+<h2 id="结构体，基本类型">结构体，基本类型</h2><p>在Objective-C中，并不是所有的变量都是指针类型的，像int、float、double这些依旧是传统的“栈上分配”的，当然，还有结构体struct、枚举enum、联合union等。如：</p>
+<pre><code><span class="title">CGPoint</span> point = CGPointMake(<span class="number">10</span>, <span class="number">10</span>);
+<span class="title">CGRect</span> frame = CGRectMake(<span class="number">0</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">10</span>);
+</code></pre><p>这的CGPoint、CGRect都是结构体，但是都是直接在栈上分配内存的，以减少过度使用Objective-C类型的类（减少运行时的压力），各位读者使用的时候要注意。</p>
+<h2 id="总结">总结</h2><p>零散的说了一些Objective-C的特点，远远不足以讲明白Objective-C，我这只是根据Effective Objective-C这本书给个引子，还是推荐Apple的官方教程、文档，要想掌握扎实，还是要一步一步来~</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://tutuge.me/2015/02/05/Effective-Objective-C-读书笔记-Item-1/" data-id="ci6zbtwhj001cqcjghhqye142" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://tutuge.me/2015/02/05/Effective-Objective-C-读书笔记-Item-1/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/原创/">原创</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/翻译/">翻译</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-iOS项目的目录结构-原创" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2015/02/01/iOS项目的目录结构-原创/" class="article-date">
@@ -185,7 +269,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/01/iOS项目的目录结构-原创/" data-id="ci6x7jy83000jkl6utwbqm98k" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/01/iOS项目的目录结构-原创/" data-id="ci6zbtwgz000jqcjgl2kxkyks" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -263,7 +347,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2014/11/02/LinkTextView-Android开源库-原创/" data-id="ci6x7jy88000pkl6uujx2c1su" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2014/11/02/LinkTextView-Android开源库-原创/" data-id="ci6zbtwh5000sqcjglfsv6730" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -317,7 +401,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2014/11/01/第一篇Blog/" data-id="ci6x7jy7n0001kl6uvn6hv81x" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2014/11/01/第一篇Blog/" data-id="ci6zbtwgh0001qcjgtixdl168" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -349,7 +433,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/">iOS</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/原创/">原创</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/审核/">审核</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开源/">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/杂烩/">杂烩</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/笔记/">笔记</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">3</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/">iOS</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/原创/">原创</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/审核/">审核</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开源/">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/杂烩/">杂烩</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/笔记/">笔记</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">3</span></li></ul>
     </div>
   </div>
 
@@ -367,7 +451,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -377,6 +461,10 @@
     <h3 class="widget-title">近期文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/">UITextView编辑时插入自定义表情-简单的图文混编</a>
+          </li>
         
           <li>
             <a href="/2015/03/06/关于评论不见了/">关于评论不见了=。=</a>
@@ -392,10 +480,6 @@
         
           <li>
             <a href="/2015/02/19/Block类型变量-缓存Http请求与回调/">Block类型变量-缓存Http请求与回调</a>
-          </li>
-        
-          <li>
-            <a href="/2015/02/19/提升UITableView性能-复杂页面的优化/">提升UITableView性能-复杂页面的优化</a>
           </li>
         
       </ul>

@@ -4,7 +4,7 @@
   <subtitle><![CDATA[iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://tutuge.me/"/>
-  <updated>2015-03-06T01:18:56.000Z</updated>
+  <updated>2015-03-07T18:10:08.000Z</updated>
   <id>http://tutuge.me/</id>
   
   <author>
@@ -13,6 +13,133 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[UITextView编辑时插入自定义表情-简单的图文混编]]></title>
+    <link href="http://tutuge.me/2015/03/07/UITextView%E7%BC%96%E8%BE%91%E6%97%B6%E6%8F%92%E5%85%A5%E8%87%AA%E5%AE%9A%E4%B9%89%E8%A1%A8%E6%83%85-%E7%AE%80%E5%8D%95%E7%9A%84%E5%9B%BE%E6%96%87%E6%B7%B7%E7%BC%96/"/>
+    <id>http://tutuge.me/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/</id>
+    <published>2015-03-07T03:04:38.000Z</published>
+    <updated>2015-03-07T18:10:08.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>在iOS开发中，经常需要用UITextView作为编辑文本的输入控件。<br>但是如何在编辑时插入自定义表情呢？就是像发微博时那样？  </p>
+<p>本文简单的用<strong>NSTextAttachment</strong>、<strong>NSAttributedString</strong>的特性，实现了</p>
+<ul>
+<li>在UITextView中编辑文字时插入自定义表情图片</li>
+<li>同时可以返回带有表情“<strong>替换符</strong>”的纯文本字符串。</li>
+</ul>
+<h2 id="示例">示例</h2><p>本文代码工程地址：<a href="https://github.com/zekunyan/UITextViewDIYEmojiExample" target="_blank" rel="external">https://github.com/zekunyan/UITextViewDIYEmojiExample</a></p>
+<p>效果图：</p>
+<p><img src="http://zorrochen.qiniudn.com/inputEmoji_Sample.gif" alt="image"></p>
+<h2 id="背景知识">背景知识</h2><ul>
+<li>NSAttributedString及其子类，用于显示富文本。</li>
+<li>NSTextAttachment，NSAttributedString的一种样式类，可以在文本中显示图片。</li>
+<li>NSTextStorage，UITextView中的实际的文本封装。（见参考中的UITextView文档）</li>
+</ul>
+<h3 id="表情与其标志">表情与其标志</h3><p>首先需要明确的是，我们的自定义表情一定是有一一对应的“<strong>标志</strong>”的，如“<strong>[/emoji_haha]</strong>”。<br>就是说，为了方便处理，方便在数据库、网络传输中保存、传输带有表情图片的文本，我们必须要为每种表情取特定的“<strong>名字</strong>”，数据库中储存的、网络传输的文本就只包含这些标志名字就行，在显示的时候做对应的替换。</p>
+<p>如：</p>
+<p><strong>tutuge.me<img src="http://zorrochen.qiniudn.com/blog_uitextview_input_emoji_emoji_1.png" alt="image"></strong></p>
+<p>对应的纯文本就是：</p>
+<p><strong>tutuge.me[/emoji_1]</strong></p>
+<h2 id="插入并显示表情图片">插入并显示表情图片</h2><p>插入表情很简单，直接实例化<strong>NSTextAttachment</strong>类，将需要的表情的UIImage实例赋值给NSTextAttachment的image属性，然后用“<strong>[NSAttributedString attributedStringWithAttachment:]</strong>”方法实例化一个NSAttributedString的对象，插入到UITextView的textStorage对应的位置即可。</p>
+<p>如下：</p>
+<pre><code>NSTextAttachment *emojiTextAttachment = [NSTextAttachment <span class="keyword">new</span>];
+
+<span class="comment">//设置表情图片</span>
+emojiTextAttachment.image = emojiImage;
+
+<span class="comment">//插入表情</span>
+[textView.textStorage <span class="string">insertAttributedString:</span>[NSAttributedString <span class="string">attributedStringWithAttachment:</span>emojiTextAttachment]
+<span class="label">                                      atIndex:</span>textView.selectedRange.location];
+</code></pre><p>这样，就能在UITextView当前光标位置插入表情图片了。</p>
+<h2 id="获取带有表情标志的文本字符串">获取带有表情标志的文本字符串</h2><h3 id="难点">难点</h3><p>NSTextAttachment被插入到NSAttributedString中的时候，<strong>就被当成了一个字符处理！！！</strong>。<br>就是说，只从UITextView的text中，是找不回文本里面不同的表情所对应的标志的！  </p>
+<h3 id="解决点">解决点</h3><ol>
+<li>我们要能遍历出当前文本中所有的表情，也就是NSTextAttachment类。</li>
+<li>我们要能知道遍历出的表情，对应的标志是什么。</li>
+</ol>
+<h3 id="遍历所有的NSTextAttachment类属性">遍历所有的NSTextAttachment类属性</h3><p>遍历，嗯，先看看Apple有没有提供相应的方法，能遍历NSAttributedString（及其子类）的属性的。查阅文档：<a href="https://developer.apple.com/library/prerelease/ios/documentation/Cocoa/Reference/Foundation/Classes/NSAttributedString_Class/index.html#//apple_ref/occ/instm/NSAttributedString" target="_blank" rel="external">NSAttributedString Class Reference</a>，可以找到这么一个方法：“<strong>- enumerateAttribute:inRange:options:usingBlock:</strong>”，其原型如下：</p>
+<pre><code>- (<span class="keyword">void</span>)enumerateAttribute:(<span class="built_in">NSString</span> *)attrName
+                   inRange:(<span class="built_in">NSRange</span>)enumerationRange
+                   options:(NSAttributedStringEnumerationOptions)opts
+                usingBlock:(<span class="keyword">void</span> (^)(<span class="keyword">id</span> value,
+                                     <span class="built_in">NSRange</span> range,
+                                     <span class="built_in">BOOL</span> *stop))block
+</code></pre><p>用处：</p>
+<pre><code>Executes <span class="operator">the</span> Block <span class="keyword">for</span> <span class="operator">the</span> specified attribute run <span class="operator">in</span> <span class="operator">the</span> specified range.
+</code></pre><p>看，就是这个方法~就能遍历出NSTextAttachment对象了~</p>
+<h3 id="创建NSTextAttachment的子类">创建NSTextAttachment的子类</h3><p>如何绑定NSTextAttachment所表示的表情和与其对应的标志？创建子类嘛~直接在子类中增加属性，保存标志不就行了。<br>如下：</p>
+<pre><code><span class="variable">@interface</span> <span class="attribute">EmojiTextAttachment </span>: NSTextAttachment
+<span class="variable">@property</span>(strong, nonatomic) NSString *emojiTag;
+<span class="variable">@end</span>
+</code></pre><p>所以，这个时候，插入表情的代码应该就是下面这样：</p>
+<pre><code>EmojiTextAttachment *emojiTextAttachment = [EmojiTextAttachment <span class="keyword">new</span>];
+
+<span class="comment">//保存表情标志</span>
+emojiTextAttachment.emojiTag = emojiTag;
+
+<span class="comment">//设置表情图片</span>
+emojiTextAttachment.image = emojiImage;
+
+<span class="comment">//插入表情</span>
+[textView.textStorage <span class="string">insertAttributedString:</span>[NSAttributedString <span class="string">attributedStringWithAttachment:</span>emojiTextAttachment]
+<span class="label">                                      atIndex:</span>textView.selectedRange.location];
+</code></pre><h3 id="创建NSAttributedString的Category">创建NSAttributedString的Category</h3><p>最后，就是将这个遍历表情、拼接最终文本字符串的方法设置成NSAttributedString的自定义Category方法，以方便直接调用。<br>当然，这里面有些细节的处理，如替换表情标志时的字符串偏移量计算等，看代码吧。  </p>
+<p>如下：</p>
+<pre><code><span class="comment">//NSAttributedString+EmojiExtension.h</span>
+
+<span class="class"><span class="keyword">@interface</span> <span class="title">NSAttributedString</span> (<span class="title">EmojiExtension</span>)</span>
+- (<span class="built_in">NSString</span> *)getPlainString;
+<span class="keyword">@end</span>
+
+
+<span class="comment">//NSAttributedString+EmojiExtension.m</span>
+
+<span class="class"><span class="keyword">@implementation</span> <span class="title">NSAttributedString</span> (<span class="title">EmojiExtension</span>)</span>
+
+- (<span class="built_in">NSString</span> *)getPlainString {
+
+    <span class="comment">//最终纯文本</span>
+    <span class="built_in">NSMutableString</span> *plainString = [<span class="built_in">NSMutableString</span> stringWithString:<span class="keyword">self</span><span class="variable">.string</span>];
+
+    <span class="comment">//替换下标的偏移量</span>
+    __block NSUInteger base = <span class="number">0</span>;
+
+    <span class="comment">//遍历</span>
+    [<span class="keyword">self</span> enumerateAttribute:NSAttachmentAttributeName inRange:NSMakeRange(<span class="number">0</span>, <span class="keyword">self</span><span class="variable">.length</span>)
+                     options:<span class="number">0</span>
+                  usingBlock:^(<span class="keyword">id</span> value, <span class="built_in">NSRange</span> range, <span class="built_in">BOOL</span> *stop) {
+
+                      <span class="comment">//检查类型是否是自定义NSTextAttachment类</span>
+                      <span class="keyword">if</span> (value &amp;&amp; [value isKindOfClass:[EmojiTextAttachment class]]) {
+                          <span class="comment">//替换</span>
+                          [plainString replaceCharactersInRange:NSMakeRange(range<span class="variable">.location</span> + base, range<span class="variable">.length</span>)
+                                                     withString:((EmojiTextAttachment *) value)<span class="variable">.emojiTag</span>];
+
+                       <span class="comment">//增加偏移量                          </span>
+                          base += ((EmojiTextAttachment *) value)<span class="variable">.emojiTag</span><span class="variable">.length</span> - <span class="number">1</span>;
+                      }
+                  }];
+
+    <span class="keyword">return</span> plainString;
+}
+
+<span class="keyword">@end</span>
+</code></pre><h3 id="使用">使用</h3><p>直接调用getPlainString方法即可。</p>
+<h2 id="总结">总结</h2><p>其实本文也是来源于最近的项目需求，在网上一直找不到比较好的解决方案，就自己摸索出来一个。至于复杂的图文混合编辑，当然还是Core Text来的强大（自己也在学习中）~</p>
+<p>如果有更好地办法，一定要告诉我啊~~~</p>
+<h2 id="参考">参考</h2><ul>
+<li><a href="https://developer.apple.com/library/ios/documentation/UIKit/Reference/UITextView_Class/#//apple_ref/occ/instp/UITextView/textStorage" target="_blank" rel="external">UITextView Class Reference</a></li>
+<li><a href="https://developer.apple.com/library/prerelease/ios/documentation/Cocoa/Reference/Foundation/Classes/NSAttributedString_Class/index.html#//apple_ref/occ/instm/NSAttributedString/enumerateAttribute:inRange:options:usingBlock:" target="_blank" rel="external">NSAttributedString Class Reference</a></li>
+</ul>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h2 id="前言">前言</h2><p>在iOS开发中，经常需要用UITextView作为编辑文本的输入控件。<br>但是如何在编辑时插入自定义表情呢？就是像发微博时那样？  </p>
+<p>本文简单的用<strong>NSTextAttachment</strong>、<s]]>
+    </summary>
+    
+      <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
+    
+      <category term="原创" scheme="http://tutuge.me/tags/%E5%8E%9F%E5%88%9B/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[关于评论不见了=。=]]></title>
