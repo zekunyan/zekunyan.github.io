@@ -208,7 +208,7 @@ emojiTextAttachment.image = emojiImage;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/" data-id="ci71giz5y000m5g6ute8syllu" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/" data-id="ci73hpoad000m41jf3m553mrw" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -253,7 +253,7 @@ emojiTextAttachment.image = emojiImage;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/06/关于评论不见了/" data-id="ci71giz5p000c5g6ufeblhecq" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/06/关于评论不见了/" data-id="ci73hpoa2000c41jfqhmglw6s" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -262,6 +262,108 @@ emojiTextAttachment.image = emojiImage;
 
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/杂烩/">杂烩</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Effective-Objective-C-读书笔记-Item-4-如何正确定义常量" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/03/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/" class="article-date">
+  <time datetime="2015-03-02T16:44:23.000Z" itemprop="datePublished">2015-03-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/03/03/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/">Effective-Objective-C-读书笔记-Item-4-如何正确定义常量</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言">前言</h2><p>写博客果然比光看书要花时间=。=，书都快看完了，才写到第4节。但是总结一遍，的确印象深刻啊~~  </p>
+<p>这次的主题是“<strong>常量</strong>”，非常常用，又非常重要的东西~良好的代码规范、设计，少不了各种<strong>常量</strong>。</p>
+<h2 id="Item_4_-_Prefer_Typed_Constants_to_Preprocessor_#define">Item 4 - Prefer Typed Constants to Preprocessor #define</h2><p>本节着重对比了常量的定义形式，类型常量和#define的区别、各自的特点。最后得出，我们应该用带有类型的常量，而不是#define。</p>
+<h2 id="一个简单的示例">一个简单的示例</h2><p>应用中，少不了各种动画，也就少不了设定动画的时间长度，一般来说，我们会设定短、中、长几种时间常量，用于不同的场合，了解C语言的童鞋估计对“<strong>#define</strong>”宏定义不陌生，于是，可能就会如下这么定义：</p>
+<pre><code><span class="hexcolor">#def</span>ine ANIMATION_DURATION_SHORT <span class="number">0.3</span>
+<span class="hexcolor">#def</span>ine ANIMATION_DURATION_MIDDLE <span class="number">0.6</span>
+<span class="hexcolor">#def</span>ine ANIMATION_DURATION_LONG <span class="number">1.0</span>
+</code></pre><p>于是，所有用到动画时长的地方，直接用这几个宏定义就行了。  </p>
+<p>乍一看，似乎没什么问题。</p>
+<h3 id="类型+不可变">类型+不可变</h3><p>先来看看宏定义干了什么。<br>总的来说，#define就是“替换”，在编译时，将一切宏定义替换成定义后面的内容。（参考<a href="http://baike.baidu.com/view/2076445.htm" target="_blank" rel="external">百度百科</a>）  </p>
+<p>关键在于：</p>
+<ul>
+<li>宏定义不会检查替换的“<strong>类型</strong>”，只要遇到，就做替换。</li>
+<li>宏定义不保证“<strong>不可变</strong>”，因为可以<strong>重复定义</strong>，不能保证值不变。(这个我觉得是最容易让人忽略的地方)</li>
+</ul>
+<p>所以，用宏定义定义常量，很“危险”。</p>
+<h2 id="正确的做法">正确的做法</h2><p>恰当的常量，应该具备合适的常量名字、正确的类型，还有const、extern等关键字的修饰，当然，还要根据常量适用的“<strong>范围</strong>”，做出恰当的处理。一下举例说明。</p>
+<h3 id="只在函数中用的常量">只在函数中用的常量</h3><p>只在函数中用的常量：</p>
+<pre><code>- (void)runAnimation {
+    //动画时间长度常量
+    static const NSTimeInterval kAnimationDurationLong = <span class="number">1.</span>0f;
+
+    //<span class="keyword">...</span>
+}
+</code></pre><p>static、const定义了它是静态不可变的；<strong>NSTimeInterval</strong>则“精确”指定了常量的类型。</p>
+<h3 id="只在一个“-m”文件中使用的常量">只在一个“<strong>.m</strong>”文件中使用的常量</h3><p>在类的实现文件“xxx.m”文件中定义常量，也是很常见的。<br>你可能会觉得，既然是一个类使用的，那就放在类的头文件里面定义不就好了。<br><strong>但是这么想是错的=。=</strong><br><strong>因为所有要用到这个类的文件，都会无形当中包含了这些常量声明，将不必要的数据暴露在外面，这样是违反设计原则的，并且，如果常量名字取得不恰当，还有可能造成冲突。</strong></p>
+<p>所以，应该如下:</p>
+<pre><code>//XXX.m
+
+//必须要static
+static const NSTimeInterval kAnimationDurationLong = <span class="number">1.</span>0f;
+
+@implementation XXX
+//<span class="keyword">...</span>
+@end 
+</code></pre><p>需要注意的点：</p>
+<ul>
+<li>一定要放在.m文件中。</li>
+<li>必须是<strong>static</strong>，表示此常量作用域只在此.m文件中。如果不加static的话，常量就会在全局作用域中声明，可能会导致跟其他的常量冲突。</li>
+<li>const，当然。</li>
+<li>NSTimeInterval，确定的类型。</li>
+<li>kAnimationDurationLong，“<strong>k</strong>”开头的命名，也算是Apple的规范了吧，内部常量统一以“<strong>k</strong>”开头。</li>
+</ul>
+<h3 id="全局常量">全局常量</h3><p>一般来说，最常见的全局常量就是发广播Notification时用的Notification的名字，往往都是一些字符串，下面就以这个为例子：</p>
+<p>假设我们的类叫“<strong>TTGClass</strong>”，我们的类会向外发送Notification，所以需要定义一个Notification的名字常量供外界注册，如下：</p>
+<pre><code><span class="comment">//TTGClass.h</span>
+<span class="keyword">extern</span> <span class="built_in">NSString</span> * <span class="keyword">const</span> TTGClassWorkBeginNotification;
+
+<span class="comment">//TTGClass.m</span>
+<span class="built_in">NSString</span> * <span class="keyword">const</span> TTGClassWorkBeginNotification = <span class="string">@"TTGClassWorkBeginNotification"</span>;
+</code></pre><p>关键：</p>
+<ul>
+<li>头文件中只是做声明，不做定义。所以用extern表示常量在别处定义的，尽量隐藏细节。</li>
+<li>同<strong>类名</strong>做常量名字的开头，<strong>这个非常关键，因为Objective-C里面没有像Java那样的“包”机制，所以必须靠命名来划分不同的类，常量当然也要遵循这个规则。</strong></li>
+<li>NSString，确定的类型；const，表明常量；Notification后缀，表明用途。这些都是需要注意的。</li>
+</ul>
+<h2 id="总结">总结</h2><p>良好的代码，总是少不了定义各种常量，以避免“魔鬼数字、魔鬼字符串”。所以我们应该尽量避免少用#define定义常量，而是用带有类型的、const的常量，并且尽可能的缩小常量的作用域。  </p>
+<p>暴露的细节越少，出错的机会也就越小（忘了从哪里看到的=。=）</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://tutuge.me/2015/03/03/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/" data-id="ci73hpoar001041jfrg9b389b" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://tutuge.me/2015/03/03/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/原创/">原创</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/翻译/">翻译</a></li></ul>
 
     </footer>
   </div>
@@ -361,7 +463,7 @@ tom.address = <span class="string">"USA Californian"</span>;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/01/Entity和Model的不同-关于代码的数据层/" data-id="ci71giz65000y5g6umh8rujjm" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/01/Entity和Model的不同-关于代码的数据层/" data-id="ci73hpoal000y41jftosqg501" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -451,7 +553,7 @@ tom.address = <span class="string">"USA Californian"</span>;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/28/一次审核被拒的经历-关于iCloud到底应该备份什么数据/" data-id="ci71giz5r000e5g6uwktvag4a" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/28/一次审核被拒的经历-关于iCloud到底应该备份什么数据/" data-id="ci73hpoa4000e41jfx8pz7h1j" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -596,7 +698,7 @@ typedef <span class="typename">void</span> (^http_fail)();
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/19/Block类型变量-缓存Http请求与回调/" data-id="ci71giz6m001h5g6u6shh76w6" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/19/Block类型变量-缓存Http请求与回调/" data-id="ci73hpob3001m41jf2qlr7w6n" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -728,7 +830,7 @@ typedef <span class="typename">void</span> (^http_fail)();
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/19/提升UITableView性能-复杂页面的优化/" data-id="ci71giz5l00045g6uk4tz00f1" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/19/提升UITableView性能-复杂页面的优化/" data-id="ci73hpo9q000441jfa0sk0nkn" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -837,7 +939,7 @@ NSLog(@<span class="string">"Name: %@"</span>, userEntity.name);
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/18/NSString的Copy与内存分配/" data-id="ci71giz60000p5g6uzjl8sif0" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/18/NSString的Copy与内存分配/" data-id="ci73hpoag000p41jfjyyp6vb2" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -1023,7 +1125,7 @@ NSLog(@<span class="string">"Name: %@"</span>, userEntity.name);
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/" data-id="ci71giz5n00095g6um0gh6mf0" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/" data-id="ci73hpo9z000941jfw59asxac" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -1141,126 +1243,11 @@ dict[@<span class="string">"number1"</span>] = @<span class="number">6</span>;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/14/Effective-Objective-C-读书笔记-Item-3/" data-id="ci71giz6700105g6u66xhajju" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/14/Effective-Objective-C-读书笔记-Item-3/" data-id="ci73hpoav001741jfbcn4slh9" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
         <a href="http://tutuge.me/2015/02/14/Effective-Objective-C-读书笔记-Item-3/#ds-thread" class="article-comment-link">评论</a>
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/原创/">原创</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/翻译/">翻译</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Effective-Objective-C-读书笔记-Item-2" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/02/06/Effective-Objective-C-读书笔记-Item-2/" class="article-date">
-  <time datetime="2015-02-06T08:43:46.000Z" itemprop="datePublished">2015-02-06</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/02/06/Effective-Objective-C-读书笔记-Item-2/">Effective-Objective-C-读书笔记-Item-2</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言">前言</h2><p>第二弹来了。</p>
-<h2 id="Item_2_-_Minimize_Importing_Headers_in_Headers">Item 2 - Minimize Importing Headers in Headers</h2><p>这一节讲的是尽量在一个头文件中减少其它头文件的引入。</p>
-<h2 id="头文件">头文件</h2><p>Objective-C和C语言、C++很像，都将类的实现与声明分开，用.h后缀名文件表示声明文件，用.m文件实现类。当要用到这个类的时候，只需要引入头文件即可，至于编译器、运行时是如何知道头文件里面的类对应的实现在哪里，在这了不做说明。一下用例子说明，先看看下面的类：</p>
-<pre><code><span class="comment">//Wheel.h</span>
-<span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
-
-<span class="comment">//车轮类</span>
-<span class="class"><span class="keyword">@interface</span> <span class="title">Wheel</span> : <span class="title">NSObject</span></span>
-<span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *manufacturer;
-<span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) NSUInteger radius;
-<span class="keyword">@end</span>
-</code></pre><p>第二个类 </p>
-<pre><code><span class="comment">//Engine.h</span>
-<span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
-
-<span class="comment">//发动机类</span>
-<span class="class"><span class="keyword">@interface</span> <span class="title">Engine</span> : <span class="title">NSObject</span></span>
-<span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *manufacturer;
-<span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) NSUInteger power;
-<span class="keyword">@end</span>
-</code></pre><p>然后就是车类Car：</p>
-<pre><code><span class="comment">//Car.h</span>
-<span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
-
-<span class="comment">//汽车类，只有一个轮子，不要奇怪=。=</span>
-<span class="class"><span class="keyword">@interface</span> <span class="title">Car</span> : <span class="title">NSObject</span></span>
-<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Wheel *wheel;
-<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Engine *engine;
-<span class="keyword">@end</span>
-</code></pre><p>注意到少了什么东西没有？<br>是的，写过C语言、C++的童鞋一下就能发现，Car类没有引入Engine和Wheel的头文件，肯定会编译出错的，因为编译器不知道Engine、Wheel类是啥。<br>那好，我们加上下面两行：</p>
-<pre><code><span class="id">#import</span> <span class="string">"Wheel.h"</span>
-<span class="id">#import</span> <span class="string">"Engine.h"</span>
-</code></pre><p>嗯。这样就不会出错了。但是这样真的好吗？Objective-C给我们提供了@class关键字，就是来解决这个问题的。</p>
-<h2 id="前置声明（forward_declaration）">前置声明（forward declaration）</h2><p>何为前置声明？看看下面的Car类的头文件例子。</p>
-<pre><code><span class="comment">//Car.h</span>
-<span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
-
-<span class="comment">//前置声明</span>
-<span class="class"><span class="keyword">@class</span> <span class="title">Wheel</span>;</span>
-<span class="class"><span class="keyword">@class</span> <span class="title">Engine</span>;</span>
-
-<span class="class"><span class="keyword">@interface</span> <span class="title">Car</span> : <span class="title">NSObject</span></span>
-<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Wheel *wheel;
-<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Engine *engine;
-<span class="keyword">@end</span>
-</code></pre><p>@class就是类的前置声明（forward declaration），就是告诉编译器“嗨，不用找了，Wheel类和Engine类是肯定存在的，用到的时候再找”。有了前置声明，我们就不用显式的引入Wheel类和Engine类了。</p>
-<p>当然，在Car类的实现文件.m文件中，我们还是要显式的引入Wheel和Engine类的，因为在这里我们要具体用到这两个类了，当然要知道类的细节。</p>
-<h3 id="为何不要import？">为何不要import？</h3><p>为什么不直接import呢？因为如果直接用import引入Wheel和Engine的声明，那么任何import引入了Car类的文件，也同时会引入Wheel、Engine类的声明，而且最终我们可能并不一定会直接跟Wheel、Engine类打交道，这样不就引入了“没有用”的类了吗？而且这样做很可能造成文件引入成“环”。 </p>
-<p>虽然import可以避免重复声明造成编译出错，传统的C语言、C++在声明的时候也可以通过如下方式避免重复声明：</p>
-<pre><code><span class="comment">#ifndef _WHEEL_H_</span>
-<span class="comment">#define _WHEEL_H_</span>
-
-//声明内容<span class="keyword">...</span>
-
-<span class="comment">#endif</span>
-</code></pre><p>但是既然Objective-C有@class这种前置声明的办法，为何不用呢。</p>
-<h2 id="必须用import的时候">必须用import的时候</h2><p>当然，@class这样的前置声明并不能解决一切头文件引入的问题，如下这样的类，就必须要用import：</p>
-<pre><code><span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
-
-<span class="comment">//Car 的声明</span>
-<span class="preprocessor">#import <span class="title">"Car.h"</span></span>
-
-<span class="comment">//Driver protocol的定义</span>
-<span class="preprocessor">#import <span class="title">"Driver.h"</span></span>
-
-<span class="class"><span class="keyword">@interface</span> <span class="title">BigCar</span> : <span class="title">Car</span> &lt;<span class="title">Driver</span>&gt;</span>
-<span class="keyword">@end</span>
-</code></pre><p>是的，当类需要被继承、定义的protocol需要实现的时候，就需要import相关的头文件了（protocol的实现如果跟类的使用者没有关联，可以定义在类的实现文件中的“扩展category”中）,当然，还有@protocol这样的protocol的前置声明，怎么用就留给读者自己查阅相关资料了。</p>
-<h2 id="总结">总结</h2><p>大费周章的讲了这么多，其实目的就是一个：尽量少在头文件里面引入其他头文件。</p>
-<p>最终的目的就是<strong>只暴露最少的细节</strong>。</p>
-<p>写代码有段时间了，一直都在琢磨这句话，希望读者也能好好体会~</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://tutuge.me/2015/02/06/Effective-Objective-C-读书笔记-Item-2/" data-id="ci71giz6b00175g6u0st2793n" class="article-share-link" data-share="baidu">分享到</a>
-      
-
-      
-        <a href="http://tutuge.me/2015/02/06/Effective-Objective-C-读书笔记-Item-2/#ds-thread" class="article-comment-link">评论</a>
       
 
       
@@ -1288,7 +1275,7 @@ dict[@<span class="string">"number1"</span>] = @<span class="number">6</span>;
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/">iOS</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/原创/">原创</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/审核/">审核</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开源/">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/杂烩/">杂烩</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/笔记/">笔记</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">3</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/">iOS</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/原创/">原创</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/审核/">审核</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开源/">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/杂烩/">杂烩</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/笔记/">笔记</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">4</span></li></ul>
     </div>
   </div>
 
@@ -1306,7 +1293,7 @@ dict[@<span class="string">"number1"</span>] = @<span class="number">6</span>;
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -1326,15 +1313,15 @@ dict[@<span class="string">"number1"</span>] = @<span class="number">6</span>;
           </li>
         
           <li>
+            <a href="/2015/03/03/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/">Effective-Objective-C-读书笔记-Item-4-如何正确定义常量</a>
+          </li>
+        
+          <li>
             <a href="/2015/03/01/Entity和Model的不同-关于代码的数据层/">Entity和Model的不同-关于代码的数据层</a>
           </li>
         
           <li>
             <a href="/2015/02/28/一次审核被拒的经历-关于iCloud到底应该备份什么数据/">一次审核被拒的经历-关于iCloud到底应该备份什么数据</a>
-          </li>
-        
-          <li>
-            <a href="/2015/02/19/Block类型变量-缓存Http请求与回调/">Block类型变量-缓存Http请求与回调</a>
           </li>
         
       </ul>

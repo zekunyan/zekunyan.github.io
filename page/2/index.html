@@ -72,6 +72,121 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-Effective-Objective-C-读书笔记-Item-2" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/06/Effective-Objective-C-读书笔记-Item-2/" class="article-date">
+  <time datetime="2015-02-06T08:43:46.000Z" itemprop="datePublished">2015-02-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/06/Effective-Objective-C-读书笔记-Item-2/">Effective-Objective-C-读书笔记-Item-2</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言">前言</h2><p>第二弹来了。</p>
+<h2 id="Item_2_-_Minimize_Importing_Headers_in_Headers">Item 2 - Minimize Importing Headers in Headers</h2><p>这一节讲的是尽量在一个头文件中减少其它头文件的引入。</p>
+<h2 id="头文件">头文件</h2><p>Objective-C和C语言、C++很像，都将类的实现与声明分开，用.h后缀名文件表示声明文件，用.m文件实现类。当要用到这个类的时候，只需要引入头文件即可，至于编译器、运行时是如何知道头文件里面的类对应的实现在哪里，在这了不做说明。一下用例子说明，先看看下面的类：</p>
+<pre><code><span class="comment">//Wheel.h</span>
+<span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
+
+<span class="comment">//车轮类</span>
+<span class="class"><span class="keyword">@interface</span> <span class="title">Wheel</span> : <span class="title">NSObject</span></span>
+<span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *manufacturer;
+<span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) NSUInteger radius;
+<span class="keyword">@end</span>
+</code></pre><p>第二个类 </p>
+<pre><code><span class="comment">//Engine.h</span>
+<span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
+
+<span class="comment">//发动机类</span>
+<span class="class"><span class="keyword">@interface</span> <span class="title">Engine</span> : <span class="title">NSObject</span></span>
+<span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *manufacturer;
+<span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) NSUInteger power;
+<span class="keyword">@end</span>
+</code></pre><p>然后就是车类Car：</p>
+<pre><code><span class="comment">//Car.h</span>
+<span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
+
+<span class="comment">//汽车类，只有一个轮子，不要奇怪=。=</span>
+<span class="class"><span class="keyword">@interface</span> <span class="title">Car</span> : <span class="title">NSObject</span></span>
+<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Wheel *wheel;
+<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Engine *engine;
+<span class="keyword">@end</span>
+</code></pre><p>注意到少了什么东西没有？<br>是的，写过C语言、C++的童鞋一下就能发现，Car类没有引入Engine和Wheel的头文件，肯定会编译出错的，因为编译器不知道Engine、Wheel类是啥。<br>那好，我们加上下面两行：</p>
+<pre><code><span class="id">#import</span> <span class="string">"Wheel.h"</span>
+<span class="id">#import</span> <span class="string">"Engine.h"</span>
+</code></pre><p>嗯。这样就不会出错了。但是这样真的好吗？Objective-C给我们提供了@class关键字，就是来解决这个问题的。</p>
+<h2 id="前置声明（forward_declaration）">前置声明（forward declaration）</h2><p>何为前置声明？看看下面的Car类的头文件例子。</p>
+<pre><code><span class="comment">//Car.h</span>
+<span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
+
+<span class="comment">//前置声明</span>
+<span class="class"><span class="keyword">@class</span> <span class="title">Wheel</span>;</span>
+<span class="class"><span class="keyword">@class</span> <span class="title">Engine</span>;</span>
+
+<span class="class"><span class="keyword">@interface</span> <span class="title">Car</span> : <span class="title">NSObject</span></span>
+<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Wheel *wheel;
+<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Engine *engine;
+<span class="keyword">@end</span>
+</code></pre><p>@class就是类的前置声明（forward declaration），就是告诉编译器“嗨，不用找了，Wheel类和Engine类是肯定存在的，用到的时候再找”。有了前置声明，我们就不用显式的引入Wheel类和Engine类了。</p>
+<p>当然，在Car类的实现文件.m文件中，我们还是要显式的引入Wheel和Engine类的，因为在这里我们要具体用到这两个类了，当然要知道类的细节。</p>
+<h3 id="为何不要import？">为何不要import？</h3><p>为什么不直接import呢？因为如果直接用import引入Wheel和Engine的声明，那么任何import引入了Car类的文件，也同时会引入Wheel、Engine类的声明，而且最终我们可能并不一定会直接跟Wheel、Engine类打交道，这样不就引入了“没有用”的类了吗？而且这样做很可能造成文件引入成“环”。 </p>
+<p>虽然import可以避免重复声明造成编译出错，传统的C语言、C++在声明的时候也可以通过如下方式避免重复声明：</p>
+<pre><code><span class="comment">#ifndef _WHEEL_H_</span>
+<span class="comment">#define _WHEEL_H_</span>
+
+//声明内容<span class="keyword">...</span>
+
+<span class="comment">#endif</span>
+</code></pre><p>但是既然Objective-C有@class这种前置声明的办法，为何不用呢。</p>
+<h2 id="必须用import的时候">必须用import的时候</h2><p>当然，@class这样的前置声明并不能解决一切头文件引入的问题，如下这样的类，就必须要用import：</p>
+<pre><code><span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
+
+<span class="comment">//Car 的声明</span>
+<span class="preprocessor">#import <span class="title">"Car.h"</span></span>
+
+<span class="comment">//Driver protocol的定义</span>
+<span class="preprocessor">#import <span class="title">"Driver.h"</span></span>
+
+<span class="class"><span class="keyword">@interface</span> <span class="title">BigCar</span> : <span class="title">Car</span> &lt;<span class="title">Driver</span>&gt;</span>
+<span class="keyword">@end</span>
+</code></pre><p>是的，当类需要被继承、定义的protocol需要实现的时候，就需要import相关的头文件了（protocol的实现如果跟类的使用者没有关联，可以定义在类的实现文件中的“扩展category”中）,当然，还有@protocol这样的protocol的前置声明，怎么用就留给读者自己查阅相关资料了。</p>
+<h2 id="总结">总结</h2><p>大费周章的讲了这么多，其实目的就是一个：尽量少在头文件里面引入其他头文件。</p>
+<p>最终的目的就是<strong>只暴露最少的细节</strong>。</p>
+<p>写代码有段时间了，一直都在琢磨这句话，希望读者也能好好体会~</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://tutuge.me/2015/02/06/Effective-Objective-C-读书笔记-Item-2/" data-id="ci73hpoaz001c41jfzuxwoz1j" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://tutuge.me/2015/02/06/Effective-Objective-C-读书笔记-Item-2/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/原创/">原创</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/翻译/">翻译</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Effective-Objective-C-读书笔记-Item-1" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2015/02/05/Effective-Objective-C-读书笔记-Item-1/" class="article-date">
@@ -139,7 +254,7 @@ NSString <span class="keyword">*</span>str2 = str1;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/05/Effective-Objective-C-读书笔记-Item-1/" data-id="ci71giz6k001c5g6usosyzkjd" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/05/Effective-Objective-C-读书笔记-Item-1/" data-id="ci73hpob1001h41jfcc8ui7k1" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -269,7 +384,7 @@ NSString <span class="keyword">*</span>str2 = str1;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/01/iOS项目的目录结构-原创/" data-id="ci71giz5v000j5g6ue95w964s" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/01/iOS项目的目录结构-原创/" data-id="ci73hpoaa000j41jfadqrqluj" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -347,7 +462,7 @@ NSString <span class="keyword">*</span>str2 = str1;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2014/11/02/LinkTextView-Android开源库-原创/" data-id="ci71giz62000s5g6ug2v8tygu" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2014/11/02/LinkTextView-Android开源库-原创/" data-id="ci73hpoai000s41jfzz8t8qiv" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -401,7 +516,7 @@ NSString <span class="keyword">*</span>str2 = str1;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2014/11/01/第一篇Blog/" data-id="ci71giz5f00015g6uff2rgtxz" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2014/11/01/第一篇Blog/" data-id="ci73hpo9i000141jf9sv1b2i0" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -433,7 +548,7 @@ NSString <span class="keyword">*</span>str2 = str1;
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/">iOS</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/原创/">原创</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/审核/">审核</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开源/">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/杂烩/">杂烩</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/笔记/">笔记</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">3</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/">iOS</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/原创/">原创</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/审核/">审核</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开源/">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/杂烩/">杂烩</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/笔记/">笔记</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">4</span></li></ul>
     </div>
   </div>
 
@@ -451,7 +566,7 @@ NSString <span class="keyword">*</span>str2 = str1;
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -471,15 +586,15 @@ NSString <span class="keyword">*</span>str2 = str1;
           </li>
         
           <li>
+            <a href="/2015/03/03/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/">Effective-Objective-C-读书笔记-Item-4-如何正确定义常量</a>
+          </li>
+        
+          <li>
             <a href="/2015/03/01/Entity和Model的不同-关于代码的数据层/">Entity和Model的不同-关于代码的数据层</a>
           </li>
         
           <li>
             <a href="/2015/02/28/一次审核被拒的经历-关于iCloud到底应该备份什么数据/">一次审核被拒的经历-关于iCloud到底应该备份什么数据</a>
-          </li>
-        
-          <li>
-            <a href="/2015/02/19/Block类型变量-缓存Http请求与回调/">Block类型变量-缓存Http请求与回调</a>
           </li>
         
       </ul>
