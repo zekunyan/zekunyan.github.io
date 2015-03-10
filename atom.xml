@@ -4,7 +4,7 @@
   <subtitle><![CDATA[iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://tutuge.me/"/>
-  <updated>2015-03-07T18:10:08.000Z</updated>
+  <updated>2015-03-10T16:07:48.000Z</updated>
   <id>http://tutuge.me/</id>
   
   <author>
@@ -13,6 +13,86 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Effective-Objective-C-读书笔记-Item-4-如何正确定义常量]]></title>
+    <link href="http://tutuge.me/2015/03/11/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-4-%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%AE%9A%E4%B9%89%E5%B8%B8%E9%87%8F/"/>
+    <id>http://tutuge.me/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/</id>
+    <published>2015-03-10T16:07:23.000Z</published>
+    <updated>2015-03-10T16:07:48.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>写博客果然比光看书要花时间=。=，书都快看完了，才写到第4节。但是总结一遍，的确印象深刻啊~~  </p>
+<p>这次的主题是“<strong>常量</strong>”，非常常用，又非常重要的东西~良好的代码规范、设计，少不了各种<strong>常量</strong>。</p>
+<h2 id="Item_4_-_Prefer_Typed_Constants_to_Preprocessor_#define">Item 4 - Prefer Typed Constants to Preprocessor #define</h2><p>本节着重对比了常量的定义形式，类型常量和#define的区别、各自的特点。最后得出，我们应该用带有类型的常量，而不是#define。</p>
+<h2 id="一个简单的示例">一个简单的示例</h2><p>应用中，少不了各种动画，也就少不了设定动画的时间长度，一般来说，我们会设定短、中、长几种时间常量，用于不同的场合，了解C语言的童鞋估计对“<strong>#define</strong>”宏定义不陌生，于是，可能就会如下这么定义：</p>
+<pre><code><span class="hexcolor">#def</span>ine ANIMATION_DURATION_SHORT <span class="number">0.3</span>
+<span class="hexcolor">#def</span>ine ANIMATION_DURATION_MIDDLE <span class="number">0.6</span>
+<span class="hexcolor">#def</span>ine ANIMATION_DURATION_LONG <span class="number">1.0</span>
+</code></pre><p>于是，所有用到动画时长的地方，直接用这几个宏定义就行了。  </p>
+<p>乍一看，似乎没什么问题。</p>
+<h3 id="类型+不可变">类型+不可变</h3><p>先来看看宏定义干了什么。<br>总的来说，#define就是“替换”，在编译时，将一切宏定义替换成定义后面的内容。（参考<a href="http://baike.baidu.com/view/2076445.htm" target="_blank" rel="external">百度百科</a>）  </p>
+<p>关键在于：</p>
+<ul>
+<li>宏定义不会检查替换的“<strong>类型</strong>”，只要遇到，就做替换。</li>
+<li>宏定义不保证“<strong>不可变</strong>”，因为可以<strong>重复定义</strong>，不能保证值不变。(这个我觉得是最容易让人忽略的地方)</li>
+</ul>
+<p>所以，用宏定义定义常量，很“危险”。</p>
+<h2 id="正确的做法">正确的做法</h2><p>恰当的常量，应该具备合适的常量名字、正确的类型，还有const、extern等关键字的修饰，当然，还要根据常量适用的“<strong>范围</strong>”，做出恰当的处理。一下举例说明。</p>
+<h3 id="只在函数中用的常量">只在函数中用的常量</h3><p>只在函数中用的常量：</p>
+<pre><code>- (void)runAnimation {
+    //动画时间长度常量
+    static const NSTimeInterval kAnimationDurationLong = <span class="number">1.</span>0f;
+
+    //<span class="keyword">...</span>
+}
+</code></pre><p>static、const定义了它是静态不可变的；<strong>NSTimeInterval</strong>则“精确”指定了常量的类型。</p>
+<h3 id="只在一个“-m”文件中使用的常量">只在一个“<strong>.m</strong>”文件中使用的常量</h3><p>在类的实现文件“xxx.m”文件中定义常量，也是很常见的。<br>你可能会觉得，既然是一个类使用的，那就放在类的头文件里面定义不就好了。<br><strong>但是这么想是错的=。=</strong><br><strong>因为所有要用到这个类的文件，都会无形当中包含了这些常量声明，将不必要的数据暴露在外面，这样是违反设计原则的，并且，如果常量名字取得不恰当，还有可能造成冲突。</strong></p>
+<p>所以，应该如下:</p>
+<pre><code>//XXX.m
+
+//必须要static
+static const NSTimeInterval kAnimationDurationLong = <span class="number">1.</span>0f;
+
+@implementation XXX
+//<span class="keyword">...</span>
+@end 
+</code></pre><p>需要注意的点：</p>
+<ul>
+<li>一定要放在.m文件中。</li>
+<li>必须是<strong>static</strong>，表示此常量作用域只在此.m文件中。如果不加static的话，常量就会在全局作用域中声明，可能会导致跟其他的常量冲突。</li>
+<li>const，当然。</li>
+<li>NSTimeInterval，确定的类型。</li>
+<li>kAnimationDurationLong，“<strong>k</strong>”开头的命名，也算是Apple的规范了吧，内部常量统一以“<strong>k</strong>”开头。</li>
+</ul>
+<h3 id="全局常量">全局常量</h3><p>一般来说，最常见的全局常量就是发广播Notification时用的Notification的名字，往往都是一些字符串，下面就以这个为例子：</p>
+<p>假设我们的类叫“<strong>TTGClass</strong>”，我们的类会向外发送Notification，所以需要定义一个Notification的名字常量供外界注册，如下：</p>
+<pre><code><span class="comment">//TTGClass.h</span>
+<span class="keyword">extern</span> <span class="built_in">NSString</span> * <span class="keyword">const</span> TTGClassWorkBeginNotification;
+
+<span class="comment">//TTGClass.m</span>
+<span class="built_in">NSString</span> * <span class="keyword">const</span> TTGClassWorkBeginNotification = <span class="string">@"TTGClassWorkBeginNotification"</span>;
+</code></pre><p>关键：</p>
+<ul>
+<li>头文件中只是做声明，不做定义。所以用extern表示常量在别处定义的，尽量隐藏细节。</li>
+<li>同<strong>类名</strong>做常量名字的开头，<strong>这个非常关键，因为Objective-C里面没有像Java那样的“包”机制，所以必须靠命名来划分不同的类，常量当然也要遵循这个规则。</strong></li>
+<li>NSString，确定的类型；const，表明常量；Notification后缀，表明用途。这些都是需要注意的。</li>
+</ul>
+<h2 id="总结">总结</h2><p>良好的代码，总是少不了定义各种常量，以避免“魔鬼数字、魔鬼字符串”。所以我们应该尽量避免少用#define定义常量，而是用带有类型的、const的常量，并且尽可能的缩小常量的作用域。  </p>
+<p>暴露的细节越少，出错的机会也就越小（忘了从哪里看到的=。=）</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h2 id="前言">前言</h2><p>写博客果然比光看书要花时间=。=，书都快看完了，才写到第4节。但是总结一遍，的确印象深刻啊~~  </p>
+<p>这次的主题是“<strong>常量</strong>”，非常常用，又非常重要的东西~良好的代码规范、设计，少不了各种<st]]>
+    </summary>
+    
+      <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
+    
+      <category term="原创" scheme="http://tutuge.me/tags/%E5%8E%9F%E5%88%9B/"/>
+    
+      <category term="笔记" scheme="http://tutuge.me/tags/%E7%AC%94%E8%AE%B0/"/>
+    
+      <category term="翻译" scheme="http://tutuge.me/tags/%E7%BF%BB%E8%AF%91/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[UITextView编辑时插入自定义表情-简单的图文混编]]></title>
@@ -155,86 +235,6 @@ emojiTextAttachment.image = emojiImage;
     </summary>
     
       <category term="杂烩" scheme="http://tutuge.me/tags/%E6%9D%82%E7%83%A9/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[Effective-Objective-C-读书笔记-Item-4-如何正确定义常量]]></title>
-    <link href="http://tutuge.me/2015/03/03/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-4-%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%AE%9A%E4%B9%89%E5%B8%B8%E9%87%8F/"/>
-    <id>http://tutuge.me/2015/03/03/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/</id>
-    <published>2015-03-02T16:44:23.000Z</published>
-    <updated>2015-03-10T16:04:42.000Z</updated>
-    <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>写博客果然比光看书要花时间=。=，书都快看完了，才写到第4节。但是总结一遍，的确印象深刻啊~~  </p>
-<p>这次的主题是“<strong>常量</strong>”，非常常用，又非常重要的东西~良好的代码规范、设计，少不了各种<strong>常量</strong>。</p>
-<h2 id="Item_4_-_Prefer_Typed_Constants_to_Preprocessor_#define">Item 4 - Prefer Typed Constants to Preprocessor #define</h2><p>本节着重对比了常量的定义形式，类型常量和#define的区别、各自的特点。最后得出，我们应该用带有类型的常量，而不是#define。</p>
-<h2 id="一个简单的示例">一个简单的示例</h2><p>应用中，少不了各种动画，也就少不了设定动画的时间长度，一般来说，我们会设定短、中、长几种时间常量，用于不同的场合，了解C语言的童鞋估计对“<strong>#define</strong>”宏定义不陌生，于是，可能就会如下这么定义：</p>
-<pre><code><span class="hexcolor">#def</span>ine ANIMATION_DURATION_SHORT <span class="number">0.3</span>
-<span class="hexcolor">#def</span>ine ANIMATION_DURATION_MIDDLE <span class="number">0.6</span>
-<span class="hexcolor">#def</span>ine ANIMATION_DURATION_LONG <span class="number">1.0</span>
-</code></pre><p>于是，所有用到动画时长的地方，直接用这几个宏定义就行了。  </p>
-<p>乍一看，似乎没什么问题。</p>
-<h3 id="类型+不可变">类型+不可变</h3><p>先来看看宏定义干了什么。<br>总的来说，#define就是“替换”，在编译时，将一切宏定义替换成定义后面的内容。（参考<a href="http://baike.baidu.com/view/2076445.htm" target="_blank" rel="external">百度百科</a>）  </p>
-<p>关键在于：</p>
-<ul>
-<li>宏定义不会检查替换的“<strong>类型</strong>”，只要遇到，就做替换。</li>
-<li>宏定义不保证“<strong>不可变</strong>”，因为可以<strong>重复定义</strong>，不能保证值不变。(这个我觉得是最容易让人忽略的地方)</li>
-</ul>
-<p>所以，用宏定义定义常量，很“危险”。</p>
-<h2 id="正确的做法">正确的做法</h2><p>恰当的常量，应该具备合适的常量名字、正确的类型，还有const、extern等关键字的修饰，当然，还要根据常量适用的“<strong>范围</strong>”，做出恰当的处理。一下举例说明。</p>
-<h3 id="只在函数中用的常量">只在函数中用的常量</h3><p>只在函数中用的常量：</p>
-<pre><code>- (void)runAnimation {
-    //动画时间长度常量
-    static const NSTimeInterval kAnimationDurationLong = <span class="number">1.</span>0f;
-
-    //<span class="keyword">...</span>
-}
-</code></pre><p>static、const定义了它是静态不可变的；<strong>NSTimeInterval</strong>则“精确”指定了常量的类型。</p>
-<h3 id="只在一个“-m”文件中使用的常量">只在一个“<strong>.m</strong>”文件中使用的常量</h3><p>在类的实现文件“xxx.m”文件中定义常量，也是很常见的。<br>你可能会觉得，既然是一个类使用的，那就放在类的头文件里面定义不就好了。<br><strong>但是这么想是错的=。=</strong><br><strong>因为所有要用到这个类的文件，都会无形当中包含了这些常量声明，将不必要的数据暴露在外面，这样是违反设计原则的，并且，如果常量名字取得不恰当，还有可能造成冲突。</strong></p>
-<p>所以，应该如下:</p>
-<pre><code>//XXX.m
-
-//必须要static
-static const NSTimeInterval kAnimationDurationLong = <span class="number">1.</span>0f;
-
-@implementation XXX
-//<span class="keyword">...</span>
-@end 
-</code></pre><p>需要注意的点：</p>
-<ul>
-<li>一定要放在.m文件中。</li>
-<li>必须是<strong>static</strong>，表示此常量作用域只在此.m文件中。如果不加static的话，常量就会在全局作用域中声明，可能会导致跟其他的常量冲突。</li>
-<li>const，当然。</li>
-<li>NSTimeInterval，确定的类型。</li>
-<li>kAnimationDurationLong，“<strong>k</strong>”开头的命名，也算是Apple的规范了吧，内部常量统一以“<strong>k</strong>”开头。</li>
-</ul>
-<h3 id="全局常量">全局常量</h3><p>一般来说，最常见的全局常量就是发广播Notification时用的Notification的名字，往往都是一些字符串，下面就以这个为例子：</p>
-<p>假设我们的类叫“<strong>TTGClass</strong>”，我们的类会向外发送Notification，所以需要定义一个Notification的名字常量供外界注册，如下：</p>
-<pre><code><span class="comment">//TTGClass.h</span>
-<span class="keyword">extern</span> <span class="built_in">NSString</span> * <span class="keyword">const</span> TTGClassWorkBeginNotification;
-
-<span class="comment">//TTGClass.m</span>
-<span class="built_in">NSString</span> * <span class="keyword">const</span> TTGClassWorkBeginNotification = <span class="string">@"TTGClassWorkBeginNotification"</span>;
-</code></pre><p>关键：</p>
-<ul>
-<li>头文件中只是做声明，不做定义。所以用extern表示常量在别处定义的，尽量隐藏细节。</li>
-<li>同<strong>类名</strong>做常量名字的开头，<strong>这个非常关键，因为Objective-C里面没有像Java那样的“包”机制，所以必须靠命名来划分不同的类，常量当然也要遵循这个规则。</strong></li>
-<li>NSString，确定的类型；const，表明常量；Notification后缀，表明用途。这些都是需要注意的。</li>
-</ul>
-<h2 id="总结">总结</h2><p>良好的代码，总是少不了定义各种常量，以避免“魔鬼数字、魔鬼字符串”。所以我们应该尽量避免少用#define定义常量，而是用带有类型的、const的常量，并且尽可能的缩小常量的作用域。  </p>
-<p>暴露的细节越少，出错的机会也就越小（忘了从哪里看到的=。=）</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<h2 id="前言">前言</h2><p>写博客果然比光看书要花时间=。=，书都快看完了，才写到第4节。但是总结一遍，的确印象深刻啊~~  </p>
-<p>这次的主题是“<strong>常量</strong>”，非常常用，又非常重要的东西~良好的代码规范、设计，少不了各种<st]]>
-    </summary>
-    
-      <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
-    
-      <category term="原创" scheme="http://tutuge.me/tags/%E5%8E%9F%E5%88%9B/"/>
-    
-      <category term="笔记" scheme="http://tutuge.me/tags/%E7%AC%94%E8%AE%B0/"/>
-    
-      <category term="翻译" scheme="http://tutuge.me/tags/%E7%BF%BB%E8%AF%91/"/>
     
   </entry>
   
