@@ -72,6 +72,124 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-Effective-Objective-C-读书笔记-Item-3" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/14/Effective-Objective-C-读书笔记-Item-3/" class="article-date">
+  <time datetime="2015-02-14T08:51:51.000Z" itemprop="datePublished">2015-02-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/14/Effective-Objective-C-读书笔记-Item-3/">Effective-Objective-C-读书笔记-Item-3</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言">前言</h2><p>item 3讲的是Objective-C里面的“字面量语法”-“Literal Syntax”，个人觉得非常有用。</p>
+<h2 id="Item_3_-_Prefer_Literal_Syntax_over_the_Equivalent_Methods">Item 3 - Prefer Literal Syntax over the Equivalent Methods</h2><p>本节讲了Objective-C中的“字面量语法”，并且建议我们更多的使用这种语法，而不是使用传统的等价的函数方法。</p>
+<h2 id="引子">引子</h2><p>当我们使用Objective-C编程的时候，总会经常使用到几种Foundation框架中的基本类，如NSString、NSNumber、NSArray、NSDictionary，或者是它们的子类。例如，当我们想创建一个字符串的时候，会这么写：</p>
+<pre><code>NSString *<span class="keyword">str</span> = @<span class="string">"a string"</span>;
+</code></pre><p>不知道各位写这句的时候有没有觉得奇怪？为什么不用先“alloc”，再“initWithXXX”这么来创建呢。是的，这里创建字符串，就用到了Objective-C提供的“字面量语法”-“Literal Syntax”，而这种语法的“标志”就是“@”符号。<br>有了字面量语法，我们就不用每次创建一些基本类型的时候，写一大堆alloc、init了。</p>
+<h2 id="NSNumber">NSNumber</h2><p>字符串可以用字面量语法创建，数字类NSNumber肯定也可以，如下：</p>
+<pre><code>NSNumber <span class="keyword">*</span>intNum = <span class="comment">@1;</span>
+NSNumber <span class="keyword">*</span>floatNum = <span class="comment">@1.1f;</span>
+NSNumber <span class="keyword">*</span>doubleNum = <span class="comment">@1.1;</span>
+NSNumber <span class="keyword">*</span>boolNum = <span class="comment">@YES;</span>
+NSNumber <span class="keyword">*</span>charNum = <span class="comment">@'a';</span>
+
+//不用字面量语法
+NSNumber <span class="keyword">*</span>intNumber = [[NSNumber alloc] initWithInt:1];
+</code></pre><p>看，是不是很方便~</p>
+<h2 id="NSArray">NSArray</h2><h3 id="创建">创建</h3><p>数组算是最常用的一种数据结构了，如果没有字面量语法，创建数组可能是这样：</p>
+<pre><code><span class="constant">NSArray </span>*numbers = [[<span class="constant">NSArray </span>alloc] <span class="symbol">initWithObjects:</span>
+    <span class="variable">@1</span>, <span class="variable">@1</span>.<span class="number">1</span>, <span class="variable">@2</span>.0f, <span class="variable">@YES</span>, <span class="keyword">nil</span>];
+</code></pre><p>用字面量语法的话，就是这样：</p>
+<pre><code>NSArray <span class="variable">*numbers</span> = <span class="variable">@[</span><span class="variable">@1</span>, <span class="variable">@1</span><span class="number">.1</span>, <span class="variable">@2</span><span class="number">.0</span>f, <span class="variable">@YES</span>];
+</code></pre><h3 id="存取值">存取值</h3><p>创建了数组，肯定要从数组里面取值，用NSArray的方法就是这样：</p>
+<pre><code><span class="comment">//取</span>
+NSNumber <span class="variable">*aNumber</span> = [numbers objectAtIndex:<span class="number">2</span>];
+<span class="comment">//存</span>
+NSMutableArray <span class="variable">*mutableArray</span> = [[NSMutableArray alloc] initWithArray:
+    <span class="variable">@[</span><span class="variable">@1</span>, <span class="variable">@2</span>, <span class="variable">@3</span>]];
+[mutableArray replaceObjectAtIndex:<span class="number">1</span> withObject:<span class="variable">@4</span>];
+</code></pre><p>跟C语言、Java这些语法很不一样啊，人家都是通过中括号“[]”直接用下标取值就可以。有了字面量同语法，Objective-C也可以这样:</p>
+<pre><code><span class="comment">//取</span>
+NSNumber <span class="variable">*aNumber</span> = numbers[<span class="number">2</span>];
+<span class="comment">//存</span>
+NSMutableArray <span class="variable">*mutableArray</span> = [[NSMutableArray alloc] initWithArray:
+    <span class="variable">@[</span><span class="variable">@1</span>, <span class="variable">@2</span>, <span class="variable">@3</span>]];
+mutableArray[<span class="number">1</span>] = <span class="variable">@4</span>;
+</code></pre><h3 id="要注意的地方">要注意的地方</h3><p>传统的通过“initWithObjects”方法创建数组的时候，是根据最后的“nil”判断数组是否结束的，也就是说，用于初始化数组的元素中有“nil”值也不会导致异常（Exception），如下语句：</p>
+<pre><code><span class="built_in">NSNumber</span> *number1 = @<span class="number">1</span>;
+<span class="built_in">NSNumber</span> *number2 = <span class="literal">nil</span>; <span class="comment">//空指针</span>
+<span class="built_in">NSNumber</span> *number3 = @<span class="number">3</span>;
+
+<span class="comment">//创建</span>
+<span class="built_in">NSArray</span> *numbers = [[<span class="built_in">NSArray</span> alloc] initWithObjects:
+    number1, number2, number3, <span class="literal">nil</span>];
+
+<span class="comment">//输出为1，因为number2，创建到number2就截止了</span>
+<span class="built_in">NSLog</span>(<span class="string">@"numbers count: %d"</span>, numbers<span class="variable">.count</span>);
+</code></pre><p>但是，如果用字面量语法创建，就是出问题：</p>
+<pre><code>NSNumber <span class="keyword">*</span>number1 = <span class="comment">@1;</span>
+NSNumber <span class="keyword">*</span>number2 = nil;
+NSNumber <span class="keyword">*</span>number3 = <span class="comment">@3;</span>
+
+//创建出现异常！！！
+NSArray <span class="keyword">*</span>numbers = <span class="comment">@[number1, number2, number3];</span>
+
+NSLog(<span class="comment">@"numbers count: %d", numbers.count);</span>
+</code></pre><p>因为字面量语法只是单纯的将中括号中的元素全部加到数组中，但是，Objective-C中的数组是不可以存放nil值的，所以程序会运行时抛出异常。    </p>
+<h2 id="NSDictionary">NSDictionary</h2><h3 id="创建-1">创建</h3><p>如果不用字面量语法创建字典，传统的创建函数简直令人匪夷所思：</p>
+<pre><code><span class="comment">// number1-&gt;@1</span>
+<span class="comment">// number2-&gt;@2</span>
+<span class="built_in">NSDictionary</span> *dict = [[<span class="built_in">NSDictionary</span> alloc] initWithObjectsAndKeys:
+    @<span class="number">1</span>, <span class="string">@"number1"</span>, @<span class="number">2</span>, <span class="string">@"number2"</span>, <span class="literal">nil</span>];
+</code></pre><p>是不是很奇怪，<strong>value在前面，key在后面</strong></p>
+<p>所以，还是用新的语法吧：</p>
+<pre><code>NSDictionary *dict = @{@<span class="string">"number1"</span> : <span class="localvars">@1</span>, @<span class="string">"number2"</span> : <span class="localvars">@2</span>}<span class="comment">;</span>
+</code></pre><p>这样才符合“常识”嘛，key在前，value在后面，跟JSON的定义一样。  </p>
+<h3 id="存取值-1">存取值</h3><p>取值的语法跟NSArray的语法很想，只不过是将下标数字变成了key：</p>
+<pre><code><span class="comment">//传统</span>
+NSNumber *number1 = [dict <span class="string">objectForKey:</span>@<span class="string">"number1"</span>];
+[dict <span class="string">setValue:</span>@<span class="number">5</span> <span class="string">forKey:</span>@<span class="string">"number1"</span>];
+
+<span class="comment">//字面量语法</span>
+NSNumber *number2 = dict[@<span class="string">"number1"</span>];
+dict[@<span class="string">"number1"</span>] = @<span class="number">6</span>;
+</code></pre><h3 id="注意">注意</h3><p>需要注意的地方，跟创建数组一样，NSDictionary的value不能为nil值，否则会抛出异常。</p>
+<h2 id="总结">总结</h2><p>总的来说，使用字面量语法可以让代码更加清晰、简单，毕竟，更少的代码，有时候意味着更少的错误。      </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://tutuge.me/2015/02/14/Effective-Objective-C-读书笔记-Item-3/" data-id="ci7ag6i9q001cbh6ucfnbii89" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://tutuge.me/2015/02/14/Effective-Objective-C-读书笔记-Item-3/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/原创/">原创</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/翻译/">翻译</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Effective-Objective-C-读书笔记-Item-2" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2015/02/06/Effective-Objective-C-读书笔记-Item-2/" class="article-date">
@@ -170,7 +288,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/06/Effective-Objective-C-读书笔记-Item-2/" data-id="ci74egr2g001cma6unf5l5gwn" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/06/Effective-Objective-C-读书笔记-Item-2/" data-id="ci7ag6i9s001hbh6uf7hpcgb3" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -254,7 +372,7 @@ NSString <span class="keyword">*</span>str2 = str1;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/05/Effective-Objective-C-读书笔记-Item-1/" data-id="ci74egr2j001hma6uwy1jitfz" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/05/Effective-Objective-C-读书笔记-Item-1/" data-id="ci7ag6i9u001mbh6unxmglwfh" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -384,7 +502,7 @@ NSString <span class="keyword">*</span>str2 = str1;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/01/iOS项目的目录结构-原创/" data-id="ci74egr1u000jma6umf96w19h" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/01/iOS项目的目录结构-原创/" data-id="ci7ag6i92000obh6upjdowqgf" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -462,7 +580,7 @@ NSString <span class="keyword">*</span>str2 = str1;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2014/11/02/LinkTextView-Android开源库-原创/" data-id="ci74egr23000sma6ua0mxtuxe" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2014/11/02/LinkTextView-Android开源库-原创/" data-id="ci7ag6i9a000xbh6u55dkw7d8" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -516,7 +634,7 @@ NSString <span class="keyword">*</span>str2 = str1;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2014/11/01/第一篇Blog/" data-id="ci74egr1e0001ma6ultdoj6a9" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2014/11/01/第一篇Blog/" data-id="ci7ag6i8l0001bh6ug43k47x9" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -548,7 +666,7 @@ NSString <span class="keyword">*</span>str2 = str1;
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/">iOS</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/原创/">原创</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/审核/">审核</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开源/">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/杂烩/">杂烩</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/笔记/">笔记</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">4</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/">iOS</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/原创/">原创</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/审核/">审核</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开源/">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/技巧/">技巧</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/杂烩/">杂烩</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/笔记/">笔记</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">4</span></li></ul>
     </div>
   </div>
 
@@ -557,7 +675,7 @@ NSString <span class="keyword">*</span>str2 = str1;
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Android/" style="font-size: 10px;">Android</a><a href="/tags/iOS/" style="font-size: 17.5px;">iOS</a><a href="/tags/原创/" style="font-size: 20px;">原创</a><a href="/tags/审核/" style="font-size: 10px;">审核</a><a href="/tags/开源/" style="font-size: 10px;">开源</a><a href="/tags/杂烩/" style="font-size: 12.5px;">杂烩</a><a href="/tags/笔记/" style="font-size: 15px;">笔记</a><a href="/tags/翻译/" style="font-size: 15px;">翻译</a>
+      <a href="/tags/Android/" style="font-size: 10px;">Android</a><a href="/tags/iOS/" style="font-size: 17.5px;">iOS</a><a href="/tags/原创/" style="font-size: 20px;">原创</a><a href="/tags/审核/" style="font-size: 10px;">审核</a><a href="/tags/开源/" style="font-size: 10px;">开源</a><a href="/tags/技巧/" style="font-size: 10px;">技巧</a><a href="/tags/杂烩/" style="font-size: 12.5px;">杂烩</a><a href="/tags/笔记/" style="font-size: 15px;">笔记</a><a href="/tags/翻译/" style="font-size: 15px;">翻译</a>
     </div>
   </div>
 
@@ -566,7 +684,7 @@ NSString <span class="keyword">*</span>str2 = str1;
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -576,6 +694,10 @@ NSString <span class="keyword">*</span>str2 = str1;
     <h3 class="widget-title">近期文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2015/03/15/使用宏定义的经验与技巧/">使用宏定义的经验与技巧</a>
+          </li>
         
           <li>
             <a href="/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/">Effective-Objective-C-读书笔记-Item-4-如何正确定义常量</a>
@@ -591,10 +713,6 @@ NSString <span class="keyword">*</span>str2 = str1;
         
           <li>
             <a href="/2015/03/01/Entity和Model的不同-关于代码的数据层/">Entity和Model的不同-关于代码的数据层</a>
-          </li>
-        
-          <li>
-            <a href="/2015/02/28/一次审核被拒的经历-关于iCloud到底应该备份什么数据/">一次审核被拒的经历-关于iCloud到底应该备份什么数据</a>
           </li>
         
       </ul>
