@@ -4,7 +4,7 @@
   <subtitle><![CDATA[iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://tutuge.me/"/>
-  <updated>2015-03-15T12:57:33.000Z</updated>
+  <updated>2015-03-15T16:15:06.000Z</updated>
   <id>http://tutuge.me/</id>
   
   <author>
@@ -15,11 +15,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title><![CDATA[使用宏定义的经验与技巧]]></title>
-    <link href="http://tutuge.me/2015/03/15/%E4%BD%BF%E7%94%A8%E5%AE%8F%E5%AE%9A%E4%B9%89%E7%9A%84%E7%BB%8F%E9%AA%8C%E4%B8%8E%E6%8A%80%E5%B7%A7/"/>
-    <id>http://tutuge.me/2015/03/15/使用宏定义的经验与技巧/</id>
+    <title><![CDATA[有关宏定义的经验与技巧-简化代码-增强Log]]></title>
+    <link href="http://tutuge.me/2015/03/15/%E6%9C%89%E5%85%B3%E5%AE%8F%E5%AE%9A%E4%B9%89%E7%9A%84%E7%BB%8F%E9%AA%8C%E4%B8%8E%E6%8A%80%E5%B7%A7-%E7%AE%80%E5%8C%96%E4%BB%A3%E7%A0%81-%E5%A2%9E%E5%BC%BALog/"/>
+    <id>http://tutuge.me/2015/03/15/有关宏定义的经验与技巧-简化代码-增强Log/</id>
     <published>2015-03-15T07:34:28.000Z</published>
-    <updated>2015-03-15T12:57:33.000Z</updated>
+    <updated>2015-03-15T16:15:06.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>宏定义、#define啥的，我们经常遇到。<br>一般来说，最常用的可能就是定义一些常量、简单的“函数”，如下：</p>
 <pre><code>//定义常量<span class="constant">PI</span>
 <span class="comment">#define PI 3.1415926</span>
