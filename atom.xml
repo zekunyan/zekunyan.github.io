@@ -4,7 +4,7 @@
   <subtitle><![CDATA[iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://tutuge.me/"/>
-  <updated>2015-03-16T02:45:33.000Z</updated>
+  <updated>2015-03-17T15:41:20.000Z</updated>
   <id>http://tutuge.me/</id>
   
   <author>
@@ -13,6 +13,89 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[@autoreleasepool-内存的分配与释放]]></title>
+    <link href="http://tutuge.me/2015/03/17/what-is-autoreleasepool/"/>
+    <id>http://tutuge.me/2015/03/17/what-is-autoreleasepool/</id>
+    <published>2015-03-17T12:21:56.000Z</published>
+    <updated>2015-03-17T15:41:20.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>开发过iOS、Mac的朋友应该对“<strong>@autoreleasepool</strong>”不陌生。只要在Xcode里创建一个工程，就能看到下面这样的代码：</p>
+<pre><code><span class="comment">//iOS program</span>
+<span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> * argv[])</span> </span>{
+    @autoreleasepool {
+        <span class="keyword">return</span> UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate <span class="keyword">class</span>]));
+    }
+}
+
+<span class="comment">//Command line program</span>
+<span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> *argv[])</span> </span>{
+    @autoreleasepool {
+        <span class="comment">//...</span>
+    }
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+</code></pre><p>看，每个<strong>main</strong>函数的主体都被<strong>@autoreleasepool</strong>的Block块包在里面，也就是说，接下来所有的对象创建都在这个block里面。</p>
+<p>那么，<strong>@autoreleasepool</strong>的作用到底是什么呢？我们开发中可以用它来做什么呢？  </p>
+<p>可以在某些情况下，大幅度降低程序的内存占用，如下图:</p>
+<p><img src="https://camo.githubusercontent.com/2c1f07459d33c72de07d8a9305703b2ba40abfc4/687474703a2f2f7a6f72726f6368656e2e71696e6975646e2e636f6d2f626c6f675f776861745f69735f6175746f72656c65617365706f6f6c5f312e706e673f696d61676556696577322f302f682f343030" alt="image"></p>
+<ul>
+<li>测试的内容：500000次循环，每次循环创建一个NSNumber实例和两个NSString实例。</li>
+<li>图：红线表示没有用<strong>@autoreleasepool</strong>时的内存占用。</li>
+<li>图：绿线表示用了<strong>@autoreleasepool</strong>优化后的内存占用！</li>
+</ul>
+<p>效果是不是很明显！</p>
+<p>代码Github地址：<a href="https://github.com/zekunyan/AutoReleasePoolTestExample" target="_blank" rel="external">AutoReleasePoolTestExample</a> Xcode 6, iOS 8, iPhone 5模拟器.</p>
+<h2 id="MRC_与_ARC">MRC 与 ARC</h2><p>MRC（Mannul Reference Counting）和ARC(Automatic Reference Counting)，分别对应着手动引用计数和自动引用计数。  </p>
+<p>对！是计数，不是“<strong>GC、垃圾回收</strong>”什么的，就是说，在Objective-C的开发中，ARC不代表像Java那样有GC做垃圾回收，所以本质上还是要“手动”管理内存的。也就是说，我们在ARC环境下写的代码，不用自己手动插入“<strong>retain、release这些消息</strong>”，ARC会在编译时为我们在合适的位置插入，释放不必要的内存。</p>
+<p>而<strong>@autoreleasepool</strong>就跟对象的<strong>release</strong>密切相关。</p>
+<h2 id="@autoreleasepool_干了啥">@autoreleasepool 干了啥</h2><p>在MRC时代，如果我们想先retain一个对象，但是并不知道在什么时候可以release它，我们可以像下面这么做：</p>
+<pre><code><span class="built_in">NSAutoreleasePool</span> *pool = [[<span class="built_in">NSAutoreleasePool</span> alloc] init];
+
+<span class="built_in">NSString</span>* str = [[[<span class="built_in">NSString</span> alloc] initWithString:<span class="string">@"tutuge"</span>] autorelease];
+<span class="comment">//use str...</span>
+
+[pool release];
+<span class="comment">//str is released</span>
+</code></pre><p>就是说，我们可以在创建对象的时候给对象发送“<strong>autorelease</strong>”消息，然后当<strong>NSAutoreleasePool</strong>结束的时候，“标记过”autorelease的对象都会被“<strong>release</strong>”掉，也就是会被释放掉。</p>
+<p>但是在ARC时代，我们不用手动发送<strong>autorelease</strong>消息，ARC会自动帮我们加。而这个时候，<strong>@autoreleasepool</strong>做的事情，跟<strong>NSAutoreleasePool</strong>就一模一样了。</p>
+<h2 id="什么时候用@autoreleasepool">什么时候用@autoreleasepool</h2><p>根据<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/mmAutoreleasePools.html" target="_blank" rel="external">Apple的文档</a>，使用场景如下：</p>
+<ul>
+<li>写基于命令行的的程序时，就是没有UI框架，如AppKit等Cocoa框架时。</li>
+<li>写循环，循环里面包含了大量临时创建的对象。（本文的例子）</li>
+<li>创建了新的线程。（非Cocoa程序创建线程时才需要）</li>
+<li>长时间在后台运行的任务。</li>
+</ul>
+<h2 id="利用@autoreleasepool优化循环">利用@autoreleasepool优化循环</h2><p>利用@autoreleasepool优化循环的内存占用，我觉得最有用的一点，下面就说说这个点。<br>如下面的循环，次数非常多，而且循环体里面的对象都是临时创建使用的，就可以用<strong>@autoreleasepool</strong>包起来，让每次循环结束时，可以及时的释放临时对象的内存。</p>
+<pre><code><span class="comment">//来自Apple文档，见参考</span>
+<span class="built_in">NSArray</span> *urls = &lt;<span class="preprocessor"># An array of file URLs #&gt;;</span>
+<span class="keyword">for</span> (<span class="built_in">NSURL</span> *url <span class="keyword">in</span> urls) {
+
+    <span class="keyword">@autoreleasepool</span> {
+        <span class="built_in">NSError</span> *error;
+        <span class="built_in">NSString</span> *fileContents = [<span class="built_in">NSString</span> stringWithContentsOfURL:url
+                                         encoding:NSUTF8StringEncoding error:&amp;error];
+        <span class="comment">/* Process the string, creating and autoreleasing more objects. */</span>
+    }
+}
+</code></pre><p>这么做的效果是极其显著地，就如本文最开始的图一样，可以自己把示例工程下回来运行下试试~</p>
+<h2 id="总结">总结</h2><p><strong>@autoreleasepool</strong>看起来很不“起眼”，平常开发很容易就忽略它了，但是仔细一看，确如此有用~</p>
+<h2 id="参考">参考</h2><ul>
+<li><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/mmAutoreleasePools.html" target="_blank" rel="external">Using Autorelease Pool Blocks</a></li>
+<li><a href="http://stackoverflow.com/questions/14677049/what-is-autoreleasepool-objective-c" target="_blank" rel="external">What is autoreleasepool? - Objective-C</a></li>
+<li><a href="http://stackoverflow.com/questions/9086913/objective-c-why-is-autorelease-autoreleasepool-still-needed-with-arc" target="_blank" rel="external">Objective-C: Why is autorelease (@autoreleasepool) still needed with ARC?</a></li>
+<li><a href="http://blog.zilongshanren.com/blog/2013/12/20/what-is-autorelease-pool/" target="_blank" rel="external">What-is-autorelease-pool?</a></li>
+<li><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Reference/Foundation/Classes/NSAutoreleasePool_Class/index.html" target="_blank" rel="external">NSAutoreleasePool</a></li>
+</ul>
+<h3 id="示例中的第三方库">示例中的第三方库</h3><p><a href="https://github.com/kevinzhow/PNChart" target="_blank" rel="external">PNChart</a></p>
+<h3 id="运行中用代码获取App运行消耗内存">运行中用代码获取App运行消耗内存</h3><p><a href="http://stackoverflow.com/questions/787160/programmatically-retrieve-memory-usage-on-iphone" target="_blank" rel="external">Programmatically retrieve memory usage on iPhone</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h2 id="前言">前言</h2><p>开发过iOS、Mac的朋友应该对“<strong>@autoreleasepool</strong>”不陌生。只要在Xcode里创建一个工程，就能看到下面这样的代码：</p>
+<pre><code><span class="commen]]>
+    </summary>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[有关宏定义的经验与技巧-简化代码-增强Log]]></title>
@@ -213,7 +296,7 @@ typedef <span class="keyword">struct</span> Complex {
     <link href="http://tutuge.me/2015/03/11/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-4-%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%AE%9A%E4%B9%89%E5%B8%B8%E9%87%8F/"/>
     <id>http://tutuge.me/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/</id>
     <published>2015-03-10T16:07:23.000Z</published>
-    <updated>2015-03-16T02:36:14.000Z</updated>
+    <updated>2015-03-16T02:46:59.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>写博客果然比光看书要花时间=。=，书都快看完了，才写到第4节。但是总结一遍，的确印象深刻啊~~  </p>
 <p>这次的主题是“<strong>常量</strong>”，非常常用，又非常重要的东西~良好的代码规范、设计，少不了各种<strong>常量</strong>。</p>
 <h2 id="Item_4_-_Prefer_Typed_Constants_to_Preprocessor_#define">Item 4 - Prefer Typed Constants to Preprocessor #define</h2><p>本节着重对比了常量的定义形式，类型常量和#define的区别、各自的特点。最后得出，我们应该用带有类型的常量，而不是#define。</p>
