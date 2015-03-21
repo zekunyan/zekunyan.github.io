@@ -4,7 +4,7 @@
   <subtitle><![CDATA[iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://tutuge.me/"/>
-  <updated>2015-03-21T05:45:31.000Z</updated>
+  <updated>2015-03-17T15:41:20.000Z</updated>
   <id>http://tutuge.me/</id>
   
   <author>
@@ -13,27 +13,6 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title><![CDATA[Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5]]></title>
-    <link href="http://tutuge.me/2015/03/21/effective-objective-c-5-enum/"/>
-    <id>http://tutuge.me/2015/03/21/effective-objective-c-5-enum/</id>
-    <published>2015-03-21T04:52:57.000Z</published>
-    <updated>2015-03-21T05:45:31.000Z</updated>
-    <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>Enum，也就是枚举，从C语言开始就有了，C++、Java、Objective-C、Swift这些语言，当然都有对应的枚举类型，功能可能有多有少，但是最核心的还是一个—-规范的定义代码中的状态、选项等“常量”。</p>
-<h2 id="Item_5_-_Use_Enumerations_for_States,_Options,_and_Status_Codes">Item 5 - Use Enumerations for States, Options, and Status Codes</h2><p>本节的内容就是如何正确的使用枚举。</p>
-<h2 id="状态与选项的区别（States_and_Options）">状态与选项的区别（States and Options）</h2><p>在用enum之前，我个人觉得，区分一下状态和选项的概念还是很必要的。</p>
-<h4 id="状态">状态</h4>]]></content>
-    <summary type="html">
-    <![CDATA[<h2 id="前言">前言</h2><p>Enum，也就是枚举，从C语言开始就有了，C++、Java、Objective-C、Swift这些语言，当然都有对应的枚举类型，功能可能有多有少，但是最核心的还是一个—-规范的定义代码中的状态、选项等“常量”。</p>
-<h2 id="]]>
-    </summary>
-    
-      <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
-    
-      <category term="原创" scheme="http://tutuge.me/tags/%E5%8E%9F%E5%88%9B/"/>
-    
-  </entry>
   
   <entry>
     <title><![CDATA[@autoreleasepool-内存的分配与释放]]></title>
