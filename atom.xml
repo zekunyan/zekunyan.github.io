@@ -4,7 +4,7 @@
   <subtitle><![CDATA[iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://tutuge.me/"/>
-  <updated>2015-03-17T15:41:20.000Z</updated>
+  <updated>2015-03-21T08:14:11.000Z</updated>
   <id>http://tutuge.me/</id>
   
   <author>
@@ -13,6 +13,112 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5]]></title>
+    <link href="http://tutuge.me/2015/03/21/effective-objective-c-5-enum/"/>
+    <id>http://tutuge.me/2015/03/21/effective-objective-c-5-enum/</id>
+    <published>2015-03-21T12:52:57.000Z</published>
+    <updated>2015-03-21T08:14:11.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>Enum，也就是枚举，从C语言开始就有了，C++、Java、Objective-C、Swift这些语言，当然都有对应的枚举类型，功能可能有多有少，但是最核心的还是一个—-规范的定义代码中的状态、选项等“常量”。</p>
+<h2 id="Item_5_-_Use_Enumerations_for_States,_Options,_and_Status_Codes">Item 5 - Use Enumerations for States, Options, and Status Codes</h2><p>本节的内容就是如何正确的使用枚举。</p>
+<h2 id="状态与选项的区别（states_and_options）">状态与选项的区别（states and options）</h2><p>在用<strong>enum</strong>之前，我个人觉得，区分一下状态和选项的概念还是很必要的。</p>
+<p><strong>状态</strong>，同时只能有一种，如“<strong>OK</strong>”，“<strong>Error</strong>”，不可能同时是OK和Error。<br><strong>选项</strong>，同时可以有一种或一种以上，如App可以<strong>同时</strong>支持横屏和竖屏，横屏竖屏在这个时候就是“屏幕方向”的两种不同的选项。</p>
+<p>接下来，我们看看如何用枚举定义状态和选项。</p>
+<h2 id="enum与状态（states）">enum与状态（states）</h2><h4 id="不好的做法">不好的做法</h4><p>经常看到这样的写法：</p>
+<pre><code><span class="preprocessor">#<span class="keyword">define</span> STATE_OK 0</span>
+<span class="preprocessor">#<span class="keyword">define</span> STATE_ERROR 1</span>
+<span class="preprocessor">#<span class="keyword">define</span> STATE_UNKNOW 2</span>
+
+<span class="comment">//直接用int型变量接收</span>
+<span class="keyword">int</span> STATE = STATE_UNKNOW;
+</code></pre><p>这样做有如下“不恰当”：</p>
+<ul>
+<li>宏定义没有类型约束，只是单纯的替换。</li>
+<li>无法限制状态的所有情况，如，认为的将STATE赋值成3，程序可能就会出错，找不到匹配的状态，因为编译器不会对“<strong>STATE = 3;</strong>”提出警告。</li>
+</ul>
+<h4 id="正确的做法">正确的做法</h4><pre><code>typedef <span class="class"><span class="keyword">enum</span> _<span class="title">TTGState</span> </span>{
+<span class="constant">    TTGStateOK</span>  = <span class="number">0</span>,
+<span class="constant">    TTGStateError,
+    TTGStateUnknow
+} TTGState;
+
+//指明枚举类型
+TTGState state</span> = TTGStateOK;
+</code></pre><p>用的时候就如下：</p>
+<pre><code>- (void)dealWithState:(TTGState)state {
+    <span class="keyword">switch</span> (state) {
+        case TTGStateOK:
+            //<span class="keyword">...</span>
+            <span class="keyword">break</span>;
+        case TTGStateError:
+            //<span class="keyword">...</span>
+            <span class="keyword">break</span>;
+        case TTGStateUnknow:
+            //<span class="keyword">...</span>
+            <span class="keyword">break</span>;
+    }
+}
+</code></pre><h2 id="enum与选项_(options)">enum与选项 (options)</h2><p>选项，就是说一个“选项变量”的类型要能够同时表示一个或多个组合的选择，如下例子：</p>
+<pre><code><span class="comment">//方向，可同时支持一个或多个方向</span>
+typedef <span class="class"><span class="keyword">enum</span> _<span class="title">TTGDirection</span> </span>{
+<span class="constant">    TTGDirectionNone</span> = <span class="number">0</span>,
+<span class="constant">    TTGDirectionTop</span> = <span class="number">1</span> &lt;&lt; <span class="number">0</span>,
+<span class="constant">    TTGDirectionLeft</span> = <span class="number">1</span> &lt;&lt; <span class="number">1</span>,
+<span class="constant">    TTGDirectionRight</span> = <span class="number">1</span> &lt;&lt; <span class="number">2</span>,
+<span class="constant">    TTGDirectionBottom</span> = <span class="number">1</span> &lt;&lt; <span class="number">3</span>
+} TTGDirection;
+</code></pre><p>看，这里的选项是用<strong>位运算</strong>的方式定义的，这样的好处就是，我们的选项变量可以如下表示：</p>
+<pre><code><span class="comment">//用“或”运算同时赋值多个选项</span>
+TTGDirection direction = TTGDirectionTop | TTGDirectionLeft | TTGDirectionBottom;
+
+<span class="comment">//用“与”运算取出对应位</span>
+<span class="keyword">if</span> (direction &amp; TTGDirectionTop) {
+    <span class="built_in">NSLog</span>(<span class="string">@"top"</span>);
+}
+<span class="keyword">if</span> (direction &amp; TTGDirectionLeft) {
+    <span class="built_in">NSLog</span>(<span class="string">@"left"</span>);
+}
+<span class="keyword">if</span> (direction &amp; TTGDirectionRight) {
+    <span class="built_in">NSLog</span>(<span class="string">@"right"</span>);
+}
+<span class="keyword">if</span> (direction &amp; TTGDirectionBottom) {
+    <span class="built_in">NSLog</span>(<span class="string">@"bottom"</span>);
+}
+</code></pre><p><strong>direction</strong>变量的实际内存如下：</p>
+<p><img src="http://zorrochen.qiniudn.com/blog_effective_objective_c_5_enum_2.jpg" alt="image"></p>
+<p>这样，用位运算，就可以同时支持多个值。</p>
+<h2 id="enum在Objective-C中的“升级版”">enum在Objective-C中的“升级版”</h2><p>一般来说，我们不能指定枚举变量的实际类型是什么，就是说，我们不知道枚举最后是int型，还是其他的什么类型。但是从C++ 11开始，我们可以为枚举指定其实际的存储类型，如下语法：</p>
+<pre><code>enum TTGState : NSInteger {/*<span class="keyword">...</span>*/};
+</code></pre><p>但是，我们在定义枚举的时候如何保证兼容性呢？Foundation框架已经为我们提供了更加“统一、便捷”的枚举定义方法，我们重新定义上面的例子：</p>
+<pre><code><span class="comment">//NS_ENUM，定义状态等普通枚举</span>
+typedef NS_ENUM(NSUInteger, TTGState) {
+<span class="constant">    TTGStateOK</span> = <span class="number">0</span>,
+<span class="constant">    TTGStateError,
+    TTGStateUnknow
+};
+
+//NS_OPTIONS，定义选项
+typedef NS_OPTIONS(NSUInteger, TTGDirection) {
+    TTGDirectionNone</span> = <span class="number">0</span>,
+<span class="constant">    TTGDirectionTop</span> = <span class="number">1</span> &lt;&lt; <span class="number">0</span>,
+<span class="constant">    TTGDirectionLeft</span> = <span class="number">1</span> &lt;&lt; <span class="number">1</span>,
+<span class="constant">    TTGDirectionRight</span> = <span class="number">1</span> &lt;&lt; <span class="number">2</span>,
+<span class="constant">    TTGDirectionBottom</span> = <span class="number">1</span> &lt;&lt; <span class="number">3</span>
+};
+</code></pre><p>所以，在开发Mac、iOS程序中，最好所有的枚举都用“<strong>NS_ENUM</strong>”和“<strong>NS_OPTIONS</strong>”定义，保证统一。</p>
+<h2 id="总结">总结</h2><p>充分的用好枚举，可以增强代码的可读性，减少各种“错误”，让代码更加的规范。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h2 id="前言">前言</h2><p>Enum，也就是枚举，从C语言开始就有了，C++、Java、Objective-C、Swift这些语言，当然都有对应的枚举类型，功能可能有多有少，但是最核心的还是一个—-规范的定义代码中的状态、选项等“常量”。</p>
+<h2 id="]]>
+    </summary>
+    
+      <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
+    
+      <category term="原创" scheme="http://tutuge.me/tags/%E5%8E%9F%E5%88%9B/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[@autoreleasepool-内存的分配与释放]]></title>
