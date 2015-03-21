@@ -72,6 +72,115 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-NSString的Copy与内存分配" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/18/NSString的Copy与内存分配/" class="article-date">
+  <time datetime="2015-02-18T09:00:47.000Z" itemprop="datePublished">2015-02-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/18/NSString的Copy与内存分配/">NSString的Copy与内存分配</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言">前言</h2><p>不管是用什么语言开发，字符串应该算是用的最多的了。在Objective-C中，字符串类是NSString，以及其子类NSMutableString等。所以，对于字符串类，编程语言、编译器等往往会做特殊处理。下面我就说说我自己在项目中发现的NSString的“奇怪”的地方。</p>
+<h2 id="字符串常量，copy，mutableCopy">字符串常量，copy，mutableCopy</h2><h3 id="Example">Example</h3><p>先看看如下面的代码，猜猜会输出什么：</p>
+<pre><code><span class="built_in">NSString</span> *str1 = <span class="string">@"abc"</span>;
+<span class="built_in">NSString</span> *str2 = <span class="string">@"abc"</span>;
+<span class="built_in">NSString</span> *str3 = [[<span class="built_in">NSString</span> alloc] initWithString:<span class="string">@"abc"</span>];
+<span class="built_in">NSString</span> *str4 = [str1 <span class="keyword">copy</span>];
+<span class="built_in">NSString</span> *str5 = [str1 mutableCopy];
+
+<span class="comment">//输出内存中的地址</span>
+<span class="built_in">NSLog</span>(<span class="string">@"str1: %p"</span>, str1);
+<span class="built_in">NSLog</span>(<span class="string">@"str2: %p"</span>, str2);
+<span class="built_in">NSLog</span>(<span class="string">@"str3: %p"</span>, str3);
+<span class="built_in">NSLog</span>(<span class="string">@"str4: %p"</span>, str4);
+<span class="built_in">NSLog</span>(<span class="string">@"str5: %p"</span>, str5);
+</code></pre><p>直接给出结果：</p>
+<pre><code><span class="comment">//地址值由运行时决定，不唯一</span>
+<span class="string">str1:</span> <span class="number">0x10cd12040</span>
+<span class="string">str2:</span> <span class="number">0x10cd12040</span>
+<span class="string">str3:</span> <span class="number">0x10cd12040</span>
+<span class="string">str4:</span> <span class="number">0x10cd12040</span>
+<span class="string">str5:</span> <span class="number">0x7f874b508350</span> <span class="comment">//mutable copy</span>
+</code></pre><p>看，是不是很“神奇”。</p>
+<h3 id="简单解释">简单解释</h3><p>NSString是“不可变（immutable）”的类型，这个是关键。<br>代码中的“@”开头的字符串，其实就是一个字符串常量，运行时会检测这个字符串是否已经存在，存在的话，就直接将这个字符串的地址赋给变量；不存在的话，则创建，再赋值。</p>
+<p><strong>第一行</strong>: “abc”字符串不存在，创建，取得字符串地址“0x10cd12040”，赋给str1. </p>
+<p><strong>第二行</strong>: “abc”字符串已经存在，直接将地址“0x10cd12040”赋给str2.  </p>
+<p><strong>第三行</strong>: （记住，NSString是不可变的）alloc并不会分配新的内存，直接将字符串地址“0x10cd12040”赋给str3.  </p>
+<p><strong>第四行</strong>: copy，既然是不可变的，也就没有必要分配新内存，直接将地址“0x10cd12040”赋给str4.  </p>
+<p><strong>第五行</strong>: mutableCopy其实就是创建一个NSMutableString的实例，既然是“可变（mutable）”的类型了，当然要分配新的内存，所以，字符串的地址也变成新的“0x7f874b508350”。</p>
+<p>可以这么说，编译器、runtime充分利用了NSString是“<strong>不可变（immutable）</strong>”类型这个特点，只要字符串内容一致，就不会分配新的内存储存，字符串在程序中使用量非常大，这么做无疑可以大大节省内存，提升性能。</p>
+<h2 id="Property_和_NSString">Property 和 NSString</h2><p>先来看看一个UserEntity类：</p>
+<pre><code><span class="comment">//UserEntity.h</span>
+
+<span class="variable">@interface</span> <span class="attribute">UserEntity </span>: NSObject &lt;NSCopying&gt;
+<span class="variable">@property</span>(strong, nonatomic) NSString *name;
+<span class="variable">@end</span>
+</code></pre><p>只有一个名为name的NSString类型Property。<br>相信大家对这个不陌生吧。一般我们的应用中会有很多Entity类型，每个Entity类里面肯定避免不了有许多NSString的字符串类型。这里的name的属性是：strong和nonatomic，strong表明name要“持有”一份name所指的字符串的引用，nonatomic表示property类型不用加锁。</p>
+<p>接着咱们看看下面的代码：</p>
+<pre><code>UserEntity *userEntity = [UserEntity <span class="keyword">new</span>];        
+
+<span class="comment">//创建mutable类型的字符串</span>
+NSMutableString *showName = [[NSMutableString alloc] <span class="string">initWithString:</span>@<span class="string">"tutuge"</span>];        
+
+<span class="comment">//先保存“tutuge”字符串到userEntity的name</span>
+userEntity.name = showName;        
+
+<span class="comment">//修改showName</span>
+[showName <span class="string">appendString:</span>@<span class="string">" blog"</span>];        
+
+<span class="comment">//输出userEntity的name属性</span>
+NSLog(@<span class="string">"Name: %@"</span>, userEntity.name);
+</code></pre><p>猜猜会输出什么？</p>
+<pre><code><span class="attribute">Name</span>: <span class="string">tutuge blog</span>
+</code></pre><p>看，我们明明是保存的“tutuge”，怎么到后面输出的是“tutuge blog”？</p>
+<h3 id="让NSString类型的Property为Copy型">让NSString类型的Property为Copy型</h3><p>因为name的Property属性是strong的，所以赋值后，它跟showName均指向同一个NSMutableString实例，如下：</p>
+<p><img src="http://zorrochen.qiniudn.com/blog_ios_nsstring_copy_1_1.jpg" alt="image"></p>
+<p>所以改变了showName，当然name输出的值也就变了。<br>这个时候，name的property属性就不能是strong了，应该是copy，如下：</p>
+<pre><code><span class="comment">//UserEntity.h</span>
+
+<span class="variable">@interface</span> <span class="attribute">UserEntity </span>: NSObject &lt;NSCopying&gt;
+<span class="variable">@property</span>(copy, nonatomic) NSString *name;
+<span class="variable">@end</span>
+</code></pre><p>这样的话，当“<strong>userEntity.name = showName;</strong>”这句运行后，内存布局如下：</p>
+<p><img src="http://zorrochen.qiniudn.com/blog_ios_nsstring_copy_1_2.jpg" alt="image"></p>
+<p>这样，就避免了这个问题。</p>
+<h2 id="总结">总结</h2><p>很所时候，代码并不是看上去那样“运行”的，多试试，多查阅资料，就能了解其中的奥秘了~</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://tutuge.me/2015/02/18/NSString的Copy与内存分配/" data-id="ci7imot7i000yck6uy60dnl16" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://tutuge.me/2015/02/18/NSString的Copy与内存分配/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/原创/">原创</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-利用NSProxy实现消息转发-模块化的网络接口层设计-原创" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/" class="article-date">
@@ -241,7 +350,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/" data-id="ci7eno7qo000es2awr1uiufow" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/" data-id="ci7imot70000eck6u92ch8e5h" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -359,7 +468,7 @@ dict[@<span class="string">"number1"</span>] = @<span class="number">6</span>;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/14/Effective-Objective-C-读书笔记-Item-3/" data-id="ci7eno7rl001ds2awwzyrs7al" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/14/Effective-Objective-C-读书笔记-Item-3/" data-id="ci7imot7s001gck6ucrs7vu30" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -474,7 +583,7 @@ dict[@<span class="string">"number1"</span>] = @<span class="number">6</span>;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/06/Effective-Objective-C-读书笔记-Item-2/" data-id="ci7eno7ro001is2awni4hv5i9" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/06/Effective-Objective-C-读书笔记-Item-2/" data-id="ci7imot7u001lck6u3hw564ej" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -558,7 +667,7 @@ NSString <span class="keyword">*</span>str2 = str1;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/05/Effective-Objective-C-读书笔记-Item-1/" data-id="ci7eno7rp001ns2awq4x7laaa" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/05/Effective-Objective-C-读书笔记-Item-1/" data-id="ci7imot7x001qck6uwjeb5lvl" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -688,7 +797,7 @@ NSString <span class="keyword">*</span>str2 = str1;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/01/iOS项目的目录结构-原创/" data-id="ci7eno7qy000ps2aw6umth6pk" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/01/iOS项目的目录结构-原创/" data-id="ci7imot7c000pck6uc1lsmwlm" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -766,7 +875,7 @@ NSString <span class="keyword">*</span>str2 = str1;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2014/11/02/LinkTextView-Android开源库-原创/" data-id="ci7eno7r6000ys2awktfqmoty" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2014/11/02/LinkTextView-Android开源库-原创/" data-id="ci7imot7k0011ck6upkz379v3" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -820,7 +929,7 @@ NSString <span class="keyword">*</span>str2 = str1;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2014/11/01/第一篇Blog/" data-id="ci7eno7qc0001s2awqfyq1ios" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2014/11/01/第一篇Blog/" data-id="ci7imot6o0001ck6udhqokz2p" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -852,7 +961,7 @@ NSString <span class="keyword">*</span>str2 = str1;
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/">iOS</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/原创/">原创</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/审核/">审核</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开源/">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/技巧/">技巧</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/杂烩/">杂烩</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/笔记/">笔记</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">4</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/">iOS</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/原创/">原创</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/审核/">审核</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开源/">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/技巧/">技巧</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/杂烩/">杂烩</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/笔记/">笔记</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">4</span></li></ul>
     </div>
   </div>
 
@@ -870,7 +979,7 @@ NSString <span class="keyword">*</span>str2 = str1;
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -880,6 +989,10 @@ NSString <span class="keyword">*</span>str2 = str1;
     <h3 class="widget-title">近期文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2015/03/21/effective-objective-c-5-enum/">Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5</a>
+          </li>
         
           <li>
             <a href="/2015/03/17/what-is-autoreleasepool/">@autoreleasepool-内存的分配与释放</a>
@@ -897,8 +1010,19 @@ NSString <span class="keyword">*</span>str2 = str1;
             <a href="/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/">UITextView编辑时插入自定义表情-简单的图文混编</a>
           </li>
         
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+      <ul>
+        
           <li>
-            <a href="/2015/03/06/关于评论不见了/">关于评论不见了=。=</a>
+            <a href="http://neoyeelf.github.io" target="_blank">好友博客</a>
           </li>
         
       </ul>

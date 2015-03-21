@@ -4,17 +4,23 @@
 <head>
   <meta charset="utf-8">
   
-  <title>土土哥的技术Blog</title>
+  <title>Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5 | 土土哥的技术Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Coder">
-<meta property="og:type" content="website">
-<meta property="og:title" content="土土哥的技术Blog">
-<meta property="og:url" content="http://tutuge.me/archives/2014/11/index.html">
+  <meta name="description" content="前言Enum，也就是枚举，从C语言开始就有了，C++、Java、Objective-C、Swift这些语言，当然都有对应的枚举类型，功能可能有多有少，但是最核心的还是一个—-规范的定义代码中的状态、选项等“常量”。
+Item 5 - Use Enumerations for States, Options, and Status Codes本节的内容就是如何正确的使用枚举。
+状态与选项的区别（St">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5">
+<meta property="og:url" content="http://tutuge.me/2015/03/21/effective-objective-c-5-enum/index.html">
 <meta property="og:site_name" content="土土哥的技术Blog">
-<meta property="og:description" content="Coder">
+<meta property="og:description" content="前言Enum，也就是枚举，从C语言开始就有了，C++、Java、Objective-C、Swift这些语言，当然都有对应的枚举类型，功能可能有多有少，但是最核心的还是一个—-规范的定义代码中的状态、选项等“常量”。
+Item 5 - Use Enumerations for States, Options, and Status Codes本节的内容就是如何正确的使用枚举。
+状态与选项的区别（St">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="土土哥的技术Blog">
-<meta name="twitter:description" content="Coder">
+<meta name="twitter:title" content="Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5">
+<meta name="twitter:description" content="前言Enum，也就是枚举，从C语言开始就有了，C++、Java、Objective-C、Swift这些语言，当然都有对应的枚举类型，功能可能有多有少，但是最核心的还是一个—-规范的定义代码中的状态、选项等“常量”。
+Item 5 - Use Enumerations for States, Options, and Status Codes本节的内容就是如何正确的使用枚举。
+状态与选项的区别（St">
   
     <link rel="alternative" href="/atom.xml" title="土土哥的技术Blog" type="application/atom+xml">
   
@@ -70,58 +76,67 @@
   </div>
 </header>
     <div class="outer">
-      <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2014" class="archive-year">2014</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2014/11/02/LinkTextView-Android开源库-原创/" class="archive-article-date">
-  <time datetime="2014-11-01T18:34:46.000Z" itemprop="datePublished">11月 2</time>
+      <section id="main"><article id="post-effective-objective-c-5-enum" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/21/effective-objective-c-5-enum/" class="article-date">
+  <time datetime="2015-03-21T04:52:57.000Z" itemprop="datePublished">2015-03-21</time>
 </a>
-      
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2014/11/02/LinkTextView-Android开源库-原创/">Android开源库-LinkTextView-原创</a>
+    <h1 class="article-title" itemprop="name">
+      Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
+      </header>
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2014/11/01/第一篇Blog/" class="archive-article-date">
-  <time datetime="2014-10-31T16:13:15.000Z" itemprop="datePublished">11月 1</time>
-</a>
+    <div class="article-entry" itemprop="articleBody">
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2014/11/01/第一篇Blog/">第一篇Blog</a>
-    </h1>
-  
+        <h2 id="前言">前言</h2><p>Enum，也就是枚举，从C语言开始就有了，C++、Java、Objective-C、Swift这些语言，当然都有对应的枚举类型，功能可能有多有少，但是最核心的还是一个—-规范的定义代码中的状态、选项等“常量”。</p>
+<h2 id="Item_5_-_Use_Enumerations_for_States,_Options,_and_Status_Codes">Item 5 - Use Enumerations for States, Options, and Status Codes</h2><p>本节的内容就是如何正确的使用枚举。</p>
+<h2 id="状态与选项的区别（States_and_Options）">状态与选项的区别（States and Options）</h2><p>在用enum之前，我个人觉得，区分一下状态和选项的概念还是很必要的。</p>
+<h4 id="状态">状态</h4>
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://tutuge.me/2015/03/21/effective-objective-c-5-enum/" data-id="ci7imot7e000sck6umflvxefl" class="article-share-link" data-share="baidu">分享到</a>
+      
 
-    </header>
+      
+        <a href="http://tutuge.me/2015/03/21/effective-objective-c-5-enum/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/原创/">原创</a></li></ul>
+
+    </footer>
   </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2015/03/17/what-is-autoreleasepool/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">@autoreleasepool-内存的分配与释放</div>
+    </a>
+  
+</nav>
+
+  
 </article>
-  
-  
-    </div></section>
-  
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2015/03/21/effective-objective-c-5-enum/" data-title="Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5" data-url="http://tutuge.me/2015/03/21/effective-objective-c-5-enum/"></div>
+  </section>
 </section>
       
       <aside id="sidebar">
