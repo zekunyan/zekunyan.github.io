@@ -2,6 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://tutuge.me/share/rcpr_setup.html</loc>
+    <lastmod>2015-03-31T07:06:02.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://tutuge.me/share/rcpr_api.html</loc>
+    <lastmod>2015-03-31T07:04:40.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://tutuge.me/2015/03/29/bind-data-to-gcd-queue/</loc>
     <lastmod>2015-03-29T13:29:29.000Z</lastmod>
   </url>
@@ -77,16 +87,6 @@
   </url>
   
   <url>
-    <loc>http://tutuge.me/LinkTextView/stylesheet.css</loc>
-    <lastmod>2015-02-17T16:10:30.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://tutuge.me/LinkTextView/com/zekunyan/linktextview/LinkTextView.LinkTextConfig.html</loc>
-    <lastmod>2015-02-17T16:10:30.000Z</lastmod>
-  </url>
-  
-  <url>
     <loc>http://tutuge.me/LinkTextView/com/zekunyan/linktextview/LinkTextView.html</loc>
     <lastmod>2015-02-17T16:10:30.000Z</lastmod>
   </url>
@@ -103,6 +103,16 @@
   
   <url>
     <loc>http://tutuge.me/LinkTextView/com/zekunyan/linktextview/LinkTextView.OnClickInLinkText.html</loc>
+    <lastmod>2015-02-17T16:10:30.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://tutuge.me/LinkTextView/com/zekunyan/linktextview/LinkTextView.LinkTextConfig.html</loc>
+    <lastmod>2015-02-17T16:10:30.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://tutuge.me/LinkTextView/stylesheet.css</loc>
     <lastmod>2015-02-17T16:10:30.000Z</lastmod>
   </url>
   
