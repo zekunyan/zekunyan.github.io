@@ -4,7 +4,7 @@
   <subtitle><![CDATA[iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://tutuge.me/"/>
-  <updated>2015-03-29T13:29:29.000Z</updated>
+  <updated>2015-04-03T14:02:50.000Z</updated>
   <id>http://tutuge.me/</id>
   
   <author>
@@ -13,6 +13,240 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[GCD使用经验与技巧浅谈]]></title>
+    <link href="http://tutuge.me/2015/04/03/something-about-gcd/"/>
+    <id>http://tutuge.me/2015/04/03/something-about-gcd/</id>
+    <published>2015-04-03T13:59:56.000Z</published>
+    <updated>2015-04-03T14:02:50.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>GCD(Grand Central Dispatch)可以说是Mac、iOS开发中的一大“利器”，本文就总结一些有关使用GCD的经验与技巧。</p>
+<h2 id="dispatch_once_t必须是全局或static变量">dispatch_once_t必须是全局或static变量</h2><p>这一条算是“老生常谈”了，但我认为还是有必要强调一次，毕竟非全局或非static的dispatch_once_t变量在使用时会导致非常不好排查的bug，正确的如下：</p>
+<pre><code><span class="comment">//静态变量，保证只有一份实例，才能确保只执行一次</span>
+<span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;
+<span class="built_in">dispatch_once</span>(&amp;onceToken, ^{
+   <span class="comment">//单例代码 </span>
+});
+</code></pre><p>其实就是保证<strong>dispatch_once_t</strong>只有一份实例。</p>
+<h2 id="dispatch_queue_create的第二个参数">dispatch_queue_create的第二个参数</h2><p><strong>dispatch_queue_create</strong>，创建队列用的，它的参数只有两个，原型如下：</p>
+<pre><code><span class="function">dispatch_queue_t <span class="title">dispatch_queue_create</span> <span class="params">( <span class="keyword">const</span> <span class="keyword">char</span> *label, dispatch_queue_attr_t attr )</span></span>;
+</code></pre><p>在网上的大部分教程里（甚至Apple自己的文档里），都是这么创建串行队列的：</p>
+<pre><code>dispatch_queue_t <span class="built_in">queue</span> <span class="subst">=</span> dispatch_queue_create(<span class="string">"com.example.MyQueue"</span>, <span class="built_in">NULL</span>);
+</code></pre><p>看，第二个参数传的是“<strong>NULL</strong>”。  但是dispatch_queue_attr_t类型是有已经定义好的常量的，所以我认为，为了更加的清晰、严谨，最好如下创建队列：</p>
+<pre><code><span class="comment">//串行队列</span>
+dispatch_queue_t <span class="built_in">queue</span> = dispatch_queue_create(<span class="string">"com.example.MyQueue"</span>, DISPATCH_QUEUE_SERIAL);
+
+<span class="comment">//并行队列</span>
+dispatch_queue_t <span class="built_in">queue</span> = dispatch_queue_create(<span class="string">"com.example.MyQueue"</span>, DISPATCH_QUEUE_CONCURRENT);
+</code></pre><p>常量就是为了使代码更加“易懂”，更加清晰，既然有，为啥不用呢~</p>
+<h2 id="dispatch_after是延迟提交，不是延迟运行">dispatch_after是<strong>延迟提交</strong>，不是<strong>延迟运行</strong></h2><p>先看看官方文档的说明：</p>
+<pre><code>Enqueue <span class="operator">a</span> block <span class="keyword">for</span> execution <span class="keyword">at</span> <span class="operator">the</span> specified <span class="built_in">time</span>.
+</code></pre><p><strong>Enqueue</strong>，就是入队，指的就是将一个Block在特定的延时以后，加入到指定的队列中，<strong>不是在特定的时间后立即运行！</strong>。</p>
+<p>看看如下代码示例：</p>
+<pre><code><span class="comment">//创建串行队列</span>
+<span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_CONCURRENT);
+
+<span class="comment">//立即打印一条信息        </span>
+<span class="built_in">NSLog</span>(<span class="string">@"Begin add block..."</span>);        
+
+<span class="comment">//提交一个block</span>
+<span class="built_in">dispatch_async</span>(queue, ^{
+    <span class="comment">//Sleep 10秒</span>
+    [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">10</span>];
+    <span class="built_in">NSLog</span>(<span class="string">@"First block done..."</span>);
+});        
+
+<span class="comment">//5 秒以后提交block</span>
+dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(<span class="number">5</span> * NSEC_PER_SEC)), queue, ^{
+    <span class="built_in">NSLog</span>(<span class="string">@"After..."</span>);
+});
+</code></pre><p>结果如下：</p>
+<pre><code>2015<span class="tag">-03-31</span> 20<span class="pseudo">:57</span><span class="pseudo">:27</span><span class="class">.122</span> <span class="tag">GCDTest</span><span class="attr_selector">[45633:1812016]</span> <span class="tag">Begin</span> <span class="tag">add</span> <span class="tag">block</span>...
+2015<span class="tag">-03-31</span> 20<span class="pseudo">:57</span><span class="pseudo">:37</span><span class="class">.127</span> <span class="tag">GCDTest</span><span class="attr_selector">[45633:1812041]</span> <span class="tag">First</span> <span class="tag">block</span> <span class="tag">done</span>...
+2015<span class="tag">-03-31</span> 20<span class="pseudo">:57</span><span class="pseudo">:37</span><span class="class">.127</span> <span class="tag">GCDTest</span><span class="attr_selector">[45633:1812041]</span> <span class="tag">After</span>...
+</code></pre><p>从结果也验证了，dispatch_after只是延时提交block，并不是延时后立即执行。所以想用dispatch_after精确控制运行状态的朋友可要注意了~</p>
+<h2 id="正确创建dispatch_time_t">正确创建dispatch_time_t</h2><p>用dispatch_after的时候就会用到dispatch_time_t变量，但是如何创建合适的时间呢？答案就是用<strong>dispatch_time</strong>函数，其原型如下：</p>
+<pre><code><span class="function">dispatch_time_t <span class="title">dispatch_time</span> <span class="params">( dispatch_time_t when, <span class="keyword">int64_t</span> delta )</span></span>;
+</code></pre><p>第一个参数一般是<strong>DISPATCH_TIME_NOW</strong>，表示从现在开始。<br>那么第二个参数就是真正的延时的具体时间。</p>
+<p>这里要特别注意的是，<strong>delta</strong>参数是“<strong>纳秒！</strong>”，就是说，延时1秒的话，delta应该是“1000000000”=。=，太长了，所以理所当然系统提供了常量，如下：</p>
+<pre><code><span class="hexcolor">#def</span>ine NSEC_PER_SEC <span class="number">1000000000</span>ull
+<span class="hexcolor">#def</span>ine USEC_PER_SEC <span class="number">1000000</span>ull
+<span class="hexcolor">#def</span>ine NSEC_PER_USEC <span class="number">1000</span>ull
+</code></pre><p>关键词解释：</p>
+<ul>
+<li>NSEC：纳秒。</li>
+<li>USEC：微妙。</li>
+<li>SEC：秒</li>
+<li>PER：每</li>
+</ul>
+<p>所以：</p>
+<ol>
+<li>NSEC_PER_SEC，每秒有多少纳秒。</li>
+<li>USEC_PER_SEC，每秒有多少毫秒。（注意是指在纳秒的基础上）</li>
+<li>NSEC_PER_USEC，每毫秒有多少纳秒。</li>
+</ol>
+<p>所以，延时<strong>1秒</strong>可以写成如下几种：</p>
+<pre><code>dispatch_time<span class="comment">(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC)</span>;
+dispatch_time<span class="comment">(DISPATCH_TIME_NOW, 1000 * USEC_PER_SEC)</span>;
+dispatch_time<span class="comment">(DISPATCH_TIME_NOW, USEC_PER_SEC * NSEC_PER_USEC)</span>;
+</code></pre><p>最后一个“<strong>USEC_PER_SEC * NSEC_PER_USEC</strong>”，翻译过来就是“<strong>每秒的毫秒数乘以每毫秒的纳秒数</strong>”，也就是“<strong>每秒的纳秒数</strong>”，所以，延时500毫秒之类的，也就不难了吧~</p>
+<h2 id="dispatch_suspend_!=_立即停止队列的运行">dispatch_suspend != 立即停止队列的运行</h2><p><strong>dispatch_suspend</strong>，<strong>dispatch_resume</strong>提供了“挂起、恢复”队列的功能，简单来说，就是可以暂停、恢复队列上的任务。但是这里的“<strong>挂起</strong>”，并不能保证可以<strong>立即</strong>停止队列上正在运行的block，看如下例子：</p>
+<pre><code><span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL);
+
+<span class="comment">//提交第一个block，延时5秒打印。</span>
+<span class="built_in">dispatch_async</span>(queue, ^{
+    [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">5</span>];
+    <span class="built_in">NSLog</span>(<span class="string">@"After 5 seconds..."</span>);
+});
+
+<span class="comment">//提交第二个block，也是延时5秒打印</span>
+<span class="built_in">dispatch_async</span>(queue, ^{
+    [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">5</span>];
+    <span class="built_in">NSLog</span>(<span class="string">@"After 5 seconds again..."</span>);
+});
+
+<span class="comment">//延时一秒</span>
+<span class="built_in">NSLog</span>(<span class="string">@"sleep 1 second..."</span>);
+[<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">1</span>];
+
+<span class="comment">//挂起队列                        </span>
+<span class="built_in">NSLog</span>(<span class="string">@"suspend..."</span>);
+dispatch_suspend(queue);
+
+<span class="comment">//延时10秒                </span>
+<span class="built_in">NSLog</span>(<span class="string">@"sleep 10 second..."</span>);
+[<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">10</span>];
+
+<span class="comment">//恢复队列            </span>
+<span class="built_in">NSLog</span>(<span class="string">@"resume..."</span>);
+dispatch_resume(queue);
+</code></pre><p>运行结果如下：</p>
+<pre><code>2015<span class="tag">-04-01</span> 00<span class="pseudo">:32</span><span class="pseudo">:09</span><span class="class">.903</span> <span class="tag">GCDTest</span><span class="attr_selector">[47201:1883834]</span> <span class="tag">sleep</span> 1 <span class="tag">second</span>...
+2015<span class="tag">-04-01</span> 00<span class="pseudo">:32</span><span class="pseudo">:10</span><span class="class">.910</span> <span class="tag">GCDTest</span><span class="attr_selector">[47201:1883834]</span> <span class="tag">suspend</span>...
+2015<span class="tag">-04-01</span> 00<span class="pseudo">:32</span><span class="pseudo">:10</span><span class="class">.910</span> <span class="tag">GCDTest</span><span class="attr_selector">[47201:1883834]</span> <span class="tag">sleep</span> 10 <span class="tag">second</span>...
+2015<span class="tag">-04-01</span> 00<span class="pseudo">:32</span><span class="pseudo">:14</span><span class="class">.908</span> <span class="tag">GCDTest</span><span class="attr_selector">[47201:1883856]</span> <span class="tag">After</span> 5 <span class="tag">seconds</span>...
+2015<span class="tag">-04-01</span> 00<span class="pseudo">:32</span><span class="pseudo">:20</span><span class="class">.911</span> <span class="tag">GCDTest</span><span class="attr_selector">[47201:1883834]</span> <span class="tag">resume</span>...
+2015<span class="tag">-04-01</span> 00<span class="pseudo">:32</span><span class="pseudo">:25</span><span class="class">.912</span> <span class="tag">GCDTest</span><span class="attr_selector">[47201:1883856]</span> <span class="tag">After</span> 5 <span class="tag">seconds</span> <span class="tag">again</span>...    
+</code></pre><p>可知，在dispatch_suspend挂起队列后，第一个block<strong>还是在运行</strong>，并且正常输出。<br>结合文档，我们可以得知，dispatch_suspend并不会立即暂停正在运行的block，而是在当前block执行完成后，暂停后续的block执行。</p>
+<p>所以下次想暂停正在队列上运行的block时，还是不要用dispatch_suspend了吧~</p>
+<h2 id="“同步”的dispatch_apply">“同步”的dispatch_apply</h2><p>dispatch_apply的作用是在一个队列（串行或并行）上“运行”多次block，其实就是简化了用循环去向队列依次添加block任务。但是我个人觉得这个函数就是个“坑”，先看看如下代码运行结果：</p>
+<pre><code><span class="comment">//创建异步串行队列</span>
+<span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL);
+
+<span class="comment">//运行block3次</span>
+dispatch_apply(<span class="number">3</span>, queue, ^(size_t i) {
+    <span class="built_in">NSLog</span>(<span class="string">@"apply loop: %zu"</span>, i);
+});
+
+<span class="comment">//打印信息</span>
+<span class="built_in">NSLog</span>(<span class="string">@"After apply"</span>);
+</code></pre><p>运行的结果是：</p>
+<pre><code>2015<span class="tag">-04-01</span> 00<span class="pseudo">:55</span><span class="pseudo">:40</span><span class="class">.854</span> <span class="tag">GCDTest</span><span class="attr_selector">[47402:1893289]</span> <span class="tag">apply</span> <span class="tag">loop</span>: 0
+2015<span class="tag">-04-01</span> 00<span class="pseudo">:55</span><span class="pseudo">:40</span><span class="class">.856</span> <span class="tag">GCDTest</span><span class="attr_selector">[47402:1893289]</span> <span class="tag">apply</span> <span class="tag">loop</span>: 1
+2015<span class="tag">-04-01</span> 00<span class="pseudo">:55</span><span class="pseudo">:40</span><span class="class">.856</span> <span class="tag">GCDTest</span><span class="attr_selector">[47402:1893289]</span> <span class="tag">apply</span> <span class="tag">loop</span>: 2
+2015<span class="tag">-04-01</span> 00<span class="pseudo">:55</span><span class="pseudo">:40</span><span class="class">.856</span> <span class="tag">GCDTest</span><span class="attr_selector">[47402:1893289]</span> <span class="tag">After</span> <span class="tag">apply</span>
+</code></pre><p>看，明明是提交到异步的队列去运行，但是“After apply”居然在apply后打印，也就是说，dispatch_apply将外面的线程（main线程）<strong>“阻塞”</strong>了！</p>
+<p>查看官方文档，dispatch_apply确实会“等待”其所有的循环运行完毕才往下执行=。=，看来要小心使用了。</p>
+<h2 id="避免死锁！">避免死锁！</h2><h4 id="dispatch_sync导致的死锁">dispatch_sync导致的死锁</h4><p>涉及到多线程的时候，不可避免的就会有“死锁”这个问题，在使用GCD时，往往一不小心，就可能造成死锁，看看下面的“<strong>死锁</strong>”例子：</p>
+<pre><code><span class="comment">//在main线程使用“同步”方法提交Block，必定会死锁。</span>
+<span class="function">dispatch_sync</span>(<span class="function">dispatch_get_main_queue</span>(), ^{
+    <span class="function">NSLog</span>(<span class="at_rule">@<span class="string">"I am block..."</span>);</span>
+});
+</code></pre><p>你可能会说，这么低级的错误，我怎么会犯，那么，看看下面的：</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">- (void)updateUI1 &#123;</span><br><span class="line">    <span class="function">dispatch_sync</span>(<span class="function">dispatch_get_main_queue</span>(), ^&#123;</span><br><span class="line">        <span class="function">NSLog</span>(<span class="at_rule">@<span class="string">"Update ui 1"</span>);</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">//死锁！</span></span><br><span class="line">        <span class="attr_selector">[self updateUI2]</span>;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)updateUI2 &#123;</span><br><span class="line">    <span class="function">dispatch_sync</span>(<span class="function">dispatch_get_main_queue</span>(), ^&#123;</span><br><span class="line">        <span class="function">NSLog</span>(<span class="at_rule">@<span class="string">"Update ui 2"</span>);</span></span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在你不注意的时候，嵌套调用可能就会造成死锁！所以为了“世界和平”=。=，我们还是少用<strong>dispatch_sync</strong>吧。</p>
+<h4 id="dispatch_apply导致的死锁！">dispatch_apply导致的死锁！</h4><p>啥，dispatch_apply导致的死锁？。。。是的，前一节讲到，dispatch_apply会<strong>等</strong>循环执行完成，这不就差不多是<strong>阻塞</strong>了吗。看如下例子：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">dispatch_queue_t <span class="built_in">queue</span> = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL);</span><br><span class="line">       </span><br><span class="line">dispatch_apply(<span class="number">3</span>, <span class="built_in">queue</span>, ^(size_t i) &#123;</span><br><span class="line">	NSLog(@<span class="string">"apply loop: %zu"</span>, i);</span><br><span class="line">   </span><br><span class="line">    <span class="comment">//再来一个dispatch_apply！死锁！      </span></span><br><span class="line">	dispatch_apply(<span class="number">3</span>, <span class="built_in">queue</span>, ^(size_t j) &#123;</span><br><span class="line">		NSLog(@<span class="string">"apply loop inside %zu"</span>, j);</span><br><span class="line">	&#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>这端代码只会输出“apply loop: 1”。。。就没有然后了=。=</p>
+<p>所以，一定要避免dispatch_apply的<strong>嵌套调用</strong>。</p>
+<h2 id="灵活使用dispatch_group">灵活使用dispatch_group</h2><p>很多时候我们需要等待一系列任务（block）执行完成，然后再做一些收尾的工作。如果是有序的任务，可以分步骤完成的，直接使用串行队列就行。但是如果是一系列<strong>并行</strong>执行的任务呢？这个时候，就需要dispatch_group帮忙了~总的来说，dispatch_group的使用分如下几步：</p>
+<ol>
+<li>创建dispatch_group_t</li>
+<li>添加任务（block）</li>
+<li>添加结束任务（如清理操作、通知UI等）</li>
+</ol>
+<p>下面着重讲讲在后面两步。</p>
+<h4 id="添加任务">添加任务</h4><p>添加任务可以分为以下两种情况：</p>
+<ol>
+<li>自己创建队列：使用<strong>dispatch_group_async</strong>。</li>
+<li>无法直接使用队列变量（如使用AFNetworking添加异步任务）：使用<strong>dispatch_group_enter</strong>，<strong>dispatch_group_leave</strong>。</li>
+</ol>
+<p>自己创建队列时，当然就用dispatch_group_async函数，简单有效，简单例子如下：</p>
+<pre><code><span class="comment">//省去创建group、queue代码。。。</span>
+
+dispatch_group_async(<span class="keyword">group</span>, <span class="built_in">queue</span>, ^{
+    <span class="comment">//Do you work...</span>
+});
+</code></pre><p>当你无法直接使用队列变量时，就无法使用dispatch_group_async了，下面以使用AFNetworking时的情况：</p>
+<pre><code><span class="type">AFHTTPRequestOperationManager</span> *manager = [<span class="type">AFHTTPRequestOperationManager</span> manager];
+
+//<span class="type">Enter</span> group
+dispatch_group_enter(group);
+[manager <span class="type">GET</span>:@<span class="string">"http://www.baidu.com"</span> parameters:<span class="keyword">nil</span> success:^(<span class="type">AFHTTPRequestOperation</span> *operation, id responseObject) {
+    //<span class="type">Deal</span> <span class="keyword">with</span> <span class="literal">result</span>...
+
+    //<span class="type">Leave</span> group
+    dispatch_group_leave(group);
+}    failure:^(<span class="type">AFHTTPRequestOperation</span> *operation, <span class="type">NSError</span> *error) {
+    //<span class="type">Deal</span> <span class="keyword">with</span> error...
+
+    //<span class="type">Leave</span> group
+    dispatch_group_leave(group);
+}];
+
+//<span class="type">More</span> request...
+</code></pre><p>使用<strong>dispatch_group_enter</strong>，<strong>dispatch_group_leave</strong>就可以方便的将一系列网络请求“<strong>打包</strong>”起来~</p>
+<h4 id="添加结束任务">添加结束任务</h4><p>添加结束任务也可以分为两种情况，如下：</p>
+<ol>
+<li>在当前线程<strong>阻塞的同步等待</strong>：dispatch_group_wait。</li>
+<li>添加一个异步执行的任务作为结束任务：dispatch_group_notify</li>
+</ol>
+<p>这两个比较简单，就不再贴代码了=。=</p>
+<h2 id="使用dispatch_barrier_async,dispatch_barrier_sync的注意事项">使用dispatch_barrier_async,dispatch_barrier_sync的注意事项</h2><p>dispatch_barrier_async的作用就是向某个队列插入一个block，当目前正在执行的block运行完成后，阻塞这个block后面添加的block，只运行这个block直到完成，然后再继续后续的任务，有点“唯我独尊”的感觉=。=</p>
+<p>值得注意的是：</p>
+<ol>
+<li>dispatch<em>barrier\</em>(a)sync只在自己创建的并发队列上有效，在全局(Global)并发队列、串行队列上，效果跟<strong>dispatch_(a)sync</strong>效果一样。</li>
+<li>既然在串行队列上跟<strong>dispatch_(a)sync</strong>效果一样，那就要小心别死锁！</li>
+</ol>
+<h2 id="dispatch_set_context与dispatch_set_finalizer_f的配合使用">dispatch_set_context与dispatch_set_finalizer_f的配合使用</h2><p>dispatch_set_context可以为队列添加<strong>上下文数据</strong>，但是因为GCD是C语言接口形式的，所以其context参数类型是“<strong>void *</strong>”。也就是说，我们创建context时有如下几种选择：</p>
+<ol>
+<li>用C语言的malloc创建context数据。</li>
+<li>用C++的new创建类对象。</li>
+<li>用Objective-C的对象，但是要用__bridge等关键字转为Core Foundation对象。</li>
+</ol>
+<p>以上所有创建context的方法都有一个必须的要求，就是都要<strong>释放内存！</strong>，无论是用<strong>free、delete还是CF的CFRelease</strong>，我们都要确保在队列不用的时候，释放context的内存，否则就会造成内存泄露。</p>
+<p>所以，使用dispatch_set_context的时候，最好结合dispatch_set_finalizer_f使用，为队列设置“析构函数”，在这个函数里面释放内存，大致如下：</p>
+<pre><code>void cleanStaff(void *context) {
+    //释放context的内存！
+
+    //CFRelease(context);
+    //free(context);
+    //delete context;
+}
+
+<span class="keyword">...</span>
+
+//在队列创建后，设置其“析构函数”
+dispatch_set_finalizer_f(queue, cleanStaff);
+</code></pre><p>详细用法，请看我之前写的Blog<a href="http://tutuge.me/2015/03/29/bind-data-to-gcd-queue/" target="_blank" rel="external">为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权</a></p>
+<h2 id="总结">总结</h2><p>其实本文更像是总结了GCD中的“坑”=。=</p>
+<p>至于经验，总结一条，就是使用任何技术，都要研究透彻，否则后患无穷啊~</p>
+<h2 id="参考">参考</h2><ul>
+<li><a href="https://developer.apple.com/library/prerelease/mac/documentation/Performance/Reference/GCD_libdispatch_Ref/index.html" target="_blank" rel="external">Grand Central Dispatch (GCD) Reference</a></li>
+<li><a href="https://developer.apple.com/library/prerelease/mac/documentation/General/Conceptual/ConcurrencyProgrammingGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008091" target="_blank" rel="external">Concurrency Programming Guide</a></li>
+<li><a href="http://commandshift.co.uk/blog/2014/03/19/using-dispatch-groups-to-wait-for-multiple-web-services" target="_blank" rel="external">Using Dispatch Groups to Wait for Multiple Web Services</a></li>
+</ul>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h2 id="前言">前言</h2><p>GCD(Grand Central Dispatch)可以说是Mac、iOS开发中的一大“利器”，本文就总结一些有关使用GCD的经验与技巧。</p>
+<h2 id="dispatch_once_t必须是全局或static变量">disp]]>
+    </summary>
+    
+      <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
+    
+      <category term="原创" scheme="http://tutuge.me/tags/%E5%8E%9F%E5%88%9B/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权]]></title>
@@ -274,7 +508,7 @@ typedef NS_OPTIONS(NSUInteger, TTGDirection) {
     <link href="http://tutuge.me/2015/03/17/what-is-autoreleasepool/"/>
     <id>http://tutuge.me/2015/03/17/what-is-autoreleasepool/</id>
     <published>2015-03-17T12:21:56.000Z</published>
-    <updated>2015-03-17T15:41:20.000Z</updated>
+    <updated>2015-04-03T12:59:17.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>开发过iOS、Mac的朋友应该对“<strong>@autoreleasepool</strong>”不陌生。只要在Xcode里创建一个工程，就能看到下面这样的代码：</p>
 <pre><code><span class="comment">//iOS program</span>
 <span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> * argv[])</span> </span>{
@@ -349,6 +583,10 @@ typedef NS_OPTIONS(NSUInteger, TTGDirection) {
     <![CDATA[<h2 id="前言">前言</h2><p>开发过iOS、Mac的朋友应该对“<strong>@autoreleasepool</strong>”不陌生。只要在Xcode里创建一个工程，就能看到下面这样的代码：</p>
 <pre><code><span class="commen]]>
     </summary>
+    
+      <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
+    
+      <category term="原创" scheme="http://tutuge.me/tags/%E5%8E%9F%E5%88%9B/"/>
     
   </entry>
   
