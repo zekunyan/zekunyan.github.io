@@ -116,25 +116,25 @@ Item 5 - Use Enumerations for States, Options, and Status Codes本节的内容�
 <li>宏定义没有类型约束，只是单纯的替换。</li>
 <li>无法限制状态的所有情况，如，认为的将STATE赋值成3，程序可能就会出错，找不到匹配的状态，因为编译器不会对“<strong>STATE = 3;</strong>”提出警告。</li>
 </ul>
-<h4 id="正确的做法">正确的做法</h4><pre><code>typedef <span class="class"><span class="keyword">enum</span> _<span class="title">TTGState</span> </span>{
-<span class="constant">    TTGStateOK</span>  = <span class="number">0</span>,
-<span class="constant">    TTGStateError,
+<h4 id="正确的做法">正确的做法</h4><pre><code>typedef enum _TTGState {
+    TTGStateOK  = <span class="number">0</span>,
+    TTGStateError,
     TTGStateUnknow
 } TTGState;
 
 //指明枚举类型
-TTGState state</span> = TTGStateOK;
+TTGState <span class="keyword">state</span> = TTGStateOK;
 </code></pre><p>用的时候就如下：</p>
-<pre><code>- (void)dealWithState:(TTGState)state {
+<pre><code>- (<span class="typename">void</span>)<span class="string">dealWithState:</span>(TTGState)state {
     <span class="keyword">switch</span> (state) {
-        case TTGStateOK:
-            //<span class="keyword">...</span>
+        <span class="keyword">case</span> <span class="string">TTGStateOK:</span>
+            <span class="comment">//...</span>
             <span class="keyword">break</span>;
-        case TTGStateError:
-            //<span class="keyword">...</span>
+        <span class="keyword">case</span> <span class="string">TTGStateError:</span>
+            <span class="comment">//...</span>
             <span class="keyword">break</span>;
-        case TTGStateUnknow:
-            //<span class="keyword">...</span>
+        <span class="keyword">case</span> <span class="string">TTGStateUnknow:</span>
+            <span class="comment">//...</span>
             <span class="keyword">break</span>;
     }
 }
@@ -168,22 +168,22 @@ TTGDirection direction = TTGDirectionTop | TTGDirectionLeft | TTGDirectionBottom
 <p><img src="http://zorrochen.qiniudn.com/blog_effective_objective_c_5_enum_2.jpg" alt="image"></p>
 <p>这样，用位运算，就可以同时支持多个值。</p>
 <h2 id="enum在Objective-C中的“升级版”">enum在Objective-C中的“升级版”</h2><p>一般来说，我们不能指定枚举变量的实际类型是什么，就是说，我们不知道枚举最后是int型，还是其他的什么类型。但是从C++ 11开始，我们可以为枚举指定其实际的存储类型，如下语法：</p>
-<pre><code>enum TTGState : NSInteger {/*<span class="keyword">...</span>*/};
+<pre><code><span class="tag">enum</span> <span class="rule"><span class="attribute">TTGState </span>:<span class="value"> NSInteger {<span class="comment">/*...*/</span>}</span></span>;
 </code></pre><p>但是，我们在定义枚举的时候如何保证兼容性呢？Foundation框架已经为我们提供了更加“统一、便捷”的枚举定义方法，我们重新定义上面的例子：</p>
 <pre><code><span class="comment">//NS_ENUM，定义状态等普通枚举</span>
-typedef NS_ENUM(NSUInteger, TTGState) {
-<span class="constant">    TTGStateOK</span> = <span class="number">0</span>,
-<span class="constant">    TTGStateError,
+<span class="keyword">typedef</span> <span class="built_in">NS_ENUM</span>(<span class="built_in">NSUInteger</span>, TTGState) {
+    TTGStateOK = <span class="number">0</span>,
+    TTGStateError,
     TTGStateUnknow
 };
 
-//NS_OPTIONS，定义选项
-typedef NS_OPTIONS(NSUInteger, TTGDirection) {
-    TTGDirectionNone</span> = <span class="number">0</span>,
-<span class="constant">    TTGDirectionTop</span> = <span class="number">1</span> &lt;&lt; <span class="number">0</span>,
-<span class="constant">    TTGDirectionLeft</span> = <span class="number">1</span> &lt;&lt; <span class="number">1</span>,
-<span class="constant">    TTGDirectionRight</span> = <span class="number">1</span> &lt;&lt; <span class="number">2</span>,
-<span class="constant">    TTGDirectionBottom</span> = <span class="number">1</span> &lt;&lt; <span class="number">3</span>
+<span class="comment">//NS_OPTIONS，定义选项</span>
+<span class="keyword">typedef</span> <span class="built_in">NS_OPTIONS</span>(<span class="built_in">NSUInteger</span>, TTGDirection) {
+    TTGDirectionNone = <span class="number">0</span>,
+    TTGDirectionTop = <span class="number">1</span> &lt;&lt; <span class="number">0</span>,
+    TTGDirectionLeft = <span class="number">1</span> &lt;&lt; <span class="number">1</span>,
+    TTGDirectionRight = <span class="number">1</span> &lt;&lt; <span class="number">2</span>,
+    TTGDirectionBottom = <span class="number">1</span> &lt;&lt; <span class="number">3</span>
 };
 </code></pre><p>所以，在开发Mac、iOS程序中，最好所有的枚举都用“<strong>NS_ENUM</strong>”和“<strong>NS_OPTIONS</strong>”定义，保证统一。</p>
 <h2 id="总结">总结</h2><p>充分的用好枚举，可以增强代码的可读性，减少各种“错误”，让代码更加的规范。</p>
@@ -192,7 +192,7 @@ typedef NS_OPTIONS(NSUInteger, TTGDirection) {
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/21/effective-objective-c-5-enum/" data-id="ci81mvwjr000xji6uln3y3mu0" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/21/effective-objective-c-5-enum/" data-id="ci82qwewk000zhz6u0now2w1f" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -308,6 +308,10 @@ typedef NS_OPTIONS(NSUInteger, TTGDirection) {
         
           <li>
             <a href="http://raytaylorlin.com/" target="_blank">好友的博客：Ray Taylor Lin&#39;s world</a>
+          </li>
+        
+          <li>
+            <a href="http://bingyan.farbox.com" target="_blank">好友的博客：Howl写东西的地方</a>
           </li>
         
       </ul>

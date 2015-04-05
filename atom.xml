@@ -57,7 +57,7 @@ dispatch_queue_t <span class="built_in">queue</span> = dispatch_queue_create(<sp
 });        
 
 <span class="comment">//5 秒以后提交block</span>
-dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(<span class="number">5</span> * NSEC_PER_SEC)), queue, ^{
+dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(<span class="number">5</span> * <span class="built_in">NSEC_PER_SEC</span>)), queue, ^{
     <span class="built_in">NSLog</span>(<span class="string">@"After..."</span>);
 });
 </code></pre><p>结果如下：</p>
@@ -86,9 +86,9 @@ dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(<span class="number">5
 <li>NSEC_PER_USEC，每毫秒有多少纳秒。</li>
 </ol>
 <p>所以，延时<strong>1秒</strong>可以写成如下几种：</p>
-<pre><code>dispatch_time<span class="comment">(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC)</span>;
-dispatch_time<span class="comment">(DISPATCH_TIME_NOW, 1000 * USEC_PER_SEC)</span>;
-dispatch_time<span class="comment">(DISPATCH_TIME_NOW, USEC_PER_SEC * NSEC_PER_USEC)</span>;
+<pre><code>dispatch_time<span class="list">(<span class="keyword">DISPATCH_TIME_NOW</span>, <span class="number">1</span> <span class="variable">* NSEC_PER_SEC);
+dispatch_time(DISPATCH_TIME_NOW, 1000 *</span> USEC_PER_SEC)</span><span class="comment">;</span>
+dispatch_time<span class="list">(<span class="keyword">DISPATCH_TIME_NOW</span>, USEC_PER_SEC <span class="variable">* NSEC_PER_USEC);</span></span>
 </code></pre><p>最后一个“<strong>USEC_PER_SEC * NSEC_PER_USEC</strong>”，翻译过来就是“<strong>每秒的毫秒数乘以每毫秒的纳秒数</strong>”，也就是“<strong>每秒的纳秒数</strong>”，所以，延时500毫秒之类的，也就不难了吧~</p>
 <h2 id="dispatch_suspend_!=_立即停止队列的运行">dispatch_suspend != 立即停止队列的运行</h2><p><strong>dispatch_suspend</strong>，<strong>dispatch_resume</strong>提供了“挂起、恢复”队列的功能，简单来说，就是可以暂停、恢复队列上的任务。但是这里的“<strong>挂起</strong>”，并不能保证可以<strong>立即</strong>停止队列上正在运行的block，看如下例子：</p>
 <pre><code><span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL);
@@ -141,10 +141,10 @@ dispatch_apply(<span class="number">3</span>, queue, ^(size_t i) {
 <span class="comment">//打印信息</span>
 <span class="built_in">NSLog</span>(<span class="string">@"After apply"</span>);
 </code></pre><p>运行的结果是：</p>
-<pre><code>2015<span class="tag">-04-01</span> 00<span class="pseudo">:55</span><span class="pseudo">:40</span><span class="class">.854</span> <span class="tag">GCDTest</span><span class="attr_selector">[47402:1893289]</span> <span class="tag">apply</span> <span class="tag">loop</span>: 0
-2015<span class="tag">-04-01</span> 00<span class="pseudo">:55</span><span class="pseudo">:40</span><span class="class">.856</span> <span class="tag">GCDTest</span><span class="attr_selector">[47402:1893289]</span> <span class="tag">apply</span> <span class="tag">loop</span>: 1
-2015<span class="tag">-04-01</span> 00<span class="pseudo">:55</span><span class="pseudo">:40</span><span class="class">.856</span> <span class="tag">GCDTest</span><span class="attr_selector">[47402:1893289]</span> <span class="tag">apply</span> <span class="tag">loop</span>: 2
-2015<span class="tag">-04-01</span> 00<span class="pseudo">:55</span><span class="pseudo">:40</span><span class="class">.856</span> <span class="tag">GCDTest</span><span class="attr_selector">[47402:1893289]</span> <span class="tag">After</span> <span class="tag">apply</span>
+<pre><code>2015<span class="tag">-04-01</span> 00<span class="pseudo">:55</span><span class="pseudo">:40</span><span class="class">.854</span> <span class="tag">GCDTest</span><span class="attr_selector">[47402:1893289]</span> <span class="tag">apply</span> <span class="rule"><span class="attribute">loop</span>:<span class="value"> <span class="number">0</span>
+<span class="number">2015</span>-<span class="number">04</span>-<span class="number">01</span> <span class="number">00</span>:<span class="number">55</span>:<span class="number">40.856</span> GCDTest[<span class="number">47402</span>:<span class="number">1893289</span>] apply loop: <span class="number">1</span>
+<span class="number">2015</span>-<span class="number">04</span>-<span class="number">01</span> <span class="number">00</span>:<span class="number">55</span>:<span class="number">40.856</span> GCDTest[<span class="number">47402</span>:<span class="number">1893289</span>] apply loop: <span class="number">2</span>
+<span class="number">2015</span>-<span class="number">04</span>-<span class="number">01</span> <span class="number">00</span>:<span class="number">55</span>:<span class="number">40.856</span> GCDTest[<span class="number">47402</span>:<span class="number">1893289</span>] After apply</span></span>
 </code></pre><p>看，明明是提交到异步的队列去运行，但是“After apply”居然在apply后打印，也就是说，dispatch_apply将外面的线程（main线程）<strong>“阻塞”</strong>了！</p>
 <p>查看官方文档，dispatch_apply确实会“等待”其所有的循环运行完毕才往下执行=。=，看来要小心使用了。</p>
 <h2 id="避免死锁！">避免死锁！</h2><h4 id="dispatch_sync导致的死锁">dispatch_sync导致的死锁</h4><p>涉及到多线程的时候，不可避免的就会有“死锁”这个问题，在使用GCD时，往往一不小心，就可能造成死锁，看看下面的“<strong>死锁</strong>”例子：</p>
@@ -153,10 +153,10 @@ dispatch_apply(<span class="number">3</span>, queue, ^(size_t i) {
     <span class="function">NSLog</span>(<span class="at_rule">@<span class="string">"I am block..."</span>);</span>
 });
 </code></pre><p>你可能会说，这么低级的错误，我怎么会犯，那么，看看下面的：</p>
-<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">- (void)updateUI1 &#123;</span><br><span class="line">    <span class="function">dispatch_sync</span>(<span class="function">dispatch_get_main_queue</span>(), ^&#123;</span><br><span class="line">        <span class="function">NSLog</span>(<span class="at_rule">@<span class="string">"Update ui 1"</span>);</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">//死锁！</span></span><br><span class="line">        <span class="attr_selector">[self updateUI2]</span>;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)updateUI2 &#123;</span><br><span class="line">    <span class="function">dispatch_sync</span>(<span class="function">dispatch_get_main_queue</span>(), ^&#123;</span><br><span class="line">        <span class="function">NSLog</span>(<span class="at_rule">@<span class="string">"Update ui 2"</span>);</span></span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)update<span class="built_in">UI1</span> &#123;</span><br><span class="line">    <span class="built_in">dispatch_sync</span>(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"Update ui 1"</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//死锁！</span></span><br><span class="line">        [<span class="keyword">self</span> update<span class="built_in">UI2</span>];</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)update<span class="built_in">UI2</span> &#123;</span><br><span class="line">    <span class="built_in">dispatch_sync</span>(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"Update ui 2"</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>在你不注意的时候，嵌套调用可能就会造成死锁！所以为了“世界和平”=。=，我们还是少用<strong>dispatch_sync</strong>吧。</p>
 <h4 id="dispatch_apply导致的死锁！">dispatch_apply导致的死锁！</h4><p>啥，dispatch_apply导致的死锁？。。。是的，前一节讲到，dispatch_apply会<strong>等</strong>循环执行完成，这不就差不多是<strong>阻塞</strong>了吗。看如下例子：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">dispatch_queue_t <span class="built_in">queue</span> = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL);</span><br><span class="line">       </span><br><span class="line">dispatch_apply(<span class="number">3</span>, <span class="built_in">queue</span>, ^(size_t i) &#123;</span><br><span class="line">	NSLog(@<span class="string">"apply loop: %zu"</span>, i);</span><br><span class="line">   </span><br><span class="line">    <span class="comment">//再来一个dispatch_apply！死锁！      </span></span><br><span class="line">	dispatch_apply(<span class="number">3</span>, <span class="built_in">queue</span>, ^(size_t j) &#123;</span><br><span class="line">		NSLog(@<span class="string">"apply loop inside %zu"</span>, j);</span><br><span class="line">	&#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">dispatch_queue_t queue = dispatch_queue_create<span class="list">(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL)</span><span class="comment">;</span></span><br><span class="line">       </span><br><span class="line">dispatch_apply<span class="list">(<span class="number">3</span>, queue, ^<span class="list">(<span class="keyword">size_t</span> i)</span> &#123;</span><br><span class="line">	NSLog<span class="list">(@<span class="string">"apply loop: %zu"</span>, i)</span><span class="comment">;</span></span><br><span class="line">   </span><br><span class="line">    //再来一个dispatch_apply！死锁！      </span><br><span class="line">	dispatch_apply<span class="list">(<span class="number">3</span>, queue, ^<span class="list">(<span class="keyword">size_t</span> j)</span> &#123;</span><br><span class="line">		NSLog<span class="list">(@<span class="string">"apply loop inside %zu"</span>, j)</span><span class="comment">;</span></span><br><span class="line">	&#125;)</span><span class="comment">;</span></span><br><span class="line">&#125;)</span><span class="comment">;</span></span><br></pre></td></tr></table></figure>
 <p>这端代码只会输出“apply loop: 1”。。。就没有然后了=。=</p>
 <p>所以，一定要避免dispatch_apply的<strong>嵌套调用</strong>。</p>
 <h2 id="灵活使用dispatch_group">灵活使用dispatch_group</h2><p>很多时候我们需要等待一系列任务（block）执行完成，然后再做一些收尾的工作。如果是有序的任务，可以分步骤完成的，直接使用串行队列就行。但是如果是一系列<strong>并行</strong>执行的任务呢？这个时候，就需要dispatch_group帮忙了~总的来说，dispatch_group的使用分如下几步：</p>
@@ -216,18 +216,18 @@ dispatch_group_enter(group);
 </ol>
 <p>以上所有创建context的方法都有一个必须的要求，就是都要<strong>释放内存！</strong>，无论是用<strong>free、delete还是CF的CFRelease</strong>，我们都要确保在队列不用的时候，释放context的内存，否则就会造成内存泄露。</p>
 <p>所以，使用dispatch_set_context的时候，最好结合dispatch_set_finalizer_f使用，为队列设置“析构函数”，在这个函数里面释放内存，大致如下：</p>
-<pre><code>void cleanStaff(void *context) {
-    //释放context的内存！
+<pre><code><span class="function"><span class="keyword">void</span> <span class="title">cleanStaff</span><span class="params">(<span class="keyword">void</span> *context)</span> </span>{
+    <span class="comment">//释放context的内存！</span>
 
-    //CFRelease(context);
-    //free(context);
-    //delete context;
+    <span class="comment">//CFRelease(context);</span>
+    <span class="comment">//free(context);</span>
+    <span class="comment">//delete context;</span>
 }
 
-<span class="keyword">...</span>
+...
 
-//在队列创建后，设置其“析构函数”
-dispatch_set_finalizer_f(queue, cleanStaff);
+<span class="comment">//在队列创建后，设置其“析构函数”</span>
+dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
 </code></pre><p>详细用法，请看我之前写的Blog<a href="http://tutuge.me/2015/03/29/bind-data-to-gcd-queue/" target="_blank" rel="external">为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权</a></p>
 <h2 id="总结">总结</h2><p>其实本文更像是总结了GCD中的“坑”=。=</p>
 <p>至于经验，总结一条，就是使用任何技术，都要研究透彻，否则后患无穷啊~</p>
@@ -307,8 +307,8 @@ typedef struct _Data {
     });
 }
 </code></pre><p>上面的代码运行后如下：</p>
-<pre><code>2015<span class="tag">-03-29</span> 20<span class="pseudo">:28</span><span class="pseudo">:16</span><span class="class">.854</span> <span class="tag">GCDTest</span><span class="attr_selector">[37787:1443423]</span> 1: <span class="tag">context</span> <span class="tag">number</span>: 10
-2015<span class="tag">-03-29</span> 20<span class="pseudo">:28</span><span class="pseudo">:16</span><span class="class">.855</span> <span class="tag">GCDTest</span><span class="attr_selector">[37787:1443423]</span> <span class="tag">In</span> <span class="tag">clean</span>, <span class="tag">context</span> <span class="tag">number</span>: 20
+<pre><code>2015<span class="tag">-03-29</span> 20<span class="pseudo">:28</span><span class="pseudo">:16</span><span class="class">.854</span> <span class="tag">GCDTest</span><span class="attr_selector">[37787:1443423]</span> 1: <span class="tag">context</span> <span class="rule"><span class="attribute">number</span>:<span class="value"> <span class="number">10</span>
+<span class="number">2015</span>-<span class="number">03</span>-<span class="number">29</span> <span class="number">20</span>:<span class="number">28</span>:<span class="number">16.855</span> GCDTest[<span class="number">37787</span>:<span class="number">1443423</span>] In clean, context number: <span class="number">20</span></span></span>
 </code></pre><p>看，通过为队列设置context，我们就能为队列绑定自定义的数据，然后在合适的时候取出来用。</p>
 <h2 id="NSObject类型的context">NSObject类型的context</h2><p>在Mac、iOS的开发过程中，我们大部分用的都是Foundation框架下的类，就是如NSString、NSDictionary这些NSObject类型的类。<br>但是上面的<strong>dispatch_set(get)_context</strong>接受的context参数是C语言类型的，即Core Foundation类型的，我们如何转换呢？</p>
 <p><strong>由于ARC不能管理Core Foundation Object的生命周期</strong>，所以我们必须先转换context的“类型”，以便转换内存管理权。</p>
@@ -375,9 +375,9 @@ typedef struct _Data {
 <li>在队列任务中，用dispatch_get_context获取context的时候，用<strong>__bridge</strong>转换，维持context的内存管理权不变，防止出了作用域context被释放。</li>
 <li>最后用<strong>CFRelease</strong>释放context内存。</li>
 </ul>
-<h3 id="运行结果">运行结果</h3><pre><code>2015<span class="tag">-03-29</span> 21<span class="pseudo">:12</span><span class="pseudo">:41</span><span class="class">.631</span> <span class="tag">GCDTest</span><span class="attr_selector">[38131:1465900]</span> 1: <span class="tag">context</span> <span class="tag">number</span>: 10
-2015<span class="tag">-03-29</span> 21<span class="pseudo">:12</span><span class="pseudo">:41</span><span class="class">.632</span> <span class="tag">GCDTest</span><span class="attr_selector">[38131:1465900]</span> <span class="tag">In</span> <span class="tag">clean</span>, <span class="tag">context</span> <span class="tag">number</span>: 20
-2015<span class="tag">-03-29</span> 21<span class="pseudo">:12</span><span class="pseudo">:41</span><span class="class">.632</span> <span class="tag">GCDTest</span><span class="attr_selector">[38131:1465900]</span> <span class="tag">Data</span> <span class="tag">dealloc</span>...
+<h3 id="运行结果">运行结果</h3><pre><code>2015<span class="tag">-03-29</span> 21<span class="pseudo">:12</span><span class="pseudo">:41</span><span class="class">.631</span> <span class="tag">GCDTest</span><span class="attr_selector">[38131:1465900]</span> 1: <span class="tag">context</span> <span class="rule"><span class="attribute">number</span>:<span class="value"> <span class="number">10</span>
+<span class="number">2015</span>-<span class="number">03</span>-<span class="number">29</span> <span class="number">21</span>:<span class="number">12</span>:<span class="number">41.632</span> GCDTest[<span class="number">38131</span>:<span class="number">1465900</span>] In clean, context number: <span class="number">20</span>
+<span class="number">2015</span>-<span class="number">03</span>-<span class="number">29</span> <span class="number">21</span>:<span class="number">12</span>:<span class="number">41.632</span> GCDTest[<span class="number">38131</span>:<span class="number">1465900</span>] Data dealloc...</span></span>
 </code></pre><p>由结果可知，我们的context对象在最后显式调用<strong>CFRelease</strong>才被释放。</p>
 <h2 id="总结">总结</h2><p>总的来说，就是合理运用__bridge_retained(transfer)关键字转换对象的内存管理权，让我们自己控制对象的生命周期。</p>
 <h2 id="参考">参考</h2><ul>
@@ -420,25 +420,25 @@ typedef struct _Data {
 <li>宏定义没有类型约束，只是单纯的替换。</li>
 <li>无法限制状态的所有情况，如，认为的将STATE赋值成3，程序可能就会出错，找不到匹配的状态，因为编译器不会对“<strong>STATE = 3;</strong>”提出警告。</li>
 </ul>
-<h4 id="正确的做法">正确的做法</h4><pre><code>typedef <span class="class"><span class="keyword">enum</span> _<span class="title">TTGState</span> </span>{
-<span class="constant">    TTGStateOK</span>  = <span class="number">0</span>,
-<span class="constant">    TTGStateError,
+<h4 id="正确的做法">正确的做法</h4><pre><code>typedef enum _TTGState {
+    TTGStateOK  = <span class="number">0</span>,
+    TTGStateError,
     TTGStateUnknow
 } TTGState;
 
 //指明枚举类型
-TTGState state</span> = TTGStateOK;
+TTGState <span class="keyword">state</span> = TTGStateOK;
 </code></pre><p>用的时候就如下：</p>
-<pre><code>- (void)dealWithState:(TTGState)state {
+<pre><code>- (<span class="typename">void</span>)<span class="string">dealWithState:</span>(TTGState)state {
     <span class="keyword">switch</span> (state) {
-        case TTGStateOK:
-            //<span class="keyword">...</span>
+        <span class="keyword">case</span> <span class="string">TTGStateOK:</span>
+            <span class="comment">//...</span>
             <span class="keyword">break</span>;
-        case TTGStateError:
-            //<span class="keyword">...</span>
+        <span class="keyword">case</span> <span class="string">TTGStateError:</span>
+            <span class="comment">//...</span>
             <span class="keyword">break</span>;
-        case TTGStateUnknow:
-            //<span class="keyword">...</span>
+        <span class="keyword">case</span> <span class="string">TTGStateUnknow:</span>
+            <span class="comment">//...</span>
             <span class="keyword">break</span>;
     }
 }
@@ -472,22 +472,22 @@ TTGDirection direction = TTGDirectionTop | TTGDirectionLeft | TTGDirectionBottom
 <p><img src="http://zorrochen.qiniudn.com/blog_effective_objective_c_5_enum_2.jpg" alt="image"></p>
 <p>这样，用位运算，就可以同时支持多个值。</p>
 <h2 id="enum在Objective-C中的“升级版”">enum在Objective-C中的“升级版”</h2><p>一般来说，我们不能指定枚举变量的实际类型是什么，就是说，我们不知道枚举最后是int型，还是其他的什么类型。但是从C++ 11开始，我们可以为枚举指定其实际的存储类型，如下语法：</p>
-<pre><code>enum TTGState : NSInteger {/*<span class="keyword">...</span>*/};
+<pre><code><span class="tag">enum</span> <span class="rule"><span class="attribute">TTGState </span>:<span class="value"> NSInteger {<span class="comment">/*...*/</span>}</span></span>;
 </code></pre><p>但是，我们在定义枚举的时候如何保证兼容性呢？Foundation框架已经为我们提供了更加“统一、便捷”的枚举定义方法，我们重新定义上面的例子：</p>
 <pre><code><span class="comment">//NS_ENUM，定义状态等普通枚举</span>
-typedef NS_ENUM(NSUInteger, TTGState) {
-<span class="constant">    TTGStateOK</span> = <span class="number">0</span>,
-<span class="constant">    TTGStateError,
+<span class="keyword">typedef</span> <span class="built_in">NS_ENUM</span>(<span class="built_in">NSUInteger</span>, TTGState) {
+    TTGStateOK = <span class="number">0</span>,
+    TTGStateError,
     TTGStateUnknow
 };
 
-//NS_OPTIONS，定义选项
-typedef NS_OPTIONS(NSUInteger, TTGDirection) {
-    TTGDirectionNone</span> = <span class="number">0</span>,
-<span class="constant">    TTGDirectionTop</span> = <span class="number">1</span> &lt;&lt; <span class="number">0</span>,
-<span class="constant">    TTGDirectionLeft</span> = <span class="number">1</span> &lt;&lt; <span class="number">1</span>,
-<span class="constant">    TTGDirectionRight</span> = <span class="number">1</span> &lt;&lt; <span class="number">2</span>,
-<span class="constant">    TTGDirectionBottom</span> = <span class="number">1</span> &lt;&lt; <span class="number">3</span>
+<span class="comment">//NS_OPTIONS，定义选项</span>
+<span class="keyword">typedef</span> <span class="built_in">NS_OPTIONS</span>(<span class="built_in">NSUInteger</span>, TTGDirection) {
+    TTGDirectionNone = <span class="number">0</span>,
+    TTGDirectionTop = <span class="number">1</span> &lt;&lt; <span class="number">0</span>,
+    TTGDirectionLeft = <span class="number">1</span> &lt;&lt; <span class="number">1</span>,
+    TTGDirectionRight = <span class="number">1</span> &lt;&lt; <span class="number">2</span>,
+    TTGDirectionBottom = <span class="number">1</span> &lt;&lt; <span class="number">3</span>
 };
 </code></pre><p>所以，在开发Mac、iOS程序中，最好所有的枚举都用“<strong>NS_ENUM</strong>”和“<strong>NS_OPTIONS</strong>”定义，保证统一。</p>
 <h2 id="总结">总结</h2><p>充分的用好枚举，可以增强代码的可读性，减少各种“错误”，让代码更加的规范。</p>
@@ -511,15 +511,15 @@ typedef NS_OPTIONS(NSUInteger, TTGDirection) {
     <updated>2015-04-03T12:59:17.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>开发过iOS、Mac的朋友应该对“<strong>@autoreleasepool</strong>”不陌生。只要在Xcode里创建一个工程，就能看到下面这样的代码：</p>
 <pre><code><span class="comment">//iOS program</span>
-<span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> * argv[])</span> </span>{
-    @autoreleasepool {
-        <span class="keyword">return</span> UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate <span class="keyword">class</span>]));
+<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> * argv[]) {
+    <span class="keyword">@autoreleasepool</span> {
+        <span class="keyword">return</span> <span class="built_in">UIApplicationMain</span>(argc, argv, <span class="literal">nil</span>, <span class="built_in">NSStringFromClass</span>([AppDelegate class]));
     }
 }
 
 <span class="comment">//Command line program</span>
-<span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> *argv[])</span> </span>{
-    @autoreleasepool {
+<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> *argv[]) {
+    <span class="keyword">@autoreleasepool</span> {
         <span class="comment">//...</span>
     }
     <span class="keyword">return</span> <span class="number">0</span>;
@@ -539,13 +539,13 @@ typedef NS_OPTIONS(NSUInteger, TTGDirection) {
 <p>对！是计数，不是“<strong>GC、垃圾回收</strong>”什么的，就是说，在Objective-C的开发中，ARC不代表像Java那样有GC做垃圾回收，所以本质上还是要“手动”管理内存的。也就是说，我们在ARC环境下写的代码，不用自己手动插入“<strong>retain、release这些消息</strong>”，ARC会在编译时为我们在合适的位置插入，释放不必要的内存。</p>
 <p>而<strong>@autoreleasepool</strong>就跟对象的<strong>release</strong>密切相关。</p>
 <h2 id="@autoreleasepool_干了啥">@autoreleasepool 干了啥</h2><p>在MRC时代，如果我们想先retain一个对象，但是并不知道在什么时候可以release它，我们可以像下面这么做：</p>
-<pre><code><span class="built_in">NSAutoreleasePool</span> *pool = [[<span class="built_in">NSAutoreleasePool</span> alloc] init];
+<pre><code><span class="name">NSAutoreleasePool</span> *<span class="atom">pool</span> = [[<span class="name">NSAutoreleasePool</span> <span class="atom">alloc</span>] <span class="atom">init</span>];
 
-<span class="built_in">NSString</span>* str = [[[<span class="built_in">NSString</span> alloc] initWithString:<span class="string">@"tutuge"</span>] autorelease];
-<span class="comment">//use str...</span>
+<span class="name">NSString</span>* <span class="atom">str</span> = [[[<span class="name">NSString</span> <span class="atom">alloc</span>] <span class="atom">initWithString</span>:@<span class="string">"tutuge"</span>] <span class="atom">autorelease</span>];
+//<span class="atom">use</span> <span class="atom">str</span>...
 
-[pool release];
-<span class="comment">//str is released</span>
+[<span class="atom">pool</span> <span class="atom">release</span>];
+//<span class="atom">str</span> <span class="atom">is</span> <span class="atom">released</span>
 </code></pre><p>就是说，我们可以在创建对象的时候给对象发送“<strong>autorelease</strong>”消息，然后当<strong>NSAutoreleasePool</strong>结束的时候，“标记过”autorelease的对象都会被“<strong>release</strong>”掉，也就是会被释放掉。</p>
 <p>但是在ARC时代，我们不用手动发送<strong>autorelease</strong>消息，ARC会自动帮我们加。而这个时候，<strong>@autoreleasepool</strong>做的事情，跟<strong>NSAutoreleasePool</strong>就一模一样了。</p>
 <h2 id="什么时候用@autoreleasepool">什么时候用@autoreleasepool</h2><p>根据<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/mmAutoreleasePools.html" target="_blank" rel="external">Apple的文档</a>，使用场景如下：</p>
@@ -563,7 +563,7 @@ typedef NS_OPTIONS(NSUInteger, TTGDirection) {
     <span class="keyword">@autoreleasepool</span> {
         <span class="built_in">NSError</span> *error;
         <span class="built_in">NSString</span> *fileContents = [<span class="built_in">NSString</span> stringWithContentsOfURL:url
-                                         encoding:NSUTF8StringEncoding error:&amp;error];
+                                         encoding:<span class="built_in">NSUTF8StringEncoding</span> error:&amp;error];
         <span class="comment">/* Process the string, creating and autoreleasing more objects. */</span>
     }
 }
@@ -705,13 +705,13 @@ typedef NS_OPTIONS(NSUInteger, TTGDirection) {
 <pre><code>&lt;main.<span class="string">m :</span> <span class="number">22</span> : main&gt;-: <span class="string">Blog:</span> <span class="string">http:</span><span class="comment">//tutuge.me</span>
 </code></pre><p>看，这下Log就带上了文件名、行号、函数名，一下子就清楚多了~<br>至于为什么要用这个奇怪的“do{…}while(0)”，其实就是为了防止在不同的使用场景中导致语法错误，详细请见：<a href="http://onevcat.com/2014/01/black-magic-in-macro/" target="_blank" rel="external">宏定义的黑魔法 - 宏菜鸟起飞手册</a></p>
 <h3 id="为Log增加全局开关">为Log增加全局开关</h3><p>开发中，我们往往会在许多地方加上Log，但是在发布的时候，又不想显示这些Log，这个时候难道要一个一个的删除打Log的地方？<br>所以，为了增加开关，我们需要将上面的增强型NSLog改造一下：</p>
-<pre><code>//判断是否要Log
-<span class="comment">#ifdef NEED_DEBUG    </span>
-<span class="comment">#define NSLog(format, ...) \</span>
-    //Log定义<span class="keyword">...</span>
-<span class="comment">#else</span>
-    <span class="comment">#define NSLog(format, ...) do{ } while(0)</span>
-<span class="comment">#endif</span>
+<pre><code><span class="comment">//判断是否要Log</span>
+<span class="preprocessor">#ifdef NEED_DEBUG    </span>
+<span class="preprocessor">#define NSLog(format, ...) \</span>
+    <span class="comment">//Log定义...</span>
+<span class="preprocessor">#else</span>
+    #define NSLog(format, ...) <span class="keyword">do</span>{ } <span class="keyword">while</span>(<span class="number">0</span>)
+<span class="preprocessor">#endif</span>
 </code></pre><p>所以，当我们需要Log的时候，在上面定义的之前加上下面这一行：</p>
 <pre><code><span class="hexcolor">#def</span>ine NEED_DEBUG
 </code></pre><p>就可以打开Log了。不加的话，就不会有Log~简单的条件编译~</p>
@@ -808,23 +808,23 @@ typedef <span class="keyword">struct</span> Complex {
 <p>所以，用宏定义定义常量，很“危险”。</p>
 <h2 id="正确的做法">正确的做法</h2><p>恰当的常量，应该具备合适的常量名字、正确的类型，还有const、extern等关键字的修饰，当然，还要根据常量适用的“<strong>范围</strong>”，做出恰当的处理。一下举例说明。</p>
 <h3 id="只在函数中用的常量">只在函数中用的常量</h3><p>只在函数中用的常量：</p>
-<pre><code>- (void)runAnimation {
-    //动画时间长度常量
-    static const NSTimeInterval kAnimationDurationLong = <span class="number">1.</span>0f;
+<pre><code>- (<span class="keyword">void</span>)runAnimation {
+    <span class="comment">//动画时间长度常量</span>
+    <span class="keyword">static</span> <span class="keyword">const</span> NSTimeInterval kAnimationDurationLong = <span class="number">1.0f</span>;
 
-    //<span class="keyword">...</span>
+    <span class="comment">//...</span>
 }
 </code></pre><p>static、const定义了它是静态不可变的；<strong>NSTimeInterval</strong>则“精确”指定了常量的类型。</p>
 <h3 id="只在一个“-m”文件中使用的常量">只在一个“<strong>.m</strong>”文件中使用的常量</h3><p>在类的实现文件“xxx.m”文件中定义常量，也是很常见的。<br>你可能会觉得，既然是一个类使用的，那就放在类的头文件里面定义不就好了。<br><strong>但是这么想是错的=。=</strong><br><strong>因为所有要用到这个类的文件，都会无形当中包含了这些常量声明，将不必要的数据暴露在外面，这样是违反设计原则的，并且，如果常量名字取得不恰当，还有可能造成冲突。</strong></p>
 <p>所以，应该如下:</p>
-<pre><code>//XXX.m
+<pre><code><span class="comment">//<span class="label">XXX.m</span></span>
 
-//必须要static
-static const NSTimeInterval kAnimationDurationLong = <span class="number">1.</span>0f;
+<span class="comment">//必须要static</span>
+<span class="keyword">static</span> <span class="keyword">const</span> <span class="built_in">NSTimeInterval</span> kAnimationDurationLong = <span class="number">1.0</span>f;
 
-@implementation XXX
-//<span class="keyword">...</span>
-@end 
+<span class="class"><span class="keyword">@implementation</span> <span class="title">XXX</span></span>
+<span class="comment">//...</span>
+<span class="keyword">@end</span> 
 </code></pre><p>需要注意的点：</p>
 <ul>
 <li>一定要放在.m文件中。</li>
@@ -908,7 +908,7 @@ emojiTextAttachment.image = emojiImage;
 <h3 id="遍历所有的NSTextAttachment类属性">遍历所有的NSTextAttachment类属性</h3><p>遍历，嗯，先看看Apple有没有提供相应的方法，能遍历NSAttributedString（及其子类）的属性的。查阅文档：<a href="https://developer.apple.com/library/prerelease/ios/documentation/Cocoa/Reference/Foundation/Classes/NSAttributedString_Class/index.html#//apple_ref/occ/instm/NSAttributedString" target="_blank" rel="external">NSAttributedString Class Reference</a>，可以找到这么一个方法：“<strong>- enumerateAttribute:inRange:options:usingBlock:</strong>”，其原型如下：</p>
 <pre><code>- (<span class="keyword">void</span>)enumerateAttribute:(<span class="built_in">NSString</span> *)attrName
                    inRange:(<span class="built_in">NSRange</span>)enumerationRange
-                   options:(NSAttributedStringEnumerationOptions)opts
+                   options:(<span class="built_in">NSAttributedStringEnumerationOptions</span>)opts
                 usingBlock:(<span class="keyword">void</span> (^)(<span class="keyword">id</span> value,
                                      <span class="built_in">NSRange</span> range,
                                      <span class="built_in">BOOL</span> *stop))block
@@ -950,17 +950,17 @@ emojiTextAttachment.image = emojiImage;
     <span class="built_in">NSMutableString</span> *plainString = [<span class="built_in">NSMutableString</span> stringWithString:<span class="keyword">self</span><span class="variable">.string</span>];
 
     <span class="comment">//替换下标的偏移量</span>
-    __block NSUInteger base = <span class="number">0</span>;
+    __block <span class="built_in">NSUInteger</span> base = <span class="number">0</span>;
 
     <span class="comment">//遍历</span>
-    [<span class="keyword">self</span> enumerateAttribute:NSAttachmentAttributeName inRange:NSMakeRange(<span class="number">0</span>, <span class="keyword">self</span><span class="variable">.length</span>)
+    [<span class="keyword">self</span> enumerateAttribute:<span class="built_in">NSAttachmentAttributeName</span> inRange:<span class="built_in">NSMakeRange</span>(<span class="number">0</span>, <span class="keyword">self</span><span class="variable">.length</span>)
                      options:<span class="number">0</span>
                   usingBlock:^(<span class="keyword">id</span> value, <span class="built_in">NSRange</span> range, <span class="built_in">BOOL</span> *stop) {
 
                       <span class="comment">//检查类型是否是自定义NSTextAttachment类</span>
                       <span class="keyword">if</span> (value &amp;&amp; [value isKindOfClass:[EmojiTextAttachment class]]) {
                           <span class="comment">//替换</span>
-                          [plainString replaceCharactersInRange:NSMakeRange(range<span class="variable">.location</span> + base, range<span class="variable">.length</span>)
+                          [plainString replaceCharactersInRange:<span class="built_in">NSMakeRange</span>(range<span class="variable">.location</span> + base, range<span class="variable">.length</span>)
                                                      withString:((EmojiTextAttachment *) value)<span class="variable">.emojiTag</span>];
 
                        <span class="comment">//增加偏移量                          </span>
@@ -1058,17 +1058,17 @@ tom.address = <span class="string">"USA Californian"</span>;
 <h3 id="我的认识">我的认识</h3><p>先看看Model单词的意思:<br><a href="http://www.iciba.com/model" target="_blank" rel="external">爱词霸</a>：n: 模型；模式；典型。</p>
 <p>既然是模型，而不是“数据”，所以我觉得，<strong>Model应该是利用Entity实体，来组合、处理、整合更上层、更抽象数据的类</strong>。</p>
 <p>还是基于上面的“<strong>UserEntity</strong>”，看看下面的代码：</p>
-<pre><code>class UserListModel {
-    private UserEntity[] users;
+<pre><code><span class="keyword">class</span> <span class="title">UserListModel</span> {
+    <span class="keyword">private</span> UserEntity[] users;
 
-    //构造函数，初始化用户列表等。
+    <span class="comment">//构造函数，初始化用户列表等。</span>
 
-    UserEntity getUserByName(String name) {
-        //查找<span class="keyword">...</span>
+    <span class="function">UserEntity <span class="title">getUserByName</span><span class="params">(String name)</span> </span>{
+        <span class="comment">//查找...</span>
     }
 
-    void transformUserAddressFormat {
-        //转化地址格式
+    <span class="keyword">void</span> transformUserAddressFormat {
+        <span class="comment">//转化地址格式</span>
     }
 }
 </code></pre><p>就是说，Entity还是原本的概念，只不过Model是基于Entity的更高层的数据抽象与处理。</p>
@@ -1335,8 +1335,8 @@ typedef <span class="typename">void</span> (^http_fail)();
 <span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> cellHeight;
 
 <span class="comment">//真正显示的内容</span>
-<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) NSAttributedString *showTitle;
-<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) NSAttributedString *showContent;
+<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSAttributedString</span> *showTitle;
+<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSAttributedString</span> *showContent;
 
 <span class="comment">//计算高度</span>
 - (<span class="keyword">void</span>)calculateCellHeight;
@@ -1644,7 +1644,7 @@ NSNumber <span class="keyword">*</span>intNumber = [[NSNumber alloc] initWithInt
 <pre><code><span class="constant">NSArray </span>*numbers = [[<span class="constant">NSArray </span>alloc] <span class="symbol">initWithObjects:</span>
     <span class="variable">@1</span>, <span class="variable">@1</span>.<span class="number">1</span>, <span class="variable">@2</span>.0f, <span class="variable">@YES</span>, <span class="keyword">nil</span>];
 </code></pre><p>用字面量语法的话，就是这样：</p>
-<pre><code>NSArray <span class="variable">*numbers</span> = <span class="variable">@[</span><span class="variable">@1</span>, <span class="variable">@1</span><span class="number">.1</span>, <span class="variable">@2</span><span class="number">.0</span>f, <span class="variable">@YES</span>];
+<pre><code>NSArray <span class="variable">*numbers</span> = <span class="variable">@[</span><span class="variable">@1</span>, <span class="variable">@1</span>.1, <span class="variable">@2</span>.0f, <span class="variable">@YES</span>];
 </code></pre><h3 id="存取值">存取值</h3><p>创建了数组，肯定要从数组里面取值，用NSArray的方法就是这样：</p>
 <pre><code><span class="comment">//取</span>
 NSNumber <span class="variable">*aNumber</span> = [numbers objectAtIndex:<span class="number">2</span>];
@@ -1730,7 +1730,7 @@ dict[@<span class="string">"number1"</span>] = @<span class="number">6</span>;
 <span class="comment">//车轮类</span>
 <span class="class"><span class="keyword">@interface</span> <span class="title">Wheel</span> : <span class="title">NSObject</span></span>
 <span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *manufacturer;
-<span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) NSUInteger radius;
+<span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSUInteger</span> radius;
 <span class="keyword">@end</span>
 </code></pre><p>第二个类 </p>
 <pre><code><span class="comment">//Engine.h</span>
@@ -1739,7 +1739,7 @@ dict[@<span class="string">"number1"</span>] = @<span class="number">6</span>;
 <span class="comment">//发动机类</span>
 <span class="class"><span class="keyword">@interface</span> <span class="title">Engine</span> : <span class="title">NSObject</span></span>
 <span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *manufacturer;
-<span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) NSUInteger power;
+<span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSUInteger</span> power;
 <span class="keyword">@end</span>
 </code></pre><p>然后就是车类Car：</p>
 <pre><code><span class="comment">//Car.h</span>
@@ -1770,12 +1770,12 @@ dict[@<span class="string">"number1"</span>] = @<span class="number">6</span>;
 <p>当然，在Car类的实现文件.m文件中，我们还是要显式的引入Wheel和Engine类的，因为在这里我们要具体用到这两个类了，当然要知道类的细节。</p>
 <h3 id="为何不要import？">为何不要import？</h3><p>为什么不直接import呢？因为如果直接用import引入Wheel和Engine的声明，那么任何import引入了Car类的文件，也同时会引入Wheel、Engine类的声明，而且最终我们可能并不一定会直接跟Wheel、Engine类打交道，这样不就引入了“没有用”的类了吗？而且这样做很可能造成文件引入成“环”。 </p>
 <p>虽然import可以避免重复声明造成编译出错，传统的C语言、C++在声明的时候也可以通过如下方式避免重复声明：</p>
-<pre><code><span class="comment">#ifndef _WHEEL_H_</span>
-<span class="comment">#define _WHEEL_H_</span>
+<pre><code><span class="id">#ifndef</span> _WHEEL_H_
+<span class="hexcolor">#def</span>ine _WHEEL_H_
 
-//声明内容<span class="keyword">...</span>
+<span class="comment">//声明内容...</span>
 
-<span class="comment">#endif</span>
+#endif
 </code></pre><p>但是既然Objective-C有@class这种前置声明的办法，为何不用呢。</p>
 <h2 id="必须用import的时候">必须用import的时候</h2><p>当然，@class这样的前置声明并不能解决一切头文件引入的问题，如下这样的类，就必须要用import：</p>
 <pre><code><span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
@@ -1850,8 +1850,8 @@ NSString <span class="keyword">*</span>str2 = str1;
 </ul>
 <p>此处的栈内存、堆内存跟C语言中的概念也是一样的，不同的是，在Objective-C中，我们不用手动去malloc、free内存，Objective-C使用内存计数计数帮我们管理内存。</p>
 <h2 id="结构体，基本类型">结构体，基本类型</h2><p>在Objective-C中，并不是所有的变量都是指针类型的，像int、float、double这些依旧是传统的“栈上分配”的，当然，还有结构体struct、枚举enum、联合union等。如：</p>
-<pre><code><span class="title">CGPoint</span> point = CGPointMake(<span class="number">10</span>, <span class="number">10</span>);
-<span class="title">CGRect</span> frame = CGRectMake(<span class="number">0</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">10</span>);
+<pre><code><span class="built_in">CGPoint</span> point = <span class="built_in">CGPointMake</span>(<span class="number">10</span>, <span class="number">10</span>);
+<span class="built_in">CGRect</span> frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">10</span>);
 </code></pre><p>这的CGPoint、CGRect都是结构体，但是都是直接在栈上分配内存的，以减少过度使用Objective-C类型的类（减少运行时的压力），各位读者使用的时候要注意。</p>
 <h2 id="总结">总结</h2><p>零散的说了一些Objective-C的特点，远远不足以讲明白Objective-C，我这只是根据Effective Objective-C这本书给个引子，还是推荐Apple的官方教程、文档，要想掌握扎实，还是要一步一步来~</p>
 ]]></content>
@@ -1877,51 +1877,51 @@ NSString <span class="keyword">*</span>str2 = str1;
     <updated>2015-02-03T17:01:24.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>这段时间一直在做iOS的项目（<a href="https://itunes.apple.com/cn/app/qing-ju-yin-le-quan-guo-zui/id913235479?mt=8" target="_blank" rel="external">青桔音乐App</a>），随着代码量的上升，逐渐意识到项目的整体目录结构划分是多么重要，清晰的目录结构，能够更好的应对新的需求，更容易重构。虽然一直都是一个人在做=。=，但是还是深深地体会到目录结构的重要性。</p>
 <h2 id="例子">例子</h2><p>说再多都不如来个例子实在，如下：(VC指的是viewController)</p>
-<pre><code>|---General
-    |---AppDelegate
-    |---Application
-    |---Constant
-    |---UI
-        |---View
-        |---VC
-        |---Common
-    <span class="keyword">...</span>
-|---Entity
-    |---BaseEntity
-    <span class="keyword">...</span>
-|---Http
-    |---Api
-    |---Util
-    |---CodeHandler
-    |---ErrorHandler
-    |---RequestHandler
-    <span class="keyword">...</span>
-|---DB
-    |---DBHelper
-    |---DBService
-    <span class="keyword">...</span>
-|---Util
-    |---StringUtil
-    |---NumberUtil
-    |---TimeUtil
-    <span class="keyword">...</span>
-|---Service
-    |---AccountService
-    |---ShareService
-    <span class="keyword">...</span>
-|---Lib
-    |---Umeng
-    |---QQSDK
-    |---SVProgressHUD
-    <span class="keyword">...</span>
-|---Module
-    |---Login
-        |---View
-        |---VC
-        <span class="keyword">...</span>
-    |---Comment
-    |---Feeds
-    <span class="keyword">...</span>
+<pre><code><span class="string">|---General</span>
+    <span class="string">|---AppDelegate</span>
+    <span class="string">|---Application</span>
+    <span class="string">|---Constant</span>
+    <span class="string">|---UI</span>
+        <span class="string">|---View</span>
+        <span class="string">|---VC</span>
+        <span class="string">|---Common</span>
+    ...
+<span class="string">|---Entity</span>
+    <span class="string">|---BaseEntity</span>
+    ...
+<span class="string">|---Http</span>
+    <span class="string">|---Api</span>
+    <span class="string">|---Util</span>
+    <span class="string">|---CodeHandler</span>
+    <span class="string">|---ErrorHandler</span>
+    <span class="string">|---RequestHandler</span>
+    ...
+<span class="string">|---DB</span>
+    <span class="string">|---DBHelper</span>
+    <span class="string">|---DBService</span>
+    ...
+<span class="string">|---Util</span>
+    <span class="string">|---StringUtil</span>
+    <span class="string">|---NumberUtil</span>
+    <span class="string">|---TimeUtil</span>
+    ...
+<span class="string">|---Service</span>
+    <span class="string">|---AccountService</span>
+    <span class="string">|---ShareService</span>
+    ...
+<span class="string">|---Lib</span>
+    <span class="string">|---Umeng</span>
+    <span class="string">|---QQSDK</span>
+    <span class="string">|---SVProgressHUD</span>
+    ...
+<span class="string">|---Module</span>
+    <span class="string">|---Login</span>
+        <span class="string">|---View</span>
+        <span class="string">|---VC</span>
+        ...
+    <span class="string">|---Comment</span>
+    <span class="string">|---Feeds</span>
+    ...
 </code></pre><p>乍一看好多，别被吓到=。=，容我细细讲解。</p>
 <h2 id="详细讲解">详细讲解</h2><h3 id="General">General</h3><p>General好理解，放的就是如AppDelegate之类的、项目中最普通的、最常用的组件。</p>
 <p><strong>AppDelegate</strong>:<br>App的Delegate类实现，这个必须有，就不用说了吧。  </p>

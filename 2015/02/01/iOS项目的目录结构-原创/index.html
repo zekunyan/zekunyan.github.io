@@ -106,51 +106,51 @@
       
         <h2 id="前言">前言</h2><p>这段时间一直在做iOS的项目（<a href="https://itunes.apple.com/cn/app/qing-ju-yin-le-quan-guo-zui/id913235479?mt=8" target="_blank" rel="external">青桔音乐App</a>），随着代码量的上升，逐渐意识到项目的整体目录结构划分是多么重要，清晰的目录结构，能够更好的应对新的需求，更容易重构。虽然一直都是一个人在做=。=，但是还是深深地体会到目录结构的重要性。</p>
 <h2 id="例子">例子</h2><p>说再多都不如来个例子实在，如下：(VC指的是viewController)</p>
-<pre><code>|---General
-    |---AppDelegate
-    |---Application
-    |---Constant
-    |---UI
-        |---View
-        |---VC
-        |---Common
-    <span class="keyword">...</span>
-|---Entity
-    |---BaseEntity
-    <span class="keyword">...</span>
-|---Http
-    |---Api
-    |---Util
-    |---CodeHandler
-    |---ErrorHandler
-    |---RequestHandler
-    <span class="keyword">...</span>
-|---DB
-    |---DBHelper
-    |---DBService
-    <span class="keyword">...</span>
-|---Util
-    |---StringUtil
-    |---NumberUtil
-    |---TimeUtil
-    <span class="keyword">...</span>
-|---Service
-    |---AccountService
-    |---ShareService
-    <span class="keyword">...</span>
-|---Lib
-    |---Umeng
-    |---QQSDK
-    |---SVProgressHUD
-    <span class="keyword">...</span>
-|---Module
-    |---Login
-        |---View
-        |---VC
-        <span class="keyword">...</span>
-    |---Comment
-    |---Feeds
-    <span class="keyword">...</span>
+<pre><code><span class="string">|---General</span>
+    <span class="string">|---AppDelegate</span>
+    <span class="string">|---Application</span>
+    <span class="string">|---Constant</span>
+    <span class="string">|---UI</span>
+        <span class="string">|---View</span>
+        <span class="string">|---VC</span>
+        <span class="string">|---Common</span>
+    ...
+<span class="string">|---Entity</span>
+    <span class="string">|---BaseEntity</span>
+    ...
+<span class="string">|---Http</span>
+    <span class="string">|---Api</span>
+    <span class="string">|---Util</span>
+    <span class="string">|---CodeHandler</span>
+    <span class="string">|---ErrorHandler</span>
+    <span class="string">|---RequestHandler</span>
+    ...
+<span class="string">|---DB</span>
+    <span class="string">|---DBHelper</span>
+    <span class="string">|---DBService</span>
+    ...
+<span class="string">|---Util</span>
+    <span class="string">|---StringUtil</span>
+    <span class="string">|---NumberUtil</span>
+    <span class="string">|---TimeUtil</span>
+    ...
+<span class="string">|---Service</span>
+    <span class="string">|---AccountService</span>
+    <span class="string">|---ShareService</span>
+    ...
+<span class="string">|---Lib</span>
+    <span class="string">|---Umeng</span>
+    <span class="string">|---QQSDK</span>
+    <span class="string">|---SVProgressHUD</span>
+    ...
+<span class="string">|---Module</span>
+    <span class="string">|---Login</span>
+        <span class="string">|---View</span>
+        <span class="string">|---VC</span>
+        ...
+    <span class="string">|---Comment</span>
+    <span class="string">|---Feeds</span>
+    ...
 </code></pre><p>乍一看好多，别被吓到=。=，容我细细讲解。</p>
 <h2 id="详细讲解">详细讲解</h2><h3 id="General">General</h3><p>General好理解，放的就是如AppDelegate之类的、项目中最普通的、最常用的组件。</p>
 <p><strong>AppDelegate</strong>:<br>App的Delegate类实现，这个必须有，就不用说了吧。  </p>
@@ -195,7 +195,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/01/iOS项目的目录结构-原创/" data-id="ci81mvwjo000uji6udh0pmaku" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/01/iOS项目的目录结构-原创/" data-id="ci82qwewi000whz6u6afeeb8d" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -311,6 +311,10 @@
         
           <li>
             <a href="http://raytaylorlin.com/" target="_blank">好友的博客：Ray Taylor Lin&#39;s world</a>
+          </li>
+        
+          <li>
+            <a href="http://bingyan.farbox.com" target="_blank">好友的博客：Howl写东西的地方</a>
           </li>
         
       </ul>

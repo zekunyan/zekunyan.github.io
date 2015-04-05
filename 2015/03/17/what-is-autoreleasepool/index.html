@@ -107,15 +107,15 @@ int main(int argc, char * argv[]) {
       
         <h2 id="前言">前言</h2><p>开发过iOS、Mac的朋友应该对“<strong>@autoreleasepool</strong>”不陌生。只要在Xcode里创建一个工程，就能看到下面这样的代码：</p>
 <pre><code><span class="comment">//iOS program</span>
-<span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> * argv[])</span> </span>{
-    @autoreleasepool {
-        <span class="keyword">return</span> UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate <span class="keyword">class</span>]));
+<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> * argv[]) {
+    <span class="keyword">@autoreleasepool</span> {
+        <span class="keyword">return</span> <span class="built_in">UIApplicationMain</span>(argc, argv, <span class="literal">nil</span>, <span class="built_in">NSStringFromClass</span>([AppDelegate class]));
     }
 }
 
 <span class="comment">//Command line program</span>
-<span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> *argv[])</span> </span>{
-    @autoreleasepool {
+<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> *argv[]) {
+    <span class="keyword">@autoreleasepool</span> {
         <span class="comment">//...</span>
     }
     <span class="keyword">return</span> <span class="number">0</span>;
@@ -135,13 +135,13 @@ int main(int argc, char * argv[]) {
 <p>对！是计数，不是“<strong>GC、垃圾回收</strong>”什么的，就是说，在Objective-C的开发中，ARC不代表像Java那样有GC做垃圾回收，所以本质上还是要“手动”管理内存的。也就是说，我们在ARC环境下写的代码，不用自己手动插入“<strong>retain、release这些消息</strong>”，ARC会在编译时为我们在合适的位置插入，释放不必要的内存。</p>
 <p>而<strong>@autoreleasepool</strong>就跟对象的<strong>release</strong>密切相关。</p>
 <h2 id="@autoreleasepool_干了啥">@autoreleasepool 干了啥</h2><p>在MRC时代，如果我们想先retain一个对象，但是并不知道在什么时候可以release它，我们可以像下面这么做：</p>
-<pre><code><span class="built_in">NSAutoreleasePool</span> *pool = [[<span class="built_in">NSAutoreleasePool</span> alloc] init];
+<pre><code><span class="name">NSAutoreleasePool</span> *<span class="atom">pool</span> = [[<span class="name">NSAutoreleasePool</span> <span class="atom">alloc</span>] <span class="atom">init</span>];
 
-<span class="built_in">NSString</span>* str = [[[<span class="built_in">NSString</span> alloc] initWithString:<span class="string">@"tutuge"</span>] autorelease];
-<span class="comment">//use str...</span>
+<span class="name">NSString</span>* <span class="atom">str</span> = [[[<span class="name">NSString</span> <span class="atom">alloc</span>] <span class="atom">initWithString</span>:@<span class="string">"tutuge"</span>] <span class="atom">autorelease</span>];
+//<span class="atom">use</span> <span class="atom">str</span>...
 
-[pool release];
-<span class="comment">//str is released</span>
+[<span class="atom">pool</span> <span class="atom">release</span>];
+//<span class="atom">str</span> <span class="atom">is</span> <span class="atom">released</span>
 </code></pre><p>就是说，我们可以在创建对象的时候给对象发送“<strong>autorelease</strong>”消息，然后当<strong>NSAutoreleasePool</strong>结束的时候，“标记过”autorelease的对象都会被“<strong>release</strong>”掉，也就是会被释放掉。</p>
 <p>但是在ARC时代，我们不用手动发送<strong>autorelease</strong>消息，ARC会自动帮我们加。而这个时候，<strong>@autoreleasepool</strong>做的事情，跟<strong>NSAutoreleasePool</strong>就一模一样了。</p>
 <h2 id="什么时候用@autoreleasepool">什么时候用@autoreleasepool</h2><p>根据<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/mmAutoreleasePools.html" target="_blank" rel="external">Apple的文档</a>，使用场景如下：</p>
@@ -159,7 +159,7 @@ int main(int argc, char * argv[]) {
     <span class="keyword">@autoreleasepool</span> {
         <span class="built_in">NSError</span> *error;
         <span class="built_in">NSString</span> *fileContents = [<span class="built_in">NSString</span> stringWithContentsOfURL:url
-                                         encoding:NSUTF8StringEncoding error:&amp;error];
+                                         encoding:<span class="built_in">NSUTF8StringEncoding</span> error:&amp;error];
         <span class="comment">/* Process the string, creating and autoreleasing more objects. */</span>
     }
 }
@@ -179,7 +179,7 @@ int main(int argc, char * argv[]) {
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/17/what-is-autoreleasepool/" data-id="ci81mvwjj000qji6u4q7etlp0" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/17/what-is-autoreleasepool/" data-id="ci82qwewd000qhz6u4lggo4jt" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -295,6 +295,10 @@ int main(int argc, char * argv[]) {
         
           <li>
             <a href="http://raytaylorlin.com/" target="_blank">好友的博客：Ray Taylor Lin&#39;s world</a>
+          </li>
+        
+          <li>
+            <a href="http://bingyan.farbox.com" target="_blank">好友的博客：Howl写东西的地方</a>
           </li>
         
       </ul>

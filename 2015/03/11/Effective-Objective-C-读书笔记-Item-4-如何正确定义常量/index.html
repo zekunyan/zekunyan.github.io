@@ -116,23 +116,23 @@ Item 4 - Prefer Typed Constants to Preprocessor #define本节着重对比了常�
 <p>所以，用宏定义定义常量，很“危险”。</p>
 <h2 id="正确的做法">正确的做法</h2><p>恰当的常量，应该具备合适的常量名字、正确的类型，还有const、extern等关键字的修饰，当然，还要根据常量适用的“<strong>范围</strong>”，做出恰当的处理。一下举例说明。</p>
 <h3 id="只在函数中用的常量">只在函数中用的常量</h3><p>只在函数中用的常量：</p>
-<pre><code>- (void)runAnimation {
-    //动画时间长度常量
-    static const NSTimeInterval kAnimationDurationLong = <span class="number">1.</span>0f;
+<pre><code>- (<span class="keyword">void</span>)runAnimation {
+    <span class="comment">//动画时间长度常量</span>
+    <span class="keyword">static</span> <span class="keyword">const</span> NSTimeInterval kAnimationDurationLong = <span class="number">1.0f</span>;
 
-    //<span class="keyword">...</span>
+    <span class="comment">//...</span>
 }
 </code></pre><p>static、const定义了它是静态不可变的；<strong>NSTimeInterval</strong>则“精确”指定了常量的类型。</p>
 <h3 id="只在一个“-m”文件中使用的常量">只在一个“<strong>.m</strong>”文件中使用的常量</h3><p>在类的实现文件“xxx.m”文件中定义常量，也是很常见的。<br>你可能会觉得，既然是一个类使用的，那就放在类的头文件里面定义不就好了。<br><strong>但是这么想是错的=。=</strong><br><strong>因为所有要用到这个类的文件，都会无形当中包含了这些常量声明，将不必要的数据暴露在外面，这样是违反设计原则的，并且，如果常量名字取得不恰当，还有可能造成冲突。</strong></p>
 <p>所以，应该如下:</p>
-<pre><code>//XXX.m
+<pre><code><span class="comment">//<span class="label">XXX.m</span></span>
 
-//必须要static
-static const NSTimeInterval kAnimationDurationLong = <span class="number">1.</span>0f;
+<span class="comment">//必须要static</span>
+<span class="keyword">static</span> <span class="keyword">const</span> <span class="built_in">NSTimeInterval</span> kAnimationDurationLong = <span class="number">1.0</span>f;
 
-@implementation XXX
-//<span class="keyword">...</span>
-@end 
+<span class="class"><span class="keyword">@implementation</span> <span class="title">XXX</span></span>
+<span class="comment">//...</span>
+<span class="keyword">@end</span> 
 </code></pre><p>需要注意的点：</p>
 <ul>
 <li>一定要放在.m文件中。</li>
@@ -161,7 +161,7 @@ static const NSTimeInterval kAnimationDurationLong = <span class="number">1.</sp
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/" data-id="ci81mvwk4001hji6uul9tnoij" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/" data-id="ci82qwex1001jhz6uififacjn" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -277,6 +277,10 @@ static const NSTimeInterval kAnimationDurationLong = <span class="number">1.</sp
         
           <li>
             <a href="http://raytaylorlin.com/" target="_blank">好友的博客：Ray Taylor Lin&#39;s world</a>
+          </li>
+        
+          <li>
+            <a href="http://bingyan.farbox.com" target="_blank">好友的博客：Howl写东西的地方</a>
           </li>
         
       </ul>

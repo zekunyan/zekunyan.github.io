@@ -107,7 +107,7 @@ Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个�
 <span class="comment">//车轮类</span>
 <span class="class"><span class="keyword">@interface</span> <span class="title">Wheel</span> : <span class="title">NSObject</span></span>
 <span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *manufacturer;
-<span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) NSUInteger radius;
+<span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSUInteger</span> radius;
 <span class="keyword">@end</span>
 </code></pre><p>第二个类 </p>
 <pre><code><span class="comment">//Engine.h</span>
@@ -116,7 +116,7 @@ Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个�
 <span class="comment">//发动机类</span>
 <span class="class"><span class="keyword">@interface</span> <span class="title">Engine</span> : <span class="title">NSObject</span></span>
 <span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *manufacturer;
-<span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) NSUInteger power;
+<span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSUInteger</span> power;
 <span class="keyword">@end</span>
 </code></pre><p>然后就是车类Car：</p>
 <pre><code><span class="comment">//Car.h</span>
@@ -147,12 +147,12 @@ Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个�
 <p>当然，在Car类的实现文件.m文件中，我们还是要显式的引入Wheel和Engine类的，因为在这里我们要具体用到这两个类了，当然要知道类的细节。</p>
 <h3 id="为何不要import？">为何不要import？</h3><p>为什么不直接import呢？因为如果直接用import引入Wheel和Engine的声明，那么任何import引入了Car类的文件，也同时会引入Wheel、Engine类的声明，而且最终我们可能并不一定会直接跟Wheel、Engine类打交道，这样不就引入了“没有用”的类了吗？而且这样做很可能造成文件引入成“环”。 </p>
 <p>虽然import可以避免重复声明造成编译出错，传统的C语言、C++在声明的时候也可以通过如下方式避免重复声明：</p>
-<pre><code><span class="comment">#ifndef _WHEEL_H_</span>
-<span class="comment">#define _WHEEL_H_</span>
+<pre><code><span class="id">#ifndef</span> _WHEEL_H_
+<span class="hexcolor">#def</span>ine _WHEEL_H_
 
-//声明内容<span class="keyword">...</span>
+<span class="comment">//声明内容...</span>
 
-<span class="comment">#endif</span>
+#endif
 </code></pre><p>但是既然Objective-C有@class这种前置声明的办法，为何不用呢。</p>
 <h2 id="必须用import的时候">必须用import的时候</h2><p>当然，@class这样的前置声明并不能解决一切头文件引入的问题，如下这样的类，就必须要用import：</p>
 <pre><code><span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
@@ -174,7 +174,7 @@ Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个�
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/06/Effective-Objective-C-读书笔记-Item-2/" data-id="ci81mvwka001tji6ujll9k4l0" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/06/Effective-Objective-C-读书笔记-Item-2/" data-id="ci82qwex7001vhz6u0vntmzpd" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -290,6 +290,10 @@ Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个�
         
           <li>
             <a href="http://raytaylorlin.com/" target="_blank">好友的博客：Ray Taylor Lin&#39;s world</a>
+          </li>
+        
+          <li>
+            <a href="http://bingyan.farbox.com" target="_blank">好友的博客：Howl写东西的地方</a>
           </li>
         
       </ul>

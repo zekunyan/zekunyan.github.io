@@ -145,17 +145,17 @@ tom.address = <span class="string">"USA Californian"</span>;
 <h3 id="我的认识">我的认识</h3><p>先看看Model单词的意思:<br><a href="http://www.iciba.com/model" target="_blank" rel="external">爱词霸</a>：n: 模型；模式；典型。</p>
 <p>既然是模型，而不是“数据”，所以我觉得，<strong>Model应该是利用Entity实体，来组合、处理、整合更上层、更抽象数据的类</strong>。</p>
 <p>还是基于上面的“<strong>UserEntity</strong>”，看看下面的代码：</p>
-<pre><code>class UserListModel {
-    private UserEntity[] users;
+<pre><code><span class="keyword">class</span> <span class="title">UserListModel</span> {
+    <span class="keyword">private</span> UserEntity[] users;
 
-    //构造函数，初始化用户列表等。
+    <span class="comment">//构造函数，初始化用户列表等。</span>
 
-    UserEntity getUserByName(String name) {
-        //查找<span class="keyword">...</span>
+    <span class="function">UserEntity <span class="title">getUserByName</span><span class="params">(String name)</span> </span>{
+        <span class="comment">//查找...</span>
     }
 
-    void transformUserAddressFormat {
-        //转化地址格式
+    <span class="keyword">void</span> transformUserAddressFormat {
+        <span class="comment">//转化地址格式</span>
     }
 }
 </code></pre><p>就是说，Entity还是原本的概念，只不过Model是基于Entity的更高层的数据抽象与处理。</p>
@@ -170,7 +170,7 @@ tom.address = <span class="string">"USA Californian"</span>;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/01/Entity和Model的不同-关于代码的数据层/" data-id="ci81mvwk1001fji6u9e66wljq" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/01/Entity和Model的不同-关于代码的数据层/" data-id="ci82qwewz001hhz6upzs4y1px" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -286,6 +286,10 @@ tom.address = <span class="string">"USA Californian"</span>;
         
           <li>
             <a href="http://raytaylorlin.com/" target="_blank">好友的博客：Ray Taylor Lin&#39;s world</a>
+          </li>
+        
+          <li>
+            <a href="http://bingyan.farbox.com" target="_blank">好友的博客：Howl写东西的地方</a>
           </li>
         
       </ul>

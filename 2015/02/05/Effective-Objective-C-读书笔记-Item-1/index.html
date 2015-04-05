@@ -132,8 +132,8 @@ NSString <span class="keyword">*</span>str2 = str1;
 </ul>
 <p>此处的栈内存、堆内存跟C语言中的概念也是一样的，不同的是，在Objective-C中，我们不用手动去malloc、free内存，Objective-C使用内存计数计数帮我们管理内存。</p>
 <h2 id="结构体，基本类型">结构体，基本类型</h2><p>在Objective-C中，并不是所有的变量都是指针类型的，像int、float、double这些依旧是传统的“栈上分配”的，当然，还有结构体struct、枚举enum、联合union等。如：</p>
-<pre><code><span class="title">CGPoint</span> point = CGPointMake(<span class="number">10</span>, <span class="number">10</span>);
-<span class="title">CGRect</span> frame = CGRectMake(<span class="number">0</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">10</span>);
+<pre><code><span class="built_in">CGPoint</span> point = <span class="built_in">CGPointMake</span>(<span class="number">10</span>, <span class="number">10</span>);
+<span class="built_in">CGRect</span> frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">10</span>);
 </code></pre><p>这的CGPoint、CGRect都是结构体，但是都是直接在栈上分配内存的，以减少过度使用Objective-C类型的类（减少运行时的压力），各位读者使用的时候要注意。</p>
 <h2 id="总结">总结</h2><p>零散的说了一些Objective-C的特点，远远不足以讲明白Objective-C，我这只是根据Effective Objective-C这本书给个引子，还是推荐Apple的官方教程、文档，要想掌握扎实，还是要一步一步来~</p>
 
@@ -141,7 +141,7 @@ NSString <span class="keyword">*</span>str2 = str1;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/05/Effective-Objective-C-读书笔记-Item-1/" data-id="ci81mvwke001yji6u5b5va876" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/05/Effective-Objective-C-读书笔记-Item-1/" data-id="ci82qwex90020hz6ulvtgyhl5" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -257,6 +257,10 @@ NSString <span class="keyword">*</span>str2 = str1;
         
           <li>
             <a href="http://raytaylorlin.com/" target="_blank">好友的博客：Ray Taylor Lin&#39;s world</a>
+          </li>
+        
+          <li>
+            <a href="http://bingyan.farbox.com" target="_blank">好友的博客：Howl写东西的地方</a>
           </li>
         
       </ul>

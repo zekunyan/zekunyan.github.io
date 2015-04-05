@@ -150,7 +150,7 @@ emojiTextAttachment.image = emojiImage;
 <h3 id="遍历所有的NSTextAttachment类属性">遍历所有的NSTextAttachment类属性</h3><p>遍历，嗯，先看看Apple有没有提供相应的方法，能遍历NSAttributedString（及其子类）的属性的。查阅文档：<a href="https://developer.apple.com/library/prerelease/ios/documentation/Cocoa/Reference/Foundation/Classes/NSAttributedString_Class/index.html#//apple_ref/occ/instm/NSAttributedString" target="_blank" rel="external">NSAttributedString Class Reference</a>，可以找到这么一个方法：“<strong>- enumerateAttribute:inRange:options:usingBlock:</strong>”，其原型如下：</p>
 <pre><code>- (<span class="keyword">void</span>)enumerateAttribute:(<span class="built_in">NSString</span> *)attrName
                    inRange:(<span class="built_in">NSRange</span>)enumerationRange
-                   options:(NSAttributedStringEnumerationOptions)opts
+                   options:(<span class="built_in">NSAttributedStringEnumerationOptions</span>)opts
                 usingBlock:(<span class="keyword">void</span> (^)(<span class="keyword">id</span> value,
                                      <span class="built_in">NSRange</span> range,
                                      <span class="built_in">BOOL</span> *stop))block
@@ -192,17 +192,17 @@ emojiTextAttachment.image = emojiImage;
     <span class="built_in">NSMutableString</span> *plainString = [<span class="built_in">NSMutableString</span> stringWithString:<span class="keyword">self</span><span class="variable">.string</span>];
 
     <span class="comment">//替换下标的偏移量</span>
-    __block NSUInteger base = <span class="number">0</span>;
+    __block <span class="built_in">NSUInteger</span> base = <span class="number">0</span>;
 
     <span class="comment">//遍历</span>
-    [<span class="keyword">self</span> enumerateAttribute:NSAttachmentAttributeName inRange:NSMakeRange(<span class="number">0</span>, <span class="keyword">self</span><span class="variable">.length</span>)
+    [<span class="keyword">self</span> enumerateAttribute:<span class="built_in">NSAttachmentAttributeName</span> inRange:<span class="built_in">NSMakeRange</span>(<span class="number">0</span>, <span class="keyword">self</span><span class="variable">.length</span>)
                      options:<span class="number">0</span>
                   usingBlock:^(<span class="keyword">id</span> value, <span class="built_in">NSRange</span> range, <span class="built_in">BOOL</span> *stop) {
 
                       <span class="comment">//检查类型是否是自定义NSTextAttachment类</span>
                       <span class="keyword">if</span> (value &amp;&amp; [value isKindOfClass:[EmojiTextAttachment class]]) {
                           <span class="comment">//替换</span>
-                          [plainString replaceCharactersInRange:NSMakeRange(range<span class="variable">.location</span> + base, range<span class="variable">.length</span>)
+                          [plainString replaceCharactersInRange:<span class="built_in">NSMakeRange</span>(range<span class="variable">.location</span> + base, range<span class="variable">.length</span>)
                                                      withString:((EmojiTextAttachment *) value)<span class="variable">.emojiTag</span>];
 
                        <span class="comment">//增加偏移量                          </span>
@@ -226,7 +226,7 @@ emojiTextAttachment.image = emojiImage;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/" data-id="ci81mvwjv0013ji6ujh0au0p9" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/" data-id="ci82qwewq0015hz6uagcggapd" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -342,6 +342,10 @@ emojiTextAttachment.image = emojiImage;
         
           <li>
             <a href="http://raytaylorlin.com/" target="_blank">好友的博客：Ray Taylor Lin&#39;s world</a>
+          </li>
+        
+          <li>
+            <a href="http://bingyan.farbox.com" target="_blank">好友的博客：Howl写东西的地方</a>
           </li>
         
       </ul>

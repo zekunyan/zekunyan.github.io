@@ -200,7 +200,7 @@ typedef <span class="typename">void</span> (^http_fail)();
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/19/Block类型变量-缓存Http请求与回调/" data-id="ci81mvwkf0023ji6uwg21ab4e" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/19/Block类型变量-缓存Http请求与回调/" data-id="ci82qwexc0025hz6u06myeo32" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -296,8 +296,8 @@ typedef <span class="typename">void</span> (^http_fail)();
 <span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> cellHeight;
 
 <span class="comment">//真正显示的内容</span>
-<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) NSAttributedString *showTitle;
-<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) NSAttributedString *showContent;
+<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSAttributedString</span> *showTitle;
+<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSAttributedString</span> *showContent;
 
 <span class="comment">//计算高度</span>
 - (<span class="keyword">void</span>)calculateCellHeight;
@@ -332,7 +332,7 @@ typedef <span class="typename">void</span> (^http_fail)();
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/19/提升UITableView性能-复杂页面的优化/" data-id="ci81mvwj6000dji6u2791fe0i" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/19/提升UITableView性能-复杂页面的优化/" data-id="ci82qwevz000dhz6ut81wnarm" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -441,7 +441,7 @@ NSLog(@<span class="string">"Name: %@"</span>, userEntity.name);
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/18/NSString的Copy与内存分配/" data-id="ci81mvwjx0016ji6u5whl1sfn" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/18/NSString的Copy与内存分配/" data-id="ci82qwewt0018hz6u23riabhj" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -627,7 +627,7 @@ NSLog(@<span class="string">"Name: %@"</span>, userEntity.name);
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/" data-id="ci81mvwjb000gji6ubxsfr833" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/" data-id="ci82qwew3000ghz6uo84xxorn" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -685,7 +685,7 @@ NSNumber <span class="keyword">*</span>intNumber = [[NSNumber alloc] initWithInt
 <pre><code><span class="constant">NSArray </span>*numbers = [[<span class="constant">NSArray </span>alloc] <span class="symbol">initWithObjects:</span>
     <span class="variable">@1</span>, <span class="variable">@1</span>.<span class="number">1</span>, <span class="variable">@2</span>.0f, <span class="variable">@YES</span>, <span class="keyword">nil</span>];
 </code></pre><p>用字面量语法的话，就是这样：</p>
-<pre><code>NSArray <span class="variable">*numbers</span> = <span class="variable">@[</span><span class="variable">@1</span>, <span class="variable">@1</span><span class="number">.1</span>, <span class="variable">@2</span><span class="number">.0</span>f, <span class="variable">@YES</span>];
+<pre><code>NSArray <span class="variable">*numbers</span> = <span class="variable">@[</span><span class="variable">@1</span>, <span class="variable">@1</span>.1, <span class="variable">@2</span>.0f, <span class="variable">@YES</span>];
 </code></pre><h3 id="存取值">存取值</h3><p>创建了数组，肯定要从数组里面取值，用NSArray的方法就是这样：</p>
 <pre><code><span class="comment">//取</span>
 NSNumber <span class="variable">*aNumber</span> = [numbers objectAtIndex:<span class="number">2</span>];
@@ -745,7 +745,7 @@ dict[@<span class="string">"number1"</span>] = @<span class="number">6</span>;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/14/Effective-Objective-C-读书笔记-Item-3/" data-id="ci81mvwk7001oji6uq76wiqlt" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/14/Effective-Objective-C-读书笔记-Item-3/" data-id="ci82qwex4001qhz6ukjqx2255" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -793,7 +793,7 @@ dict[@<span class="string">"number1"</span>] = @<span class="number">6</span>;
 <span class="comment">//车轮类</span>
 <span class="class"><span class="keyword">@interface</span> <span class="title">Wheel</span> : <span class="title">NSObject</span></span>
 <span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *manufacturer;
-<span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) NSUInteger radius;
+<span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSUInteger</span> radius;
 <span class="keyword">@end</span>
 </code></pre><p>第二个类 </p>
 <pre><code><span class="comment">//Engine.h</span>
@@ -802,7 +802,7 @@ dict[@<span class="string">"number1"</span>] = @<span class="number">6</span>;
 <span class="comment">//发动机类</span>
 <span class="class"><span class="keyword">@interface</span> <span class="title">Engine</span> : <span class="title">NSObject</span></span>
 <span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *manufacturer;
-<span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) NSUInteger power;
+<span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSUInteger</span> power;
 <span class="keyword">@end</span>
 </code></pre><p>然后就是车类Car：</p>
 <pre><code><span class="comment">//Car.h</span>
@@ -833,12 +833,12 @@ dict[@<span class="string">"number1"</span>] = @<span class="number">6</span>;
 <p>当然，在Car类的实现文件.m文件中，我们还是要显式的引入Wheel和Engine类的，因为在这里我们要具体用到这两个类了，当然要知道类的细节。</p>
 <h3 id="为何不要import？">为何不要import？</h3><p>为什么不直接import呢？因为如果直接用import引入Wheel和Engine的声明，那么任何import引入了Car类的文件，也同时会引入Wheel、Engine类的声明，而且最终我们可能并不一定会直接跟Wheel、Engine类打交道，这样不就引入了“没有用”的类了吗？而且这样做很可能造成文件引入成“环”。 </p>
 <p>虽然import可以避免重复声明造成编译出错，传统的C语言、C++在声明的时候也可以通过如下方式避免重复声明：</p>
-<pre><code><span class="comment">#ifndef _WHEEL_H_</span>
-<span class="comment">#define _WHEEL_H_</span>
+<pre><code><span class="id">#ifndef</span> _WHEEL_H_
+<span class="hexcolor">#def</span>ine _WHEEL_H_
 
-//声明内容<span class="keyword">...</span>
+<span class="comment">//声明内容...</span>
 
-<span class="comment">#endif</span>
+#endif
 </code></pre><p>但是既然Objective-C有@class这种前置声明的办法，为何不用呢。</p>
 <h2 id="必须用import的时候">必须用import的时候</h2><p>当然，@class这样的前置声明并不能解决一切头文件引入的问题，如下这样的类，就必须要用import：</p>
 <pre><code><span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
@@ -860,7 +860,7 @@ dict[@<span class="string">"number1"</span>] = @<span class="number">6</span>;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/06/Effective-Objective-C-读书笔记-Item-2/" data-id="ci81mvwka001tji6ujll9k4l0" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/06/Effective-Objective-C-读书笔记-Item-2/" data-id="ci82qwex7001vhz6u0vntmzpd" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -935,8 +935,8 @@ NSString <span class="keyword">*</span>str2 = str1;
 </ul>
 <p>此处的栈内存、堆内存跟C语言中的概念也是一样的，不同的是，在Objective-C中，我们不用手动去malloc、free内存，Objective-C使用内存计数计数帮我们管理内存。</p>
 <h2 id="结构体，基本类型">结构体，基本类型</h2><p>在Objective-C中，并不是所有的变量都是指针类型的，像int、float、double这些依旧是传统的“栈上分配”的，当然，还有结构体struct、枚举enum、联合union等。如：</p>
-<pre><code><span class="title">CGPoint</span> point = CGPointMake(<span class="number">10</span>, <span class="number">10</span>);
-<span class="title">CGRect</span> frame = CGRectMake(<span class="number">0</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">10</span>);
+<pre><code><span class="built_in">CGPoint</span> point = <span class="built_in">CGPointMake</span>(<span class="number">10</span>, <span class="number">10</span>);
+<span class="built_in">CGRect</span> frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">10</span>);
 </code></pre><p>这的CGPoint、CGRect都是结构体，但是都是直接在栈上分配内存的，以减少过度使用Objective-C类型的类（减少运行时的压力），各位读者使用的时候要注意。</p>
 <h2 id="总结">总结</h2><p>零散的说了一些Objective-C的特点，远远不足以讲明白Objective-C，我这只是根据Effective Objective-C这本书给个引子，还是推荐Apple的官方教程、文档，要想掌握扎实，还是要一步一步来~</p>
 
@@ -944,7 +944,7 @@ NSString <span class="keyword">*</span>str2 = str1;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/05/Effective-Objective-C-读书笔记-Item-1/" data-id="ci81mvwke001yji6u5b5va876" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/05/Effective-Objective-C-读书笔记-Item-1/" data-id="ci82qwex90020hz6ulvtgyhl5" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -985,51 +985,51 @@ NSString <span class="keyword">*</span>str2 = str1;
       
         <h2 id="前言">前言</h2><p>这段时间一直在做iOS的项目（<a href="https://itunes.apple.com/cn/app/qing-ju-yin-le-quan-guo-zui/id913235479?mt=8" target="_blank" rel="external">青桔音乐App</a>），随着代码量的上升，逐渐意识到项目的整体目录结构划分是多么重要，清晰的目录结构，能够更好的应对新的需求，更容易重构。虽然一直都是一个人在做=。=，但是还是深深地体会到目录结构的重要性。</p>
 <h2 id="例子">例子</h2><p>说再多都不如来个例子实在，如下：(VC指的是viewController)</p>
-<pre><code>|---General
-    |---AppDelegate
-    |---Application
-    |---Constant
-    |---UI
-        |---View
-        |---VC
-        |---Common
-    <span class="keyword">...</span>
-|---Entity
-    |---BaseEntity
-    <span class="keyword">...</span>
-|---Http
-    |---Api
-    |---Util
-    |---CodeHandler
-    |---ErrorHandler
-    |---RequestHandler
-    <span class="keyword">...</span>
-|---DB
-    |---DBHelper
-    |---DBService
-    <span class="keyword">...</span>
-|---Util
-    |---StringUtil
-    |---NumberUtil
-    |---TimeUtil
-    <span class="keyword">...</span>
-|---Service
-    |---AccountService
-    |---ShareService
-    <span class="keyword">...</span>
-|---Lib
-    |---Umeng
-    |---QQSDK
-    |---SVProgressHUD
-    <span class="keyword">...</span>
-|---Module
-    |---Login
-        |---View
-        |---VC
-        <span class="keyword">...</span>
-    |---Comment
-    |---Feeds
-    <span class="keyword">...</span>
+<pre><code><span class="string">|---General</span>
+    <span class="string">|---AppDelegate</span>
+    <span class="string">|---Application</span>
+    <span class="string">|---Constant</span>
+    <span class="string">|---UI</span>
+        <span class="string">|---View</span>
+        <span class="string">|---VC</span>
+        <span class="string">|---Common</span>
+    ...
+<span class="string">|---Entity</span>
+    <span class="string">|---BaseEntity</span>
+    ...
+<span class="string">|---Http</span>
+    <span class="string">|---Api</span>
+    <span class="string">|---Util</span>
+    <span class="string">|---CodeHandler</span>
+    <span class="string">|---ErrorHandler</span>
+    <span class="string">|---RequestHandler</span>
+    ...
+<span class="string">|---DB</span>
+    <span class="string">|---DBHelper</span>
+    <span class="string">|---DBService</span>
+    ...
+<span class="string">|---Util</span>
+    <span class="string">|---StringUtil</span>
+    <span class="string">|---NumberUtil</span>
+    <span class="string">|---TimeUtil</span>
+    ...
+<span class="string">|---Service</span>
+    <span class="string">|---AccountService</span>
+    <span class="string">|---ShareService</span>
+    ...
+<span class="string">|---Lib</span>
+    <span class="string">|---Umeng</span>
+    <span class="string">|---QQSDK</span>
+    <span class="string">|---SVProgressHUD</span>
+    ...
+<span class="string">|---Module</span>
+    <span class="string">|---Login</span>
+        <span class="string">|---View</span>
+        <span class="string">|---VC</span>
+        ...
+    <span class="string">|---Comment</span>
+    <span class="string">|---Feeds</span>
+    ...
 </code></pre><p>乍一看好多，别被吓到=。=，容我细细讲解。</p>
 <h2 id="详细讲解">详细讲解</h2><h3 id="General">General</h3><p>General好理解，放的就是如AppDelegate之类的、项目中最普通的、最常用的组件。</p>
 <p><strong>AppDelegate</strong>:<br>App的Delegate类实现，这个必须有，就不用说了吧。  </p>
@@ -1074,7 +1074,7 @@ NSString <span class="keyword">*</span>str2 = str1;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/01/iOS项目的目录结构-原创/" data-id="ci81mvwjo000uji6udh0pmaku" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/01/iOS项目的目录结构-原创/" data-id="ci82qwewi000whz6u6afeeb8d" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -1152,7 +1152,7 @@ NSString <span class="keyword">*</span>str2 = str1;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2014/11/02/LinkTextView-Android开源库-原创/" data-id="ci81mvwjy0019ji6urt0xy33g" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2014/11/02/LinkTextView-Android开源库-原创/" data-id="ci82qweww001bhz6ursbaxgt6" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -1206,7 +1206,7 @@ NSString <span class="keyword">*</span>str2 = str1;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2014/11/01/第一篇Blog/" data-id="ci81mvwiw0003ji6untwzaltq" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2014/11/01/第一篇Blog/" data-id="ci82qwevi0003hz6u4ojhe4sp" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -1304,6 +1304,10 @@ NSString <span class="keyword">*</span>str2 = str1;
         
           <li>
             <a href="http://raytaylorlin.com/" target="_blank">好友的博客：Ray Taylor Lin&#39;s world</a>
+          </li>
+        
+          <li>
+            <a href="http://bingyan.farbox.com" target="_blank">好友的博客：Howl写东西的地方</a>
           </li>
         
       </ul>

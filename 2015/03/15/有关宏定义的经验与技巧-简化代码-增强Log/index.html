@@ -219,13 +219,13 @@
 <pre><code>&lt;main.<span class="string">m :</span> <span class="number">22</span> : main&gt;-: <span class="string">Blog:</span> <span class="string">http:</span><span class="comment">//tutuge.me</span>
 </code></pre><p>看，这下Log就带上了文件名、行号、函数名，一下子就清楚多了~<br>至于为什么要用这个奇怪的“do{…}while(0)”，其实就是为了防止在不同的使用场景中导致语法错误，详细请见：<a href="http://onevcat.com/2014/01/black-magic-in-macro/" target="_blank" rel="external">宏定义的黑魔法 - 宏菜鸟起飞手册</a></p>
 <h3 id="为Log增加全局开关">为Log增加全局开关</h3><p>开发中，我们往往会在许多地方加上Log，但是在发布的时候，又不想显示这些Log，这个时候难道要一个一个的删除打Log的地方？<br>所以，为了增加开关，我们需要将上面的增强型NSLog改造一下：</p>
-<pre><code>//判断是否要Log
-<span class="comment">#ifdef NEED_DEBUG    </span>
-<span class="comment">#define NSLog(format, ...) \</span>
-    //Log定义<span class="keyword">...</span>
-<span class="comment">#else</span>
-    <span class="comment">#define NSLog(format, ...) do{ } while(0)</span>
-<span class="comment">#endif</span>
+<pre><code><span class="comment">//判断是否要Log</span>
+<span class="preprocessor">#ifdef NEED_DEBUG    </span>
+<span class="preprocessor">#define NSLog(format, ...) \</span>
+    <span class="comment">//Log定义...</span>
+<span class="preprocessor">#else</span>
+    #define NSLog(format, ...) <span class="keyword">do</span>{ } <span class="keyword">while</span>(<span class="number">0</span>)
+<span class="preprocessor">#endif</span>
 </code></pre><p>所以，当我们需要Log的时候，在上面定义的之前加上下面这一行：</p>
 <pre><code><span class="hexcolor">#def</span>ine NEED_DEBUG
 </code></pre><p>就可以打开Log了。不加的话，就不会有Log~简单的条件编译~</p>
@@ -288,7 +288,7 @@ typedef <span class="keyword">struct</span> Complex {
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/15/有关宏定义的经验与技巧-简化代码-增强Log/" data-id="ci81mvwj30006ji6uxxdszite" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/15/有关宏定义的经验与技巧-简化代码-增强Log/" data-id="ci82qwevr0006hz6ubky8zpgi" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -404,6 +404,10 @@ typedef <span class="keyword">struct</span> Complex {
         
           <li>
             <a href="http://raytaylorlin.com/" target="_blank">好友的博客：Ray Taylor Lin&#39;s world</a>
+          </li>
+        
+          <li>
+            <a href="http://bingyan.farbox.com" target="_blank">好友的博客：Howl写东西的地方</a>
           </li>
         
       </ul>
