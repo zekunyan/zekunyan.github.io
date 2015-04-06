@@ -102,220 +102,16 @@
    <span class="comment">//单例代码 </span>
 });
 </code></pre><p>其实就是保证<strong>dispatch_once_t</strong>只有一份实例。</p>
-<h2 id="dispatch_queue_create的第二个参数">dispatch_queue_create的第二个参数</h2><p><strong>dispatch_queue_create</strong>，创建队列用的，它的参数只有两个，原型如下：</p>
-<pre><code><span class="function">dispatch_queue_t <span class="title">dispatch_queue_create</span> <span class="params">( <span class="keyword">const</span> <span class="keyword">char</span> *label, dispatch_queue_attr_t attr )</span></span>;
-</code></pre><p>在网上的大部分教程里（甚至Apple自己的文档里），都是这么创建串行队列的：</p>
-<pre><code>dispatch_queue_t <span class="built_in">queue</span> <span class="subst">=</span> dispatch_queue_create(<span class="string">"com.example.MyQueue"</span>, <span class="built_in">NULL</span>);
-</code></pre><p>看，第二个参数传的是“<strong>NULL</strong>”。  但是dispatch_queue_attr_t类型是有已经定义好的常量的，所以我认为，为了更加的清晰、严谨，最好如下创建队列：</p>
-<pre><code><span class="comment">//串行队列</span>
-dispatch_queue_t <span class="built_in">queue</span> = dispatch_queue_create(<span class="string">"com.example.MyQueue"</span>, DISPATCH_QUEUE_SERIAL);
-
-<span class="comment">//并行队列</span>
-dispatch_queue_t <span class="built_in">queue</span> = dispatch_queue_create(<span class="string">"com.example.MyQueue"</span>, DISPATCH_QUEUE_CONCURRENT);
-</code></pre><p>常量就是为了使代码更加“易懂”，更加清晰，既然有，为啥不用呢~</p>
-<h2 id="dispatch_after是延迟提交，不是延迟运行">dispatch_after是<strong>延迟提交</strong>，不是<strong>延迟运行</strong></h2><p>先看看官方文档的说明：</p>
-<pre><code>Enqueue <span class="operator">a</span> block <span class="keyword">for</span> execution <span class="keyword">at</span> <span class="operator">the</span> specified <span class="built_in">time</span>.
-</code></pre><p><strong>Enqueue</strong>，就是入队，指的就是将一个Block在特定的延时以后，加入到指定的队列中，<strong>不是在特定的时间后立即运行！</strong>。</p>
-<p>看看如下代码示例：</p>
-<pre><code><span class="comment">//创建串行队列</span>
-<span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_CONCURRENT);
-
-<span class="comment">//立即打印一条信息        </span>
-<span class="built_in">NSLog</span>(<span class="string">@"Begin add block..."</span>);        
-
-<span class="comment">//提交一个block</span>
-<span class="built_in">dispatch_async</span>(queue, ^{
-    <span class="comment">//Sleep 10秒</span>
-    [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">10</span>];
-    <span class="built_in">NSLog</span>(<span class="string">@"First block done..."</span>);
-});        
-
-<span class="comment">//5 秒以后提交block</span>
-dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(<span class="number">5</span> * <span class="built_in">NSEC_PER_SEC</span>)), queue, ^{
-    <span class="built_in">NSLog</span>(<span class="string">@"After..."</span>);
-});
-</code></pre><p>结果如下：</p>
-<pre><code>2015<span class="tag">-03-31</span> 20<span class="pseudo">:57</span><span class="pseudo">:27</span><span class="class">.122</span> <span class="tag">GCDTest</span><span class="attr_selector">[45633:1812016]</span> <span class="tag">Begin</span> <span class="tag">add</span> <span class="tag">block</span>...
-2015<span class="tag">-03-31</span> 20<span class="pseudo">:57</span><span class="pseudo">:37</span><span class="class">.127</span> <span class="tag">GCDTest</span><span class="attr_selector">[45633:1812041]</span> <span class="tag">First</span> <span class="tag">block</span> <span class="tag">done</span>...
-2015<span class="tag">-03-31</span> 20<span class="pseudo">:57</span><span class="pseudo">:37</span><span class="class">.127</span> <span class="tag">GCDTest</span><span class="attr_selector">[45633:1812041]</span> <span class="tag">After</span>...
-</code></pre><p>从结果也验证了，dispatch_after只是延时提交block，并不是延时后立即执行。所以想用dispatch_after精确控制运行状态的朋友可要注意了~</p>
-<h2 id="正确创建dispatch_time_t">正确创建dispatch_time_t</h2><p>用dispatch_after的时候就会用到dispatch_time_t变量，但是如何创建合适的时间呢？答案就是用<strong>dispatch_time</strong>函数，其原型如下：</p>
-<pre><code><span class="function">dispatch_time_t <span class="title">dispatch_time</span> <span class="params">( dispatch_time_t when, <span class="keyword">int64_t</span> delta )</span></span>;
-</code></pre><p>第一个参数一般是<strong>DISPATCH_TIME_NOW</strong>，表示从现在开始。<br>那么第二个参数就是真正的延时的具体时间。</p>
-<p>这里要特别注意的是，<strong>delta</strong>参数是“<strong>纳秒！</strong>”，就是说，延时1秒的话，delta应该是“1000000000”=。=，太长了，所以理所当然系统提供了常量，如下：</p>
-<pre><code><span class="hexcolor">#def</span>ine NSEC_PER_SEC <span class="number">1000000000</span>ull
-<span class="hexcolor">#def</span>ine USEC_PER_SEC <span class="number">1000000</span>ull
-<span class="hexcolor">#def</span>ine NSEC_PER_USEC <span class="number">1000</span>ull
-</code></pre><p>关键词解释：</p>
-<ul>
-<li>NSEC：纳秒。</li>
-<li>USEC：微妙。</li>
-<li>SEC：秒</li>
-<li>PER：每</li>
-</ul>
-<p>所以：</p>
-<ol>
-<li>NSEC_PER_SEC，每秒有多少纳秒。</li>
-<li>USEC_PER_SEC，每秒有多少毫秒。（注意是指在纳秒的基础上）</li>
-<li>NSEC_PER_USEC，每毫秒有多少纳秒。</li>
-</ol>
-<p>所以，延时<strong>1秒</strong>可以写成如下几种：</p>
-<pre><code>dispatch_time<span class="list">(<span class="keyword">DISPATCH_TIME_NOW</span>, <span class="number">1</span> <span class="variable">* NSEC_PER_SEC);
-dispatch_time(DISPATCH_TIME_NOW, 1000 *</span> USEC_PER_SEC)</span><span class="comment">;</span>
-dispatch_time<span class="list">(<span class="keyword">DISPATCH_TIME_NOW</span>, USEC_PER_SEC <span class="variable">* NSEC_PER_USEC);</span></span>
-</code></pre><p>最后一个“<strong>USEC_PER_SEC * NSEC_PER_USEC</strong>”，翻译过来就是“<strong>每秒的毫秒数乘以每毫秒的纳秒数</strong>”，也就是“<strong>每秒的纳秒数</strong>”，所以，延时500毫秒之类的，也就不难了吧~</p>
-<h2 id="dispatch_suspend_!=_立即停止队列的运行">dispatch_suspend != 立即停止队列的运行</h2><p><strong>dispatch_suspend</strong>，<strong>dispatch_resume</strong>提供了“挂起、恢复”队列的功能，简单来说，就是可以暂停、恢复队列上的任务。但是这里的“<strong>挂起</strong>”，并不能保证可以<strong>立即</strong>停止队列上正在运行的block，看如下例子：</p>
-<pre><code><span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL);
-
-<span class="comment">//提交第一个block，延时5秒打印。</span>
-<span class="built_in">dispatch_async</span>(queue, ^{
-    [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">5</span>];
-    <span class="built_in">NSLog</span>(<span class="string">@"After 5 seconds..."</span>);
-});
-
-<span class="comment">//提交第二个block，也是延时5秒打印</span>
-<span class="built_in">dispatch_async</span>(queue, ^{
-    [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">5</span>];
-    <span class="built_in">NSLog</span>(<span class="string">@"After 5 seconds again..."</span>);
-});
-
-<span class="comment">//延时一秒</span>
-<span class="built_in">NSLog</span>(<span class="string">@"sleep 1 second..."</span>);
-[<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">1</span>];
-
-<span class="comment">//挂起队列                        </span>
-<span class="built_in">NSLog</span>(<span class="string">@"suspend..."</span>);
-dispatch_suspend(queue);
-
-<span class="comment">//延时10秒                </span>
-<span class="built_in">NSLog</span>(<span class="string">@"sleep 10 second..."</span>);
-[<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">10</span>];
-
-<span class="comment">//恢复队列            </span>
-<span class="built_in">NSLog</span>(<span class="string">@"resume..."</span>);
-dispatch_resume(queue);
-</code></pre><p>运行结果如下：</p>
-<pre><code>2015<span class="tag">-04-01</span> 00<span class="pseudo">:32</span><span class="pseudo">:09</span><span class="class">.903</span> <span class="tag">GCDTest</span><span class="attr_selector">[47201:1883834]</span> <span class="tag">sleep</span> 1 <span class="tag">second</span>...
-2015<span class="tag">-04-01</span> 00<span class="pseudo">:32</span><span class="pseudo">:10</span><span class="class">.910</span> <span class="tag">GCDTest</span><span class="attr_selector">[47201:1883834]</span> <span class="tag">suspend</span>...
-2015<span class="tag">-04-01</span> 00<span class="pseudo">:32</span><span class="pseudo">:10</span><span class="class">.910</span> <span class="tag">GCDTest</span><span class="attr_selector">[47201:1883834]</span> <span class="tag">sleep</span> 10 <span class="tag">second</span>...
-2015<span class="tag">-04-01</span> 00<span class="pseudo">:32</span><span class="pseudo">:14</span><span class="class">.908</span> <span class="tag">GCDTest</span><span class="attr_selector">[47201:1883856]</span> <span class="tag">After</span> 5 <span class="tag">seconds</span>...
-2015<span class="tag">-04-01</span> 00<span class="pseudo">:32</span><span class="pseudo">:20</span><span class="class">.911</span> <span class="tag">GCDTest</span><span class="attr_selector">[47201:1883834]</span> <span class="tag">resume</span>...
-2015<span class="tag">-04-01</span> 00<span class="pseudo">:32</span><span class="pseudo">:25</span><span class="class">.912</span> <span class="tag">GCDTest</span><span class="attr_selector">[47201:1883856]</span> <span class="tag">After</span> 5 <span class="tag">seconds</span> <span class="tag">again</span>...    
-</code></pre><p>可知，在dispatch_suspend挂起队列后，第一个block<strong>还是在运行</strong>，并且正常输出。<br>结合文档，我们可以得知，dispatch_suspend并不会立即暂停正在运行的block，而是在当前block执行完成后，暂停后续的block执行。</p>
-<p>所以下次想暂停正在队列上运行的block时，还是不要用dispatch_suspend了吧~</p>
-<h2 id="“同步”的dispatch_apply">“同步”的dispatch_apply</h2><p>dispatch_apply的作用是在一个队列（串行或并行）上“运行”多次block，其实就是简化了用循环去向队列依次添加block任务。但是我个人觉得这个函数就是个“坑”，先看看如下代码运行结果：</p>
-<pre><code><span class="comment">//创建异步串行队列</span>
-<span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL);
-
-<span class="comment">//运行block3次</span>
-dispatch_apply(<span class="number">3</span>, queue, ^(size_t i) {
-    <span class="built_in">NSLog</span>(<span class="string">@"apply loop: %zu"</span>, i);
-});
-
-<span class="comment">//打印信息</span>
-<span class="built_in">NSLog</span>(<span class="string">@"After apply"</span>);
-</code></pre><p>运行的结果是：</p>
-<pre><code>2015<span class="tag">-04-01</span> 00<span class="pseudo">:55</span><span class="pseudo">:40</span><span class="class">.854</span> <span class="tag">GCDTest</span><span class="attr_selector">[47402:1893289]</span> <span class="tag">apply</span> <span class="rule"><span class="attribute">loop</span>:<span class="value"> <span class="number">0</span>
-<span class="number">2015</span>-<span class="number">04</span>-<span class="number">01</span> <span class="number">00</span>:<span class="number">55</span>:<span class="number">40.856</span> GCDTest[<span class="number">47402</span>:<span class="number">1893289</span>] apply loop: <span class="number">1</span>
-<span class="number">2015</span>-<span class="number">04</span>-<span class="number">01</span> <span class="number">00</span>:<span class="number">55</span>:<span class="number">40.856</span> GCDTest[<span class="number">47402</span>:<span class="number">1893289</span>] apply loop: <span class="number">2</span>
-<span class="number">2015</span>-<span class="number">04</span>-<span class="number">01</span> <span class="number">00</span>:<span class="number">55</span>:<span class="number">40.856</span> GCDTest[<span class="number">47402</span>:<span class="number">1893289</span>] After apply</span></span>
-</code></pre><p>看，明明是提交到异步的队列去运行，但是“After apply”居然在apply后打印，也就是说，dispatch_apply将外面的线程（main线程）<strong>“阻塞”</strong>了！</p>
-<p>查看官方文档，dispatch_apply确实会“等待”其所有的循环运行完毕才往下执行=。=，看来要小心使用了。</p>
-<h2 id="避免死锁！">避免死锁！</h2><h4 id="dispatch_sync导致的死锁">dispatch_sync导致的死锁</h4><p>涉及到多线程的时候，不可避免的就会有“死锁”这个问题，在使用GCD时，往往一不小心，就可能造成死锁，看看下面的“<strong>死锁</strong>”例子：</p>
-<pre><code><span class="comment">//在main线程使用“同步”方法提交Block，必定会死锁。</span>
-<span class="function">dispatch_sync</span>(<span class="function">dispatch_get_main_queue</span>(), ^{
-    <span class="function">NSLog</span>(<span class="at_rule">@<span class="string">"I am block..."</span>);</span>
-});
-</code></pre><p>你可能会说，这么低级的错误，我怎么会犯，那么，看看下面的：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)update<span class="built_in">UI1</span> &#123;</span><br><span class="line">    <span class="built_in">dispatch_sync</span>(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"Update ui 1"</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//死锁！</span></span><br><span class="line">        [<span class="keyword">self</span> update<span class="built_in">UI2</span>];</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)update<span class="built_in">UI2</span> &#123;</span><br><span class="line">    <span class="built_in">dispatch_sync</span>(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"Update ui 2"</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在你不注意的时候，嵌套调用可能就会造成死锁！所以为了“世界和平”=。=，我们还是少用<strong>dispatch_sync</strong>吧。</p>
-<h4 id="dispatch_apply导致的死锁！">dispatch_apply导致的死锁！</h4><p>啥，dispatch_apply导致的死锁？。。。是的，前一节讲到，dispatch_apply会<strong>等</strong>循环执行完成，这不就差不多是<strong>阻塞</strong>了吗。看如下例子：</p>
-<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">dispatch_queue_t queue = dispatch_queue_create<span class="list">(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL)</span><span class="comment">;</span></span><br><span class="line">       </span><br><span class="line">dispatch_apply<span class="list">(<span class="number">3</span>, queue, ^<span class="list">(<span class="keyword">size_t</span> i)</span> &#123;</span><br><span class="line">	NSLog<span class="list">(@<span class="string">"apply loop: %zu"</span>, i)</span><span class="comment">;</span></span><br><span class="line">   </span><br><span class="line">    //再来一个dispatch_apply！死锁！      </span><br><span class="line">	dispatch_apply<span class="list">(<span class="number">3</span>, queue, ^<span class="list">(<span class="keyword">size_t</span> j)</span> &#123;</span><br><span class="line">		NSLog<span class="list">(@<span class="string">"apply loop inside %zu"</span>, j)</span><span class="comment">;</span></span><br><span class="line">	&#125;)</span><span class="comment">;</span></span><br><span class="line">&#125;)</span><span class="comment">;</span></span><br></pre></td></tr></table></figure>
-<p>这端代码只会输出“apply loop: 1”。。。就没有然后了=。=</p>
-<p>所以，一定要避免dispatch_apply的<strong>嵌套调用</strong>。</p>
-<h2 id="灵活使用dispatch_group">灵活使用dispatch_group</h2><p>很多时候我们需要等待一系列任务（block）执行完成，然后再做一些收尾的工作。如果是有序的任务，可以分步骤完成的，直接使用串行队列就行。但是如果是一系列<strong>并行</strong>执行的任务呢？这个时候，就需要dispatch_group帮忙了~总的来说，dispatch_group的使用分如下几步：</p>
-<ol>
-<li>创建dispatch_group_t</li>
-<li>添加任务（block）</li>
-<li>添加结束任务（如清理操作、通知UI等）</li>
-</ol>
-<p>下面着重讲讲在后面两步。</p>
-<h4 id="添加任务">添加任务</h4><p>添加任务可以分为以下两种情况：</p>
-<ol>
-<li>自己创建队列：使用<strong>dispatch_group_async</strong>。</li>
-<li>无法直接使用队列变量（如使用AFNetworking添加异步任务）：使用<strong>dispatch_group_enter</strong>，<strong>dispatch_group_leave</strong>。</li>
-</ol>
-<p>自己创建队列时，当然就用dispatch_group_async函数，简单有效，简单例子如下：</p>
-<pre><code><span class="comment">//省去创建group、queue代码。。。</span>
-
-dispatch_group_async(<span class="keyword">group</span>, <span class="built_in">queue</span>, ^{
-    <span class="comment">//Do you work...</span>
-});
-</code></pre><p>当你无法直接使用队列变量时，就无法使用dispatch_group_async了，下面以使用AFNetworking时的情况：</p>
-<pre><code><span class="type">AFHTTPRequestOperationManager</span> *manager = [<span class="type">AFHTTPRequestOperationManager</span> manager];
-
-//<span class="type">Enter</span> group
-dispatch_group_enter(group);
-[manager <span class="type">GET</span>:@<span class="string">"http://www.baidu.com"</span> parameters:<span class="keyword">nil</span> success:^(<span class="type">AFHTTPRequestOperation</span> *operation, id responseObject) {
-    //<span class="type">Deal</span> <span class="keyword">with</span> <span class="literal">result</span>...
-
-    //<span class="type">Leave</span> group
-    dispatch_group_leave(group);
-}    failure:^(<span class="type">AFHTTPRequestOperation</span> *operation, <span class="type">NSError</span> *error) {
-    //<span class="type">Deal</span> <span class="keyword">with</span> error...
-
-    //<span class="type">Leave</span> group
-    dispatch_group_leave(group);
-}];
-
-//<span class="type">More</span> request...
-</code></pre><p>使用<strong>dispatch_group_enter</strong>，<strong>dispatch_group_leave</strong>就可以方便的将一系列网络请求“<strong>打包</strong>”起来~</p>
-<h4 id="添加结束任务">添加结束任务</h4><p>添加结束任务也可以分为两种情况，如下：</p>
-<ol>
-<li>在当前线程<strong>阻塞的同步等待</strong>：dispatch_group_wait。</li>
-<li>添加一个异步执行的任务作为结束任务：dispatch_group_notify</li>
-</ol>
-<p>这两个比较简单，就不再贴代码了=。=</p>
-<h2 id="使用dispatch_barrier_async,dispatch_barrier_sync的注意事项">使用dispatch_barrier_async,dispatch_barrier_sync的注意事项</h2><p>dispatch_barrier_async的作用就是向某个队列插入一个block，当目前正在执行的block运行完成后，阻塞这个block后面添加的block，只运行这个block直到完成，然后再继续后续的任务，有点“唯我独尊”的感觉=。=</p>
-<p>值得注意的是：</p>
-<ol>
-<li>dispatch<em>barrier\</em>(a)sync只在自己创建的并发队列上有效，在全局(Global)并发队列、串行队列上，效果跟<strong>dispatch_(a)sync</strong>效果一样。</li>
-<li>既然在串行队列上跟<strong>dispatch_(a)sync</strong>效果一样，那就要小心别死锁！</li>
-</ol>
-<h2 id="dispatch_set_context与dispatch_set_finalizer_f的配合使用">dispatch_set_context与dispatch_set_finalizer_f的配合使用</h2><p>dispatch_set_context可以为队列添加<strong>上下文数据</strong>，但是因为GCD是C语言接口形式的，所以其context参数类型是“<strong>void *</strong>”。也就是说，我们创建context时有如下几种选择：</p>
-<ol>
-<li>用C语言的malloc创建context数据。</li>
-<li>用C++的new创建类对象。</li>
-<li>用Objective-C的对象，但是要用__bridge等关键字转为Core Foundation对象。</li>
-</ol>
-<p>以上所有创建context的方法都有一个必须的要求，就是都要<strong>释放内存！</strong>，无论是用<strong>free、delete还是CF的CFRelease</strong>，我们都要确保在队列不用的时候，释放context的内存，否则就会造成内存泄露。</p>
-<p>所以，使用dispatch_set_context的时候，最好结合dispatch_set_finalizer_f使用，为队列设置“析构函数”，在这个函数里面释放内存，大致如下：</p>
-<pre><code><span class="function"><span class="keyword">void</span> <span class="title">cleanStaff</span><span class="params">(<span class="keyword">void</span> *context)</span> </span>{
-    <span class="comment">//释放context的内存！</span>
-
-    <span class="comment">//CFRelease(context);</span>
-    <span class="comment">//free(context);</span>
-    <span class="comment">//delete context;</span>
-}
-
-...
-
-<span class="comment">//在队列创建后，设置其“析构函数”</span>
-dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
-</code></pre><p>详细用法，请看我之前写的Blog<a href="http://tutuge.me/2015/03/29/bind-data-to-gcd-queue/" target="_blank" rel="external">为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权</a></p>
-<h2 id="总结">总结</h2><p>其实本文更像是总结了GCD中的“坑”=。=</p>
-<p>至于经验，总结一条，就是使用任何技术，都要研究透彻，否则后患无穷啊~</p>
-<h2 id="参考">参考</h2><ul>
-<li><a href="https://developer.apple.com/library/prerelease/mac/documentation/Performance/Reference/GCD_libdispatch_Ref/index.html" target="_blank" rel="external">Grand Central Dispatch (GCD) Reference</a></li>
-<li><a href="https://developer.apple.com/library/prerelease/mac/documentation/General/Conceptual/ConcurrencyProgrammingGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008091" target="_blank" rel="external">Concurrency Programming Guide</a></li>
-<li><a href="http://commandshift.co.uk/blog/2014/03/19/using-dispatch-groups-to-wait-for-multiple-web-services" target="_blank" rel="external">Using Dispatch Groups to Wait for Multiple Web Services</a></li>
-</ul>
-
+        
+          <p class="article-more-link">
+            <a href="/2015/04/03/something-about-gcd/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/04/03/something-about-gcd/" data-id="ci85ag01l000tvw6u6thc5aoa" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/04/03/something-about-gcd/" data-id="ci85b37bk000t5a6ukrzgaasj" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -354,144 +150,23 @@ dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="前言">前言</h2><p>看过GCD（Grand Central Dispatch）的Apple<a href="https://developer.apple.com/library/prerelease/mac/documentation/Performance/Reference/GCD_libdispatch_Ref/index.html" target="_blank" rel="external">官方文档</a>的朋友一定见过“<strong>dispatch_set_context</strong>”和“<strong>dispatch_get_context</strong>”这两个函数，那么这两个函数该怎么用呢？  </p>
+        <h2 id="前言">前言</h2><p>看过GCD（Grand Central Dispatch）的Apple<a href="https://developer.apple.com/library/prerelease/mac/documentation/Performance/Reference/GCD_libdispatch_Ref/index.html">官方文档</a>的朋友一定见过“<strong>dispatch_set_context</strong>”和“<strong>dispatch_get_context</strong>”这两个函数，那么这两个函数该怎么用呢？  </p>
 <p>我们都知道，GCD的接口参数都是“C语言类型“的，那么，我们如何将NSObject类型（Foundation框架）的数据，传入GCD的接口呢？（即：Core Foundation和Foundation对象的转换）</p>
 <h2 id="本文关键字">本文关键字</h2><ul>
 <li>GCD：dispatch_set_context，dispatch_get_context</li>
 <li>__bridge，__bridge_retained，__bridge_transfer</li>
 <li>Core Foundation, NSObject</li>
 </ul>
-<h2 id="dispatch_set(get)_context">dispatch_set(get)_context</h2><p>先看看这两个函数的原型：</p>
-<pre><code><span class="comment">//设置context</span>
-<span class="function"><span class="keyword">void</span> <span class="title">dispatch_set_context</span> <span class="params">( dispatch_object_t <span class="keyword">object</span>, <span class="keyword">void</span> *context )</span></span>;
-<span class="comment">//获取context</span>
-<span class="keyword">void</span> * dispatch_get_context ( dispatch_object_t <span class="keyword">object</span> );
-</code></pre><p>这里的object一般指的就是通过dispatch_queue_create创建的队列。 </p>
-<p>所以，这两个函数分别完成了将context“绑定”到特定GCD队列和从GCD队列获取对应context的任务。</p>
-<h3 id="什么是context">什么是context</h3><p>在上述函数原型中，context是一个“<strong>void类型指针</strong>”，学过C语言的朋友应该都知道，void型指针可以指向任意类型，就是说，context在这里可以是任意类型的指针。</p>
-<p>从这里可以得知，我们可以为队列“<strong>set</strong>”任意类型的数据，并在合适的时候取出来用。</p>
-<h2 id="用malloc创建context并绑定到队列上">用malloc创建context并绑定到队列上</h2><p>参考<a href="https://developer.apple.com/library/ios/documentation/General/Conceptual/ConcurrencyProgrammingGuide/OperationQueues/OperationQueues.html#//apple_ref/doc/uid/TP40008091-CH102-SW13" target="_blank" rel="external">Apple官方的例子</a>，我们先用传统的<strong>malloc</strong>创建context，看看如下简短例子：</p>
-<pre><code><span class="comment">//定义context，即一个结构体</span>
-typedef struct _Data {
-    int number;
-} <span class="built_in">Data</span>;
-
-<span class="comment">//定义队列的finalizer函数，用于释放context内存</span>
-<span class="literal">void</span> cleanStaff(<span class="literal">void</span> <span class="subst">*</span>context) {
-    NSLog(@<span class="string">"In clean, context number: %d"</span>, ((<span class="built_in">Data</span> <span class="subst">*</span>)context)<span class="subst">-&gt;</span>number);
-    <span class="comment">//释放，如果是new出来的对象，就要用delete</span>
-    free(context);
-}
-
-<span class="subst">-</span> (<span class="literal">void</span>)testBody {
-    <span class="comment">//创建队列</span>
-    dispatch_queue_t <span class="built_in">queue</span> <span class="subst">=</span> dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL);
-
-    <span class="comment">//创建Data类型context数据并初始化</span>
-    <span class="built_in">Data</span> <span class="subst">*</span>myData <span class="subst">=</span> malloc(sizeof(<span class="built_in">Data</span>));
-    myData<span class="subst">-&gt;</span>number <span class="subst">=</span> <span class="number">10</span>;
-
-    <span class="comment">//绑定context</span>
-    dispatch_set_context(<span class="built_in">queue</span>, myData);
-
-    <span class="comment">//设置finalizer函数，用于在队列执行完成后释放对应context内存</span>
-    dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
-
-    dispatch_async(<span class="built_in">queue</span>, ^{
-        <span class="comment">//获取队列的context数据</span>
-        <span class="built_in">Data</span> <span class="subst">*</span><span class="built_in">data</span> <span class="subst">=</span> dispatch_get_context(<span class="built_in">queue</span>);
-        <span class="comment">//打印</span>
-        NSLog(@<span class="string">"1: context number: %d"</span>, <span class="built_in">data</span><span class="subst">-&gt;</span>number);
-        <span class="comment">//修改context保存的数据</span>
-        <span class="built_in">data</span><span class="subst">-&gt;</span>number <span class="subst">=</span> <span class="number">20</span>;
-    });
-}
-</code></pre><p>上面的代码运行后如下：</p>
-<pre><code>2015<span class="tag">-03-29</span> 20<span class="pseudo">:28</span><span class="pseudo">:16</span><span class="class">.854</span> <span class="tag">GCDTest</span><span class="attr_selector">[37787:1443423]</span> 1: <span class="tag">context</span> <span class="rule"><span class="attribute">number</span>:<span class="value"> <span class="number">10</span>
-<span class="number">2015</span>-<span class="number">03</span>-<span class="number">29</span> <span class="number">20</span>:<span class="number">28</span>:<span class="number">16.855</span> GCDTest[<span class="number">37787</span>:<span class="number">1443423</span>] In clean, context number: <span class="number">20</span></span></span>
-</code></pre><p>看，通过为队列设置context，我们就能为队列绑定自定义的数据，然后在合适的时候取出来用。</p>
-<h2 id="NSObject类型的context">NSObject类型的context</h2><p>在Mac、iOS的开发过程中，我们大部分用的都是Foundation框架下的类，就是如NSString、NSDictionary这些NSObject类型的类。<br>但是上面的<strong>dispatch_set(get)_context</strong>接受的context参数是C语言类型的，即Core Foundation类型的，我们如何转换呢？</p>
-<p><strong>由于ARC不能管理Core Foundation Object的生命周期</strong>，所以我们必须先转换context的“类型”，以便转换内存管理权。</p>
-<h3 id="__bridge">__bridge</h3><p>Apple已经为我们提供了用于转换的关键字，如下：</p>
-<ul>
-<li>__bridge: 只做了类型转换，不修改内存管理权；</li>
-<li>__bridge_retained（即CFBridgingRetain）转换类型，同时将内存管理权从ARC中移除，后面需要使用CFRelease来释放对象；</li>
-<li>__bridge_transfer（即CFBridgingRelease）将Core Foundation的对象转换为Objective-C的对象，同时将内存管理权交给ARC。</li>
-</ul>
-<h3 id="重新定义context">重新定义context</h3><p>为了方便下面的说明，我们先定义context类。</p>
-<pre><code><span class="class"><span class="keyword">@interface</span> <span class="title">Data</span> : <span class="title">NSObject</span></span>
-<span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="keyword">int</span> number;
-<span class="keyword">@end</span>
-
-<span class="class"><span class="keyword">@implementation</span> <span class="title">Data</span></span>
-
-<span class="comment">//继承dealloc方法，便于观察对象何时被释放</span>
-- (<span class="keyword">void</span>)dealloc {
-    <span class="built_in">NSLog</span>(<span class="string">@"Data dealloc..."</span>);
-}
-
-<span class="keyword">@end</span>
-</code></pre><p>看，我们继承了<strong>dealloc</strong>方法，这样就能知道Data类型对象什么时候被释放。</p>
-<h3 id="需要注意的点">需要注意的点</h3><p><strong>__bridge</strong>的转换是没有转移内存管理权的，这点要特别注意。  </p>
-<p>如果在传context对象时，用的是<strong>__bridge</strong>转换，那么context对象的内存管理权还在ARC手里，一旦当前作用域执行完，context就会被释放，而如果队列的任务用了context对象，就会造成“<strong>EXC_BAD_ACCESS</strong>”崩溃！</p>
-<h3 id="正确的用法">正确的用法</h3><p>重写上面的例子，如下：</p>
-<pre><code><span class="comment">//定义队列的finalizer函数，用于释放context内存</span>
-<span class="function"><span class="keyword">void</span> <span class="title">cleanStaff</span><span class="params">(<span class="keyword">void</span> *context)</span> </span>{
-    <span class="comment">//这里用__bridge转换，不改变内存管理权</span>
-    Data *data = (__bridge Data *)(context);
-    NSLog(@<span class="string">"In clean, context number: %d"</span>, data.number);
-
-    <span class="comment">//释放context的内存！</span>
-    CFRelease(context);
-}
-
-- (<span class="keyword">void</span>)testBody {
-    <span class="comment">//创建队列</span>
-    dispatch_queue_t <span class="built_in">queue</span> = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL);
-
-    <span class="comment">//创建Data类型context数据并初始化</span>
-    Data *myData = [Data <span class="keyword">new</span>];
-    myData.number = <span class="number">10</span>;
-
-    <span class="comment">//绑定context</span>
-    <span class="comment">//这里用__bridge_retained转换，将context的内存管理权从ARC移除，交由我们自己手动释放！</span>
-    dispatch_set_context(<span class="built_in">queue</span>, (__bridge_retained <span class="keyword">void</span> *)(myData));
-
-    <span class="comment">//设置finalizer函数，用于在队列执行完成后释放对应context内存</span>
-    dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
-
-    dispatch_async(<span class="built_in">queue</span>, ^{
-        <span class="comment">//获取队列的context数据</span>
-        <span class="comment">//这里用__bridge转换，不改变内存管理权</span>
-        Data *data = (__bridge Data *)(dispatch_get_context(<span class="built_in">queue</span>));
-        <span class="comment">//打印</span>
-        NSLog(@<span class="string">"1: context number: %d"</span>, data.number);
-        <span class="comment">//修改context保存的数据</span>
-        data.number = <span class="number">20</span>;
-    });
-}
-</code></pre><h4 id="解释">解释</h4><ul>
-<li>在dispatch_set_context的时候用<strong>__bridge_retained</strong>转换，将context的内存管理权从ARC移除，交给我们自己管理。</li>
-<li>在队列任务中，用dispatch_get_context获取context的时候，用<strong>__bridge</strong>转换，维持context的内存管理权不变，防止出了作用域context被释放。</li>
-<li>最后用<strong>CFRelease</strong>释放context内存。</li>
-</ul>
-<h3 id="运行结果">运行结果</h3><pre><code>2015<span class="tag">-03-29</span> 21<span class="pseudo">:12</span><span class="pseudo">:41</span><span class="class">.631</span> <span class="tag">GCDTest</span><span class="attr_selector">[38131:1465900]</span> 1: <span class="tag">context</span> <span class="rule"><span class="attribute">number</span>:<span class="value"> <span class="number">10</span>
-<span class="number">2015</span>-<span class="number">03</span>-<span class="number">29</span> <span class="number">21</span>:<span class="number">12</span>:<span class="number">41.632</span> GCDTest[<span class="number">38131</span>:<span class="number">1465900</span>] In clean, context number: <span class="number">20</span>
-<span class="number">2015</span>-<span class="number">03</span>-<span class="number">29</span> <span class="number">21</span>:<span class="number">12</span>:<span class="number">41.632</span> GCDTest[<span class="number">38131</span>:<span class="number">1465900</span>] Data dealloc...</span></span>
-</code></pre><p>由结果可知，我们的context对象在最后显式调用<strong>CFRelease</strong>才被释放。</p>
-<h2 id="总结">总结</h2><p>总的来说，就是合理运用__bridge_retained(transfer)关键字转换对象的内存管理权，让我们自己控制对象的生命周期。</p>
-<h2 id="参考">参考</h2><ul>
-<li><a href="https://developer.apple.com/library/prerelease/mac/documentation/Performance/Reference/GCD_libdispatch_Ref/index.html" target="_blank" rel="external">Grand Central Dispatch (GCD) Reference</a></li>
-<li><a href="https://developer.apple.com/library/ios/documentation/General/Conceptual/ConcurrencyProgrammingGuide/OperationQueues/OperationQueues.html#//apple_ref/doc/uid/TP40008091-CH102-SW13" target="_blank" rel="external">Concurrency Programming Guide</a></li>
-<li><a href="https://developer.apple.com/library/ios/documentation/CoreFoundation/Conceptual/CFDesignConcepts/Articles/tollFreeBridgedTypes.html" target="_blank" rel="external">Toll-Free Bridged Types</a></li>
-<li><a href="http://blog.csdn.net/diyagoanyhacker/article/details/7573801" target="_blank" rel="external">Core Foundation 框架</a></li>
-</ul>
-
+        
+          <p class="article-more-link">
+            <a href="/2015/03/29/bind-data-to-gcd-queue/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/29/bind-data-to-gcd-queue/" data-id="ci85ag01w0012vw6u39yi2pyw" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/29/bind-data-to-gcd-queue/" data-id="ci85b37bs00125a6uzomsq8g3" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -535,95 +210,16 @@ typedef struct _Data {
 <h2 id="状态与选项的区别（states_and_options）">状态与选项的区别（states and options）</h2><p>在用<strong>enum</strong>之前，我个人觉得，区分一下状态和选项的概念还是很必要的。</p>
 <p><strong>状态</strong>，同时只能有一种，如“<strong>OK</strong>”，“<strong>Error</strong>”，不可能同时是OK和Error。<br><strong>选项</strong>，同时可以有一种或一种以上，如App可以<strong>同时</strong>支持横屏和竖屏，横屏竖屏在这个时候就是“屏幕方向”的两种不同的选项。</p>
 <p>接下来，我们看看如何用枚举定义状态和选项。</p>
-<h2 id="enum与状态（states）">enum与状态（states）</h2><h4 id="不好的做法">不好的做法</h4><p>经常看到这样的写法：</p>
-<pre><code><span class="preprocessor">#<span class="keyword">define</span> STATE_OK 0</span>
-<span class="preprocessor">#<span class="keyword">define</span> STATE_ERROR 1</span>
-<span class="preprocessor">#<span class="keyword">define</span> STATE_UNKNOW 2</span>
-
-<span class="comment">//直接用int型变量接收</span>
-<span class="keyword">int</span> STATE = STATE_UNKNOW;
-</code></pre><p>这样做有如下“不恰当”：</p>
-<ul>
-<li>宏定义没有类型约束，只是单纯的替换。</li>
-<li>无法限制状态的所有情况，如，认为的将STATE赋值成3，程序可能就会出错，找不到匹配的状态，因为编译器不会对“<strong>STATE = 3;</strong>”提出警告。</li>
-</ul>
-<h4 id="正确的做法">正确的做法</h4><pre><code>typedef enum _TTGState {
-    TTGStateOK  = <span class="number">0</span>,
-    TTGStateError,
-    TTGStateUnknow
-} TTGState;
-
-//指明枚举类型
-TTGState <span class="keyword">state</span> = TTGStateOK;
-</code></pre><p>用的时候就如下：</p>
-<pre><code>- (<span class="typename">void</span>)<span class="string">dealWithState:</span>(TTGState)state {
-    <span class="keyword">switch</span> (state) {
-        <span class="keyword">case</span> <span class="string">TTGStateOK:</span>
-            <span class="comment">//...</span>
-            <span class="keyword">break</span>;
-        <span class="keyword">case</span> <span class="string">TTGStateError:</span>
-            <span class="comment">//...</span>
-            <span class="keyword">break</span>;
-        <span class="keyword">case</span> <span class="string">TTGStateUnknow:</span>
-            <span class="comment">//...</span>
-            <span class="keyword">break</span>;
-    }
-}
-</code></pre><h2 id="enum与选项_(options)">enum与选项 (options)</h2><p>选项，就是说一个“选项变量”的类型要能够同时表示一个或多个组合的选择，如下例子：</p>
-<pre><code><span class="comment">//方向，可同时支持一个或多个方向</span>
-typedef <span class="class"><span class="keyword">enum</span> _<span class="title">TTGDirection</span> </span>{
-<span class="constant">    TTGDirectionNone</span> = <span class="number">0</span>,
-<span class="constant">    TTGDirectionTop</span> = <span class="number">1</span> &lt;&lt; <span class="number">0</span>,
-<span class="constant">    TTGDirectionLeft</span> = <span class="number">1</span> &lt;&lt; <span class="number">1</span>,
-<span class="constant">    TTGDirectionRight</span> = <span class="number">1</span> &lt;&lt; <span class="number">2</span>,
-<span class="constant">    TTGDirectionBottom</span> = <span class="number">1</span> &lt;&lt; <span class="number">3</span>
-} TTGDirection;
-</code></pre><p>看，这里的选项是用<strong>位运算</strong>的方式定义的，这样的好处就是，我们的选项变量可以如下表示：</p>
-<pre><code><span class="comment">//用“或”运算同时赋值多个选项</span>
-TTGDirection direction = TTGDirectionTop | TTGDirectionLeft | TTGDirectionBottom;
-
-<span class="comment">//用“与”运算取出对应位</span>
-<span class="keyword">if</span> (direction &amp; TTGDirectionTop) {
-    <span class="built_in">NSLog</span>(<span class="string">@"top"</span>);
-}
-<span class="keyword">if</span> (direction &amp; TTGDirectionLeft) {
-    <span class="built_in">NSLog</span>(<span class="string">@"left"</span>);
-}
-<span class="keyword">if</span> (direction &amp; TTGDirectionRight) {
-    <span class="built_in">NSLog</span>(<span class="string">@"right"</span>);
-}
-<span class="keyword">if</span> (direction &amp; TTGDirectionBottom) {
-    <span class="built_in">NSLog</span>(<span class="string">@"bottom"</span>);
-}
-</code></pre><p><strong>direction</strong>变量的实际内存如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_effective_objective_c_5_enum_2.jpg" alt="image"></p>
-<p>这样，用位运算，就可以同时支持多个值。</p>
-<h2 id="enum在Objective-C中的“升级版”">enum在Objective-C中的“升级版”</h2><p>一般来说，我们不能指定枚举变量的实际类型是什么，就是说，我们不知道枚举最后是int型，还是其他的什么类型。但是从C++ 11开始，我们可以为枚举指定其实际的存储类型，如下语法：</p>
-<pre><code><span class="tag">enum</span> <span class="rule"><span class="attribute">TTGState </span>:<span class="value"> NSInteger {<span class="comment">/*...*/</span>}</span></span>;
-</code></pre><p>但是，我们在定义枚举的时候如何保证兼容性呢？Foundation框架已经为我们提供了更加“统一、便捷”的枚举定义方法，我们重新定义上面的例子：</p>
-<pre><code><span class="comment">//NS_ENUM，定义状态等普通枚举</span>
-<span class="keyword">typedef</span> <span class="built_in">NS_ENUM</span>(<span class="built_in">NSUInteger</span>, TTGState) {
-    TTGStateOK = <span class="number">0</span>,
-    TTGStateError,
-    TTGStateUnknow
-};
-
-<span class="comment">//NS_OPTIONS，定义选项</span>
-<span class="keyword">typedef</span> <span class="built_in">NS_OPTIONS</span>(<span class="built_in">NSUInteger</span>, TTGDirection) {
-    TTGDirectionNone = <span class="number">0</span>,
-    TTGDirectionTop = <span class="number">1</span> &lt;&lt; <span class="number">0</span>,
-    TTGDirectionLeft = <span class="number">1</span> &lt;&lt; <span class="number">1</span>,
-    TTGDirectionRight = <span class="number">1</span> &lt;&lt; <span class="number">2</span>,
-    TTGDirectionBottom = <span class="number">1</span> &lt;&lt; <span class="number">3</span>
-};
-</code></pre><p>所以，在开发Mac、iOS程序中，最好所有的枚举都用“<strong>NS_ENUM</strong>”和“<strong>NS_OPTIONS</strong>”定义，保证统一。</p>
-<h2 id="总结">总结</h2><p>充分的用好枚举，可以增强代码的可读性，减少各种“错误”，让代码更加的规范。</p>
-
+        
+          <p class="article-more-link">
+            <a href="/2015/03/21/effective-objective-c-5-enum/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/21/effective-objective-c-5-enum/" data-id="ci85ag01t000zvw6uw6dpgw3b" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/21/effective-objective-c-5-enum/" data-id="ci85b37bp000z5a6uofem6vc2" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -687,56 +283,17 @@ TTGDirection direction = TTGDirectionTop | TTGDirectionLeft | TTGDirectionBottom
 <li>图：绿线表示用了<strong>@autoreleasepool</strong>优化后的内存占用！</li>
 </ul>
 <p>效果是不是很明显！</p>
-<p>代码Github地址：<a href="https://github.com/zekunyan/AutoReleasePoolTestExample" target="_blank" rel="external">AutoReleasePoolTestExample</a> Xcode 6, iOS 8, iPhone 5模拟器.</p>
-<h2 id="MRC_与_ARC">MRC 与 ARC</h2><p>MRC（Mannul Reference Counting）和ARC(Automatic Reference Counting)，分别对应着手动引用计数和自动引用计数。  </p>
-<p>对！是计数，不是“<strong>GC、垃圾回收</strong>”什么的，就是说，在Objective-C的开发中，ARC不代表像Java那样有GC做垃圾回收，所以本质上还是要“手动”管理内存的。也就是说，我们在ARC环境下写的代码，不用自己手动插入“<strong>retain、release这些消息</strong>”，ARC会在编译时为我们在合适的位置插入，释放不必要的内存。</p>
-<p>而<strong>@autoreleasepool</strong>就跟对象的<strong>release</strong>密切相关。</p>
-<h2 id="@autoreleasepool_干了啥">@autoreleasepool 干了啥</h2><p>在MRC时代，如果我们想先retain一个对象，但是并不知道在什么时候可以release它，我们可以像下面这么做：</p>
-<pre><code><span class="name">NSAutoreleasePool</span> *<span class="atom">pool</span> = [[<span class="name">NSAutoreleasePool</span> <span class="atom">alloc</span>] <span class="atom">init</span>];
-
-<span class="name">NSString</span>* <span class="atom">str</span> = [[[<span class="name">NSString</span> <span class="atom">alloc</span>] <span class="atom">initWithString</span>:@<span class="string">"tutuge"</span>] <span class="atom">autorelease</span>];
-//<span class="atom">use</span> <span class="atom">str</span>...
-
-[<span class="atom">pool</span> <span class="atom">release</span>];
-//<span class="atom">str</span> <span class="atom">is</span> <span class="atom">released</span>
-</code></pre><p>就是说，我们可以在创建对象的时候给对象发送“<strong>autorelease</strong>”消息，然后当<strong>NSAutoreleasePool</strong>结束的时候，“标记过”autorelease的对象都会被“<strong>release</strong>”掉，也就是会被释放掉。</p>
-<p>但是在ARC时代，我们不用手动发送<strong>autorelease</strong>消息，ARC会自动帮我们加。而这个时候，<strong>@autoreleasepool</strong>做的事情，跟<strong>NSAutoreleasePool</strong>就一模一样了。</p>
-<h2 id="什么时候用@autoreleasepool">什么时候用@autoreleasepool</h2><p>根据<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/mmAutoreleasePools.html" target="_blank" rel="external">Apple的文档</a>，使用场景如下：</p>
-<ul>
-<li>写基于命令行的的程序时，就是没有UI框架，如AppKit等Cocoa框架时。</li>
-<li>写循环，循环里面包含了大量临时创建的对象。（本文的例子）</li>
-<li>创建了新的线程。（非Cocoa程序创建线程时才需要）</li>
-<li>长时间在后台运行的任务。</li>
-</ul>
-<h2 id="利用@autoreleasepool优化循环">利用@autoreleasepool优化循环</h2><p>利用@autoreleasepool优化循环的内存占用，我觉得最有用的一点，下面就说说这个点。<br>如下面的循环，次数非常多，而且循环体里面的对象都是临时创建使用的，就可以用<strong>@autoreleasepool</strong>包起来，让每次循环结束时，可以及时的释放临时对象的内存。</p>
-<pre><code><span class="comment">//来自Apple文档，见参考</span>
-<span class="built_in">NSArray</span> *urls = &lt;<span class="preprocessor"># An array of file URLs #&gt;;</span>
-<span class="keyword">for</span> (<span class="built_in">NSURL</span> *url <span class="keyword">in</span> urls) {
-
-    <span class="keyword">@autoreleasepool</span> {
-        <span class="built_in">NSError</span> *error;
-        <span class="built_in">NSString</span> *fileContents = [<span class="built_in">NSString</span> stringWithContentsOfURL:url
-                                         encoding:<span class="built_in">NSUTF8StringEncoding</span> error:&amp;error];
-        <span class="comment">/* Process the string, creating and autoreleasing more objects. */</span>
-    }
-}
-</code></pre><p>这么做的效果是极其显著地，就如本文最开始的图一样，可以自己把示例工程下回来运行下试试~</p>
-<h2 id="总结">总结</h2><p><strong>@autoreleasepool</strong>看起来很不“起眼”，平常开发很容易就忽略它了，但是仔细一看，确如此有用~</p>
-<h2 id="参考">参考</h2><ul>
-<li><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/mmAutoreleasePools.html" target="_blank" rel="external">Using Autorelease Pool Blocks</a></li>
-<li><a href="http://stackoverflow.com/questions/14677049/what-is-autoreleasepool-objective-c" target="_blank" rel="external">What is autoreleasepool? - Objective-C</a></li>
-<li><a href="http://stackoverflow.com/questions/9086913/objective-c-why-is-autorelease-autoreleasepool-still-needed-with-arc" target="_blank" rel="external">Objective-C: Why is autorelease (@autoreleasepool) still needed with ARC?</a></li>
-<li><a href="http://blog.zilongshanren.com/blog/2013/12/20/what-is-autorelease-pool/" target="_blank" rel="external">What-is-autorelease-pool?</a></li>
-<li><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Reference/Foundation/Classes/NSAutoreleasePool_Class/index.html" target="_blank" rel="external">NSAutoreleasePool</a></li>
-</ul>
-<h3 id="示例中的第三方库">示例中的第三方库</h3><p><a href="https://github.com/kevinzhow/PNChart" target="_blank" rel="external">PNChart</a></p>
-<h3 id="运行中用代码获取App运行消耗内存">运行中用代码获取App运行消耗内存</h3><p><a href="http://stackoverflow.com/questions/787160/programmatically-retrieve-memory-usage-on-iphone" target="_blank" rel="external">Programmatically retrieve memory usage on iPhone</a></p>
-
+<p>代码Github地址：<a href="https://github.com/zekunyan/AutoReleasePoolTestExample">AutoReleasePoolTestExample</a> Xcode 6, iOS 8, iPhone 5模拟器.</p>
+        
+          <p class="article-more-link">
+            <a href="/2015/03/17/what-is-autoreleasepool/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/17/what-is-autoreleasepool/" data-id="ci85ag01h000qvw6u58oczmj5" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/17/what-is-autoreleasepool/" data-id="ci85b37bh000q5a6uydybfzu5" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -781,179 +338,18 @@ TTGDirection direction = TTGDirectionTop | TTGDirectionLeft | TTGDirectionBottom
 <span class="comment">
 //定义“函数”MIN</span>
 <span class="comment">#define MIN(A,B) ((A) &lt; (B) ? (A) : (B))</span>
-</code></pre><p>但是，这样定义常量、函数，有一定的风险。（见：<a href="http://tutuge.me/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/" target="_blank" rel="external">Effective-Objective-C-读书笔记-Item-4-如何正确定义常量</a>, <a href="http://onevcat.com/2014/01/black-magic-in-macro/" target="_blank" rel="external">宏定义的黑魔法 - 宏菜鸟起飞手册</a>）</p>
+</code></pre><p>但是，这样定义常量、函数，有一定的风险。（见：<a href="http://tutuge.me/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/">Effective-Objective-C-读书笔记-Item-4-如何正确定义常量</a>, <a href="http://onevcat.com/2014/01/black-magic-in-macro/">宏定义的黑魔法 - 宏菜鸟起飞手册</a>）</p>
 <p>本文就列出几条我个人在iOS开发当中常用的经验与技巧。</p>
-<h2 id="简化代码">简化代码</h2><p>在开发当中，我们可能会大量的写一些重复的，甚至具有“危险”的代码，用宏定义#define，往往可以简化代码，看看下面几个例子。</p>
-<h3 id="GCD与#define">GCD与#define</h3><p><strong>dispatch_once</strong><br>项目中往往少不了各种单例类，我们一般会如下定义：</p>
-<pre><code>+ (instancetype)sharedService {
-    <span class="keyword">static</span> XXX *sharedService = <span class="literal">nil</span>;
-
-    <span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;
-    <span class="built_in">dispatch_once</span>, ^{
-        sharedService = [XXX new];
-    });
-
-    <span class="keyword">return</span> sharedService;
-}
-</code></pre><p>这时候，就要注意几点：</p>
-<ul>
-<li>dispatch_once_t必须是<strong>static</strong>的，否则会各种报错=。=。</li>
-<li><strong>dispatch_once</strong>的第一个参数必须取onceToken的地址，就是要“<strong>&amp;onceToken</strong>。”</li>
-</ul>
-<p>看，写个小小的单例都要这么注意，错了一点都很危险啊，而且总要重复写这几行。所以这个时候需要让宏定义帮忙：</p>
-<pre><code><span class="comment">//定义宏定义</span>
-<span class="preprocessor">#<span class="keyword">define</span> DISPATCH_ONCE_BLOCK(onceBlock) static dispatch_once_t onceToken; dispatch_once(&amp;onceToken, onceBlock);</span>
-
-+ (instancetype)sharedService {
-    <span class="keyword">static</span> XXX *sharedService = nil;
-
-    <span class="comment">//直接一行搞定</span>
-    DISPATCH_ONCE_BLOCK(^{
-        sharedService = [XXX <span class="keyword">new</span>];        
-    })
-
-    <span class="keyword">return</span> sharedService;
-}
-</code></pre><p>看，是不是变得更加简洁、“安全了”~</p>
-<p><strong>dispatch_async</strong><br>除了dispatch_once，另一个常用的就是dispatch_async。不多说，直接看例子：</p>
-<pre><code><span class="comment">//在Main线程上运行</span>
-<span class="id">#define</span> <span class="tag">DISPATCH_ON_MAIN_THREAD</span>(mainQueueBlock) <span class="tag">dispatch_async</span>(<span class="function">dispatch_get_main_queue</span>(), <span class="tag">mainQueueBlock</span>);
-
-<span class="comment">//在Global Queue上运行</span>
-<span class="id">#define</span> <span class="tag">DISPATCH_ON_GLOBAL_QUEUE_HIGH</span>(globalQueueBlocl) <span class="tag">dispatch_async</span>(<span class="function">dispatch_get_global_queue</span>(DISPATCH_QUEUE_PRIORITY_HIGH, <span class="number">0</span>), <span class="tag">globalQueueBlocl</span>);
-<span class="id">#define</span> <span class="tag">DISPATCH_ON_GLOBAL_QUEUE_DEFAULT</span>(globalQueueBlocl) <span class="tag">dispatch_async</span>(<span class="function">dispatch_get_global_queue</span>(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), <span class="tag">globalQueueBlocl</span>);
-<span class="id">#define</span> <span class="tag">DISPATCH_ON_GLOBAL_QUEUE_LOW</span>(globalQueueBlocl) <span class="tag">dispatch_async</span>(<span class="function">dispatch_get_global_queue</span>(DISPATCH_QUEUE_PRIORITY_LOW, <span class="number">0</span>), <span class="tag">globalQueueBlocl</span>);
-<span class="id">#define</span> <span class="tag">DISPATCH_ON_GLOBAL_QUEUE_BACKGROUND</span>(globalQueueBlocl) <span class="tag">dispatch_async</span>(<span class="function">dispatch_get_global_queue</span>(DISPATCH_QUEUE_PRIORITY_BACKGROUND, <span class="number">0</span>), <span class="tag">globalQueueBlocl</span>);
-
-<span class="comment">//主线程上</span>
-<span class="tag">DISPATCH_ON_MAIN_THREAD</span>(^{
-    <span class="comment">//更新UI</span>
-})
-
-<span class="comment">//Global Queue </span>
-<span class="tag">DISPATCH_ON_GLOBAL_QUEUE_DEFAULT</span>(^{
-    <span class="comment">//异步耗时任务</span>
-})
-</code></pre><p>再也不用写一大堆”dispatch_async(dispatch_get_global_queue”了~看起来是不是很清爽~</p>
-<h3 id="能一行搞定，干嘛还要写多行">能一行搞定，干嘛还要写多行</h3><p>很多时候，我们写的函数、方法都会在起始的地方加一些公共的判断，条件满足了才可以继续往下运行，如“用户是否登录”、“某个模块是否加载完成”等等，所以，我们可能会写如下样子的代码：</p>
-<pre><code>- (<span class="keyword">void</span>)doSomething {
-    <span class="keyword">if</span> (![[XXXAccountService sharedService] isLogin]) {
-        <span class="keyword">return</span>;
-    }
-    <span class="comment">//do staff...</span>
-}
-
-- (<span class="keyword">void</span>)doSomething2 {
-    <span class="keyword">if</span> (![[XXXAccountService sharedService] isLogin]) {
-        <span class="keyword">return</span>;
-    }
-    <span class="comment">//do staff...</span>
-}
-</code></pre><p>每次都要这么写，是不是感觉很浪费时间？而且重复的好多=。=<br>所以，我们要用#define，把3行变成一行:</p>
-<pre><code><span class="comment">//定义</span>
-<span class="preprocessor">#<span class="keyword">define</span> CHECK_LOGIN_IN <span class="keyword">if</span> (![[XXXAccountService sharedService] isLogin]) {return;}</span>
-
-- (<span class="keyword">void</span>)doSomething {
-    CHECK_LOGIN_IN
-    <span class="comment">//do staff...</span>
-}
-
-- (<span class="keyword">void</span>)doSomething2 {
-    CHECK_LOGIN_IN
-    <span class="comment">//do staff...</span>
-}
-</code></pre><p>其实#define的原理就是不管三七二十一，直接做替换，所以我们完全可以利用这个特点，发挥自己的想象，简化代码~</p>
-<h2 id="宏定义与Log">宏定义与Log</h2><p>打Log，是个永恒的话题。  </p>
-<h3 id="NSLog增强版">NSLog增强版</h3><p>我们会经常用到<strong>NSLog</strong>打Log，但是，这个函数能提供的信息非常少，所以，下面就是一个增强版, 最好定义在项目的pch文件中：</p>
-<pre><code><span class="comment">#define NSLog(format, ...) \</span>
-    <span class="keyword">do</span> { <span class="string">\</span>
-        NSLog(@<span class="string">"&lt;%@ : %d : %s&gt;-: %@"</span>, <span class="string">\</span>
-        [[NSString <span class="attribute">stringWithUTF8String</span>:__FILE__] lastPathComponent], <span class="string">\</span>
-        __LINE__, <span class="string">\</span>
-        __FUNCTION__, <span class="string">\</span>
-        [NSString <span class="attribute">stringWithFormat</span>:format, <span class="comment">##__VA_ARGS__]); \</span>
-    } <span class="keyword">while</span>(<span class="number">0</span>)
-</code></pre><p>使用：    </p>
-<pre><code><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> *argv[])</span> </span>{
-    <span class="annotation">@autoreleasepool</span> {
-        NSLog(@<span class="string">"Blog: %@"</span>, @<span class="string">"http://tutuge.me"</span>);
-    }
-    <span class="keyword">return</span> <span class="number">0</span>;
-}
-</code></pre><p>输出：</p>
-<pre><code>&lt;main.<span class="string">m :</span> <span class="number">22</span> : main&gt;-: <span class="string">Blog:</span> <span class="string">http:</span><span class="comment">//tutuge.me</span>
-</code></pre><p>看，这下Log就带上了文件名、行号、函数名，一下子就清楚多了~<br>至于为什么要用这个奇怪的“do{…}while(0)”，其实就是为了防止在不同的使用场景中导致语法错误，详细请见：<a href="http://onevcat.com/2014/01/black-magic-in-macro/" target="_blank" rel="external">宏定义的黑魔法 - 宏菜鸟起飞手册</a></p>
-<h3 id="为Log增加全局开关">为Log增加全局开关</h3><p>开发中，我们往往会在许多地方加上Log，但是在发布的时候，又不想显示这些Log，这个时候难道要一个一个的删除打Log的地方？<br>所以，为了增加开关，我们需要将上面的增强型NSLog改造一下：</p>
-<pre><code><span class="comment">//判断是否要Log</span>
-<span class="preprocessor">#ifdef NEED_DEBUG    </span>
-<span class="preprocessor">#define NSLog(format, ...) \</span>
-    <span class="comment">//Log定义...</span>
-<span class="preprocessor">#else</span>
-    #define NSLog(format, ...) <span class="keyword">do</span>{ } <span class="keyword">while</span>(<span class="number">0</span>)
-<span class="preprocessor">#endif</span>
-</code></pre><p>所以，当我们需要Log的时候，在上面定义的之前加上下面这一行：</p>
-<pre><code><span class="hexcolor">#def</span>ine NEED_DEBUG
-</code></pre><p>就可以打开Log了。不加的话，就不会有Log~简单的条件编译~</p>
-<h3 id="为Log增加等级">为Log增加等级</h3><p>开发过Android的应该都知道，Android里面可以很方便的用Log.i、Log.d输出不同“等级”的Log，调试更加方便，NSLog却不行。所以，还是要借助宏定义：</p>
-<pre><code><span class="comment">//Debug等级Log, 在此之前定义自己的NSLog</span>
-<span class="preprocessor">#ifdef LOG_LEVEL_DEBUG</span>
-    <span class="preprocessor">#<span class="keyword">define</span> DLog(format, ...) NSLog(@"&lt;DEBUG&gt;: %@", [NSString stringWithFormat:format, ##__VA_ARGS__])</span>
-<span class="preprocessor">#<span class="keyword">else</span></span>
-    <span class="preprocessor">#<span class="keyword">define</span> DLog(format, ...) do{ } while(0)</span>
-<span class="preprocessor">#<span class="keyword">endif</span></span>
-
-<span class="comment">//Info等级Log</span>
-<span class="preprocessor">#ifdef LOG_LEVEL_INFO</span>
-    <span class="preprocessor">#<span class="keyword">define</span> ILog(format, ...) NSLog(@"&lt;Info&gt;: %@", [NSString stringWithFormat:format, ##__VA_ARGS__])</span>
-<span class="preprocessor">#<span class="keyword">else</span></span>
-    <span class="preprocessor">#<span class="keyword">define</span> ILog(format, ...) do{ } while(0)</span>
-<span class="preprocessor">#<span class="keyword">endif</span></span>
-
-<span class="comment">//Error等级Log</span>
-<span class="preprocessor">#ifdef LOG_LEVEL_ERROR</span>
-    <span class="preprocessor">#<span class="keyword">define</span> ELog(format, ...) NSLog(@"&lt;Error&gt;: %@", [NSString stringWithFormat:format, ##__VA_ARGS__])</span>
-<span class="preprocessor">#<span class="keyword">else</span></span>
-    <span class="preprocessor">#<span class="keyword">define</span> ELog(format, ...) do{ } while(0)</span>
-<span class="preprocessor">#<span class="keyword">endif</span></span>
-</code></pre><p>当我们在打Log的时候，就可以根据需要，用不同等级的Log，而且可以方便的定制需要输出哪几种，并且之前的“增强版”NSLog也可以使用。</p>
-<p>完整的请看<a href="https://gist.github.com/zekunyan/2f2356136b9b40348584" target="_blank" rel="external">Gist</a>.</p>
-<h2 id="其它">其它</h2><p>还有一些简单好用的宏定义，在这就只举几个典型的例子了~</p>
-<h3 id="打印自定义类型信息">打印自定义类型信息</h3><p>假如有如下结构体定义(自定义类的话，直接重写description方法即可):</p>
-<pre><code><span class="comment">//复数结构体</span>
-typedef <span class="keyword">struct</span> Complex {
-    float r; <span class="comment">//实部</span>
-    float i; <span class="comment">//虚部</span>
-} Complex;
-
-<span class="comment">//定义打印Complex类型的宏</span>
-<span class="comment">//输出：(1+2i), (1-2i)</span>
-#define NSLogComplex(<span class="built_in">complex</span>) NSLog(@<span class="string">"Complex: (%g%s%gi)"</span>, <span class="built_in">complex</span>.r, (<span class="built_in">complex</span>.i &gt; <span class="number">0</span> ? <span class="string">"+"</span> : <span class="string">""</span>), <span class="built_in">complex</span>.i)
-</code></pre><h3 id="常用函数简化、单例获取">常用函数简化、单例获取</h3><pre><code><span class="comment">//获取View的属性</span>
-<span class="hexcolor">#def</span>ine <span class="function"><span class="title">GetViewWidth</span><span class="params">(view)</span></span>  view<span class="class">.frame</span><span class="class">.size</span><span class="class">.width</span>
-<span class="hexcolor">#def</span>ine <span class="function"><span class="title">GetViewHeight</span><span class="params">(view)</span></span> view<span class="class">.frame</span><span class="class">.size</span><span class="class">.height</span>
-<span class="hexcolor">#def</span>ine <span class="function"><span class="title">GetViewX</span><span class="params">(view)</span></span>      view<span class="class">.frame</span><span class="class">.origin</span><span class="class">.x</span>
-<span class="hexcolor">#def</span>ine <span class="function"><span class="title">GetViewY</span><span class="params">(view)</span></span>      view<span class="class">.frame</span><span class="class">.origin</span><span class="class">.y</span>
-
-<span class="comment">//屏幕常量</span>
-<span class="hexcolor">#def</span>ine GetScreenWidth      [[UIScreen mainScreen] bounds]<span class="class">.size</span><span class="class">.width</span>
-<span class="hexcolor">#def</span>ine GetScreenHeight     [[UIScreen mainScreen] bounds]<span class="class">.size</span><span class="class">.height</span>
-
-<span class="comment">//获取图片资源</span>
-<span class="hexcolor">#def</span>ine <span class="function"><span class="title">GetImage</span><span class="params">(imageName)</span></span> [UIImage imageNamed:[NSString stringWithFormat:@<span class="string">"%@"</span>,imageName]]
-
-<span class="comment">//等等~只要你想得到~</span>
-</code></pre><h2 id="总结">总结</h2><p>宏定义的各种Tip还远远不止这些，合理使用它，可以有效改善代码的阅读质量~</p>
-<h2 id="参考">参考</h2><ul>
-<li><a href="https://gcc.gnu.org/onlinedocs/cpp/index.html" target="_blank" rel="external">The C Preprocessor</a></li>
-<li><a href="http://onevcat.com/2014/01/black-magic-in-macro/" target="_blank" rel="external">宏定义的黑魔法 - 宏菜鸟起飞手册</a></li>
-</ul>
-<p>I</p>
-
+        
+          <p class="article-more-link">
+            <a href="/2015/03/15/有关宏定义的经验与技巧-简化代码-增强Log/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/15/有关宏定义的经验与技巧-简化代码-增强Log/" data-id="ci85ag00y0006vw6u3hnrrhzt" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/15/有关宏定义的经验与技巧-简化代码-增强Log/" data-id="ci85b37ax00065a6u9hhjueta" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -995,67 +391,16 @@ typedef <span class="keyword">struct</span> Complex {
         <h2 id="前言">前言</h2><p>写博客果然比光看书要花时间=。=，书都快看完了，才写到第4节。但是总结一遍，的确印象深刻啊~~  </p>
 <p>这次的主题是“<strong>常量</strong>”，非常常用，又非常重要的东西~良好的代码规范、设计，少不了各种<strong>常量</strong>。</p>
 <h2 id="Item_4_-_Prefer_Typed_Constants_to_Preprocessor_#define">Item 4 - Prefer Typed Constants to Preprocessor #define</h2><p>本节着重对比了常量的定义形式，类型常量和#define的区别、各自的特点。最后得出，我们应该用带有类型的常量，而不是#define。</p>
-<h2 id="一个简单的示例">一个简单的示例</h2><p>应用中，少不了各种动画，也就少不了设定动画的时间长度，一般来说，我们会设定短、中、长几种时间常量，用于不同的场合，了解C语言的童鞋估计对“<strong>#define</strong>”宏定义不陌生，于是，可能就会如下这么定义：</p>
-<pre><code><span class="hexcolor">#def</span>ine ANIMATION_DURATION_SHORT <span class="number">0.3</span>
-<span class="hexcolor">#def</span>ine ANIMATION_DURATION_MIDDLE <span class="number">0.6</span>
-<span class="hexcolor">#def</span>ine ANIMATION_DURATION_LONG <span class="number">1.0</span>
-</code></pre><p>于是，所有用到动画时长的地方，直接用这几个宏定义就行了。  </p>
-<p>乍一看，似乎没什么问题。</p>
-<h3 id="类型+不可变">类型+不可变</h3><p>先来看看宏定义干了什么。<br>总的来说，#define就是“替换”，在编译时，将一切宏定义替换成定义后面的内容。（参考<a href="http://baike.baidu.com/view/2076445.htm" target="_blank" rel="external">百度百科</a>）  </p>
-<p>关键在于：</p>
-<ul>
-<li>宏定义不会检查替换的“<strong>类型</strong>”，只要遇到，就做替换。</li>
-<li>宏定义不保证“<strong>不可变</strong>”，因为可以<strong>重复定义</strong>，不能保证值不变。(这个我觉得是最容易让人忽略的地方)</li>
-</ul>
-<p>所以，用宏定义定义常量，很“危险”。</p>
-<h2 id="正确的做法">正确的做法</h2><p>恰当的常量，应该具备合适的常量名字、正确的类型，还有const、extern等关键字的修饰，当然，还要根据常量适用的“<strong>范围</strong>”，做出恰当的处理。一下举例说明。</p>
-<h3 id="只在函数中用的常量">只在函数中用的常量</h3><p>只在函数中用的常量：</p>
-<pre><code>- (<span class="keyword">void</span>)runAnimation {
-    <span class="comment">//动画时间长度常量</span>
-    <span class="keyword">static</span> <span class="keyword">const</span> NSTimeInterval kAnimationDurationLong = <span class="number">1.0f</span>;
-
-    <span class="comment">//...</span>
-}
-</code></pre><p>static、const定义了它是静态不可变的；<strong>NSTimeInterval</strong>则“精确”指定了常量的类型。</p>
-<h3 id="只在一个“-m”文件中使用的常量">只在一个“<strong>.m</strong>”文件中使用的常量</h3><p>在类的实现文件“xxx.m”文件中定义常量，也是很常见的。<br>你可能会觉得，既然是一个类使用的，那就放在类的头文件里面定义不就好了。<br><strong>但是这么想是错的=。=</strong><br><strong>因为所有要用到这个类的文件，都会无形当中包含了这些常量声明，将不必要的数据暴露在外面，这样是违反设计原则的，并且，如果常量名字取得不恰当，还有可能造成冲突。</strong></p>
-<p>所以，应该如下:</p>
-<pre><code><span class="comment">//<span class="label">XXX.m</span></span>
-
-<span class="comment">//必须要static</span>
-<span class="keyword">static</span> <span class="keyword">const</span> <span class="built_in">NSTimeInterval</span> kAnimationDurationLong = <span class="number">1.0</span>f;
-
-<span class="class"><span class="keyword">@implementation</span> <span class="title">XXX</span></span>
-<span class="comment">//...</span>
-<span class="keyword">@end</span> 
-</code></pre><p>需要注意的点：</p>
-<ul>
-<li>一定要放在.m文件中。</li>
-<li>必须是<strong>static</strong>，表示此常量作用域只在此.m文件中。如果不加static的话，常量就会在全局作用域中声明，可能会导致跟其他的常量冲突。</li>
-<li>const，当然。</li>
-<li>NSTimeInterval，确定的类型。</li>
-<li>kAnimationDurationLong，“<strong>k</strong>”开头的命名，也算是Apple的规范了吧，内部常量统一以“<strong>k</strong>”开头。</li>
-</ul>
-<h3 id="全局常量">全局常量</h3><p>一般来说，最常见的全局常量就是发广播Notification时用的Notification的名字，往往都是一些字符串，下面就以这个为例子：</p>
-<p>假设我们的类叫“<strong>TTGClass</strong>”，我们的类会向外发送Notification，所以需要定义一个Notification的名字常量供外界注册，如下：</p>
-<pre><code><span class="comment">//TTGClass.h</span>
-<span class="keyword">extern</span> <span class="built_in">NSString</span> * <span class="keyword">const</span> TTGClassWorkBeginNotification;
-
-<span class="comment">//TTGClass.m</span>
-<span class="built_in">NSString</span> * <span class="keyword">const</span> TTGClassWorkBeginNotification = <span class="string">@"TTGClassWorkBeginNotification"</span>;
-</code></pre><p>关键：</p>
-<ul>
-<li>头文件中只是做声明，不做定义。所以用extern表示常量在别处定义的，尽量隐藏细节。</li>
-<li>同<strong>类名</strong>做常量名字的开头，<strong>这个非常关键，因为Objective-C里面没有像Java那样的“包”机制，所以必须靠命名来划分不同的类，常量当然也要遵循这个规则。</strong></li>
-<li>NSString，确定的类型；const，表明常量；Notification后缀，表明用途。这些都是需要注意的。</li>
-</ul>
-<h2 id="总结">总结</h2><p>良好的代码，总是少不了定义各种常量，以避免“魔鬼数字、魔鬼字符串”。所以我们应该尽量避免少用#define定义常量，而是用带有类型的、const的常量，并且尽可能的缩小常量的作用域。  </p>
-<p>暴露的细节越少，出错的机会也就越小（忘了从哪里看到的=。=）</p>
-
+        
+          <p class="article-more-link">
+            <a href="/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/" data-id="ci85ag02d001jvw6ufdav8d00" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/" data-id="ci85b37c6001j5a6up3lnedvk" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -1100,115 +445,19 @@ typedef <span class="keyword">struct</span> Complex {
 <li>在UITextView中编辑文字时插入自定义表情图片</li>
 <li>同时可以返回带有表情“<strong>替换符</strong>”的纯文本字符串。</li>
 </ul>
-<h2 id="示例">示例</h2><p>本文代码工程地址：<a href="https://github.com/zekunyan/UITextViewDIYEmojiExample" target="_blank" rel="external">https://github.com/zekunyan/UITextViewDIYEmojiExample</a></p>
+<h2 id="示例">示例</h2><p>本文代码工程地址：<a href="https://github.com/zekunyan/UITextViewDIYEmojiExample">https://github.com/zekunyan/UITextViewDIYEmojiExample</a></p>
 <p>效果图：</p>
 <p><img src="http://zorrochen.qiniudn.com/inputEmoji_Sample.gif" alt="image"></p>
-<h2 id="背景知识">背景知识</h2><ul>
-<li>NSAttributedString及其子类，用于显示富文本。</li>
-<li>NSTextAttachment，NSAttributedString的一种样式类，可以在文本中显示图片。</li>
-<li>NSTextStorage，UITextView中的实际的文本封装。（见参考中的UITextView文档）</li>
-</ul>
-<h3 id="表情与其标志">表情与其标志</h3><p>首先需要明确的是，我们的自定义表情一定是有一一对应的“<strong>标志</strong>”的，如“<strong>[/emoji_haha]</strong>”。<br>就是说，为了方便处理，方便在数据库、网络传输中保存、传输带有表情图片的文本，我们必须要为每种表情取特定的“<strong>名字</strong>”，数据库中储存的、网络传输的文本就只包含这些标志名字就行，在显示的时候做对应的替换。</p>
-<p>如：</p>
-<p><strong>tutuge.me<img src="http://zorrochen.qiniudn.com/blog_uitextview_input_emoji_emoji_1.png" alt="image"></strong></p>
-<p>对应的纯文本就是：</p>
-<p><strong>tutuge.me[/emoji_1]</strong></p>
-<h2 id="插入并显示表情图片">插入并显示表情图片</h2><p>插入表情很简单，直接实例化<strong>NSTextAttachment</strong>类，将需要的表情的UIImage实例赋值给NSTextAttachment的image属性，然后用“<strong>[NSAttributedString attributedStringWithAttachment:]</strong>”方法实例化一个NSAttributedString的对象，插入到UITextView的textStorage对应的位置即可。</p>
-<p>如下：</p>
-<pre><code>NSTextAttachment *emojiTextAttachment = [NSTextAttachment <span class="keyword">new</span>];
-
-<span class="comment">//设置表情图片</span>
-emojiTextAttachment.image = emojiImage;
-
-<span class="comment">//插入表情</span>
-[textView.textStorage <span class="string">insertAttributedString:</span>[NSAttributedString <span class="string">attributedStringWithAttachment:</span>emojiTextAttachment]
-<span class="label">                                      atIndex:</span>textView.selectedRange.location];
-</code></pre><p>这样，就能在UITextView当前光标位置插入表情图片了。</p>
-<h2 id="获取带有表情标志的文本字符串">获取带有表情标志的文本字符串</h2><h3 id="难点">难点</h3><p>NSTextAttachment被插入到NSAttributedString中的时候，<strong>就被当成了一个字符处理！！！</strong>。<br>就是说，只从UITextView的text中，是找不回文本里面不同的表情所对应的标志的！  </p>
-<h3 id="解决点">解决点</h3><ol>
-<li>我们要能遍历出当前文本中所有的表情，也就是NSTextAttachment类。</li>
-<li>我们要能知道遍历出的表情，对应的标志是什么。</li>
-</ol>
-<h3 id="遍历所有的NSTextAttachment类属性">遍历所有的NSTextAttachment类属性</h3><p>遍历，嗯，先看看Apple有没有提供相应的方法，能遍历NSAttributedString（及其子类）的属性的。查阅文档：<a href="https://developer.apple.com/library/prerelease/ios/documentation/Cocoa/Reference/Foundation/Classes/NSAttributedString_Class/index.html#//apple_ref/occ/instm/NSAttributedString" target="_blank" rel="external">NSAttributedString Class Reference</a>，可以找到这么一个方法：“<strong>- enumerateAttribute:inRange:options:usingBlock:</strong>”，其原型如下：</p>
-<pre><code>- (<span class="keyword">void</span>)enumerateAttribute:(<span class="built_in">NSString</span> *)attrName
-                   inRange:(<span class="built_in">NSRange</span>)enumerationRange
-                   options:(<span class="built_in">NSAttributedStringEnumerationOptions</span>)opts
-                usingBlock:(<span class="keyword">void</span> (^)(<span class="keyword">id</span> value,
-                                     <span class="built_in">NSRange</span> range,
-                                     <span class="built_in">BOOL</span> *stop))block
-</code></pre><p>用处：</p>
-<pre><code>Executes <span class="operator">the</span> Block <span class="keyword">for</span> <span class="operator">the</span> specified attribute run <span class="operator">in</span> <span class="operator">the</span> specified range.
-</code></pre><p>看，就是这个方法~就能遍历出NSTextAttachment对象了~</p>
-<h3 id="创建NSTextAttachment的子类">创建NSTextAttachment的子类</h3><p>如何绑定NSTextAttachment所表示的表情和与其对应的标志？创建子类嘛~直接在子类中增加属性，保存标志不就行了。<br>如下：</p>
-<pre><code><span class="variable">@interface</span> <span class="attribute">EmojiTextAttachment </span>: NSTextAttachment
-<span class="variable">@property</span>(strong, nonatomic) NSString *emojiTag;
-<span class="variable">@end</span>
-</code></pre><p>所以，这个时候，插入表情的代码应该就是下面这样：</p>
-<pre><code>EmojiTextAttachment *emojiTextAttachment = [EmojiTextAttachment <span class="keyword">new</span>];
-
-<span class="comment">//保存表情标志</span>
-emojiTextAttachment.emojiTag = emojiTag;
-
-<span class="comment">//设置表情图片</span>
-emojiTextAttachment.image = emojiImage;
-
-<span class="comment">//插入表情</span>
-[textView.textStorage <span class="string">insertAttributedString:</span>[NSAttributedString <span class="string">attributedStringWithAttachment:</span>emojiTextAttachment]
-<span class="label">                                      atIndex:</span>textView.selectedRange.location];
-</code></pre><h3 id="创建NSAttributedString的Category">创建NSAttributedString的Category</h3><p>最后，就是将这个遍历表情、拼接最终文本字符串的方法设置成NSAttributedString的自定义Category方法，以方便直接调用。<br>当然，这里面有些细节的处理，如替换表情标志时的字符串偏移量计算等，看代码吧。  </p>
-<p>如下：</p>
-<pre><code><span class="comment">//NSAttributedString+EmojiExtension.h</span>
-
-<span class="class"><span class="keyword">@interface</span> <span class="title">NSAttributedString</span> (<span class="title">EmojiExtension</span>)</span>
-- (<span class="built_in">NSString</span> *)getPlainString;
-<span class="keyword">@end</span>
-
-
-<span class="comment">//NSAttributedString+EmojiExtension.m</span>
-
-<span class="class"><span class="keyword">@implementation</span> <span class="title">NSAttributedString</span> (<span class="title">EmojiExtension</span>)</span>
-
-- (<span class="built_in">NSString</span> *)getPlainString {
-
-    <span class="comment">//最终纯文本</span>
-    <span class="built_in">NSMutableString</span> *plainString = [<span class="built_in">NSMutableString</span> stringWithString:<span class="keyword">self</span><span class="variable">.string</span>];
-
-    <span class="comment">//替换下标的偏移量</span>
-    __block <span class="built_in">NSUInteger</span> base = <span class="number">0</span>;
-
-    <span class="comment">//遍历</span>
-    [<span class="keyword">self</span> enumerateAttribute:<span class="built_in">NSAttachmentAttributeName</span> inRange:<span class="built_in">NSMakeRange</span>(<span class="number">0</span>, <span class="keyword">self</span><span class="variable">.length</span>)
-                     options:<span class="number">0</span>
-                  usingBlock:^(<span class="keyword">id</span> value, <span class="built_in">NSRange</span> range, <span class="built_in">BOOL</span> *stop) {
-
-                      <span class="comment">//检查类型是否是自定义NSTextAttachment类</span>
-                      <span class="keyword">if</span> (value &amp;&amp; [value isKindOfClass:[EmojiTextAttachment class]]) {
-                          <span class="comment">//替换</span>
-                          [plainString replaceCharactersInRange:<span class="built_in">NSMakeRange</span>(range<span class="variable">.location</span> + base, range<span class="variable">.length</span>)
-                                                     withString:((EmojiTextAttachment *) value)<span class="variable">.emojiTag</span>];
-
-                       <span class="comment">//增加偏移量                          </span>
-                          base += ((EmojiTextAttachment *) value)<span class="variable">.emojiTag</span><span class="variable">.length</span> - <span class="number">1</span>;
-                      }
-                  }];
-
-    <span class="keyword">return</span> plainString;
-}
-
-<span class="keyword">@end</span>
-</code></pre><h3 id="使用">使用</h3><p>直接调用getPlainString方法即可。</p>
-<h2 id="总结">总结</h2><p>其实本文也是来源于最近的项目需求，在网上一直找不到比较好的解决方案，就自己摸索出来一个。至于复杂的图文混合编辑，当然还是Core Text来的强大（自己也在学习中）~</p>
-<p>如果有更好地办法，一定要告诉我啊~~~</p>
-<h2 id="参考">参考</h2><ul>
-<li><a href="https://developer.apple.com/library/ios/documentation/UIKit/Reference/UITextView_Class/#//apple_ref/occ/instp/UITextView/textStorage" target="_blank" rel="external">UITextView Class Reference</a></li>
-<li><a href="https://developer.apple.com/library/prerelease/ios/documentation/Cocoa/Reference/Foundation/Classes/NSAttributedString_Class/index.html#//apple_ref/occ/instm/NSAttributedString/enumerateAttribute:inRange:options:usingBlock:" target="_blank" rel="external">NSAttributedString Class Reference</a></li>
-</ul>
-
+        
+          <p class="article-more-link">
+            <a href="/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/" data-id="ci85ag01z0015vw6upqx68h89" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/" data-id="ci85b37bv00155a6u4d4k993d" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -1253,7 +502,7 @@ emojiTextAttachment.image = emojiImage;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/06/关于评论不见了/" data-id="ci85ag018000jvw6u0fkagd9k" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/06/关于评论不见了/" data-id="ci85b37b9000j5a6uh8412yo5" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -1295,73 +544,16 @@ emojiTextAttachment.image = emojiImage;
         <h2 id="前言">前言</h2><p>经常都能在一些博客、文档中看到“<strong>Model</strong>”、“<strong>Entity</strong>”的字样。如<strong>MVC</strong>模式中的“<strong>M就是Model</strong>”，“<strong>MVVM对应的Model-View-ViewModel</strong>”，数据库抽象层里面的“<strong>Model</strong>“等。  </p>
 <p>它们的区别到底是什么？  </p>
 <p>其实没有真正官方的对Entity和Model的定义，在此我只是说说我自己的理解。</p>
-<h2 id="什么是Entity">什么是<strong>Entity</strong></h2><p>先看看这个单词是什么意思：<br><a href="http://www.iciba.com/entity" target="_blank" rel="external">爱词霸</a>：n: 实体，实际存在物，本质。</p>
-<p>在代码中，我们经常会遇到一些具有“<strong>现实</strong>”意义的“<strong>个体</strong>”，如一个用户，一首歌曲，一条评论等等，它们都是在逻辑上完整的一个整体，都具有相似的结构，但是却因为“<strong>属性</strong>”的不同而不同。</p>
-<p>看看一个典型的Entity类：</p>
-<pre><code><span class="comment">//Java </span>
-
-<span class="comment">//Entity类定义</span>
-<span class="class"><span class="keyword">class</span> <span class="title">UserEntity</span> </span>{
-    <span class="keyword">public</span> String name;
-    <span class="keyword">public</span> <span class="keyword">int</span> age;
-    <span class="keyword">public</span> String address;
-}
-
-<span class="comment">//Entity对象</span>
-UserEntity john = <span class="keyword">new</span> UserEntity();
-john.name = <span class="string">"John"</span>;
-john.age = <span class="number">20</span>;
-john.address = <span class="string">"China Hubei Wuhan"</span>;
-
-UserEntity tom = <span class="keyword">new</span> UserEntity();
-tom.name = <span class="string">"Tom"</span>;
-tom.age = <span class="number">30</span>;
-tom.address = <span class="string">"USA Californian"</span>;
-</code></pre><p>所以：</p>
-<ul>
-<li>Entity类，或者说<strong>实体类</strong>，代表了一种“个体”，类中的属性（就是各种变量）则是这个“个体”的具体体现。如UserEntity类，里面有name、age属性，就是说Entity类“<strong>描述</strong>”了某种个体。</li>
-<li>Entity类的具体对象，代表了一个具体的实体，一般来说，在代码当中，一个具体的Entity类对象所代表的实体应当是唯一的。</li>
-<li>往往Entity类的定义跟数据库中的表定义是一一对应的。</li>
-<li>而Entity的具体对象往往对应数据库中的一行数据。</li>
-<li>Entity是代码中操作数据的“<strong>最小单元</strong>”。</li>
-</ul>
-<h2 id="什么是Model">什么是Model</h2><h3 id="各种用法">各种用法</h3><p>其实很多时候，Model有如下几种用法：</p>
-<ol>
-<li>当成Entity用，完全不具备其他业务逻辑代码。</li>
-<li>当成<strong>数据库接口层</strong>，就是将数据库的读写，增删改查都封装在了Model中，往往就会有如“<strong>getUserByID</strong>”这样的方法。</li>
-<li>当成纯粹的业务处理类。</li>
-</ol>
-<p>所以仁者见仁，智者见智，其实都可以。</p>
-<p>在此说说我的认识。</p>
-<h3 id="我的认识">我的认识</h3><p>先看看Model单词的意思:<br><a href="http://www.iciba.com/model" target="_blank" rel="external">爱词霸</a>：n: 模型；模式；典型。</p>
-<p>既然是模型，而不是“数据”，所以我觉得，<strong>Model应该是利用Entity实体，来组合、处理、整合更上层、更抽象数据的类</strong>。</p>
-<p>还是基于上面的“<strong>UserEntity</strong>”，看看下面的代码：</p>
-<pre><code><span class="keyword">class</span> <span class="title">UserListModel</span> {
-    <span class="keyword">private</span> UserEntity[] users;
-
-    <span class="comment">//构造函数，初始化用户列表等。</span>
-
-    <span class="function">UserEntity <span class="title">getUserByName</span><span class="params">(String name)</span> </span>{
-        <span class="comment">//查找...</span>
-    }
-
-    <span class="keyword">void</span> transformUserAddressFormat {
-        <span class="comment">//转化地址格式</span>
-    }
-}
-</code></pre><p>就是说，Entity还是原本的概念，只不过Model是基于Entity的更高层的数据抽象与处理。</p>
-<h2 id="总结">总结</h2><p>说实话，Entity、Model，它们的职责到底是什么，真的不好说明白，大家也就做个参考吧=。=</p>
-<h2 id="参考">参考</h2><ul>
-<li><a href="http://stackoverflow.com/questions/3029952/ddd-and-mvc-difference-between-model-and-entity" target="_blank" rel="external">DDD and MVC: Difference between ‘Model’ and ‘Entity’</a></li>
-<li><a href="http://whatis.techtarget.com/definition/entity" target="_blank" rel="external">Whatis.com Entity</a></li>
-<li><a href="http://blogsh.de/2011/09/08/models-vs-entities" target="_blank" rel="external">Models vs. Entities</a></li>
-</ul>
-
+        
+          <p class="article-more-link">
+            <a href="/2015/03/01/Entity和Model的不同-关于代码的数据层/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/01/Entity和Model的不同-关于代码的数据层/" data-id="ci85ag02c001hvw6unv4d4ht9" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/01/Entity和Model的不同-关于代码的数据层/" data-id="ci85b37c4001h5a6ug4gr9wfy" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -1404,54 +596,16 @@ tom.address = <span class="string">"USA Californian"</span>;
 <h2 id="被拒原因">被拒原因</h2><p>先看看被拒的反馈信息：</p>
 <figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Apps must follow the iOS <span class="built_in">Data</span> Storage Guidelines <span class="literal">or</span> they will be rejected</span><br><span class="line"></span><br><span class="line"><span class="keyword">On</span> launch <span class="literal">and</span> content download, your app stores <span class="number">12.14</span> MB, which does <span class="literal">not</span> comply <span class="keyword">with</span> the iOS <span class="built_in">Data</span> Storage Guidelines<span class="built_in">.</span></span><br></pre></td></tr></table></figure>
 <p>大致意思就是App下载东西以后，在iCloud里面查看此App需要备份的体积变大了。  </p>
-<p>再根据 <a href="https://developer.apple.com/icloud/documentation/data-storage/index.html" target="_blank" rel="external"><strong>iOS Data Storage Guidelines</strong></a>的说明，得出几点重要信息：</p>
-<ul>
-<li>只有<strong>用户创建的，并且不能被App重现的文档、数据</strong>，才应该被保存在“<strong><application_home>/Documents</application_home></strong>”路径下。</li>
-<li>可以重新产生、下载的数据可以放在“<strong><application_home>/Library/Caches</application_home></strong>”目录下，如用于缓存的数据库文件。</li>
-<li>纯粹用于缓存的数据可以放在“<strong><application_home>/tmp</application_home></strong>”目录下。</li>
-<li>可以通过对NSURL加参数，来保证特定的文件夹及其内容不被iCloud备份，也不会被清除，如Document文件夹。</li>
-</ul>
-<p>所以可以初步得出被拒的原因是因为App中下载的文件也被包含在iCloud备份当中了，而Apple审核人员觉得这些文件不应该被备份。</p>
-<h3 id="真正应该备份的数据">真正应该备份的数据</h3><p>所以，真正需要备份的文件是<strong>用户创建的，不能通过程序重新产生的</strong>，如记事本应用中用户创建的文本数据，绘画应用中用户画的画等。</p>
-<h2 id="解决当中遇到的坑">解决当中遇到的坑</h2><p>既然知道了原因，那就好办了。</p>
-<p>根据<strong>iOS Data Storage Guidelines</strong>的简短说明，乍一看，<strong><application_home>/Library/Caches</application_home></strong>是存放可以重新产生、下载的数据。</p>
-<p>但是有个“陷阱”在这。</p>
-<h3 id="系统可能清空的目录">系统可能清空的目录</h3><p>根据官方文档“<a href="https://developer.apple.com/library/mac/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/FileSystemOverview/FileSystemOverview.html#//apple_ref/doc/uid/TP40010672-CH2-SW1" target="_blank" rel="external"><strong>File System Programming Guide</strong></a>”可以整理出一下两个系统可能会清除的目录：（在储存空间不够时）</p>
-<ol>
-<li><strong> Library/Caches/ </strong></li>
-<li><strong> tmp/ </strong></li>
-</ol>
-<p>所以，像App下载的歌曲等资源文件是不能放在上面两个目录中的。</p>
-<h2 id="解决：">解决：</h2><p>所以，为了保险起见，最靠谱的还是放在<strong><application_home>/Documents</application_home></strong>中，并且通过设置，不让iCloud备份。</p>
-<p>Apple已经提供了相应的函数，如下（iOS 5.1及以后的版本）：</p>
-<pre><code>- (BOOL)addSkipBackupAttributeToItemAtURL:(NSURL *)URL
-{
-    <span class="built_in">assert</span>(<span class="string">[[NSFileManager defaultManager] fileExistsAtPath: [URL path]]</span>);
-
-    NSError *<span class="built_in">error</span> = <span class="keyword">nil</span>;
-    BOOL success = [URL setResourceValue: [NSNumber numberWithBool: YES]
-                                  forKey: NSURLIsExcludedFromBackupKey <span class="built_in">error</span>: &amp;<span class="built_in">error</span>];
-    <span class="keyword">if</span>(!success){
-        NSLog(@<span class="string">"Error excluding %@ from backup %@"</span>, [URL lastPathComponent], <span class="built_in">error</span>);
-    }
-    <span class="keyword">return</span> success;
-}
-</code></pre><h3 id="特性">特性</h3><ul>
-<li><strong><application_home>/Documents</application_home></strong>根目录也可以通过上面的函数设置成不备份。（如应用AVPlayer）</li>
-<li>设置是递归的，所以其所有子目录和文件都不用再设置一次，都会自动不被备份。（测试有效，但是不确定=。=，参考：<a href="http://stackoverflow.com/questions/14376883/is-nsurlisexcludedfrombackupkey-recursive" target="_blank" rel="external">is-nsurlisexcludedfrombackupkey-recursive</a>）</li>
-</ul>
-<h2 id="总结">总结</h2><p>多看官方说明=。=</p>
-<h2 id="参考">参考</h2><ul>
-<li><a href="https://developer.apple.com/icloud/documentation/data-storage/index.html" target="_blank" rel="external">iOS Data Storage Guidelines</a></li>
-<li><a href="https://developer.apple.com/library/ios/qa/qa1719/_index.html" target="_blank" rel="external">How do I prevent files from being backed up to iCloud and iTunes?</a></li>
-<li><a href="https://developer.apple.com/library/mac/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/FileSystemOverview/FileSystemOverview.html#//apple_ref/doc/uid/TP40010672-CH2-SW4" target="_blank" rel="external">File System Programming Guide</a></li>
-</ul>
-
+        
+          <p class="article-more-link">
+            <a href="/2015/02/28/一次审核被拒的经历-关于iCloud到底应该备份什么数据/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/28/一次审核被拒的经历-关于iCloud到底应该备份什么数据/" data-id="ci85ag01b000lvw6ugnsqud80" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/28/一次审核被拒的经历-关于iCloud到底应该备份什么数据/" data-id="ci85b37bd000l5a6uupmzyagq" class="article-share-link" data-share="baidu">分享到</a>
       
 
       

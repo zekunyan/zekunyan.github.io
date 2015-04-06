@@ -4,7 +4,7 @@
   <subtitle><![CDATA[iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://tutuge.me/"/>
-  <updated>2015-04-03T14:02:50.000Z</updated>
+  <updated>2015-04-06T03:11:10.000Z</updated>
   <id>http://tutuge.me/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://tutuge.me/2015/04/03/something-about-gcd/"/>
     <id>http://tutuge.me/2015/04/03/something-about-gcd/</id>
     <published>2015-04-03T13:59:56.000Z</published>
-    <updated>2015-04-03T14:02:50.000Z</updated>
+    <updated>2015-04-06T03:11:10.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>GCD(Grand Central Dispatch)可以说是Mac、iOS开发中的一大“利器”，本文就总结一些有关使用GCD的经验与技巧。</p>
 <h2 id="dispatch_once_t必须是全局或static变量">dispatch_once_t必须是全局或static变量</h2><p>这一条算是“老生常谈”了，但我认为还是有必要强调一次，毕竟非全局或非static的dispatch_once_t变量在使用时会导致非常不好排查的bug，正确的如下：</p>
 <pre><code><span class="comment">//静态变量，保证只有一份实例，才能确保只执行一次</span>
@@ -28,6 +28,7 @@
    <span class="comment">//单例代码 </span>
 });
 </code></pre><p>其实就是保证<strong>dispatch_once_t</strong>只有一份实例。</p>
+<a id="more"></a>
 <h2 id="dispatch_queue_create的第二个参数">dispatch_queue_create的第二个参数</h2><p><strong>dispatch_queue_create</strong>，创建队列用的，它的参数只有两个，原型如下：</p>
 <pre><code><span class="function">dispatch_queue_t <span class="title">dispatch_queue_create</span> <span class="params">( <span class="keyword">const</span> <span class="keyword">char</span> *label, dispatch_queue_attr_t attr )</span></span>;
 </code></pre><p>在网上的大部分教程里（甚至Apple自己的文档里），都是这么创建串行队列的：</p>
@@ -239,7 +240,14 @@ dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
 ]]></content>
     <summary type="html">
     <![CDATA[<h2 id="前言">前言</h2><p>GCD(Grand Central Dispatch)可以说是Mac、iOS开发中的一大“利器”，本文就总结一些有关使用GCD的经验与技巧。</p>
-<h2 id="dispatch_once_t必须是全局或static变量">disp]]>
+<h2 id="dispatch_once_t必须是全局或static变量">dispatch_once_t必须是全局或static变量</h2><p>这一条算是“老生常谈”了，但我认为还是有必要强调一次，毕竟非全局或非static的dispatch_once_t变量在使用时会导致非常不好排查的bug，正确的如下：</p>
+<pre><code><span class="comment">//静态变量，保证只有一份实例，才能确保只执行一次</span>
+<span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;
+<span class="built_in">dispatch_once</span>(&amp;onceToken, ^{
+   <span class="comment">//单例代码 </span>
+});
+</code></pre><p>其实就是保证<strong>dispatch_once_t</strong>只有一份实例。</p>]]>
+    
     </summary>
     
       <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
@@ -253,7 +261,7 @@ dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
     <link href="http://tutuge.me/2015/03/29/bind-data-to-gcd-queue/"/>
     <id>http://tutuge.me/2015/03/29/bind-data-to-gcd-queue/</id>
     <published>2015-03-29T11:27:40.000Z</published>
-    <updated>2015-03-29T13:29:29.000Z</updated>
+    <updated>2015-04-06T03:13:35.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>看过GCD（Grand Central Dispatch）的Apple<a href="https://developer.apple.com/library/prerelease/mac/documentation/Performance/Reference/GCD_libdispatch_Ref/index.html" target="_blank" rel="external">官方文档</a>的朋友一定见过“<strong>dispatch_set_context</strong>”和“<strong>dispatch_get_context</strong>”这两个函数，那么这两个函数该怎么用呢？  </p>
 <p>我们都知道，GCD的接口参数都是“C语言类型“的，那么，我们如何将NSObject类型（Foundation框架）的数据，传入GCD的接口呢？（即：Core Foundation和Foundation对象的转换）</p>
 <h2 id="本文关键字">本文关键字</h2><ul>
@@ -261,6 +269,7 @@ dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
 <li>__bridge，__bridge_retained，__bridge_transfer</li>
 <li>Core Foundation, NSObject</li>
 </ul>
+<a id="more"></a>
 <h2 id="dispatch_set(get)_context">dispatch_set(get)_context</h2><p>先看看这两个函数的原型：</p>
 <pre><code><span class="comment">//设置context</span>
 <span class="function"><span class="keyword">void</span> <span class="title">dispatch_set_context</span> <span class="params">( dispatch_object_t <span class="keyword">object</span>, <span class="keyword">void</span> *context )</span></span>;
@@ -388,7 +397,14 @@ typedef struct _Data {
 </ul>
 ]]></content>
     <summary type="html">
-    <![CDATA[<h2 id="前言">前言</h2><p>看过GCD（Grand Central Dispatch）的Apple<a href="https://developer.apple.com/library/prerelease/mac/documentation/Performan]]>
+    <![CDATA[<h2 id="前言">前言</h2><p>看过GCD（Grand Central Dispatch）的Apple<a href="https://developer.apple.com/library/prerelease/mac/documentation/Performance/Reference/GCD_libdispatch_Ref/index.html">官方文档</a>的朋友一定见过“<strong>dispatch_set_context</strong>”和“<strong>dispatch_get_context</strong>”这两个函数，那么这两个函数该怎么用呢？  </p>
+<p>我们都知道，GCD的接口参数都是“C语言类型“的，那么，我们如何将NSObject类型（Foundation框架）的数据，传入GCD的接口呢？（即：Core Foundation和Foundation对象的转换）</p>
+<h2 id="本文关键字">本文关键字</h2><ul>
+<li>GCD：dispatch_set_context，dispatch_get_context</li>
+<li>__bridge，__bridge_retained，__bridge_transfer</li>
+<li>Core Foundation, NSObject</li>
+</ul>]]>
+    
     </summary>
     
       <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
@@ -402,12 +418,13 @@ typedef struct _Data {
     <link href="http://tutuge.me/2015/03/21/effective-objective-c-5-enum/"/>
     <id>http://tutuge.me/2015/03/21/effective-objective-c-5-enum/</id>
     <published>2015-03-21T12:52:57.000Z</published>
-    <updated>2015-03-21T08:14:11.000Z</updated>
+    <updated>2015-04-06T03:13:57.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>Enum，也就是枚举，从C语言开始就有了，C++、Java、Objective-C、Swift这些语言，当然都有对应的枚举类型，功能可能有多有少，但是最核心的还是一个—-规范的定义代码中的状态、选项等“常量”。</p>
 <h2 id="Item_5_-_Use_Enumerations_for_States,_Options,_and_Status_Codes">Item 5 - Use Enumerations for States, Options, and Status Codes</h2><p>本节的内容就是如何正确的使用枚举。</p>
 <h2 id="状态与选项的区别（states_and_options）">状态与选项的区别（states and options）</h2><p>在用<strong>enum</strong>之前，我个人觉得，区分一下状态和选项的概念还是很必要的。</p>
 <p><strong>状态</strong>，同时只能有一种，如“<strong>OK</strong>”，“<strong>Error</strong>”，不可能同时是OK和Error。<br><strong>选项</strong>，同时可以有一种或一种以上，如App可以<strong>同时</strong>支持横屏和竖屏，横屏竖屏在这个时候就是“屏幕方向”的两种不同的选项。</p>
 <p>接下来，我们看看如何用枚举定义状态和选项。</p>
+<a id="more"></a>
 <h2 id="enum与状态（states）">enum与状态（states）</h2><h4 id="不好的做法">不好的做法</h4><p>经常看到这样的写法：</p>
 <pre><code><span class="preprocessor">#<span class="keyword">define</span> STATE_OK 0</span>
 <span class="preprocessor">#<span class="keyword">define</span> STATE_ERROR 1</span>
@@ -494,7 +511,11 @@ TTGDirection direction = TTGDirectionTop | TTGDirectionLeft | TTGDirectionBottom
 ]]></content>
     <summary type="html">
     <![CDATA[<h2 id="前言">前言</h2><p>Enum，也就是枚举，从C语言开始就有了，C++、Java、Objective-C、Swift这些语言，当然都有对应的枚举类型，功能可能有多有少，但是最核心的还是一个—-规范的定义代码中的状态、选项等“常量”。</p>
-<h2 id="]]>
+<h2 id="Item_5_-_Use_Enumerations_for_States,_Options,_and_Status_Codes">Item 5 - Use Enumerations for States, Options, and Status Codes</h2><p>本节的内容就是如何正确的使用枚举。</p>
+<h2 id="状态与选项的区别（states_and_options）">状态与选项的区别（states and options）</h2><p>在用<strong>enum</strong>之前，我个人觉得，区分一下状态和选项的概念还是很必要的。</p>
+<p><strong>状态</strong>，同时只能有一种，如“<strong>OK</strong>”，“<strong>Error</strong>”，不可能同时是OK和Error。<br><strong>选项</strong>，同时可以有一种或一种以上，如App可以<strong>同时</strong>支持横屏和竖屏，横屏竖屏在这个时候就是“屏幕方向”的两种不同的选项。</p>
+<p>接下来，我们看看如何用枚举定义状态和选项。</p>]]>
+    
     </summary>
     
       <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
@@ -508,7 +529,7 @@ TTGDirection direction = TTGDirectionTop | TTGDirectionLeft | TTGDirectionBottom
     <link href="http://tutuge.me/2015/03/17/what-is-autoreleasepool/"/>
     <id>http://tutuge.me/2015/03/17/what-is-autoreleasepool/</id>
     <published>2015-03-17T12:21:56.000Z</published>
-    <updated>2015-04-03T12:59:17.000Z</updated>
+    <updated>2015-04-06T03:15:31.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>开发过iOS、Mac的朋友应该对“<strong>@autoreleasepool</strong>”不陌生。只要在Xcode里创建一个工程，就能看到下面这样的代码：</p>
 <pre><code><span class="comment">//iOS program</span>
 <span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> * argv[]) {
@@ -535,6 +556,7 @@ TTGDirection direction = TTGDirectionTop | TTGDirectionLeft | TTGDirectionBottom
 </ul>
 <p>效果是不是很明显！</p>
 <p>代码Github地址：<a href="https://github.com/zekunyan/AutoReleasePoolTestExample" target="_blank" rel="external">AutoReleasePoolTestExample</a> Xcode 6, iOS 8, iPhone 5模拟器.</p>
+<a id="more"></a>
 <h2 id="MRC_与_ARC">MRC 与 ARC</h2><p>MRC（Mannul Reference Counting）和ARC(Automatic Reference Counting)，分别对应着手动引用计数和自动引用计数。  </p>
 <p>对！是计数，不是“<strong>GC、垃圾回收</strong>”什么的，就是说，在Objective-C的开发中，ARC不代表像Java那样有GC做垃圾回收，所以本质上还是要“手动”管理内存的。也就是说，我们在ARC环境下写的代码，不用自己手动插入“<strong>retain、release这些消息</strong>”，ARC会在编译时为我们在合适的位置插入，释放不必要的内存。</p>
 <p>而<strong>@autoreleasepool</strong>就跟对象的<strong>release</strong>密切相关。</p>
@@ -581,7 +603,32 @@ TTGDirection direction = TTGDirectionTop | TTGDirectionLeft | TTGDirectionBottom
 ]]></content>
     <summary type="html">
     <![CDATA[<h2 id="前言">前言</h2><p>开发过iOS、Mac的朋友应该对“<strong>@autoreleasepool</strong>”不陌生。只要在Xcode里创建一个工程，就能看到下面这样的代码：</p>
-<pre><code><span class="commen]]>
+<pre><code><span class="comment">//iOS program</span>
+<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> * argv[]) {
+    <span class="keyword">@autoreleasepool</span> {
+        <span class="keyword">return</span> <span class="built_in">UIApplicationMain</span>(argc, argv, <span class="literal">nil</span>, <span class="built_in">NSStringFromClass</span>([AppDelegate class]));
+    }
+}
+
+<span class="comment">//Command line program</span>
+<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> *argv[]) {
+    <span class="keyword">@autoreleasepool</span> {
+        <span class="comment">//...</span>
+    }
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+</code></pre><p>看，每个<strong>main</strong>函数的主体都被<strong>@autoreleasepool</strong>的Block块包在里面，也就是说，接下来所有的对象创建都在这个block里面。</p>
+<p>那么，<strong>@autoreleasepool</strong>的作用到底是什么呢？我们开发中可以用它来做什么呢？  </p>
+<p>可以在某些情况下，大幅度降低程序的内存占用，如下图:</p>
+<p><img src="https://camo.githubusercontent.com/2c1f07459d33c72de07d8a9305703b2ba40abfc4/687474703a2f2f7a6f72726f6368656e2e71696e6975646e2e636f6d2f626c6f675f776861745f69735f6175746f72656c65617365706f6f6c5f312e706e673f696d61676556696577322f302f682f343030" alt="image"></p>
+<ul>
+<li>测试的内容：500000次循环，每次循环创建一个NSNumber实例和两个NSString实例。</li>
+<li>图：红线表示没有用<strong>@autoreleasepool</strong>时的内存占用。</li>
+<li>图：绿线表示用了<strong>@autoreleasepool</strong>优化后的内存占用！</li>
+</ul>
+<p>效果是不是很明显！</p>
+<p>代码Github地址：<a href="https://github.com/zekunyan/AutoReleasePoolTestExample">AutoReleasePoolTestExample</a> Xcode 6, iOS 8, iPhone 5模拟器.</p>]]>
+    
     </summary>
     
       <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
@@ -595,7 +642,7 @@ TTGDirection direction = TTGDirectionTop | TTGDirectionLeft | TTGDirectionBottom
     <link href="http://tutuge.me/2015/03/15/%E6%9C%89%E5%85%B3%E5%AE%8F%E5%AE%9A%E4%B9%89%E7%9A%84%E7%BB%8F%E9%AA%8C%E4%B8%8E%E6%8A%80%E5%B7%A7-%E7%AE%80%E5%8C%96%E4%BB%A3%E7%A0%81-%E5%A2%9E%E5%BC%BALog/"/>
     <id>http://tutuge.me/2015/03/15/有关宏定义的经验与技巧-简化代码-增强Log/</id>
     <published>2015-03-15T07:34:28.000Z</published>
-    <updated>2015-03-16T02:45:33.000Z</updated>
+    <updated>2015-04-06T03:13:27.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>宏定义、#define啥的，我们经常遇到。<br>一般来说，最常用的可能就是定义一些常量、简单的“函数”，如下：</p>
 <pre><code>//定义常量<span class="constant">PI</span>
 <span class="comment">#define PI 3.1415926</span>
@@ -604,6 +651,7 @@ TTGDirection direction = TTGDirectionTop | TTGDirectionLeft | TTGDirectionBottom
 <span class="comment">#define MIN(A,B) ((A) &lt; (B) ? (A) : (B))</span>
 </code></pre><p>但是，这样定义常量、函数，有一定的风险。（见：<a href="http://tutuge.me/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/" target="_blank" rel="external">Effective-Objective-C-读书笔记-Item-4-如何正确定义常量</a>, <a href="http://onevcat.com/2014/01/black-magic-in-macro/" target="_blank" rel="external">宏定义的黑魔法 - 宏菜鸟起飞手册</a>）</p>
 <p>本文就列出几条我个人在iOS开发当中常用的经验与技巧。</p>
+<a id="more"></a>
 <h2 id="简化代码">简化代码</h2><p>在开发当中，我们可能会大量的写一些重复的，甚至具有“危险”的代码，用宏定义#define，往往可以简化代码，看看下面几个例子。</p>
 <h3 id="GCD与#define">GCD与#define</h3><p><strong>dispatch_once</strong><br>项目中往往少不了各种单例类，我们一般会如下定义：</p>
 <pre><code>+ (instancetype)sharedService {
@@ -773,7 +821,13 @@ typedef <span class="keyword">struct</span> Complex {
     <summary type="html">
     <![CDATA[<h2 id="前言">前言</h2><p>宏定义、#define啥的，我们经常遇到。<br>一般来说，最常用的可能就是定义一些常量、简单的“函数”，如下：</p>
 <pre><code>//定义常量<span class="constant">PI</span>
-<span c]]>
+<span class="comment">#define PI 3.1415926</span>
+<span class="comment">
+//定义“函数”MIN</span>
+<span class="comment">#define MIN(A,B) ((A) &lt; (B) ? (A) : (B))</span>
+</code></pre><p>但是，这样定义常量、函数，有一定的风险。（见：<a href="http://tutuge.me/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/">Effective-Objective-C-读书笔记-Item-4-如何正确定义常量</a>, <a href="http://onevcat.com/2014/01/black-magic-in-macro/">宏定义的黑魔法 - 宏菜鸟起飞手册</a>）</p>
+<p>本文就列出几条我个人在iOS开发当中常用的经验与技巧。</p>]]>
+    
     </summary>
     
       <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
@@ -789,10 +843,11 @@ typedef <span class="keyword">struct</span> Complex {
     <link href="http://tutuge.me/2015/03/11/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-4-%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%AE%9A%E4%B9%89%E5%B8%B8%E9%87%8F/"/>
     <id>http://tutuge.me/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/</id>
     <published>2015-03-10T16:07:23.000Z</published>
-    <updated>2015-03-16T02:46:59.000Z</updated>
+    <updated>2015-04-06T03:14:30.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>写博客果然比光看书要花时间=。=，书都快看完了，才写到第4节。但是总结一遍，的确印象深刻啊~~  </p>
 <p>这次的主题是“<strong>常量</strong>”，非常常用，又非常重要的东西~良好的代码规范、设计，少不了各种<strong>常量</strong>。</p>
 <h2 id="Item_4_-_Prefer_Typed_Constants_to_Preprocessor_#define">Item 4 - Prefer Typed Constants to Preprocessor #define</h2><p>本节着重对比了常量的定义形式，类型常量和#define的区别、各自的特点。最后得出，我们应该用带有类型的常量，而不是#define。</p>
+<a id="more"></a>
 <h2 id="一个简单的示例">一个简单的示例</h2><p>应用中，少不了各种动画，也就少不了设定动画的时间长度，一般来说，我们会设定短、中、长几种时间常量，用于不同的场合，了解C语言的童鞋估计对“<strong>#define</strong>”宏定义不陌生，于是，可能就会如下这么定义：</p>
 <pre><code><span class="hexcolor">#def</span>ine ANIMATION_DURATION_SHORT <span class="number">0.3</span>
 <span class="hexcolor">#def</span>ine ANIMATION_DURATION_MIDDLE <span class="number">0.6</span>
@@ -851,7 +906,9 @@ typedef <span class="keyword">struct</span> Complex {
 ]]></content>
     <summary type="html">
     <![CDATA[<h2 id="前言">前言</h2><p>写博客果然比光看书要花时间=。=，书都快看完了，才写到第4节。但是总结一遍，的确印象深刻啊~~  </p>
-<p>这次的主题是“<strong>常量</strong>”，非常常用，又非常重要的东西~良好的代码规范、设计，少不了各种<st]]>
+<p>这次的主题是“<strong>常量</strong>”，非常常用，又非常重要的东西~良好的代码规范、设计，少不了各种<strong>常量</strong>。</p>
+<h2 id="Item_4_-_Prefer_Typed_Constants_to_Preprocessor_#define">Item 4 - Prefer Typed Constants to Preprocessor #define</h2><p>本节着重对比了常量的定义形式，类型常量和#define的区别、各自的特点。最后得出，我们应该用带有类型的常量，而不是#define。</p>]]>
+    
     </summary>
     
       <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
@@ -869,7 +926,7 @@ typedef <span class="keyword">struct</span> Complex {
     <link href="http://tutuge.me/2015/03/07/UITextView%E7%BC%96%E8%BE%91%E6%97%B6%E6%8F%92%E5%85%A5%E8%87%AA%E5%AE%9A%E4%B9%89%E8%A1%A8%E6%83%85-%E7%AE%80%E5%8D%95%E7%9A%84%E5%9B%BE%E6%96%87%E6%B7%B7%E7%BC%96/"/>
     <id>http://tutuge.me/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/</id>
     <published>2015-03-07T03:04:38.000Z</published>
-    <updated>2015-03-07T18:10:08.000Z</updated>
+    <updated>2015-04-06T03:15:09.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>在iOS开发中，经常需要用UITextView作为编辑文本的输入控件。<br>但是如何在编辑时插入自定义表情呢？就是像发微博时那样？  </p>
 <p>本文简单的用<strong>NSTextAttachment</strong>、<strong>NSAttributedString</strong>的特性，实现了</p>
 <ul>
@@ -879,6 +936,7 @@ typedef <span class="keyword">struct</span> Complex {
 <h2 id="示例">示例</h2><p>本文代码工程地址：<a href="https://github.com/zekunyan/UITextViewDIYEmojiExample" target="_blank" rel="external">https://github.com/zekunyan/UITextViewDIYEmojiExample</a></p>
 <p>效果图：</p>
 <p><img src="http://zorrochen.qiniudn.com/inputEmoji_Sample.gif" alt="image"></p>
+<a id="more"></a>
 <h2 id="背景知识">背景知识</h2><ul>
 <li>NSAttributedString及其子类，用于显示富文本。</li>
 <li>NSTextAttachment，NSAttributedString的一种样式类，可以在文本中显示图片。</li>
@@ -982,7 +1040,15 @@ emojiTextAttachment.image = emojiImage;
 ]]></content>
     <summary type="html">
     <![CDATA[<h2 id="前言">前言</h2><p>在iOS开发中，经常需要用UITextView作为编辑文本的输入控件。<br>但是如何在编辑时插入自定义表情呢？就是像发微博时那样？  </p>
-<p>本文简单的用<strong>NSTextAttachment</strong>、<s]]>
+<p>本文简单的用<strong>NSTextAttachment</strong>、<strong>NSAttributedString</strong>的特性，实现了</p>
+<ul>
+<li>在UITextView中编辑文字时插入自定义表情图片</li>
+<li>同时可以返回带有表情“<strong>替换符</strong>”的纯文本字符串。</li>
+</ul>
+<h2 id="示例">示例</h2><p>本文代码工程地址：<a href="https://github.com/zekunyan/UITextViewDIYEmojiExample">https://github.com/zekunyan/UITextViewDIYEmojiExample</a></p>
+<p>效果图：</p>
+<p><img src="http://zorrochen.qiniudn.com/inputEmoji_Sample.gif" alt="image"></p>]]>
+    
     </summary>
     
       <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
@@ -1013,10 +1079,11 @@ emojiTextAttachment.image = emojiImage;
     <link href="http://tutuge.me/2015/03/01/Entity%E5%92%8CModel%E7%9A%84%E4%B8%8D%E5%90%8C-%E5%85%B3%E4%BA%8E%E4%BB%A3%E7%A0%81%E7%9A%84%E6%95%B0%E6%8D%AE%E5%B1%82/"/>
     <id>http://tutuge.me/2015/03/01/Entity和Model的不同-关于代码的数据层/</id>
     <published>2015-03-01T15:03:10.000Z</published>
-    <updated>2015-03-01T17:01:00.000Z</updated>
+    <updated>2015-04-06T03:14:37.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>经常都能在一些博客、文档中看到“<strong>Model</strong>”、“<strong>Entity</strong>”的字样。如<strong>MVC</strong>模式中的“<strong>M就是Model</strong>”，“<strong>MVVM对应的Model-View-ViewModel</strong>”，数据库抽象层里面的“<strong>Model</strong>“等。  </p>
 <p>它们的区别到底是什么？  </p>
 <p>其实没有真正官方的对Entity和Model的定义，在此我只是说说我自己的理解。</p>
+<a id="more"></a>
 <h2 id="什么是Entity">什么是<strong>Entity</strong></h2><p>先看看这个单词是什么意思：<br><a href="http://www.iciba.com/entity" target="_blank" rel="external">爱词霸</a>：n: 实体，实际存在物，本质。</p>
 <p>在代码中，我们经常会遇到一些具有“<strong>现实</strong>”意义的“<strong>个体</strong>”，如一个用户，一首歌曲，一条评论等等，它们都是在逻辑上完整的一个整体，都具有相似的结构，但是却因为“<strong>属性</strong>”的不同而不同。</p>
 <p>看看一个典型的Entity类：</p>
@@ -1080,7 +1147,10 @@ tom.address = <span class="string">"USA Californian"</span>;
 </ul>
 ]]></content>
     <summary type="html">
-    <![CDATA[<h2 id="前言">前言</h2><p>经常都能在一些博客、文档中看到“<strong>Model</strong>”、“<strong>Entity</strong>”的字样。如<strong>MVC</strong>模式中的“<strong>M就是Model</stron]]>
+    <![CDATA[<h2 id="前言">前言</h2><p>经常都能在一些博客、文档中看到“<strong>Model</strong>”、“<strong>Entity</strong>”的字样。如<strong>MVC</strong>模式中的“<strong>M就是Model</strong>”，“<strong>MVVM对应的Model-View-ViewModel</strong>”，数据库抽象层里面的“<strong>Model</strong>“等。  </p>
+<p>它们的区别到底是什么？  </p>
+<p>其实没有真正官方的对Entity和Model的定义，在此我只是说说我自己的理解。</p>]]>
+    
     </summary>
     
       <category term="原创" scheme="http://tutuge.me/tags/%E5%8E%9F%E5%88%9B/"/>
@@ -1092,11 +1162,12 @@ tom.address = <span class="string">"USA Californian"</span>;
     <link href="http://tutuge.me/2015/02/28/%E4%B8%80%E6%AC%A1%E5%AE%A1%E6%A0%B8%E8%A2%AB%E6%8B%92%E7%9A%84%E7%BB%8F%E5%8E%86-%E5%85%B3%E4%BA%8EiCloud%E5%88%B0%E5%BA%95%E5%BA%94%E8%AF%A5%E5%A4%87%E4%BB%BD%E4%BB%80%E4%B9%88%E6%95%B0%E6%8D%AE/"/>
     <id>http://tutuge.me/2015/02/28/一次审核被拒的经历-关于iCloud到底应该备份什么数据/</id>
     <published>2015-02-28T10:18:11.000Z</published>
-    <updated>2015-02-28T14:50:12.000Z</updated>
+    <updated>2015-04-06T03:13:15.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>项目最近一次审核被拒了=。=<br>仔细看了一下后，发现是没有遵守“<strong>iOS Data Storage Guidelines</strong>”。<br>在此总结一下。</p>
 <h2 id="被拒原因">被拒原因</h2><p>先看看被拒的反馈信息：</p>
 <figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Apps must follow the iOS <span class="built_in">Data</span> Storage Guidelines <span class="literal">or</span> they will be rejected</span><br><span class="line"></span><br><span class="line"><span class="keyword">On</span> launch <span class="literal">and</span> content download, your app stores <span class="number">12.14</span> MB, which does <span class="literal">not</span> comply <span class="keyword">with</span> the iOS <span class="built_in">Data</span> Storage Guidelines<span class="built_in">.</span></span><br></pre></td></tr></table></figure>
 <p>大致意思就是App下载东西以后，在iCloud里面查看此App需要备份的体积变大了。  </p>
+<a id="more"></a>
 <p>再根据 <a href="https://developer.apple.com/icloud/documentation/data-storage/index.html" target="_blank" rel="external"><strong>iOS Data Storage Guidelines</strong></a>的说明，得出几点重要信息：</p>
 <ul>
 <li>只有<strong>用户创建的，并且不能被App重现的文档、数据</strong>，才应该被保存在“<strong><application_home>/Documents</application_home></strong>”路径下。</li>
@@ -1142,7 +1213,10 @@ tom.address = <span class="string">"USA Californian"</span>;
 ]]></content>
     <summary type="html">
     <![CDATA[<h2 id="前言">前言</h2><p>项目最近一次审核被拒了=。=<br>仔细看了一下后，发现是没有遵守“<strong>iOS Data Storage Guidelines</strong>”。<br>在此总结一下。</p>
-<h2 id="被拒原因">被拒原因</h2]]>
+<h2 id="被拒原因">被拒原因</h2><p>先看看被拒的反馈信息：</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Apps must follow the iOS <span class="built_in">Data</span> Storage Guidelines <span class="literal">or</span> they will be rejected</span><br><span class="line"></span><br><span class="line"><span class="keyword">On</span> launch <span class="literal">and</span> content download, your app stores <span class="number">12.14</span> MB, which does <span class="literal">not</span> comply <span class="keyword">with</span> the iOS <span class="built_in">Data</span> Storage Guidelines<span class="built_in">.</span></span><br></pre></td></tr></table></figure>
+<p>大致意思就是App下载东西以后，在iCloud里面查看此App需要备份的体积变大了。  </p>]]>
+    
     </summary>
     
       <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
@@ -1158,9 +1232,10 @@ tom.address = <span class="string">"USA Californian"</span>;
     <link href="http://tutuge.me/2015/02/19/Block%E7%B1%BB%E5%9E%8B%E5%8F%98%E9%87%8F-%E7%BC%93%E5%AD%98Http%E8%AF%B7%E6%B1%82%E4%B8%8E%E5%9B%9E%E8%B0%83/"/>
     <id>http://tutuge.me/2015/02/19/Block类型变量-缓存Http请求与回调/</id>
     <published>2015-02-18T19:18:36.000Z</published>
-    <updated>2015-02-19T09:53:52.000Z</updated>
+    <updated>2015-04-06T03:13:45.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>Objective-C中的Blocks实在是太好用了，有了它，我们就可以将“代码块”封装起来，当成变量使用、传递，所以，在Objective-C中，iOS中，许多的回调是用Block来完成的。</p>
 <h2 id="问题">问题</h2><p>我自己在之前的项目中，就遇到过一个问题。因为项目的需要，手机端所有的跟服务器的通信都需要“加密”，在经过一番调研后，我们使用的是类似OAuth机制（至于什么是OAuth，各位Google一下就明白了，大部分的公共API都用到了这种机制）。</p>
+<a id="more"></a>
 <h3 id="缓存Http请求后的回调代码块">缓存Http请求后的回调代码块</h3><p>既然是OAuth机制，就是说我们每次向服务器发起的请求，除了跟业务相关的参数，还需要带上AccessToken、UserToken这类的授权参数，而AccessToken在本次请求中是否会过期，在结果返回前是不知道的，所以，为了更好地用户体验，不至于让用户在某个时刻的操作，因为授权过期了而“没有响应”，我们的每次Http请求都必须缓存起来。</p>
 <p>这里的缓存可不是单单指缓存请求的参数、URL，更重要的是缓存Http请求成功或者失败时的“<strong>回调代码块</strong>”。</p>
 <h2 id="实现">实现</h2><h3 id="AFNetworking的Get方法">AFNetworking的Get方法</h3><p>在iOS的项目中，AFNetworking应该算是使用的最多的网络库了，它的Get请求的方法接口如下：</p>
@@ -1263,7 +1338,8 @@ typedef <span class="typename">void</span> (^http_fail)();
 ]]></content>
     <summary type="html">
     <![CDATA[<h2 id="前言">前言</h2><p>Objective-C中的Blocks实在是太好用了，有了它，我们就可以将“代码块”封装起来，当成变量使用、传递，所以，在Objective-C中，iOS中，许多的回调是用Block来完成的。</p>
-<h2 id="问题">问题</h]]>
+<h2 id="问题">问题</h2><p>我自己在之前的项目中，就遇到过一个问题。因为项目的需要，手机端所有的跟服务器的通信都需要“加密”，在经过一番调研后，我们使用的是类似OAuth机制（至于什么是OAuth，各位Google一下就明白了，大部分的公共API都用到了这种机制）。</p>]]>
+    
     </summary>
     
       <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
@@ -1277,13 +1353,14 @@ typedef <span class="typename">void</span> (^http_fail)();
     <link href="http://tutuge.me/2015/02/19/%E6%8F%90%E5%8D%87UITableView%E6%80%A7%E8%83%BD-%E5%A4%8D%E6%9D%82%E9%A1%B5%E9%9D%A2%E7%9A%84%E4%BC%98%E5%8C%96/"/>
     <id>http://tutuge.me/2015/02/19/提升UITableView性能-复杂页面的优化/</id>
     <published>2015-02-18T17:28:41.000Z</published>
-    <updated>2015-03-06T03:19:14.000Z</updated>
+    <updated>2015-04-06T03:13:03.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。</p>
 <p>之前的做的项目，<a href="https://itunes.apple.com/us/app/qing-ju-yin-le-quan-guo-zui/id913235479?l=zh&amp;ls=1&amp;mt=8" target="_blank" rel="external">青桔音乐iOS客户端</a>里面的首页就是一个类似微信朋友圈的“动态”页面，大致如下：</p>
 <p><img src="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_1.png?imageView2/0/h/300" alt="image"></p>
 <p>如果是你，你会怎么实现这个页面呢？</p>
 <p>这还用问，当然是用UITableView+自定义的UITableViewCell。</p>
 <p>UITableView是可以滑动的，为了不让用户在滑动中感到有卡顿，该如何优化？下面，我就写一下我自己在做项目时的“经验”~</p>
+<a id="more"></a>
 <h2 id="优化">优化</h2><p>主要分为以下几点：</p>
 <ul>
 <li>只定义一种Cell。</li>
@@ -1369,7 +1446,12 @@ typedef <span class="typename">void</span> (^http_fail)();
 ]]></content>
     <summary type="html">
     <![CDATA[<h2 id="前言">前言</h2><p>随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。</p>
-<p>之前的做的项目，<a href="htt]]>
+<p>之前的做的项目，<a href="https://itunes.apple.com/us/app/qing-ju-yin-le-quan-guo-zui/id913235479?l=zh&amp;ls=1&amp;mt=8">青桔音乐iOS客户端</a>里面的首页就是一个类似微信朋友圈的“动态”页面，大致如下：</p>
+<p><img src="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_1.png?imageView2/0/h/300" alt="image"></p>
+<p>如果是你，你会怎么实现这个页面呢？</p>
+<p>这还用问，当然是用UITableView+自定义的UITableViewCell。</p>
+<p>UITableView是可以滑动的，为了不让用户在滑动中感到有卡顿，该如何优化？下面，我就写一下我自己在做项目时的“经验”~</p>]]>
+    
     </summary>
     
       <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
@@ -1383,8 +1465,9 @@ typedef <span class="typename">void</span> (^http_fail)();
     <link href="http://tutuge.me/2015/02/18/NSString%E7%9A%84Copy%E4%B8%8E%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/"/>
     <id>http://tutuge.me/2015/02/18/NSString的Copy与内存分配/</id>
     <published>2015-02-18T09:00:47.000Z</published>
-    <updated>2015-02-18T12:04:52.000Z</updated>
+    <updated>2015-04-06T03:15:00.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>不管是用什么语言开发，字符串应该算是用的最多的了。在Objective-C中，字符串类是NSString，以及其子类NSMutableString等。所以，对于字符串类，编程语言、编译器等往往会做特殊处理。下面我就说说我自己在项目中发现的NSString的“奇怪”的地方。</p>
+<a id="more"></a>
 <h2 id="字符串常量，copy，mutableCopy">字符串常量，copy，mutableCopy</h2><h3 id="Example">Example</h3><p>先看看如下面的代码，猜猜会输出什么：</p>
 <pre><code><span class="built_in">NSString</span> *str1 = <span class="string">@"abc"</span>;
 <span class="built_in">NSString</span> *str2 = <span class="string">@"abc"</span>;
@@ -1451,7 +1534,8 @@ NSLog(@<span class="string">"Name: %@"</span>, userEntity.name);
 <h2 id="总结">总结</h2><p>很所时候，代码并不是看上去那样“运行”的，多试试，多查阅资料，就能了解其中的奥秘了~</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<h2 id="前言">前言</h2><p>不管是用什么语言开发，字符串应该算是用的最多的了。在Objective-C中，字符串类是NSString，以及其子类NSMutableString等。所以，对于字符串类，编程语言、编译器等往往会做特殊处理。下面我就说说我自己在项目中发现]]>
+    <![CDATA[<h2 id="前言">前言</h2><p>不管是用什么语言开发，字符串应该算是用的最多的了。在Objective-C中，字符串类是NSString，以及其子类NSMutableString等。所以，对于字符串类，编程语言、编译器等往往会做特殊处理。下面我就说说我自己在项目中发现的NSString的“奇怪”的地方。</p>]]>
+    
     </summary>
     
       <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
@@ -1465,11 +1549,12 @@ NSLog(@<span class="string">"Name: %@"</span>, userEntity.name);
     <link href="http://tutuge.me/2015/02/16/%E5%88%A9%E7%94%A8NSProxy%E5%AE%9E%E7%8E%B0%E6%B6%88%E6%81%AF%E8%BD%AC%E5%8F%91-%E6%A8%A1%E5%9D%97%E5%8C%96%E7%9A%84%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E5%88%9B/"/>
     <id>http://tutuge.me/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/</id>
     <published>2015-02-16T10:52:08.000Z</published>
-    <updated>2015-03-05T05:44:24.000Z</updated>
+    <updated>2015-04-06T03:12:54.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>之前在做项目的时候，所有业务的网络接口方法，全部都写在了一个文件里面，一开始还好，毕竟每个方法的代码也只是十几行，增加、修改也比较容易。但是随着接口的增多，这个文件慢慢居然超过了1000行，里面几十个方法都写在一起，实在是不好维护。  </p>
 <p>虽然保持这样也没有什么，多用用Cmd+F就能找到。但是，真是越看越不顺眼😳， 代码一定要有“美感”啊~😝</p>
 <p>所以在查阅了大量文章后，终于想出了本文即将说明的办法，越发觉得Objective-C的“消息”机制是多么的赞~😚</p>
 <h2 id="Github_示例">Github 示例</h2><p>贴上本文中的示例工程：<a href="https://github.com/zekunyan/HttpProxyExample" target="_blank" rel="external">https://github.com/zekunyan/HttpProxyExample</a></p>
+<a id="more"></a>
 <h2 id="问题">问题</h2><p>先抛出问题。  </p>
 <p>一款互联网应用，免不了要跟服务器打交道，在iOS项目中，最有名的网络库应该就是<a href="https://github.com/AFNetworking/AFNetworking" target="_blank" rel="external">AFNetworking</a>了。所以，很多人就会利用AFnetworking提供的Get、Post等基本Http请求接口，封装自己的网络接口层代码，我自己在项目中也是这么做的。  </p>
 <p>但是，AFNetworking只是提供了Get、Post、Json传输等基本的Http请求方法，所以一旦落实到具体的业务相关的请求上，我们要为每个请求（URL）都写一个单独的接口方法。</p>
@@ -1610,7 +1695,11 @@ NSLog(@<span class="string">"Name: %@"</span>, userEntity.name);
 </ul>
 ]]></content>
     <summary type="html">
-    <![CDATA[<h2 id="前言">前言</h2><p>之前在做项目的时候，所有业务的网络接口方法，全部都写在了一个文件里面，一开始还好，毕竟每个方法的代码也只是十几行，增加、修改也比较容易。但是随着接口的增多，这个文件慢慢居然超过了1000行，里面几十个方法都写在一起，实在是不好维护。  ]]>
+    <![CDATA[<h2 id="前言">前言</h2><p>之前在做项目的时候，所有业务的网络接口方法，全部都写在了一个文件里面，一开始还好，毕竟每个方法的代码也只是十几行，增加、修改也比较容易。但是随着接口的增多，这个文件慢慢居然超过了1000行，里面几十个方法都写在一起，实在是不好维护。  </p>
+<p>虽然保持这样也没有什么，多用用Cmd+F就能找到。但是，真是越看越不顺眼😳， 代码一定要有“美感”啊~😝</p>
+<p>所以在查阅了大量文章后，终于想出了本文即将说明的办法，越发觉得Objective-C的“消息”机制是多么的赞~😚</p>
+<h2 id="Github_示例">Github 示例</h2><p>贴上本文中的示例工程：<a href="https://github.com/zekunyan/HttpProxyExample">https://github.com/zekunyan/HttpProxyExample</a></p>]]>
+    
     </summary>
     
       <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
@@ -1624,9 +1713,10 @@ NSLog(@<span class="string">"Name: %@"</span>, userEntity.name);
     <link href="http://tutuge.me/2015/02/14/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-3/"/>
     <id>http://tutuge.me/2015/02/14/Effective-Objective-C-读书笔记-Item-3/</id>
     <published>2015-02-14T08:51:51.000Z</published>
-    <updated>2015-02-14T10:30:52.000Z</updated>
+    <updated>2015-04-06T03:14:25.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>item 3讲的是Objective-C里面的“字面量语法”-“Literal Syntax”，个人觉得非常有用。</p>
 <h2 id="Item_3_-_Prefer_Literal_Syntax_over_the_Equivalent_Methods">Item 3 - Prefer Literal Syntax over the Equivalent Methods</h2><p>本节讲了Objective-C中的“字面量语法”，并且建议我们更多的使用这种语法，而不是使用传统的等价的函数方法。</p>
+<a id="more"></a>
 <h2 id="引子">引子</h2><p>当我们使用Objective-C编程的时候，总会经常使用到几种Foundation框架中的基本类，如NSString、NSNumber、NSArray、NSDictionary，或者是它们的子类。例如，当我们想创建一个字符串的时候，会这么写：</p>
 <pre><code>NSString *<span class="keyword">str</span> = @<span class="string">"a string"</span>;
 </code></pre><p>不知道各位写这句的时候有没有觉得奇怪？为什么不用先“alloc”，再“initWithXXX”这么来创建呢。是的，这里创建字符串，就用到了Objective-C提供的“字面量语法”-“Literal Syntax”，而这种语法的“标志”就是“@”符号。<br>有了字面量语法，我们就不用每次创建一些基本类型的时候，写一大堆alloc、init了。</p>
@@ -1702,7 +1792,8 @@ dict[@<span class="string">"number1"</span>] = @<span class="number">6</span>;
 ]]></content>
     <summary type="html">
     <![CDATA[<h2 id="前言">前言</h2><p>item 3讲的是Objective-C里面的“字面量语法”-“Literal Syntax”，个人觉得非常有用。</p>
-<h2 id="Item_3_-_Prefer_Literal_Syntax_over_the_Equivale]]>
+<h2 id="Item_3_-_Prefer_Literal_Syntax_over_the_Equivalent_Methods">Item 3 - Prefer Literal Syntax over the Equivalent Methods</h2><p>本节讲了Objective-C中的“字面量语法”，并且建议我们更多的使用这种语法，而不是使用传统的等价的函数方法。</p>]]>
+    
     </summary>
     
       <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
@@ -1720,9 +1811,10 @@ dict[@<span class="string">"number1"</span>] = @<span class="number">6</span>;
     <link href="http://tutuge.me/2015/02/06/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-2/"/>
     <id>http://tutuge.me/2015/02/06/Effective-Objective-C-读书笔记-Item-2/</id>
     <published>2015-02-06T08:43:46.000Z</published>
-    <updated>2015-03-05T05:41:18.000Z</updated>
+    <updated>2015-04-06T03:14:13.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>第二弹来了。</p>
 <h2 id="Item_2_-_Minimize_Importing_Headers_in_Headers">Item 2 - Minimize Importing Headers in Headers</h2><p>这一节讲的是尽量在一个头文件中减少其它头文件的引入。</p>
+<a id="more"></a>
 <h2 id="头文件">头文件</h2><p>Objective-C和C语言、C++很像，都将类的实现与声明分开，用.h后缀名文件表示声明文件，用.m文件实现类。当要用到这个类的时候，只需要引入头文件即可，至于编译器、运行时是如何知道头文件里面的类对应的实现在哪里，在这了不做说明。一下用例子说明，先看看下面的类：</p>
 <pre><code><span class="comment">//Wheel.h</span>
 <span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
@@ -1795,7 +1887,8 @@ dict[@<span class="string">"number1"</span>] = @<span class="number">6</span>;
 ]]></content>
     <summary type="html">
     <![CDATA[<h2 id="前言">前言</h2><p>第二弹来了。</p>
-<h2 id="Item_2_-_Minimize_Importing_Headers_in_Headers">Item 2 - Minimize Importing Headers in Headers</h2>]]>
+<h2 id="Item_2_-_Minimize_Importing_Headers_in_Headers">Item 2 - Minimize Importing Headers in Headers</h2><p>这一节讲的是尽量在一个头文件中减少其它头文件的引入。</p>]]>
+    
     </summary>
     
       <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
@@ -1813,9 +1906,10 @@ dict[@<span class="string">"number1"</span>] = @<span class="number">6</span>;
     <link href="http://tutuge.me/2015/02/05/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-1/"/>
     <id>http://tutuge.me/2015/02/05/Effective-Objective-C-读书笔记-Item-1/</id>
     <published>2015-02-04T17:17:08.000Z</published>
-    <updated>2015-02-05T14:09:04.000Z</updated>
+    <updated>2015-04-06T03:14:04.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>一直都在做项目，没什么时间作总结，感觉很不是滋味。现在放假了，嗯，终于有时间了~~哈哈（天生程序猿一枚好不好=。=）<br>最近开始读英文版的Effective Objective-C 2.0，觉得不错，就总结些东西，分享给各位读者吧。</p>
 <h2 id="Item_1_-_Familiarize_Yourself_with_Objective-C’s_Roots">Item 1 - Familiarize Yourself with Objective-C’s Roots</h2><p>第一章的目的，就是让大家熟悉Objective-C，自然，标题的意思也就是“了解Objective-C的基本概念”，不多说，开写。</p>
+<a id="more"></a>
 <h2 id="消息与运行时">消息与运行时</h2><p>总的来说，Objective-C跟C++、Java这些面向对象的语言是非常相似的，但是还是有许多不同的地方。如果你是第一次看到Objective-C的语法，一定觉得非常奇怪，因为Objective-C使用的是基于消息（Message）的框架，而不是传统的方法、函数调用。如下：</p>
 <pre><code><span class="comment">//Objective-C</span>
 Person *person = [Person <span class="keyword">new</span>];
@@ -1856,7 +1950,9 @@ NSString <span class="keyword">*</span>str2 = str1;
 <h2 id="总结">总结</h2><p>零散的说了一些Objective-C的特点，远远不足以讲明白Objective-C，我这只是根据Effective Objective-C这本书给个引子，还是推荐Apple的官方教程、文档，要想掌握扎实，还是要一步一步来~</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<h2 id="前言">前言</h2><p>一直都在做项目，没什么时间作总结，感觉很不是滋味。现在放假了，嗯，终于有时间了~~哈哈（天生程序猿一枚好不好=。=）<br>最近开始读英文版的Effective Objective-C 2.0，觉得不错，就总结些东西，分享给各位读者吧。]]>
+    <![CDATA[<h2 id="前言">前言</h2><p>一直都在做项目，没什么时间作总结，感觉很不是滋味。现在放假了，嗯，终于有时间了~~哈哈（天生程序猿一枚好不好=。=）<br>最近开始读英文版的Effective Objective-C 2.0，觉得不错，就总结些东西，分享给各位读者吧。</p>
+<h2 id="Item_1_-_Familiarize_Yourself_with_Objective-C’s_Roots">Item 1 - Familiarize Yourself with Objective-C’s Roots</h2><p>第一章的目的，就是让大家熟悉Objective-C，自然，标题的意思也就是“了解Objective-C的基本概念”，不多说，开写。</p>]]>
+    
     </summary>
     
       <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
@@ -1874,8 +1970,9 @@ NSString <span class="keyword">*</span>str2 = str1;
     <link href="http://tutuge.me/2015/02/01/iOS%E9%A1%B9%E7%9B%AE%E7%9A%84%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84-%E5%8E%9F%E5%88%9B/"/>
     <id>http://tutuge.me/2015/02/01/iOS项目的目录结构-原创/</id>
     <published>2015-01-31T18:27:21.000Z</published>
-    <updated>2015-02-03T17:01:24.000Z</updated>
+    <updated>2015-04-06T03:14:44.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>这段时间一直在做iOS的项目（<a href="https://itunes.apple.com/cn/app/qing-ju-yin-le-quan-guo-zui/id913235479?mt=8" target="_blank" rel="external">青桔音乐App</a>），随着代码量的上升，逐渐意识到项目的整体目录结构划分是多么重要，清晰的目录结构，能够更好的应对新的需求，更容易重构。虽然一直都是一个人在做=。=，但是还是深深地体会到目录结构的重要性。</p>
+<a id="more"></a>
 <h2 id="例子">例子</h2><p>说再多都不如来个例子实在，如下：(VC指的是viewController)</p>
 <pre><code><span class="string">|---General</span>
     <span class="string">|---AppDelegate</span>
@@ -1963,7 +2060,8 @@ NSString <span class="keyword">*</span>str2 = str1;
 <h2 id="总结">总结</h2><p>啰啰嗦嗦说了一大堆，想必各位都看烦了吧=。=刚开始写博客，写到一个地方，又会引出另一块，写着写着容易写偏了。<br>写之前我也大致搜了一下，发现网上相关的资料好少，但是实际的经验告诉我，项目工程的目录结构非常重要，无论是对开发还是对后期的维护，所以想着应该写篇东西，分享我自己的经验给大家，有啥问题，多提意见啊~~~</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<h2 id="前言">前言</h2><p>这段时间一直在做iOS的项目（<a href="https://itunes.apple.com/cn/app/qing-ju-yin-le-quan-guo-zui/id913235479?mt=8" target="_blank" ]]>
+    <![CDATA[<h2 id="前言">前言</h2><p>这段时间一直在做iOS的项目（<a href="https://itunes.apple.com/cn/app/qing-ju-yin-le-quan-guo-zui/id913235479?mt=8">青桔音乐App</a>），随着代码量的上升，逐渐意识到项目的整体目录结构划分是多么重要，清晰的目录结构，能够更好的应对新的需求，更容易重构。虽然一直都是一个人在做=。=，但是还是深深地体会到目录结构的重要性。</p>]]>
+    
     </summary>
     
       <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
@@ -1977,11 +2075,12 @@ NSString <span class="keyword">*</span>str2 = str1;
     <link href="http://tutuge.me/2014/11/02/LinkTextView-Android%E5%BC%80%E6%BA%90%E5%BA%93-%E5%8E%9F%E5%88%9B/"/>
     <id>http://tutuge.me/2014/11/02/LinkTextView-Android开源库-原创/</id>
     <published>2014-11-01T18:34:46.000Z</published>
-    <updated>2015-02-03T17:00:52.000Z</updated>
+    <updated>2015-04-06T03:14:54.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>近来因为项目的缘故，仔细研究了一下如何在Android的TextView里面绑定可以点击的链接，并且定制链接的颜色，包括正常状态、按下去时的文字、背景的颜色，当然，还有点击后的回调。</p>
 <p>为了以后方便自己，也为了方便更多的人，就把这些封装成了一个简单的开源库，也算是我自己的<strong><em>第一个开源库</em></strong>吧。</p>
 <h2 id="LinkTextView">LinkTextView</h2><p>名称：<a href="https://github.com/zekunyan/LinkTextView" target="_blank" rel="external">LinkTextView</a>。喜欢的话就Star一下吧。</p>
 <h3 id="Example">Example</h3><p><img src="http://zorrochen.qiniudn.com/LinkTextView_Sample.gif" alt="image"></p>
+<a id="more"></a>
 <h3 id="功能：">功能：<br></h3><ol>
 <li>可以方便的对TextView里面的文字增加可点击链接，并且绑定回调。</li>
 <li>可以为每个链接<strong>单独</strong>设置<strong>文字</strong>、链接<strong>背景</strong>的<strong>正常</strong>、<strong>按下</strong>状态下的颜色。</li>
@@ -2015,7 +2114,10 @@ NSString <span class="keyword">*</span>str2 = str1;
 ]]></content>
     <summary type="html">
     <![CDATA[<h2 id="前言">前言</h2><p>近来因为项目的缘故，仔细研究了一下如何在Android的TextView里面绑定可以点击的链接，并且定制链接的颜色，包括正常状态、按下去时的文字、背景的颜色，当然，还有点击后的回调。</p>
-<p>为了以后方便自己，也为了方便更多的人，]]>
+<p>为了以后方便自己，也为了方便更多的人，就把这些封装成了一个简单的开源库，也算是我自己的<strong><em>第一个开源库</em></strong>吧。</p>
+<h2 id="LinkTextView">LinkTextView</h2><p>名称：<a href="https://github.com/zekunyan/LinkTextView">LinkTextView</a>。喜欢的话就Star一下吧。</p>
+<h3 id="Example">Example</h3><p><img src="http://zorrochen.qiniudn.com/LinkTextView_Sample.gif" alt="image"></p>]]>
+    
     </summary>
     
       <category term="Android" scheme="http://tutuge.me/tags/Android/"/>
@@ -2031,9 +2133,10 @@ NSString <span class="keyword">*</span>str2 = str1;
     <link href="http://tutuge.me/2014/11/01/%E7%AC%AC%E4%B8%80%E7%AF%87Blog/"/>
     <id>http://tutuge.me/2014/11/01/第一篇Blog/</id>
     <published>2014-10-31T16:13:15.000Z</published>
-    <updated>2015-02-13T15:46:42.000Z</updated>
+    <updated>2015-04-06T03:12:41.000Z</updated>
     <content type="html"><![CDATA[<p>拖了很久，终于开始写博客了。<br>一直觉得自己的知识储备不够，一直都在学习，一直都在积累。（其实就是懒好吗=。=）</p>
 <p>说点啥呢，想到啥就说啥吧~</p>
+<a id="more"></a>
 <p>从小就喜欢模型、乐高积木，喜欢拆东西，印象最深的就是把家里的高级录音机拆了，装不回去，塞到了床底下。。。</p>
 <p>上了学之后，又开始捣鼓四驱车，自己做马达，绕线圈，家里零件一大堆，串联一堆电池，组装遥控车，唯一的遗憾，就是没有做成遥控飞机（没钱=、=）。</p>
 <p>接着，家里有了电脑！！！这要感谢老爹，当时花了一万多，液晶显示器，刚上市的奔腾4啊！</p>
@@ -2045,8 +2148,8 @@ NSString <span class="keyword">*</span>str2 = str1;
 ]]></content>
     <summary type="html">
     <![CDATA[<p>拖了很久，终于开始写博客了。<br>一直觉得自己的知识储备不够，一直都在学习，一直都在积累。（其实就是懒好吗=。=）</p>
-<p>说点啥呢，想到啥就说啥吧~</p>
-<p>从小就喜欢模型、乐高积木，喜欢拆东西，印象最深的就是把家里的高级录音机拆了，装不回去，塞到了床底下。]]>
+<p>说点啥呢，想到啥就说啥吧~</p>]]>
+    
     </summary>
     
       <category term="杂烩" scheme="http://tutuge.me/tags/%E6%9D%82%E7%83%A9/"/>

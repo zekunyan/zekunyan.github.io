@@ -96,111 +96,16 @@
       
         <h2 id="前言">前言</h2><p>Objective-C中的Blocks实在是太好用了，有了它，我们就可以将“代码块”封装起来，当成变量使用、传递，所以，在Objective-C中，iOS中，许多的回调是用Block来完成的。</p>
 <h2 id="问题">问题</h2><p>我自己在之前的项目中，就遇到过一个问题。因为项目的需要，手机端所有的跟服务器的通信都需要“加密”，在经过一番调研后，我们使用的是类似OAuth机制（至于什么是OAuth，各位Google一下就明白了，大部分的公共API都用到了这种机制）。</p>
-<h3 id="缓存Http请求后的回调代码块">缓存Http请求后的回调代码块</h3><p>既然是OAuth机制，就是说我们每次向服务器发起的请求，除了跟业务相关的参数，还需要带上AccessToken、UserToken这类的授权参数，而AccessToken在本次请求中是否会过期，在结果返回前是不知道的，所以，为了更好地用户体验，不至于让用户在某个时刻的操作，因为授权过期了而“没有响应”，我们的每次Http请求都必须缓存起来。</p>
-<p>这里的缓存可不是单单指缓存请求的参数、URL，更重要的是缓存Http请求成功或者失败时的“<strong>回调代码块</strong>”。</p>
-<h2 id="实现">实现</h2><h3 id="AFNetworking的Get方法">AFNetworking的Get方法</h3><p>在iOS的项目中，AFNetworking应该算是使用的最多的网络库了，它的Get请求的方法接口如下：</p>
-<pre><code><span class="pp">- <span class="params">(<span class="variable">AFHTTPRequestOperation</span> *)</span>GET:<span class="params">(<span class="variable">NSString</span> *)</span>URLString
-                     parameters:<span class="params">(id)</span>parameters
-                        success:<span class="params">(void (^)</span><span class="params">(<span class="variable">AFHTTPRequestOperation</span> *operation, id response<span class="variable">Object</span>)</span>)success
-                        failure:<span class="params">(void (^)</span><span class="params">(<span class="variable">AFHTTPRequestOperation</span> *operation, <span class="variable">NSError</span> *error)</span>)failure</span>
-</code></pre><p>只有四个参数，分别是Url、参数、成功的回调Block，失败的回调Block，看，这里，回调的代码块就被封装到了Block里面，并当成参数传入。</p>
-<h3 id="再次封装">再次封装</h3><p>介于AFNetworking只提供了最基本的Get、Post、Put这些方法，所以，我们往往根据业务的接口做了封装，如先定义了请求的类型枚举：</p>
-<pre><code>//Http type, for<span class="instruction"> execute
-</span>typedef<span class="function"> NS_ENUM(</span>NSUInteger, HTTP_REQUEST_TYPE<span class="function">)</span> {
-    ICG_GET = 0,
-    ICG_POST
-};
-</code></pre><p>然后定义了统一的请求入口与回调参数Block：</p>
-<pre><code><span class="comment">//请求成功后的回调</span>
-typedef <span class="typename">void</span> (^http_success)(id result);
-<span class="comment">//请求失败后的回调</span>
-typedef <span class="typename">void</span> (^http_fail)();
-
-<span class="comment">//统一的请求入口</span>
-+ (<span class="typename">void</span>)<span class="string">executeWithType:</span>(HTTP_REQUEST_TYPE)type <span class="string">api:</span>(NSString *)api
-<span class="label">            parameters:</span>(NSDictionary *)parameters <span class="string">success:</span>                (http_success)success <span class="string">fail:</span>(http_fail)fail {    
-
-    <span class="comment">//为每个请求增加AccessToken、UserToken等公共参数</span>
-    <span class="comment">//...</span>
-
-    <span class="comment">//缓存Http请求</span>
-    <span class="comment">//...</span>
-
-    <span class="comment">//根据type区分具体是哪一种Http请求。</span>
-    <span class="keyword">switch</span> (type) {
-        <span class="keyword">case</span> <span class="string">ICG_GET:</span>
-            [HttpUtil <span class="string">get:</span>url <span class="string">parameters:</span>paras <span class="string">success:</span>success <span class="string">fail:</span>fail];
-            <span class="keyword">break</span>;    
-        <span class="keyword">case</span> <span class="string">ICG_POST:</span>
-            [HttpUtil <span class="string">post:</span>url <span class="string">parameters:</span>paras <span class="string">success:</span>success <span class="string">fail:</span>fail];
-            <span class="keyword">break</span>;    
-<span class="label">        default:</span>
-            <span class="keyword">break</span>;
-    }
-}
-</code></pre><h3 id="再次封装的好处">再次封装的好处</h3><p>为什么要再次做封装，将基本的Http请求统一入口？道理很简单，就是为了能方便的对每次请求增加额外的处理，并且对上层调用透明。如:</p>
-<ul>
-<li>统一为每个请求增加Log。</li>
-<li>统一为每个请求增加如AccessToken这些额外的参数。</li>
-<li>方便对Http请求做缓存！</li>
-</ul>
-<h3 id="缓存Http请求的数据结构">缓存Http请求的数据结构</h3><p>既然我们已经有了统一的请求入口，为了缓存，所需要做的就是将能代表一次请求的所有参数缓存起来就行了，如URL、请求参数等，如下数据结构：</p>
-<pre><code><span class="variable">@interface</span> <span class="attribute">RequestHolder </span>: NSObject
-
-<span class="comment">//URL地址</span>
-<span class="variable">@property</span>(strong, nonatomic) NSString *url;
-<span class="comment">//请求参数</span>
-<span class="variable">@property</span>(strong, nonatomic) NSMutableDictionary *paras;
-<span class="comment">//请求类型，如Get、Post</span>
-<span class="variable">@property</span>(assign, nonatomic) HTTP_REQUEST_TYPE type;
-<span class="comment">//请求成功回调</span>
-<span class="variable">@property</span>(copy) http_success success;
-<span class="comment">//请求失败回调</span>
-<span class="variable">@property</span>(copy) http_fail fail;
-<span class="variable">@end</span>
-</code></pre><p>这几个参数，就可以完整的“代表、重现”一次具体的Http请求。</p>
-<h3 id="如何缓存">如何缓存</h3><p>只要App开启，Http请求就会不停地产生，会有源源不断的请求，难道我们把每次请求都缓存起来？</p>
-<p>全部都缓存肯定是不行的，所以我们需要一个缓存策略。</p>
-<p>一个App中，所有的Http请求的路径，也就是Url，不包括参数，应该是数量固定的，如“/user, /comment”，并且，一个请求往往对应的操作、功能也是唯一的，所以，完全可以以请求的<strong>Url</strong>为<strong>Key</strong>，以本次请求的“<strong>RequestHolder</strong>”为<strong>Value</strong>，用Objective-C中的NSDictionary来缓存Http请求。</p>
-<p>所以，缓存请求的方法大致如下：</p>
-<pre><code><span class="comment">//缓存Http请求</span>
-
-- (<span class="keyword">void</span>)cacheHttpRequest:(HTTP_REQUEST_TYPE)<span class="class"><span class="keyword">type</span> <span class="title">url</span>:</span>(NSString *)url
-                parameters:(NSMutableDictionary *)parameters success:(http_success)success fail:(http_fail)fail {
-
-    <span class="comment">//创建缓存数据结构，保存本次请求的参数、回调</span>
-    ICGRequestHolder *requestHolder = [ICGRequestHolder <span class="keyword">new</span>];
-    requestHolder.url = url;
-    requestHolder.paras = parameters;
-    requestHolder.success = [success copy];
-    requestHolder.fail = [fail copy];
-    requestHolder.<span class="keyword">type</span> = <span class="class"><span class="keyword">type</span>;</span>
-
-    <span class="comment">//保存本次请求</span>
-    [_operationQueue addOperationWithBlock:^{
-        _cachedRequests[url] = requestHolder;
-    }];
-}
-</code></pre><p>这样，就能完整的缓存Http请求了。</p>
-<h3 id="从缓存中恢复Http请求">从缓存中恢复Http请求</h3><p>恢复请求很简单，直接遍历所有缓存的请求，再次发起Http请求即可，就不再贴代码了。</p>
-<h3 id="删除成功的Http请求">删除成功的Http请求</h3><p>缓存的目的是在请求失败时，如AccessToken超时时，我们可以在重新获取AccessToken后重现上次失败的请求，所以，一旦请求成功时，我们还需要将成功的请求删除，当然，也是利用Url，如下：</p>
-<pre><code>- (<span class="typename">void</span>)<span class="string">removeRequestForKey:</span>(NSString *)url {
-    <span class="comment">//放入队列执行</span>
-    [_operationQueue <span class="string">addOperationWithBlock:</span>^{
-        <span class="comment">//删除Url对应的请求</span>
-        [_cachedRequests <span class="string">removeObjectForKey:</span>url];
-    }];
-}
-</code></pre><h2 id="总结">总结</h2><p>本文只是简单地利用Objective-C中的Block特性，实现了Http请求的缓存。目的不是介绍Block，是为了分享我自己在项目中运用Block的例子，如果读者有更好的方法，欢迎留言啊~~</p>
-<h2 id="参考、推荐阅读">参考、推荐阅读</h2><ul>
-<li><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/WorkingwithBlocks/WorkingwithBlocks.html" target="_blank" rel="external">Working with Blocks</a></li>
-</ul>
-
+        
+          <p class="article-more-link">
+            <a href="/2015/02/19/Block类型变量-缓存Http请求与回调/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/19/Block类型变量-缓存Http请求与回调/" data-id="ci85ag02n0025vw6uxc8hv38o" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/19/Block类型变量-缓存Http请求与回调/" data-id="ci85b37cf00255a6ubhie8y88" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -240,99 +145,21 @@ typedef <span class="typename">void</span> (^http_fail)();
     <div class="article-entry" itemprop="articleBody">
       
         <h2 id="前言">前言</h2><p>随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。</p>
-<p>之前的做的项目，<a href="https://itunes.apple.com/us/app/qing-ju-yin-le-quan-guo-zui/id913235479?l=zh&amp;ls=1&amp;mt=8" target="_blank" rel="external">青桔音乐iOS客户端</a>里面的首页就是一个类似微信朋友圈的“动态”页面，大致如下：</p>
+<p>之前的做的项目，<a href="https://itunes.apple.com/us/app/qing-ju-yin-le-quan-guo-zui/id913235479?l=zh&amp;ls=1&amp;mt=8">青桔音乐iOS客户端</a>里面的首页就是一个类似微信朋友圈的“动态”页面，大致如下：</p>
 <p><img src="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_1.png?imageView2/0/h/300" alt="image"></p>
 <p>如果是你，你会怎么实现这个页面呢？</p>
 <p>这还用问，当然是用UITableView+自定义的UITableViewCell。</p>
 <p>UITableView是可以滑动的，为了不让用户在滑动中感到有卡顿，该如何优化？下面，我就写一下我自己在做项目时的“经验”~</p>
-<h2 id="优化">优化</h2><p>主要分为以下几点：</p>
-<ul>
-<li>只定义一种Cell。</li>
-<li>提前计算并缓存每个Cell的高度。</li>
-<li>提前创建真正显示的、需要加工的数据并缓存。</li>
-<li>缓存View！</li>
-<li>其它。</li>
-</ul>
-<h3 id="只定义一种Cell">只定义一种Cell</h3><p>乍一看，这个界面至少有3种样式的Cell，为什么只定义一种呢？</p>
-<h4 id="分析结构">分析结构</h4><p>仔细分析一下，页面中每个Cell的内容都有头像、标题、正文、评论、其它（歌曲、图片、歌手）。所以，从整体上看，每个Cell的结构是一致的！</p>
-<h4 id="重用=大致固定数量的Cell">重用=大致固定数量的Cell</h4><p>并且，凡是认真研究过UITableView的人应该都知道，Apple已经为我们提供了Cell的重用，如用“<strong>registerNib:forCellReuseIdentifier</strong>”方法注册自定义Cell的Nib，然后在“<strong>cellForRowAtIndexPath</strong>”的时候用“<strong>dequeueReusableCellWithIdentifier</strong>”获取可以重用的Cell，所以，无论UITableView要显示内容有多少，真正创建出的Cell可能只有5、6个。</p>
-<p>所以，我们完全可以只创建一种Cell，虽然这样一个Cell的“体积”可能会很大，但是介于Cell的数量不会很多，所以完全可以接受。</p>
-<h5 id="只定义一种Cell的好处"><strong>只定义一种Cell的好处</strong></h5><ul>
-<li>减少代码量，减少Nib文件的数量，统一一个Nib文件定义Cell，容易修改、维护。</li>
-<li>基于Cell的重用，真正运行时铺满屏幕所需的Cell数量大致是固定的，设为<strong>N</strong>个。所以如果如果只有一种Cell，那就是只有<strong>N</strong>个Cell的实例；但是如果有<strong>M</strong>种Cell，那么运行时最多可能会是“<strong>M x N = MN</strong>”个Cell的实例，虽然可能并不会占用太多内存，但是能少点不是更好吗。</li>
-</ul>
-<h4 id="善用hidden隐藏（显示）Subview">善用hidden隐藏（显示）Subview</h4><p>既然只定义一种Cell，那该如何显示不同类型的内容呢？<br>答案就是，把所有不同类型的view都定义好，放在cell里面，通过hidden显示、隐藏，来显示不同类型的内容。如下图定义Cell：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_2.jpg?imageView2/0/h/400" alt="image"></p>
-<p>图中的Subview1、Subview2、Subview3就是不同类型Cell的不同之处，所以我们在“<strong>cellForRowAtIndexPath</strong>”函数中，设置Cell的样式、内容时，就可以通过显示、隐藏这三个子view来显示。</p>
-<p>毕竟，在用户快速滑动中，只是单纯的显示、隐藏subview比实时创建要快得多。</p>
-<h3 id="提前计算并缓存每个Cell的高度">提前计算并缓存每个Cell的高度</h3><p>开发过Android，用过Android的ListView以后，对UITableView需要提前计算Cell的高度很不适应。=。= </p>
-<p>首先要确定的是，在iOS中，系统会先调用“<strong>tableView:heightForRowAtIndexPath:</strong>”获取每个Cell即将显示的高度，从而确定整个UITableView的布局。然后才调用“<strong>tableView:cellForRowAtIndexPath</strong>”获取每个Cell，我们也是在这里填充、设置Cell的。</p>
-<p><strong>所以，既然高度总会被用到，那就早早的在获取数据时就计算好吧！</strong></p>
-<h4 id="在Model（Entity）中计算并保存Cell的高度">在Model（Entity）中计算并保存Cell的高度</h4><p>其实，在Model（Entity）中保存UI的参数是很奇怪的=。=（最好放在ViewModel中，就是MVVM模式的），我们的Entity可能就是下面的样子：</p>
-<pre><code><span class="class"><span class="keyword">@interface</span> <span class="title">DataEntity</span> : <span class="title">NSObject</span></span>
-
-<span class="comment">//原始数据</span>
-<span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *content;
-<span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *title;
-
-<span class="comment">//Cell 高度</span>
-<span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> cellHeight;
-
-<span class="comment">//计算高度</span>
-- (<span class="keyword">void</span>)calculateCellHeight;
-
-<span class="keyword">@end</span>
-</code></pre><p>这样，就不用在“<strong>tableView:heightForRowAtIndexPath:</strong>”中每次都计算了。</p>
-<h3 id="提前创建真正显示的、需要加工的数据并缓存">提前创建真正显示的、需要加工的数据并缓存</h3><p>Cell中显示的内容，很多时候可能并不是直接从服务器拿到的数据，而是经过“加工”的数据。如本文中的“动态”也，每个Cell的标题、正文都有可点击的连接Link、表情图片等富文本内容，而我们一般用NSAttributeString类来显示。</p>
-<p>既然每次都会用到，倒不如在获取到数据的时候就创建、加工好这些内容，等到需要现实的时候，直接拿来用不就行了。</p>
-<p>所以，我们的Entity类可能变成下面这个样子: </p>
-<pre><code><span class="class"><span class="keyword">@interface</span> <span class="title">DataEntity</span> : <span class="title">NSObject</span></span>
-
-<span class="comment">//原始数据</span>
-<span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *content;
-<span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *title;
-
-<span class="comment">//Cell 高度</span>
-<span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> cellHeight;
-
-<span class="comment">//真正显示的内容</span>
-<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSAttributedString</span> *showTitle;
-<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSAttributedString</span> *showContent;
-
-<span class="comment">//计算高度</span>
-- (<span class="keyword">void</span>)calculateCellHeight;
-
-<span class="comment">//创建、加工真正显示的内容</span>
-- (<span class="keyword">void</span>)setupShowTitileAndContent;
-
-<span class="keyword">@end</span>
-</code></pre><p>这样，在“<strong>tableView:cellForRowAtIndexPath</strong>”中，我们直接拿showTitle、showContent来显示就好，不用再创建。</p>
-<h3 id="缓存View!">缓存View!</h3><p>什么？缓存View？！</p>
-<p>是的，当Cell中的部分View是非常独立的，并且不便于重用的，而且“体积”非常小，在内存可控的前提下，我们完全可以将这些view缓存起来！</p>
-<p>方法当然也是将缓存的view放在Entity中~。</p>
-<h3 id="其它">其它</h3><p>当然，还有其他的优化方法，简单说一说：</p>
-<ul>
-<li>尽量设置Cell的view为opaque，避免GPU对Cell下面的内容也进行绘制。</li>
-<li>避免大量的图片缩放、颜色渐变等。</li>
-<li>避免同步的从网络、文件获取数据（这个是必须的=。=）</li>
-<li>用shadowPath创建阴影。</li>
-<li>尽量减少subview的数量，如多用drawRect绘制元素，替代用view显示。</li>
-<li>尽量显示“<strong>大小刚好合适</strong>”的图片资源。</li>
-</ul>
-<h2 id="总结">总结</h2><p>总的来说，就是：</p>
-<p><strong>缓存一切可以缓存的！就是“用空间替换时间”！</strong></p>
-<p><strong>在UITableView的Delegate、DataSource方法中，减少任何不必要的操作</strong></p>
-<h2 id="参考，推荐阅读">参考，推荐阅读</h2><ul>
-<li><a href="http://www.raywenderlich.com/31166/25-ios-app-performance-tips-tricks#tableviews" target="_blank" rel="external">25 iOS App Performance Tips &amp; Tricks</a></li>
-<li><a href="http://stackoverflow.com/questions/1352479/tricks-for-improving-iphone-uitableview-scrolling-performance" target="_blank" rel="external">Tricks for improving iPhone UITableView scrolling performance?</a></li>
-<li><a href="http://stackoverflow.com/questions/6172158/how-can-i-speed-up-a-uitableview" target="_blank" rel="external">How can I speed up a UITableView?</a></li>
-</ul>
-
+        
+          <p class="article-more-link">
+            <a href="/2015/02/19/提升UITableView性能-复杂页面的优化/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/19/提升UITableView性能-复杂页面的优化/" data-id="ci85ag012000dvw6u0e4q8rl3" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/19/提升UITableView性能-复杂页面的优化/" data-id="ci85b37b1000d5a6ufx8ees3o" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -372,76 +199,16 @@ typedef <span class="typename">void</span> (^http_fail)();
     <div class="article-entry" itemprop="articleBody">
       
         <h2 id="前言">前言</h2><p>不管是用什么语言开发，字符串应该算是用的最多的了。在Objective-C中，字符串类是NSString，以及其子类NSMutableString等。所以，对于字符串类，编程语言、编译器等往往会做特殊处理。下面我就说说我自己在项目中发现的NSString的“奇怪”的地方。</p>
-<h2 id="字符串常量，copy，mutableCopy">字符串常量，copy，mutableCopy</h2><h3 id="Example">Example</h3><p>先看看如下面的代码，猜猜会输出什么：</p>
-<pre><code><span class="built_in">NSString</span> *str1 = <span class="string">@"abc"</span>;
-<span class="built_in">NSString</span> *str2 = <span class="string">@"abc"</span>;
-<span class="built_in">NSString</span> *str3 = [[<span class="built_in">NSString</span> alloc] initWithString:<span class="string">@"abc"</span>];
-<span class="built_in">NSString</span> *str4 = [str1 <span class="keyword">copy</span>];
-<span class="built_in">NSString</span> *str5 = [str1 mutableCopy];
-
-<span class="comment">//输出内存中的地址</span>
-<span class="built_in">NSLog</span>(<span class="string">@"str1: %p"</span>, str1);
-<span class="built_in">NSLog</span>(<span class="string">@"str2: %p"</span>, str2);
-<span class="built_in">NSLog</span>(<span class="string">@"str3: %p"</span>, str3);
-<span class="built_in">NSLog</span>(<span class="string">@"str4: %p"</span>, str4);
-<span class="built_in">NSLog</span>(<span class="string">@"str5: %p"</span>, str5);
-</code></pre><p>直接给出结果：</p>
-<pre><code><span class="comment">//地址值由运行时决定，不唯一</span>
-<span class="string">str1:</span> <span class="number">0x10cd12040</span>
-<span class="string">str2:</span> <span class="number">0x10cd12040</span>
-<span class="string">str3:</span> <span class="number">0x10cd12040</span>
-<span class="string">str4:</span> <span class="number">0x10cd12040</span>
-<span class="string">str5:</span> <span class="number">0x7f874b508350</span> <span class="comment">//mutable copy</span>
-</code></pre><p>看，是不是很“神奇”。</p>
-<h3 id="简单解释">简单解释</h3><p>NSString是“不可变（immutable）”的类型，这个是关键。<br>代码中的“@”开头的字符串，其实就是一个字符串常量，运行时会检测这个字符串是否已经存在，存在的话，就直接将这个字符串的地址赋给变量；不存在的话，则创建，再赋值。</p>
-<p><strong>第一行</strong>: “abc”字符串不存在，创建，取得字符串地址“0x10cd12040”，赋给str1. </p>
-<p><strong>第二行</strong>: “abc”字符串已经存在，直接将地址“0x10cd12040”赋给str2.  </p>
-<p><strong>第三行</strong>: （记住，NSString是不可变的）alloc并不会分配新的内存，直接将字符串地址“0x10cd12040”赋给str3.  </p>
-<p><strong>第四行</strong>: copy，既然是不可变的，也就没有必要分配新内存，直接将地址“0x10cd12040”赋给str4.  </p>
-<p><strong>第五行</strong>: mutableCopy其实就是创建一个NSMutableString的实例，既然是“可变（mutable）”的类型了，当然要分配新的内存，所以，字符串的地址也变成新的“0x7f874b508350”。</p>
-<p>可以这么说，编译器、runtime充分利用了NSString是“<strong>不可变（immutable）</strong>”类型这个特点，只要字符串内容一致，就不会分配新的内存储存，字符串在程序中使用量非常大，这么做无疑可以大大节省内存，提升性能。</p>
-<h2 id="Property_和_NSString">Property 和 NSString</h2><p>先来看看一个UserEntity类：</p>
-<pre><code><span class="comment">//UserEntity.h</span>
-
-<span class="variable">@interface</span> <span class="attribute">UserEntity </span>: NSObject &lt;NSCopying&gt;
-<span class="variable">@property</span>(strong, nonatomic) NSString *name;
-<span class="variable">@end</span>
-</code></pre><p>只有一个名为name的NSString类型Property。<br>相信大家对这个不陌生吧。一般我们的应用中会有很多Entity类型，每个Entity类里面肯定避免不了有许多NSString的字符串类型。这里的name的属性是：strong和nonatomic，strong表明name要“持有”一份name所指的字符串的引用，nonatomic表示property类型不用加锁。</p>
-<p>接着咱们看看下面的代码：</p>
-<pre><code>UserEntity *userEntity = [UserEntity <span class="keyword">new</span>];        
-
-<span class="comment">//创建mutable类型的字符串</span>
-NSMutableString *showName = [[NSMutableString alloc] <span class="string">initWithString:</span>@<span class="string">"tutuge"</span>];        
-
-<span class="comment">//先保存“tutuge”字符串到userEntity的name</span>
-userEntity.name = showName;        
-
-<span class="comment">//修改showName</span>
-[showName <span class="string">appendString:</span>@<span class="string">" blog"</span>];        
-
-<span class="comment">//输出userEntity的name属性</span>
-NSLog(@<span class="string">"Name: %@"</span>, userEntity.name);
-</code></pre><p>猜猜会输出什么？</p>
-<pre><code><span class="attribute">Name</span>: <span class="string">tutuge blog</span>
-</code></pre><p>看，我们明明是保存的“tutuge”，怎么到后面输出的是“tutuge blog”？</p>
-<h3 id="让NSString类型的Property为Copy型">让NSString类型的Property为Copy型</h3><p>因为name的Property属性是strong的，所以赋值后，它跟showName均指向同一个NSMutableString实例，如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_nsstring_copy_1_1.jpg" alt="image"></p>
-<p>所以改变了showName，当然name输出的值也就变了。<br>这个时候，name的property属性就不能是strong了，应该是copy，如下：</p>
-<pre><code><span class="comment">//UserEntity.h</span>
-
-<span class="variable">@interface</span> <span class="attribute">UserEntity </span>: NSObject &lt;NSCopying&gt;
-<span class="variable">@property</span>(copy, nonatomic) NSString *name;
-<span class="variable">@end</span>
-</code></pre><p>这样的话，当“<strong>userEntity.name = showName;</strong>”这句运行后，内存布局如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_nsstring_copy_1_2.jpg" alt="image"></p>
-<p>这样，就避免了这个问题。</p>
-<h2 id="总结">总结</h2><p>很所时候，代码并不是看上去那样“运行”的，多试试，多查阅资料，就能了解其中的奥秘了~</p>
-
+        
+          <p class="article-more-link">
+            <a href="/2015/02/18/NSString的Copy与内存分配/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/18/NSString的Copy与内存分配/" data-id="ci85ag0260018vw6u1vm6ea6b" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/18/NSString的Copy与内存分配/" data-id="ci85b37by00185a6ueemvmha2" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -483,151 +250,17 @@ NSLog(@<span class="string">"Name: %@"</span>, userEntity.name);
         <h2 id="前言">前言</h2><p>之前在做项目的时候，所有业务的网络接口方法，全部都写在了一个文件里面，一开始还好，毕竟每个方法的代码也只是十几行，增加、修改也比较容易。但是随着接口的增多，这个文件慢慢居然超过了1000行，里面几十个方法都写在一起，实在是不好维护。  </p>
 <p>虽然保持这样也没有什么，多用用Cmd+F就能找到。但是，真是越看越不顺眼😳， 代码一定要有“美感”啊~😝</p>
 <p>所以在查阅了大量文章后，终于想出了本文即将说明的办法，越发觉得Objective-C的“消息”机制是多么的赞~😚</p>
-<h2 id="Github_示例">Github 示例</h2><p>贴上本文中的示例工程：<a href="https://github.com/zekunyan/HttpProxyExample" target="_blank" rel="external">https://github.com/zekunyan/HttpProxyExample</a></p>
-<h2 id="问题">问题</h2><p>先抛出问题。  </p>
-<p>一款互联网应用，免不了要跟服务器打交道，在iOS项目中，最有名的网络库应该就是<a href="https://github.com/AFNetworking/AFNetworking" target="_blank" rel="external">AFNetworking</a>了。所以，很多人就会利用AFnetworking提供的Get、Post等基本Http请求接口，封装自己的网络接口层代码，我自己在项目中也是这么做的。  </p>
-<p>但是，AFNetworking只是提供了Get、Post、Json传输等基本的Http请求方法，所以一旦落实到具体的业务相关的请求上，我们要为每个请求（URL）都写一个单独的接口方法。</p>
-<p><strong>那么，问题就来了</strong>  </p>
-<p>业务相关的接口那么多，举个例子，什么“通过用户ID获取用户基本信息”、“获取用户的所有评论”等，每个请求都是一个方法，这么多方法该怎么组织呢？全部放在一起？那这个接口类岂不是会非常乱？不放在一起？那岂不是会有很多个网络请求类？(至于要不要统一接口入口，我想这个根据项目来决定吧=。=)</p>
-<h2 id="需求">需求</h2><ul>
-<li>所有网络接口都从统一的类调用，如HttpProxy。</li>
-<li>网络接口的具体实现，按照业务划分到不同的类中，如“<strong>UserHttpHandler</strong>”、“<strong>CommentHttpHandler</strong>”。</li>
-</ul>
-<p>其实，按照面向对象的原则，就是接口代理类<strong>HttpProxy</strong>拥有若干个按照业务划分的接口（Interface），这些接口的所有方法组成了网络层的不同的Http请求。如下图：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_http_proxy_1_1.jpg" alt="image"></p>
-<p>那么，调用的时候，所有接口都用HttpProxy调用，如：</p>
-<pre><code><span class="comment">//实际调用的是UserHttpHandler类的方法</span>
-<span class="attr_selector">[[HttpProxy sharedInstance]</span> <span class="tag">getUserWithID</span>:@<span class="tag">100</span>];
-
-<span class="comment">//实际调用的是CommentHttpHandler类的方法</span>
-<span class="attr_selector">[[HttpProxy sharedInstance]</span> <span class="tag">getCommentsWithDate</span><span class="pseudo">:date</span>];
-</code></pre><h2 id="关键">关键</h2><p>根据前面的描述，我们可以得出，关键就是：<strong>消息转发（Message Forward）</strong></p>
-<p>Objective-C里面没有我们传统的“方法调用”，取而代之的是“消息”，所有的方法都是通过向对象发送“消息”实现调用的。而这个机制，也就为我们的实现提供了方便。</p>
-<p>也就是说：我们要将发给“<strong>HttpProxy</strong>”的消息，让HttpProxy转发给真正能接受这个消息的对象，HttpProxy就是个<strong>代理</strong>。</p>
-<p>苹果已经给我们提供了这个“代理”类了-NSProxy。</p>
-<h2 id="NSProxy">NSProxy</h2><p>什么是NSProxy：</p>
-<ul>
-<li>NSProxy没有父类，是顶级类(根类)，跟NSObject同等地位。</li>
-<li>NSProxy和NSObject都实现了“<strong>NSObject</strong> Protocol”。</li>
-<li>NSProxy设计时就是以“抽象类”设计的，专门为<strong>转发消息</strong>而生。</li>
-</ul>
-<p>实现要求:</p>
-<ol>
-<li>继承NSProxy的子类要实现自己的初始化方法，如“init”、“initWith”。</li>
-<li>重写“<strong> - forwardInvocation: </strong>”和“<strong> - methodSignatureForSelector: </strong>”方法，完成消息转发。</li>
-</ol>
-<p>详细内容参考Apple的<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Reference/Foundation/Classes/NSProxy_Class/index.html#//apple_ref/occ/instm/NSProxy/forwardInvocation:" target="_blank" rel="external">文档</a>。</p>
-<h2 id="实现">实现</h2><h3 id="定义">定义</h3><p>先不管HttpProxy，咱们看看具体的接口，先举两个例子：</p>
-<pre><code><span class="comment">//UserHttpHandler.h</span>
-<span class="comment">//用户相关接口</span>
-<span class="variable">@protocol</span> UserHttpHandler &lt;NSObject&gt;
-- (void)<span class="attribute">getUserWithID</span>:(NSNumber *)userID;
-<span class="variable">@end</span>
-
-<span class="comment">//CommentHttpHandler.h</span>
-<span class="comment">//评论相关接口</span>
-<span class="variable">@protocol</span> CommentHttpHandler &lt;NSObject&gt;
-- (void)<span class="attribute">getCommentsWithDate</span>:(NSDate *)date;
-<span class="variable">@end</span>
-</code></pre><p>好的，接口有了，我们的HttpProxy类应该“实现”了这两个接口。<br>然后，最好是单例类，所以还要有个获取单例的方法。<br>最后，还需要一个向HttpProxy注册具体实现了接口Protocol的方法。</p>
-<p>所以，HttpProxy应该是这个样子的：</p>
-<pre><code><span class="comment">//HttpProxy.h</span>
-
-<span class="comment">//1. 继承了NSproxy。 2. “实现”了网络接口Protocol</span>
-<span class="annotation">@interface</span> <span class="string">HttpProxy :</span> NSProxy &lt;UserHttpHandler, CommentHttpHandler&gt;
-
-<span class="comment">//获取单例</span>
-+ (instancetype)sharedInstance;
-
-<span class="comment">//注册具体实现类</span>
-- (<span class="typename">void</span>)<span class="string">registerHttpProtocol:</span>(Protocol *)httpProtocol <span class="string">handler:</span>(id)handler;
-
-<span class="annotation">@end</span>
-</code></pre><h3 id="找到消息对应的实现类对象">找到消息对应的实现类对象</h3><p>如何在HttpProxy做消息转发时，找到某个消息对应的真正的实现类对象呢？</p>
-<p>最好的办法就是保存每个接口方法到其实现类对象的映射，可以用Dictionary保存，关系如下图：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_http_proxy_1_2.jpg" alt="image"></p>
-<p>所以，<strong>registerHttpProtocol:handler:</strong>方法的职责就是：</p>
-<ol>
-<li>遍历Protocol的所有方法（利用Objective-C的<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html" target="_blank" rel="external">Runtime功能</a>）。</li>
-<li>保存Protocol所有方法到实现类的对象的映射关系。（用方法的字符串表示作为key，实现类对象为value）</li>
-</ol>
-<p>所以，HttpProxy应该持有一个Dictionary的实例，用于保存映射关系，HttpProxy的实现部分如：</p>
-<pre><code><span class="comment">//HttpProxy.m</span>
-
-<span class="variable">@interface</span> HttpProxy ()
-<span class="comment">//保存映射关系的字典。</span>
-<span class="variable">@property</span>(strong, nonatomic) NSMutableDictionary *selToHandlerMap;
-<span class="variable">@end</span>
-</code></pre><p>注册方法实现如下：</p>
-<pre><code>- (<span class="type">void</span>)registerHttpProtocol:(<span class="type">Protocol</span> *)httpProtocol handler:(id)handler {
-    unsigned <span class="type">int</span> numberOfMethods = <span class="number">0</span>;
-
-    //<span class="type">Get</span> all methods <span class="keyword">in</span> protocol
-    struct objc_method_description *methods = protocol_copyMethodDescriptionList(
-            httpProtocol, <span class="type">YES</span>, <span class="type">YES</span>, &amp;numberOfMethods);
-
-    //<span class="type">Register</span> protocol methods
-    <span class="keyword">for</span> (unsigned <span class="type">int</span> i = <span class="number">0</span>; i &lt; numberOfMethods; i++) {
-        struct objc_method_description <span class="keyword">method</span> = methods[i];
-        [_selToHandlerMap setValue:handler forKey:<span class="type">NSStringFromSelector</span>(<span class="keyword">method</span>.name)];
-    }
-}
-</code></pre><h3 id="实现消息的转发">实现消息的转发</h3><p>我们已经可以注册接口、保存映射关系了，剩下的就是重写NSProxy的两个方法，以实现消息的转发，至于这两个方法具体作用是什么，读者可以自行查阅相关资料。如下：</p>
-<pre><code><span class="comment">//HttpProxy.m</span>
-
-<span class="comment">//获取Method signature</span>
-- (NSMethodSignature *)<span class="string">methodSignatureForSelector:</span>(SEL)sel {
-
-    <span class="comment">//获取method的字符串表示</span>
-    NSString *methodsName = NSStringFromSelector(sel);
-
-    <span class="comment">//查找对应实现类对象</span>
-    id handler = [_selToHandlerMap <span class="string">valueForKey:</span>methodsName];
-
-    <span class="comment">//再次检查handler是否可以相应此消息</span>
-    <span class="keyword">if</span> (handler != nil &amp;&amp; [handler <span class="string">respondsToSelector:</span>sel]) {
-        <span class="keyword">return</span> [handler <span class="string">methodSignatureForSelector:</span>sel];
-    } <span class="keyword">else</span> {
-        <span class="keyword">return</span> [<span class="keyword">super</span> <span class="string">methodSignatureForSelector:</span>sel];
-    }
-}
-
-<span class="comment">//转发方法消息</span>
-- (<span class="typename">void</span>)<span class="string">forwardInvocation:</span>(NSInvocation *)invocation {
-    NSString *methodsName = NSStringFromSelector(invocation.selector);
-    id handler = [_selToHandlerMap <span class="string">valueForKey:</span>methodsName];
-
-    <span class="keyword">if</span> (handler != nil &amp;&amp; [handler <span class="string">respondsToSelector:</span>invocation.selector]) {
-        [invocation <span class="string">invokeWithTarget:</span>handler];
-    } <span class="keyword">else</span> {
-        [<span class="keyword">super</span> <span class="string">forwardInvocation:</span>invocation];
-    }
-}
-</code></pre><h2 id="Example">Example</h2><p>看看如何使用HttpProxy：</p>
-<pre><code><span class="comment">//初始化，注册Protocol对应的实现类对象</span>
-<span class="attr_selector">[[HttpProxy sharedInstance]</span> <span class="tag">registerHttpProtocol</span>:@<span class="tag">protocol</span>(UserHttpHandler) <span class="tag">handler</span>:<span class="attr_selector">[UserHttpHandlerImp new]</span>];
-<span class="attr_selector">[[HttpProxy sharedInstance]</span> <span class="tag">registerHttpProtocol</span>:@<span class="tag">protocol</span>(CommentHttpHandler) <span class="tag">handler</span>:<span class="attr_selector">[CommentHttpHandlerImp new]</span>];
-
-<span class="comment">//调用</span>
-<span class="attr_selector">[[HttpProxy sharedInstance]</span> <span class="tag">getUserWithID</span>:@<span class="tag">100</span>];
-<span class="attr_selector">[[HttpProxy sharedInstance]</span> <span class="tag">getCommentsWithDate</span>:<span class="attr_selector">[NSDate new]</span>];
-</code></pre><h2 id="总结">总结</h2><p>所有的代码及示例都提交到Github了，<a href="https://github.com/zekunyan/HttpProxyExample" target="_blank" rel="external">HttpProxyExample</a>。</p>
-<p>总的来说，就是利用Objective-C的“消息”机制，继承NSProxy抽象类，实现自己定义的转发机制，将网络接口层的各个方法的实现与声明分离，提升项目代码的可维护性，更加模块化。如下图表示:</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_http_proxy_1_3.jpg" alt="image"></p>
-<p>以上，就是我自己在项目中，利用NSProxy设计并实现的网络接口层结构。💪</p>
-<p>从了解NSProxy、Runtime到设计、实现出这个网络层架构，着实花了点时间，收获真是不少。其实像这种纯代码层次的重构，很多人会觉得“吃力不讨好”😨，但我觉得，正是这样，才能真正让自己提升。</p>
-<p>代码是具有美感的！嗯！😝</p>
-<h2 id="参考">参考</h2><ul>
-<li><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Reference/Foundation/Classes/NSProxy_Class/index.html#//apple_ref/occ/instm/NSProxy" target="_blank" rel="external">NSProxy Class Reference</a></li>
-<li><a href="http://objectivetoast.com/2014/05/12/nsproxy-nsobjects-lesser-known-sibling/" target="_blank" rel="external">NSProxy, NSObject’s Lesser-Known Sibling</a></li>
-<li><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html" target="_blank" rel="external">Objective-C Runtime Programming Guide</a></li>
-</ul>
-
+<h2 id="Github_示例">Github 示例</h2><p>贴上本文中的示例工程：<a href="https://github.com/zekunyan/HttpProxyExample">https://github.com/zekunyan/HttpProxyExample</a></p>
+        
+          <p class="article-more-link">
+            <a href="/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/" data-id="ci85ag015000gvw6u59uzqait" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/" data-id="ci85b37b6000g5a6uu4xu8k8j" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -668,84 +301,16 @@ NSLog(@<span class="string">"Name: %@"</span>, userEntity.name);
       
         <h2 id="前言">前言</h2><p>item 3讲的是Objective-C里面的“字面量语法”-“Literal Syntax”，个人觉得非常有用。</p>
 <h2 id="Item_3_-_Prefer_Literal_Syntax_over_the_Equivalent_Methods">Item 3 - Prefer Literal Syntax over the Equivalent Methods</h2><p>本节讲了Objective-C中的“字面量语法”，并且建议我们更多的使用这种语法，而不是使用传统的等价的函数方法。</p>
-<h2 id="引子">引子</h2><p>当我们使用Objective-C编程的时候，总会经常使用到几种Foundation框架中的基本类，如NSString、NSNumber、NSArray、NSDictionary，或者是它们的子类。例如，当我们想创建一个字符串的时候，会这么写：</p>
-<pre><code>NSString *<span class="keyword">str</span> = @<span class="string">"a string"</span>;
-</code></pre><p>不知道各位写这句的时候有没有觉得奇怪？为什么不用先“alloc”，再“initWithXXX”这么来创建呢。是的，这里创建字符串，就用到了Objective-C提供的“字面量语法”-“Literal Syntax”，而这种语法的“标志”就是“@”符号。<br>有了字面量语法，我们就不用每次创建一些基本类型的时候，写一大堆alloc、init了。</p>
-<h2 id="NSNumber">NSNumber</h2><p>字符串可以用字面量语法创建，数字类NSNumber肯定也可以，如下：</p>
-<pre><code>NSNumber <span class="keyword">*</span>intNum = <span class="comment">@1;</span>
-NSNumber <span class="keyword">*</span>floatNum = <span class="comment">@1.1f;</span>
-NSNumber <span class="keyword">*</span>doubleNum = <span class="comment">@1.1;</span>
-NSNumber <span class="keyword">*</span>boolNum = <span class="comment">@YES;</span>
-NSNumber <span class="keyword">*</span>charNum = <span class="comment">@'a';</span>
-
-//不用字面量语法
-NSNumber <span class="keyword">*</span>intNumber = [[NSNumber alloc] initWithInt:1];
-</code></pre><p>看，是不是很方便~</p>
-<h2 id="NSArray">NSArray</h2><h3 id="创建">创建</h3><p>数组算是最常用的一种数据结构了，如果没有字面量语法，创建数组可能是这样：</p>
-<pre><code><span class="constant">NSArray </span>*numbers = [[<span class="constant">NSArray </span>alloc] <span class="symbol">initWithObjects:</span>
-    <span class="variable">@1</span>, <span class="variable">@1</span>.<span class="number">1</span>, <span class="variable">@2</span>.0f, <span class="variable">@YES</span>, <span class="keyword">nil</span>];
-</code></pre><p>用字面量语法的话，就是这样：</p>
-<pre><code>NSArray <span class="variable">*numbers</span> = <span class="variable">@[</span><span class="variable">@1</span>, <span class="variable">@1</span>.1, <span class="variable">@2</span>.0f, <span class="variable">@YES</span>];
-</code></pre><h3 id="存取值">存取值</h3><p>创建了数组，肯定要从数组里面取值，用NSArray的方法就是这样：</p>
-<pre><code><span class="comment">//取</span>
-NSNumber <span class="variable">*aNumber</span> = [numbers objectAtIndex:<span class="number">2</span>];
-<span class="comment">//存</span>
-NSMutableArray <span class="variable">*mutableArray</span> = [[NSMutableArray alloc] initWithArray:
-    <span class="variable">@[</span><span class="variable">@1</span>, <span class="variable">@2</span>, <span class="variable">@3</span>]];
-[mutableArray replaceObjectAtIndex:<span class="number">1</span> withObject:<span class="variable">@4</span>];
-</code></pre><p>跟C语言、Java这些语法很不一样啊，人家都是通过中括号“[]”直接用下标取值就可以。有了字面量同语法，Objective-C也可以这样:</p>
-<pre><code><span class="comment">//取</span>
-NSNumber <span class="variable">*aNumber</span> = numbers[<span class="number">2</span>];
-<span class="comment">//存</span>
-NSMutableArray <span class="variable">*mutableArray</span> = [[NSMutableArray alloc] initWithArray:
-    <span class="variable">@[</span><span class="variable">@1</span>, <span class="variable">@2</span>, <span class="variable">@3</span>]];
-mutableArray[<span class="number">1</span>] = <span class="variable">@4</span>;
-</code></pre><h3 id="要注意的地方">要注意的地方</h3><p>传统的通过“initWithObjects”方法创建数组的时候，是根据最后的“nil”判断数组是否结束的，也就是说，用于初始化数组的元素中有“nil”值也不会导致异常（Exception），如下语句：</p>
-<pre><code><span class="built_in">NSNumber</span> *number1 = @<span class="number">1</span>;
-<span class="built_in">NSNumber</span> *number2 = <span class="literal">nil</span>; <span class="comment">//空指针</span>
-<span class="built_in">NSNumber</span> *number3 = @<span class="number">3</span>;
-
-<span class="comment">//创建</span>
-<span class="built_in">NSArray</span> *numbers = [[<span class="built_in">NSArray</span> alloc] initWithObjects:
-    number1, number2, number3, <span class="literal">nil</span>];
-
-<span class="comment">//输出为1，因为number2，创建到number2就截止了</span>
-<span class="built_in">NSLog</span>(<span class="string">@"numbers count: %d"</span>, numbers<span class="variable">.count</span>);
-</code></pre><p>但是，如果用字面量语法创建，就是出问题：</p>
-<pre><code>NSNumber <span class="keyword">*</span>number1 = <span class="comment">@1;</span>
-NSNumber <span class="keyword">*</span>number2 = nil;
-NSNumber <span class="keyword">*</span>number3 = <span class="comment">@3;</span>
-
-//创建出现异常！！！
-NSArray <span class="keyword">*</span>numbers = <span class="comment">@[number1, number2, number3];</span>
-
-NSLog(<span class="comment">@"numbers count: %d", numbers.count);</span>
-</code></pre><p>因为字面量语法只是单纯的将中括号中的元素全部加到数组中，但是，Objective-C中的数组是不可以存放nil值的，所以程序会运行时抛出异常。    </p>
-<h2 id="NSDictionary">NSDictionary</h2><h3 id="创建-1">创建</h3><p>如果不用字面量语法创建字典，传统的创建函数简直令人匪夷所思：</p>
-<pre><code><span class="comment">// number1-&gt;@1</span>
-<span class="comment">// number2-&gt;@2</span>
-<span class="built_in">NSDictionary</span> *dict = [[<span class="built_in">NSDictionary</span> alloc] initWithObjectsAndKeys:
-    @<span class="number">1</span>, <span class="string">@"number1"</span>, @<span class="number">2</span>, <span class="string">@"number2"</span>, <span class="literal">nil</span>];
-</code></pre><p>是不是很奇怪，<strong>value在前面，key在后面</strong></p>
-<p>所以，还是用新的语法吧：</p>
-<pre><code>NSDictionary *dict = @{@<span class="string">"number1"</span> : <span class="localvars">@1</span>, @<span class="string">"number2"</span> : <span class="localvars">@2</span>}<span class="comment">;</span>
-</code></pre><p>这样才符合“常识”嘛，key在前，value在后面，跟JSON的定义一样。  </p>
-<h3 id="存取值-1">存取值</h3><p>取值的语法跟NSArray的语法很想，只不过是将下标数字变成了key：</p>
-<pre><code><span class="comment">//传统</span>
-NSNumber *number1 = [dict <span class="string">objectForKey:</span>@<span class="string">"number1"</span>];
-[dict <span class="string">setValue:</span>@<span class="number">5</span> <span class="string">forKey:</span>@<span class="string">"number1"</span>];
-
-<span class="comment">//字面量语法</span>
-NSNumber *number2 = dict[@<span class="string">"number1"</span>];
-dict[@<span class="string">"number1"</span>] = @<span class="number">6</span>;
-</code></pre><h3 id="注意">注意</h3><p>需要注意的地方，跟创建数组一样，NSDictionary的value不能为nil值，否则会抛出异常。</p>
-<h2 id="总结">总结</h2><p>总的来说，使用字面量语法可以让代码更加清晰、简单，毕竟，更少的代码，有时候意味着更少的错误。      </p>
-
+        
+          <p class="article-more-link">
+            <a href="/2015/02/14/Effective-Objective-C-读书笔记-Item-3/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/14/Effective-Objective-C-读书笔记-Item-3/" data-id="ci85ag02g001qvw6uldwd6u3l" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/14/Effective-Objective-C-读书笔记-Item-3/" data-id="ci85b37c8001q5a6urbtzmk8w" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -786,81 +351,16 @@ dict[@<span class="string">"number1"</span>] = @<span class="number">6</span>;
       
         <h2 id="前言">前言</h2><p>第二弹来了。</p>
 <h2 id="Item_2_-_Minimize_Importing_Headers_in_Headers">Item 2 - Minimize Importing Headers in Headers</h2><p>这一节讲的是尽量在一个头文件中减少其它头文件的引入。</p>
-<h2 id="头文件">头文件</h2><p>Objective-C和C语言、C++很像，都将类的实现与声明分开，用.h后缀名文件表示声明文件，用.m文件实现类。当要用到这个类的时候，只需要引入头文件即可，至于编译器、运行时是如何知道头文件里面的类对应的实现在哪里，在这了不做说明。一下用例子说明，先看看下面的类：</p>
-<pre><code><span class="comment">//Wheel.h</span>
-<span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
-
-<span class="comment">//车轮类</span>
-<span class="class"><span class="keyword">@interface</span> <span class="title">Wheel</span> : <span class="title">NSObject</span></span>
-<span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *manufacturer;
-<span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSUInteger</span> radius;
-<span class="keyword">@end</span>
-</code></pre><p>第二个类 </p>
-<pre><code><span class="comment">//Engine.h</span>
-<span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
-
-<span class="comment">//发动机类</span>
-<span class="class"><span class="keyword">@interface</span> <span class="title">Engine</span> : <span class="title">NSObject</span></span>
-<span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *manufacturer;
-<span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSUInteger</span> power;
-<span class="keyword">@end</span>
-</code></pre><p>然后就是车类Car：</p>
-<pre><code><span class="comment">//Car.h</span>
-<span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
-
-<span class="comment">//汽车类，只有一个轮子，不要奇怪=。=</span>
-<span class="class"><span class="keyword">@interface</span> <span class="title">Car</span> : <span class="title">NSObject</span></span>
-<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Wheel *wheel;
-<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Engine *engine;
-<span class="keyword">@end</span>
-</code></pre><p>注意到少了什么东西没有？<br>是的，写过C语言、C++的童鞋一下就能发现，Car类没有引入Engine和Wheel的头文件，肯定会编译出错的，因为编译器不知道Engine、Wheel类是啥。<br>那好，我们加上下面两行：</p>
-<pre><code><span class="id">#import</span> <span class="string">"Wheel.h"</span>
-<span class="id">#import</span> <span class="string">"Engine.h"</span>
-</code></pre><p>嗯。这样就不会出错了。但是这样真的好吗？Objective-C给我们提供了@class关键字，就是来解决这个问题的。</p>
-<h2 id="前置声明（forward_declaration）">前置声明（forward declaration）</h2><p>何为前置声明？看看下面的Car类的头文件例子。</p>
-<pre><code><span class="comment">//Car.h</span>
-<span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
-
-<span class="comment">//前置声明</span>
-<span class="class"><span class="keyword">@class</span> <span class="title">Wheel</span>;</span>
-<span class="class"><span class="keyword">@class</span> <span class="title">Engine</span>;</span>
-
-<span class="class"><span class="keyword">@interface</span> <span class="title">Car</span> : <span class="title">NSObject</span></span>
-<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Wheel *wheel;
-<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Engine *engine;
-<span class="keyword">@end</span>
-</code></pre><p>@class就是类的前置声明（forward declaration），就是告诉编译器“嗨，不用找了，Wheel类和Engine类是肯定存在的，用到的时候再找”。有了前置声明，我们就不用显式的引入Wheel类和Engine类了。</p>
-<p>当然，在Car类的实现文件.m文件中，我们还是要显式的引入Wheel和Engine类的，因为在这里我们要具体用到这两个类了，当然要知道类的细节。</p>
-<h3 id="为何不要import？">为何不要import？</h3><p>为什么不直接import呢？因为如果直接用import引入Wheel和Engine的声明，那么任何import引入了Car类的文件，也同时会引入Wheel、Engine类的声明，而且最终我们可能并不一定会直接跟Wheel、Engine类打交道，这样不就引入了“没有用”的类了吗？而且这样做很可能造成文件引入成“环”。 </p>
-<p>虽然import可以避免重复声明造成编译出错，传统的C语言、C++在声明的时候也可以通过如下方式避免重复声明：</p>
-<pre><code><span class="id">#ifndef</span> _WHEEL_H_
-<span class="hexcolor">#def</span>ine _WHEEL_H_
-
-<span class="comment">//声明内容...</span>
-
-#endif
-</code></pre><p>但是既然Objective-C有@class这种前置声明的办法，为何不用呢。</p>
-<h2 id="必须用import的时候">必须用import的时候</h2><p>当然，@class这样的前置声明并不能解决一切头文件引入的问题，如下这样的类，就必须要用import：</p>
-<pre><code><span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
-
-<span class="comment">//Car 的声明</span>
-<span class="preprocessor">#import <span class="title">"Car.h"</span></span>
-
-<span class="comment">//Driver protocol的定义</span>
-<span class="preprocessor">#import <span class="title">"Driver.h"</span></span>
-
-<span class="class"><span class="keyword">@interface</span> <span class="title">BigCar</span> : <span class="title">Car</span> &lt;<span class="title">Driver</span>&gt;</span>
-<span class="keyword">@end</span>
-</code></pre><p>是的，当类需要被继承、定义的protocol需要实现的时候，就需要import相关的头文件了（protocol的实现如果跟类的使用者没有关联，可以定义在类的实现文件中的“扩展category”中）,当然，还有@protocol这样的protocol的前置声明，怎么用就留给读者自己查阅相关资料了。</p>
-<h2 id="总结">总结</h2><p>大费周章的讲了这么多，其实目的就是一个：尽量少在头文件里面引入其他头文件。</p>
-<p>最终的目的就是<strong>只暴露最少的细节</strong>。</p>
-<p>写代码有段时间了，一直都在琢磨这句话，希望读者也能好好体会~</p>
-
+        
+          <p class="article-more-link">
+            <a href="/2015/02/06/Effective-Objective-C-读书笔记-Item-2/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/06/Effective-Objective-C-读书笔记-Item-2/" data-id="ci85ag02j001vvw6uy3f8awvm" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/06/Effective-Objective-C-读书笔记-Item-2/" data-id="ci85b37cb001v5a6u4fs9r0p8" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -901,50 +401,16 @@ dict[@<span class="string">"number1"</span>] = @<span class="number">6</span>;
       
         <h2 id="前言">前言</h2><p>一直都在做项目，没什么时间作总结，感觉很不是滋味。现在放假了，嗯，终于有时间了~~哈哈（天生程序猿一枚好不好=。=）<br>最近开始读英文版的Effective Objective-C 2.0，觉得不错，就总结些东西，分享给各位读者吧。</p>
 <h2 id="Item_1_-_Familiarize_Yourself_with_Objective-C’s_Roots">Item 1 - Familiarize Yourself with Objective-C’s Roots</h2><p>第一章的目的，就是让大家熟悉Objective-C，自然，标题的意思也就是“了解Objective-C的基本概念”，不多说，开写。</p>
-<h2 id="消息与运行时">消息与运行时</h2><p>总的来说，Objective-C跟C++、Java这些面向对象的语言是非常相似的，但是还是有许多不同的地方。如果你是第一次看到Objective-C的语法，一定觉得非常奇怪，因为Objective-C使用的是基于消息（Message）的框架，而不是传统的方法、函数调用。如下：</p>
-<pre><code><span class="comment">//Objective-C</span>
-Person *person = [Person <span class="keyword">new</span>];
-[person <span class="string">setName:</span>@<span class="string">"tutuge"</span> <span class="string">age:</span><span class="number">24</span>];
-
-<span class="comment">//Java</span>
-Person person = <span class="keyword">new</span> Person();
-person.setNameAndAge(<span class="string">"tutuge"</span>, <span class="number">24</span>);
-
-<span class="comment">//C++</span>
-Person *person = <span class="keyword">new</span> Person;
-person-&gt;setNameAndAge(<span class="string">"tutuge"</span>, <span class="number">24</span>);
-</code></pre><p>很奇怪是不是，各种中括号。但是我觉得，Objective—C这么设计就是为了时刻提醒你，“我是基于消息机制的！”。消息，的确是Objective-C与Java、C++这种语言最大的不同，而且，这种不同远不止在语法上面。简单来说如下两点：</p>
-<ul>
-<li><strong>基于消息的调用：</strong> 所有的函数调用都是在“运行时”决定的。</li>
-<li><strong>基于方法的调用：</strong> 所有的函数调用都是在“编译时”决定的，就是编译器编译时决定的。</li>
-</ul>
-<p>其实，连被调方法的对象类型，都是在运行时决定的。所以说，Objective-C的运行时系统，担负了绝大部分的工作。这么设计的优点，举个例子，就是当运行时系统升级时，原有的代码不用重新编译即可“享受”升级带来的好处。</p>
-<h2 id="C的超集">C的超集</h2><p>Objective-C是C语言的超集，所以C语言所具有的一切特性，Objective-C都可以兼容，充分理解C语言的内存模型，对理解Objective-C很有帮助。如下：</p>
-<pre><code>NSString *<span class="keyword">str</span> = @<span class="string">"a string"</span>;
-</code></pre><p>这一行代码跟C语言没有什么不同，（忽略@符号=。=），原理跟C语言也是一致的，就是str指针是NSString类型的指针，指向了一块存着字符串“a string”的内存区域。不同的是，在Objective-C里，所有的对象只可以声明为指针类型，所以如下代码是不合理的：</p>
-<pre><code>NSString <span class="keyword">str</span>;
-</code></pre><p>为了更充分的理解，咱们看看如下例子：</p>
-<pre><code>NSString <span class="keyword">*</span>str1 = <span class="comment">@"a string";</span>
-NSString <span class="keyword">*</span>str2 = str1;
-</code></pre><p>熟悉C语言的朋友应该知道这是怎么回事，内存当中只有一块区域储存着“a string”这个字符串，str1、str2都是指向着这个区域的字符串指针。如下图：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_effective_objective_c_item_1_1.jpg" alt="image"></p>
-<ul>
-<li>str1、str2都在栈内存上分配的，就是字符串（NSString）类型的指针。</li>
-<li>“a string”字符串实际储存在堆内存上。</li>
-<li>str1、str2均指向同一块内存区域。</li>
-</ul>
-<p>此处的栈内存、堆内存跟C语言中的概念也是一样的，不同的是，在Objective-C中，我们不用手动去malloc、free内存，Objective-C使用内存计数计数帮我们管理内存。</p>
-<h2 id="结构体，基本类型">结构体，基本类型</h2><p>在Objective-C中，并不是所有的变量都是指针类型的，像int、float、double这些依旧是传统的“栈上分配”的，当然，还有结构体struct、枚举enum、联合union等。如：</p>
-<pre><code><span class="built_in">CGPoint</span> point = <span class="built_in">CGPointMake</span>(<span class="number">10</span>, <span class="number">10</span>);
-<span class="built_in">CGRect</span> frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">10</span>);
-</code></pre><p>这的CGPoint、CGRect都是结构体，但是都是直接在栈上分配内存的，以减少过度使用Objective-C类型的类（减少运行时的压力），各位读者使用的时候要注意。</p>
-<h2 id="总结">总结</h2><p>零散的说了一些Objective-C的特点，远远不足以讲明白Objective-C，我这只是根据Effective Objective-C这本书给个引子，还是推荐Apple的官方教程、文档，要想掌握扎实，还是要一步一步来~</p>
-
+        
+          <p class="article-more-link">
+            <a href="/2015/02/05/Effective-Objective-C-读书笔记-Item-1/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/05/Effective-Objective-C-读书笔记-Item-1/" data-id="ci85ag02l0020vw6ub2vj0krl" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/05/Effective-Objective-C-读书笔记-Item-1/" data-id="ci85b37cd00205a6u3bm8d8r4" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -983,98 +449,17 @@ NSString <span class="keyword">*</span>str2 = str1;
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="前言">前言</h2><p>这段时间一直在做iOS的项目（<a href="https://itunes.apple.com/cn/app/qing-ju-yin-le-quan-guo-zui/id913235479?mt=8" target="_blank" rel="external">青桔音乐App</a>），随着代码量的上升，逐渐意识到项目的整体目录结构划分是多么重要，清晰的目录结构，能够更好的应对新的需求，更容易重构。虽然一直都是一个人在做=。=，但是还是深深地体会到目录结构的重要性。</p>
-<h2 id="例子">例子</h2><p>说再多都不如来个例子实在，如下：(VC指的是viewController)</p>
-<pre><code><span class="string">|---General</span>
-    <span class="string">|---AppDelegate</span>
-    <span class="string">|---Application</span>
-    <span class="string">|---Constant</span>
-    <span class="string">|---UI</span>
-        <span class="string">|---View</span>
-        <span class="string">|---VC</span>
-        <span class="string">|---Common</span>
-    ...
-<span class="string">|---Entity</span>
-    <span class="string">|---BaseEntity</span>
-    ...
-<span class="string">|---Http</span>
-    <span class="string">|---Api</span>
-    <span class="string">|---Util</span>
-    <span class="string">|---CodeHandler</span>
-    <span class="string">|---ErrorHandler</span>
-    <span class="string">|---RequestHandler</span>
-    ...
-<span class="string">|---DB</span>
-    <span class="string">|---DBHelper</span>
-    <span class="string">|---DBService</span>
-    ...
-<span class="string">|---Util</span>
-    <span class="string">|---StringUtil</span>
-    <span class="string">|---NumberUtil</span>
-    <span class="string">|---TimeUtil</span>
-    ...
-<span class="string">|---Service</span>
-    <span class="string">|---AccountService</span>
-    <span class="string">|---ShareService</span>
-    ...
-<span class="string">|---Lib</span>
-    <span class="string">|---Umeng</span>
-    <span class="string">|---QQSDK</span>
-    <span class="string">|---SVProgressHUD</span>
-    ...
-<span class="string">|---Module</span>
-    <span class="string">|---Login</span>
-        <span class="string">|---View</span>
-        <span class="string">|---VC</span>
-        ...
-    <span class="string">|---Comment</span>
-    <span class="string">|---Feeds</span>
-    ...
-</code></pre><p>乍一看好多，别被吓到=。=，容我细细讲解。</p>
-<h2 id="详细讲解">详细讲解</h2><h3 id="General">General</h3><p>General好理解，放的就是如AppDelegate之类的、项目中最普通的、最常用的组件。</p>
-<p><strong>AppDelegate</strong>:<br>App的Delegate类实现，这个必须有，就不用说了吧。  </p>
-<p><strong>Application</strong>:<br>如果自定义实现了Application类，就放在这里。  </p>
-<p><strong>Constant</strong>:<br>顾名思义，常量，项目用到的所有公共常量，如enum枚举类型的、Notification的Tag，常用的颜色、字符串等等等，都可以按照自己的需求划分不同的Group，放到Constant里面。  </p>
-<p><strong>UI</strong>:<br>项目中自定义的UIView、UIViewController子类，和自定义的对UI的扩展，如Category之类的代码，就对应放在UI下的View、VC和Common中。</p>
-<p>如还有其他的通用组件，也不妨放到这里，做统一的管理。</p>
-<hr>
-<h3 id="Entity">Entity</h3><p>Entity，也有人喜欢叫Model（关于Entity和Model的区别，推荐看看<a href="http://blogsh.de/2011/09/08/models-vs-entities/" target="_blank" rel="external">这篇文章</a>，个人觉得研究研究Entity和Model概念的区别还是很有好处的），就是程序中的“实体”，如一个用户、一条评论、一首歌等等，简单来说就是一个独立“个体”的集合、打包，具体的自己查查吧，网上一大堆的，感觉跟JavaBean的概念比较像。</p>
-<p>通常来说，每个Entity类都比较简单，只包含若干个属性。但是有时候可能要做统一的处理，如，在从服务器取回的JSON数据解包成具体的Entity类，并且执行一系列初始化操作等等，所以可能要对所有的Entity类做统一处理。所以说，可以定制相应的BaseEntity基类，利用模板方法等办法，定制统一的初始化流程（好像扯远了=。=，这个后面会详细写篇东西分享给大家），BaseEntity就是放这些基类的东西的。</p>
-<hr>
-<h3 id="Http">Http</h3><p>这个Group里面放跟网络请求相关的东西，详细如下：</p>
-<p><strong>Api</strong>:<br>互联网应用少不了跟服务器打交道的各种网络接口，所以我在项目中把所有的API对应的相对URL地址、参数注释要求等等都放在了这里，好统一管理。</p>
-<p><strong>Util</strong>:<br>定义最基本的网络请求，如GET、POST、PUT等请求的基本封装，获取图片的基本封装。<br>一般来说就是定制统一的基本请求接口，对上层提供一致、稳定的服务，真正的网络请求，可以自己用iOS原生的Api写，也可以用AFNetworking等第三方库做封装，图片也可以灵活的用AFNetworking、SDWebImage这些优秀的库实现。还有就是，可以方便的统一对请求做处理，如错误处理、Http的Code、状态处理等等。还可以统一的增加请求参数，如统一为每个请求都增加用户的ID、token什么的。</p>
-<p><strong>CodeHandler</strong><br>大部分的API设计都会有相应的状态码、Code，为了方便扩展，可以把这些处理Code的类单独放在这里。</p>
-<p><strong>ErrorHandler</strong><br>这个就少不了了，对Http的错误进行单独处理，加Log什么的。</p>
-<p><strong>RequestHandler</strong><br>这个Group里面放的是真正实现接口的类，如什么UserHttpHandler、CommentHttpHandler之类的，就是具体实现了接口调用、处理返回数据、回调的类。</p>
-<p>Http里面的各个Group的类其实都是相互关联的，设计的时候可以定制统一的接口（Protocol），然后创建类实现（conform）这些接口，也就是面向接口的编程，以最大限度的减少接口层的各个职能之间的耦合，方便扩展。</p>
-<hr>
-<h3 id="DB">DB</h3><p>介于iOS的SQLite不是那么好用，所以非常有必要为操作数据库的类建立单独的地盘=。=  </p>
-<p><strong>DBHelper</strong>:<br>放基础的操作数据库的类，如简单的查找、插入、更新、事务更新等等操作，为负载的数据库业务逻辑封装底层接口。比如对流行的FMDB进行封装等等。</p>
-<p><strong>DBService</strong>:<br>这里放具体的数据库业务实现类，至于为什么叫“Service”，因为我也想不出什么好的名字了=。= 按照自己的业务逻辑组织即可。</p>
-<hr>
-<h3 id="Util">Util</h3><p>放常用的工具类的地方。如字符串操作的类StringUtil、时间计算格式化类TimeUtil等，按具体需求而定，这个就不用多说了吧。</p>
-<hr>
-<h3 id="Service">Service</h3><p>项目的需求多了，业务逻辑的代码就会越来越多，总不能都放在view controller里面吧。一些多处用到的，或者非常独立的业务代码，完全可以抽离出来，实现为单独的、跟界面无关的业务类。因为做的事很杂，所以干脆就叫Service了。<br><strong>AccountService</strong>、<strong>ShareService</strong>就是这种类。而且大部分的Service都应该是单例类，如<strong>AccountService</strong>类可能维护着程序运行期间的账户信息，<strong>ShareService</strong>对程序的分享功能做了统一处理等等，具体怎么用就随各位了。</p>
-<hr>
-<h3 id="Lib">Lib</h3><p>Lib，放各种第三方库，因项目需要修改过的第三方组件等，像什么友盟、QQSDK之类的就可以放这。当然，一些不会做改动的库最好还是用CocoaoPod做统一管理。</p>
-<hr>
-<h3 id="Module">Module</h3><p>终于讲到了最重要的地方。<br>iOS工程中最多的文件往往就是各种View、ViewController类，以前总是看到有人只创建两个Group，一个叫Views，另一个叫ViewControllers，然后所有的Views、ViewController都往里面塞，然后随着需求的增加，这两个Group也臃肿不堪。。。  </p>
-<p><strong>办法总是有的。就是为工程划分模块-Module</strong><br>如何划分Module？我认为，可以按照以下两点建立：  </p>
-<ol>
-<li>以页面跳转分支划分。  </li>
-<li>以功能划分。  </li>
-</ol>
-<p><strong>以页面跳转分支划分</strong><br>就是按照应用的页面设计与业务逻辑，从最顶级开始，一级一级页面往下跳转，找出其中的独立分支，归为一个Module模块。<br>举例来说，应用主界面有4个Tab页，就先分出四个Module，然后一级一级往下跳转，遇到分支就建立新的Module，如此递归的建立，就能大致划分出各个Module。当然，这么做是最粗糙的，还要根据情况，将不同的分支Module合并成一个Module，简化代码的组成。我在这只是提供个划分Module的方法，具体怎么设计就看各位读者了=。=</p>
-<p><strong>以功能划分</strong><br>这个好理解，无非就是根据前期项目的功能模块划分工程的代码Module组成。如什么用户设置Module、评论Module、登录Module等等。</p>
-<p>总的来数，就是要用Module将工程的代码分类管理，每个Module具有大致相同的结构，如都可能有本Module用到的View、ViewController，自定义的类Class等等，就是说，按照职能对代码划分，避免将所有的类都堆在一起，也好应对新的需求。</p>
-<h2 id="总结">总结</h2><p>啰啰嗦嗦说了一大堆，想必各位都看烦了吧=。=刚开始写博客，写到一个地方，又会引出另一块，写着写着容易写偏了。<br>写之前我也大致搜了一下，发现网上相关的资料好少，但是实际的经验告诉我，项目工程的目录结构非常重要，无论是对开发还是对后期的维护，所以想着应该写篇东西，分享我自己的经验给大家，有啥问题，多提意见啊~~~</p>
-
+        <h2 id="前言">前言</h2><p>这段时间一直在做iOS的项目（<a href="https://itunes.apple.com/cn/app/qing-ju-yin-le-quan-guo-zui/id913235479?mt=8">青桔音乐App</a>），随着代码量的上升，逐渐意识到项目的整体目录结构划分是多么重要，清晰的目录结构，能够更好的应对新的需求，更容易重构。虽然一直都是一个人在做=。=，但是还是深深地体会到目录结构的重要性。</p>
+        
+          <p class="article-more-link">
+            <a href="/2015/02/01/iOS项目的目录结构-原创/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/01/iOS项目的目录结构-原创/" data-id="ci85ag01p000wvw6ud5y1hrng" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/01/iOS项目的目录结构-原创/" data-id="ci85b37bm000w5a6u7ttqnnsq" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -1115,44 +500,18 @@ NSString <span class="keyword">*</span>str2 = str1;
       
         <h2 id="前言">前言</h2><p>近来因为项目的缘故，仔细研究了一下如何在Android的TextView里面绑定可以点击的链接，并且定制链接的颜色，包括正常状态、按下去时的文字、背景的颜色，当然，还有点击后的回调。</p>
 <p>为了以后方便自己，也为了方便更多的人，就把这些封装成了一个简单的开源库，也算是我自己的<strong><em>第一个开源库</em></strong>吧。</p>
-<h2 id="LinkTextView">LinkTextView</h2><p>名称：<a href="https://github.com/zekunyan/LinkTextView" target="_blank" rel="external">LinkTextView</a>。喜欢的话就Star一下吧。</p>
+<h2 id="LinkTextView">LinkTextView</h2><p>名称：<a href="https://github.com/zekunyan/LinkTextView">LinkTextView</a>。喜欢的话就Star一下吧。</p>
 <h3 id="Example">Example</h3><p><img src="http://zorrochen.qiniudn.com/LinkTextView_Sample.gif" alt="image"></p>
-<h3 id="功能：">功能：<br></h3><ol>
-<li>可以方便的对TextView里面的文字增加可点击链接，并且绑定回调。</li>
-<li>可以为每个链接<strong>单独</strong>设置<strong>文字</strong>、链接<strong>背景</strong>的<strong>正常</strong>、<strong>按下</strong>状态下的颜色。</li>
-<li>可以为每个链接绑定任意类型的“附件”对象，作为点击链接时的回调参数。</li>
-</ol>
-<h2 id="讲解">讲解</h2><p>下面分重点讲解一下。</p>
-<h3 id="1-_为文字增加可点击链接，绑定回调。">1. 为文字增加可点击链接，绑定回调。</h3><p>为文字增加链接，已经是老生常谈了，真是一搜一大把，不过在这里还是简单讲一下。</p>
-<p>用过TextView应该都知道这个接口：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">setText</span> <span class="params">(CharSequence text)</span></span></span><br></pre></td></tr></table></figure></p>
-<p>其中CharSequence接口的子接口里面有Spannable，而由这个接口派生出来的类SpannableString，就是我们可以对TextView里面的文字做附加效果的原因。如改变颜色、增加超链接等，有兴趣的各位可以去仔细查查。下面简单的说说怎么加可点击的链接。</p>
-<p><strong>首先创建SpannableString</strong>：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SpannableString text = <span class="keyword">new</span> SpannableString(<span class="string">"LinkTextView dadada"</span>);</span><br></pre></td></tr></table></figure></p>
-<p><strong>绑定ClickableSpan回调</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ClickableSpan clickableSpan = <span class="keyword">new</span> ClickableSpan() &#123;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//点击了链接，做你想干的事吧=。=</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">text.setSpan(clickableSpan, <span class="number">0</span>, <span class="number">5</span>, <span class="number">0</span>);</span><br></pre></td></tr></table></figure></p>
-<p><strong>最后再setText</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">textView.setText(text);</span><br></pre></td></tr></table></figure></p>
-<p>看，绑定可以点击的链接就是这么简单。</p>
-<h3 id="2-_改变正常、按下时的文字、链接背景颜色。">2. 改变正常、按下时的文字、链接背景颜色。</h3><p>往往系统默认的链接颜色是不能满足我们的需求的，所以最好能对链接的文字、背景的按下、松开时的颜色做定制。</p>
-<p><strong><em>但是好坑=。=，Google居然没有为ClickableSpan增加按下时的回调</em></strong></p>
-<p>那就只好自己造轮子了。</p>
-<h4 id="首先">首先</h4><p>必须要能获取到链接按下时的回调，应该是onTouch什么的，于是，就查到了类：LinkMovementMethod。<br>在TextView中可以用方法：public final void setMovementMethod (MovementMethod movement)设定监听，而LinkMovementMethod类里面就可以监听到链接的onTouch！</p>
-<p><strong>LinkMovementMethod的onTouch就是介个样子的</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">boolean</span>	 <span class="title">onTouchEvent</span><span class="params">(TextView textView, Spannable spannable, MotionEvent event)</span></span></span><br></pre></td></tr></table></figure></p>
-<p>于是，我们可以通过event来判断是按下还是移动等等操作。<br>但是问题是，这里的spannable是整个TextView全部的文字，所以，只能通过event里面的x、y坐标，找到具体点击的是哪个链接。这里，要感谢stack overflow上的大神的<a href="http://stackoverflow.com/questions/20856105/change-the-text-color-of-a-clickablespan-when-pressed" target="_blank" rel="external">帖子</a>。</p>
-<p>具体的找点击链接的方法如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> TouchableSpan <span class="title">getPressedSpan</span><span class="params">(TextView textView, Spannable spannable, MotionEvent event)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//获取点击的x、y坐标</span></span><br><span class="line">    <span class="keyword">int</span> x = (<span class="keyword">int</span>) event.getX();</span><br><span class="line">    <span class="keyword">int</span> y = (<span class="keyword">int</span>) event.getY();</span><br><span class="line">    <span class="comment">//减去Padding</span></span><br><span class="line">    x -= textView.getTotalPaddingLeft();</span><br><span class="line">    y -= textView.getTotalPaddingTop();</span><br><span class="line">    <span class="comment">//加上滚动的偏移</span></span><br><span class="line">    x += textView.getScrollX();</span><br><span class="line">    y += textView.getScrollY();</span><br><span class="line">    <span class="comment">//获取第几行、以及偏移</span></span><br><span class="line">    Layout layout = textView.getLayout();</span><br><span class="line">    <span class="keyword">int</span> line = layout.getLineForVertical(y);</span><br><span class="line">    <span class="keyword">int</span> off = layout.getOffsetForHorizontal(line, x);</span><br><span class="line">    <span class="comment">//获取真正点击的链接</span></span><br><span class="line">    TouchableSpan[] link = spannable.getSpans(off, off, TouchableSpan.class);</span><br><span class="line">    TouchableSpan touchedSpan = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (link.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        touchedSpan = link[<span class="number">0</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> touchedSpan;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>到此，我们已经能获取到链接的点击状态，并且捕捉到具体点击的ClickableSpan。</p>
-<h4 id="接着">接着</h4><p>就是改变链接的文字、背景颜色。</p>
-<p>ClickableSpan的方法里面，除了<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View widget)</span></span>;</span><br></pre></td></tr></table></figure></p>
-<p>还有就是：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateDrawState</span><span class="params">(TextPaint textPaint)</span></span>;</span><br></pre></td></tr></table></figure></p>
-<p>很明显，就是更新文字渲染效果的。我们用如下两个方法，就能实现：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setColor</span> <span class="params">(<span class="keyword">int</span> color)</span></span>;</span><br><span class="line">bgColor属性</span><br></pre></td></tr></table></figure></p>
-<h4 id="最后">最后</h4><p>到目前为止，我们已经可以捕捉到链接的点击状态，能获取到真正的点击的链接，还有能刷新链接的颜色了，相信聪明的你一定能自己琢磨出来，怎么样实现文章开头的效果。=v=</p>
-<h4 id="本文参考">本文参考</h4><ol>
-<li>Android官方文档。</li>
-<li>StackOverFlow的：<a href="http://stackoverflow.com/questions/20856105/change-the-text-color-of-a-clickablespan-when-pressed" target="_blank" rel="external">Change the text color of a ClickableSpan when pressed。</a></li>
-</ol>
-
+        
+          <p class="article-more-link">
+            <a href="/2014/11/02/LinkTextView-Android开源库-原创/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2014/11/02/LinkTextView-Android开源库-原创/" data-id="ci85ag029001bvw6uoq1p2os2" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2014/11/02/LinkTextView-Android开源库-原创/" data-id="ci85b37c0001b5a6ud2pjove3" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -1193,20 +552,16 @@ NSString <span class="keyword">*</span>str2 = str1;
       
         <p>拖了很久，终于开始写博客了。<br>一直觉得自己的知识储备不够，一直都在学习，一直都在积累。（其实就是懒好吗=。=）</p>
 <p>说点啥呢，想到啥就说啥吧~</p>
-<p>从小就喜欢模型、乐高积木，喜欢拆东西，印象最深的就是把家里的高级录音机拆了，装不回去，塞到了床底下。。。</p>
-<p>上了学之后，又开始捣鼓四驱车，自己做马达，绕线圈，家里零件一大堆，串联一堆电池，组装遥控车，唯一的遗憾，就是没有做成遥控飞机（没钱=、=）。</p>
-<p>接着，家里有了电脑！！！这要感谢老爹，当时花了一万多，液晶显示器，刚上市的奔腾4啊！</p>
-<p>于是，我又开始拆电脑。。。换显卡、超频，跑分，再超频，再跑分，3DMark就是俺的祖宗啊~</p>
-<p>终于，走上了<strong>编程</strong>这条“<strong>不归路</strong>”，义无反顾，一直到了现在。</p>
-<p>用Dev-C++折腾C语言，数据结构、算法，接着又是C++，Window API，QT（这个真觉得不错），MFC（软件课设），Java，Python，Android（上线了几个小应用，拿了Google全国大学生Android应用开发大赛华中地区三等奖），iOS（上线应用，青桔音乐），Linux，还有各种MySQL、MongoDB等数据库的纠结，看各种博客。。。</p>
-<p>每天看的很多，想的也不少，但是终究不够精通，路还很长啊~</p>
-<p>当然，最感谢的就是我的女朋友~陈因素~</p>
-
+        
+          <p class="article-more-link">
+            <a href="/2014/11/01/第一篇Blog/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2014/11/01/第一篇Blog/" data-id="ci85ag00q0003vw6ulxbz718h" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2014/11/01/第一篇Blog/" data-id="ci85b37ap00035a6uq7lj7mzk" class="article-share-link" data-share="baidu">分享到</a>
       
 
       

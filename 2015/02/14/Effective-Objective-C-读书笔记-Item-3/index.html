@@ -7,20 +7,17 @@
   <title>Effective-Objective-C-读书笔记-Item-3 | 土土哥的技术Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="前言item 3讲的是Objective-C里面的“字面量语法”-“Literal Syntax”，个人觉得非常有用。
-Item 3 - Prefer Literal Syntax over the Equivalent Methods本节讲了Objective-C中的“字面量语法”，并且建议我们更多的使用这种语法，而不是使用传统的等价的函数方法。
-引子当我们使用Objective-C编程的时候，">
+Item 3 - Prefer Literal Syntax over the Equivalent Methods本节讲了Objective-C中的“字面量语法”，并且建议我们更多的使用这种语法，而不是使用传统的等价的函数方法。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Effective-Objective-C-读书笔记-Item-3">
 <meta property="og:url" content="http://tutuge.me/2015/02/14/Effective-Objective-C-读书笔记-Item-3/index.html">
 <meta property="og:site_name" content="土土哥的技术Blog">
 <meta property="og:description" content="前言item 3讲的是Objective-C里面的“字面量语法”-“Literal Syntax”，个人觉得非常有用。
-Item 3 - Prefer Literal Syntax over the Equivalent Methods本节讲了Objective-C中的“字面量语法”，并且建议我们更多的使用这种语法，而不是使用传统的等价的函数方法。
-引子当我们使用Objective-C编程的时候，">
+Item 3 - Prefer Literal Syntax over the Equivalent Methods本节讲了Objective-C中的“字面量语法”，并且建议我们更多的使用这种语法，而不是使用传统的等价的函数方法。">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Effective-Objective-C-读书笔记-Item-3">
 <meta name="twitter:description" content="前言item 3讲的是Objective-C里面的“字面量语法”-“Literal Syntax”，个人觉得非常有用。
-Item 3 - Prefer Literal Syntax over the Equivalent Methods本节讲了Objective-C中的“字面量语法”，并且建议我们更多的使用这种语法，而不是使用传统的等价的函数方法。
-引子当我们使用Objective-C编程的时候，">
+Item 3 - Prefer Literal Syntax over the Equivalent Methods本节讲了Objective-C中的“字面量语法”，并且建议我们更多的使用这种语法，而不是使用传统的等价的函数方法。">
   
     <link rel="alternative" href="/atom.xml" title="土土哥的技术Blog" type="application/atom+xml">
   
@@ -100,6 +97,7 @@ Item 3 - Prefer Literal Syntax over the Equivalent Methods本节讲了Objective-
       
         <h2 id="前言">前言</h2><p>item 3讲的是Objective-C里面的“字面量语法”-“Literal Syntax”，个人觉得非常有用。</p>
 <h2 id="Item_3_-_Prefer_Literal_Syntax_over_the_Equivalent_Methods">Item 3 - Prefer Literal Syntax over the Equivalent Methods</h2><p>本节讲了Objective-C中的“字面量语法”，并且建议我们更多的使用这种语法，而不是使用传统的等价的函数方法。</p>
+<a id="more"></a>
 <h2 id="引子">引子</h2><p>当我们使用Objective-C编程的时候，总会经常使用到几种Foundation框架中的基本类，如NSString、NSNumber、NSArray、NSDictionary，或者是它们的子类。例如，当我们想创建一个字符串的时候，会这么写：</p>
 <pre><code>NSString *<span class="keyword">str</span> = @<span class="string">"a string"</span>;
 </code></pre><p>不知道各位写这句的时候有没有觉得奇怪？为什么不用先“alloc”，再“initWithXXX”这么来创建呢。是的，这里创建字符串，就用到了Objective-C提供的“字面量语法”-“Literal Syntax”，而这种语法的“标志”就是“@”符号。<br>有了字面量语法，我们就不用每次创建一些基本类型的时候，写一大堆alloc、init了。</p>
@@ -177,7 +175,7 @@ dict[@<span class="string">"number1"</span>] = @<span class="number">6</span>;
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/14/Effective-Objective-C-读书笔记-Item-3/" data-id="ci85ag02g001qvw6uldwd6u3l" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/14/Effective-Objective-C-读书笔记-Item-3/" data-id="ci85b37c8001q5a6urbtzmk8w" class="article-share-link" data-share="baidu">分享到</a>
       
 
       

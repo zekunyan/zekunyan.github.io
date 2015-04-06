@@ -104,6 +104,7 @@ Item 5 - Use Enumerations for States, Options, and Status Codes本节的内容�
 <h2 id="状态与选项的区别（states_and_options）">状态与选项的区别（states and options）</h2><p>在用<strong>enum</strong>之前，我个人觉得，区分一下状态和选项的概念还是很必要的。</p>
 <p><strong>状态</strong>，同时只能有一种，如“<strong>OK</strong>”，“<strong>Error</strong>”，不可能同时是OK和Error。<br><strong>选项</strong>，同时可以有一种或一种以上，如App可以<strong>同时</strong>支持横屏和竖屏，横屏竖屏在这个时候就是“屏幕方向”的两种不同的选项。</p>
 <p>接下来，我们看看如何用枚举定义状态和选项。</p>
+<a id="more"></a>
 <h2 id="enum与状态（states）">enum与状态（states）</h2><h4 id="不好的做法">不好的做法</h4><p>经常看到这样的写法：</p>
 <pre><code><span class="preprocessor">#<span class="keyword">define</span> STATE_OK 0</span>
 <span class="preprocessor">#<span class="keyword">define</span> STATE_ERROR 1</span>
@@ -192,7 +193,7 @@ TTGDirection direction = TTGDirectionTop | TTGDirectionLeft | TTGDirectionBottom
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/21/effective-objective-c-5-enum/" data-id="ci85ag01t000zvw6uw6dpgw3b" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/21/effective-objective-c-5-enum/" data-id="ci85b37bp000z5a6uofem6vc2" class="article-share-link" data-share="baidu">分享到</a>
       
 
       

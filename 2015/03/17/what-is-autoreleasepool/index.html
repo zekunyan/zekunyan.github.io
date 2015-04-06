@@ -131,6 +131,7 @@ int main(int argc, char * argv[]) {
 </ul>
 <p>效果是不是很明显！</p>
 <p>代码Github地址：<a href="https://github.com/zekunyan/AutoReleasePoolTestExample" target="_blank" rel="external">AutoReleasePoolTestExample</a> Xcode 6, iOS 8, iPhone 5模拟器.</p>
+<a id="more"></a>
 <h2 id="MRC_与_ARC">MRC 与 ARC</h2><p>MRC（Mannul Reference Counting）和ARC(Automatic Reference Counting)，分别对应着手动引用计数和自动引用计数。  </p>
 <p>对！是计数，不是“<strong>GC、垃圾回收</strong>”什么的，就是说，在Objective-C的开发中，ARC不代表像Java那样有GC做垃圾回收，所以本质上还是要“手动”管理内存的。也就是说，我们在ARC环境下写的代码，不用自己手动插入“<strong>retain、release这些消息</strong>”，ARC会在编译时为我们在合适的位置插入，释放不必要的内存。</p>
 <p>而<strong>@autoreleasepool</strong>就跟对象的<strong>release</strong>密切相关。</p>
@@ -179,7 +180,7 @@ int main(int argc, char * argv[]) {
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/17/what-is-autoreleasepool/" data-id="ci85ag01h000qvw6u58oczmj5" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/17/what-is-autoreleasepool/" data-id="ci85b37bh000q5a6uydybfzu5" class="article-share-link" data-share="baidu">分享到</a>
       
 
       

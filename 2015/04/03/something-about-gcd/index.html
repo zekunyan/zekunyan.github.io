@@ -106,6 +106,7 @@ dispatch_once_t必须是全局或static变量这一条算是“老生常谈”�
    <span class="comment">//单例代码 </span>
 });
 </code></pre><p>其实就是保证<strong>dispatch_once_t</strong>只有一份实例。</p>
+<a id="more"></a>
 <h2 id="dispatch_queue_create的第二个参数">dispatch_queue_create的第二个参数</h2><p><strong>dispatch_queue_create</strong>，创建队列用的，它的参数只有两个，原型如下：</p>
 <pre><code><span class="function">dispatch_queue_t <span class="title">dispatch_queue_create</span> <span class="params">( <span class="keyword">const</span> <span class="keyword">char</span> *label, dispatch_queue_attr_t attr )</span></span>;
 </code></pre><p>在网上的大部分教程里（甚至Apple自己的文档里），都是这么创建串行队列的：</p>
@@ -319,7 +320,7 @@ dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/04/03/something-about-gcd/" data-id="ci85ag01l000tvw6u6thc5aoa" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/04/03/something-about-gcd/" data-id="ci85b37bk000t5a6ukrzgaasj" class="article-share-link" data-share="baidu">分享到</a>
       
 
       

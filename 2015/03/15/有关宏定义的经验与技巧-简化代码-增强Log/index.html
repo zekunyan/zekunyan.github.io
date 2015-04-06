@@ -118,6 +118,7 @@
 <span class="comment">#define MIN(A,B) ((A) &lt; (B) ? (A) : (B))</span>
 </code></pre><p>但是，这样定义常量、函数，有一定的风险。（见：<a href="http://tutuge.me/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/" target="_blank" rel="external">Effective-Objective-C-读书笔记-Item-4-如何正确定义常量</a>, <a href="http://onevcat.com/2014/01/black-magic-in-macro/" target="_blank" rel="external">宏定义的黑魔法 - 宏菜鸟起飞手册</a>）</p>
 <p>本文就列出几条我个人在iOS开发当中常用的经验与技巧。</p>
+<a id="more"></a>
 <h2 id="简化代码">简化代码</h2><p>在开发当中，我们可能会大量的写一些重复的，甚至具有“危险”的代码，用宏定义#define，往往可以简化代码，看看下面几个例子。</p>
 <h3 id="GCD与#define">GCD与#define</h3><p><strong>dispatch_once</strong><br>项目中往往少不了各种单例类，我们一般会如下定义：</p>
 <pre><code>+ (instancetype)sharedService {
@@ -288,7 +289,7 @@ typedef <span class="keyword">struct</span> Complex {
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/15/有关宏定义的经验与技巧-简化代码-增强Log/" data-id="ci85ag00y0006vw6u3hnrrhzt" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/15/有关宏定义的经验与技巧-简化代码-增强Log/" data-id="ci85b37ax00065a6u9hhjueta" class="article-share-link" data-share="baidu">分享到</a>
       
 
       

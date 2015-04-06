@@ -6,23 +6,17 @@
   
   <title>NSString的Copy与内存分配 | 土土哥的技术Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="前言不管是用什么语言开发，字符串应该算是用的最多的了。在Objective-C中，字符串类是NSString，以及其子类NSMutableString等。所以，对于字符串类，编程语言、编译器等往往会做特殊处理。下面我就说说我自己在项目中发现的NSString的“奇怪”的地方。
-字符串常量，copy，mutableCopyExample先看看如下面的代码，猜猜会输出什么：
-NSString *str">
+  <meta name="description" content="前言不管是用什么语言开发，字符串应该算是用的最多的了。在Objective-C中，字符串类是NSString，以及其子类NSMutableString等。所以，对于字符串类，编程语言、编译器等往往会做特殊处理。下面我就说说我自己在项目中发现的NSString的“奇怪”的地方。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="NSString的Copy与内存分配">
 <meta property="og:url" content="http://tutuge.me/2015/02/18/NSString的Copy与内存分配/index.html">
 <meta property="og:site_name" content="土土哥的技术Blog">
-<meta property="og:description" content="前言不管是用什么语言开发，字符串应该算是用的最多的了。在Objective-C中，字符串类是NSString，以及其子类NSMutableString等。所以，对于字符串类，编程语言、编译器等往往会做特殊处理。下面我就说说我自己在项目中发现的NSString的“奇怪”的地方。
-字符串常量，copy，mutableCopyExample先看看如下面的代码，猜猜会输出什么：
-NSString *str">
+<meta property="og:description" content="前言不管是用什么语言开发，字符串应该算是用的最多的了。在Objective-C中，字符串类是NSString，以及其子类NSMutableString等。所以，对于字符串类，编程语言、编译器等往往会做特殊处理。下面我就说说我自己在项目中发现的NSString的“奇怪”的地方。">
 <meta property="og:image" content="http://zorrochen.qiniudn.com/blog_ios_nsstring_copy_1_1.jpg">
 <meta property="og:image" content="http://zorrochen.qiniudn.com/blog_ios_nsstring_copy_1_2.jpg">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="NSString的Copy与内存分配">
-<meta name="twitter:description" content="前言不管是用什么语言开发，字符串应该算是用的最多的了。在Objective-C中，字符串类是NSString，以及其子类NSMutableString等。所以，对于字符串类，编程语言、编译器等往往会做特殊处理。下面我就说说我自己在项目中发现的NSString的“奇怪”的地方。
-字符串常量，copy，mutableCopyExample先看看如下面的代码，猜猜会输出什么：
-NSString *str">
+<meta name="twitter:description" content="前言不管是用什么语言开发，字符串应该算是用的最多的了。在Objective-C中，字符串类是NSString，以及其子类NSMutableString等。所以，对于字符串类，编程语言、编译器等往往会做特殊处理。下面我就说说我自己在项目中发现的NSString的“奇怪”的地方。">
   
     <link rel="alternative" href="/atom.xml" title="土土哥的技术Blog" type="application/atom+xml">
   
@@ -101,6 +95,7 @@ NSString *str">
     <div class="article-entry" itemprop="articleBody">
       
         <h2 id="前言">前言</h2><p>不管是用什么语言开发，字符串应该算是用的最多的了。在Objective-C中，字符串类是NSString，以及其子类NSMutableString等。所以，对于字符串类，编程语言、编译器等往往会做特殊处理。下面我就说说我自己在项目中发现的NSString的“奇怪”的地方。</p>
+<a id="more"></a>
 <h2 id="字符串常量，copy，mutableCopy">字符串常量，copy，mutableCopy</h2><h3 id="Example">Example</h3><p>先看看如下面的代码，猜猜会输出什么：</p>
 <pre><code><span class="built_in">NSString</span> *str1 = <span class="string">@"abc"</span>;
 <span class="built_in">NSString</span> *str2 = <span class="string">@"abc"</span>;
@@ -170,7 +165,7 @@ NSLog(@<span class="string">"Name: %@"</span>, userEntity.name);
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/18/NSString的Copy与内存分配/" data-id="ci85ag0260018vw6u1vm6ea6b" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/18/NSString的Copy与内存分配/" data-id="ci85b37by00185a6ueemvmha2" class="article-share-link" data-share="baidu">分享到</a>
       
 
       

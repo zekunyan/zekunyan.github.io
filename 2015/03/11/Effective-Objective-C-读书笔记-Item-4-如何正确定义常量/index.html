@@ -101,6 +101,7 @@ Item 4 - Prefer Typed Constants to Preprocessor #define本节着重对比了常�
         <h2 id="前言">前言</h2><p>写博客果然比光看书要花时间=。=，书都快看完了，才写到第4节。但是总结一遍，的确印象深刻啊~~  </p>
 <p>这次的主题是“<strong>常量</strong>”，非常常用，又非常重要的东西~良好的代码规范、设计，少不了各种<strong>常量</strong>。</p>
 <h2 id="Item_4_-_Prefer_Typed_Constants_to_Preprocessor_#define">Item 4 - Prefer Typed Constants to Preprocessor #define</h2><p>本节着重对比了常量的定义形式，类型常量和#define的区别、各自的特点。最后得出，我们应该用带有类型的常量，而不是#define。</p>
+<a id="more"></a>
 <h2 id="一个简单的示例">一个简单的示例</h2><p>应用中，少不了各种动画，也就少不了设定动画的时间长度，一般来说，我们会设定短、中、长几种时间常量，用于不同的场合，了解C语言的童鞋估计对“<strong>#define</strong>”宏定义不陌生，于是，可能就会如下这么定义：</p>
 <pre><code><span class="hexcolor">#def</span>ine ANIMATION_DURATION_SHORT <span class="number">0.3</span>
 <span class="hexcolor">#def</span>ine ANIMATION_DURATION_MIDDLE <span class="number">0.6</span>
@@ -161,7 +162,7 @@ Item 4 - Prefer Typed Constants to Preprocessor #define本节着重对比了常�
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/" data-id="ci85ag02d001jvw6ufdav8d00" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/" data-id="ci85b37c6001j5a6up3lnedvk" class="article-share-link" data-share="baidu">分享到</a>
       
 
       

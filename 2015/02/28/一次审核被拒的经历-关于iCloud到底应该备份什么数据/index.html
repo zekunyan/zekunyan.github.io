@@ -102,6 +102,7 @@
 <h2 id="被拒原因">被拒原因</h2><p>先看看被拒的反馈信息：</p>
 <figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Apps must follow the iOS <span class="built_in">Data</span> Storage Guidelines <span class="literal">or</span> they will be rejected</span><br><span class="line"></span><br><span class="line"><span class="keyword">On</span> launch <span class="literal">and</span> content download, your app stores <span class="number">12.14</span> MB, which does <span class="literal">not</span> comply <span class="keyword">with</span> the iOS <span class="built_in">Data</span> Storage Guidelines<span class="built_in">.</span></span><br></pre></td></tr></table></figure>
 <p>大致意思就是App下载东西以后，在iCloud里面查看此App需要备份的体积变大了。  </p>
+<a id="more"></a>
 <p>再根据 <a href="https://developer.apple.com/icloud/documentation/data-storage/index.html" target="_blank" rel="external"><strong>iOS Data Storage Guidelines</strong></a>的说明，得出几点重要信息：</p>
 <ul>
 <li>只有<strong>用户创建的，并且不能被App重现的文档、数据</strong>，才应该被保存在“<strong><application_home>/Documents</application_home></strong>”路径下。</li>
@@ -149,7 +150,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/28/一次审核被拒的经历-关于iCloud到底应该备份什么数据/" data-id="ci85ag01b000lvw6ugnsqud80" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/28/一次审核被拒的经历-关于iCloud到底应该备份什么数据/" data-id="ci85b37bd000l5a6uupmzyagq" class="article-share-link" data-share="baidu">分享到</a>
       
 
       

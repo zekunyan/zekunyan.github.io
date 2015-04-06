@@ -7,20 +7,17 @@
   <title>Effective-Objective-C-读书笔记-Item-2 | 土土哥的技术Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="前言第二弹来了。
-Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个头文件中减少其它头文件的引入。
-头文件Objective-C和C语言、C++很像，都将类的实现与声明分开，用.h后缀名文件表示声明文件，用.m文件实现类。当要用到这个类的时候，只需要引入头文件即可，至于编译器、运行时是如何知道头文件里面的类对应的实现在哪里，在这了不做">
+Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个头文件中减少其它头文件的引入。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Effective-Objective-C-读书笔记-Item-2">
 <meta property="og:url" content="http://tutuge.me/2015/02/06/Effective-Objective-C-读书笔记-Item-2/index.html">
 <meta property="og:site_name" content="土土哥的技术Blog">
 <meta property="og:description" content="前言第二弹来了。
-Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个头文件中减少其它头文件的引入。
-头文件Objective-C和C语言、C++很像，都将类的实现与声明分开，用.h后缀名文件表示声明文件，用.m文件实现类。当要用到这个类的时候，只需要引入头文件即可，至于编译器、运行时是如何知道头文件里面的类对应的实现在哪里，在这了不做">
+Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个头文件中减少其它头文件的引入。">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Effective-Objective-C-读书笔记-Item-2">
 <meta name="twitter:description" content="前言第二弹来了。
-Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个头文件中减少其它头文件的引入。
-头文件Objective-C和C语言、C++很像，都将类的实现与声明分开，用.h后缀名文件表示声明文件，用.m文件实现类。当要用到这个类的时候，只需要引入头文件即可，至于编译器、运行时是如何知道头文件里面的类对应的实现在哪里，在这了不做">
+Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个头文件中减少其它头文件的引入。">
   
     <link rel="alternative" href="/atom.xml" title="土土哥的技术Blog" type="application/atom+xml">
   
@@ -100,6 +97,7 @@ Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个�
       
         <h2 id="前言">前言</h2><p>第二弹来了。</p>
 <h2 id="Item_2_-_Minimize_Importing_Headers_in_Headers">Item 2 - Minimize Importing Headers in Headers</h2><p>这一节讲的是尽量在一个头文件中减少其它头文件的引入。</p>
+<a id="more"></a>
 <h2 id="头文件">头文件</h2><p>Objective-C和C语言、C++很像，都将类的实现与声明分开，用.h后缀名文件表示声明文件，用.m文件实现类。当要用到这个类的时候，只需要引入头文件即可，至于编译器、运行时是如何知道头文件里面的类对应的实现在哪里，在这了不做说明。一下用例子说明，先看看下面的类：</p>
 <pre><code><span class="comment">//Wheel.h</span>
 <span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
@@ -174,7 +172,7 @@ Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个�
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/02/06/Effective-Objective-C-读书笔记-Item-2/" data-id="ci85ag02j001vvw6uy3f8awvm" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/02/06/Effective-Objective-C-读书笔记-Item-2/" data-id="ci85b37cb001v5a6u4fs9r0p8" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
