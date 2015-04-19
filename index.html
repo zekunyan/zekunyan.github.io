@@ -72,6 +72,145 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-thrift-example-cpp-and-php" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/04/19/thrift-example-cpp-and-php/" class="article-date">
+  <time datetime="2015-04-19T09:04:56.000Z" itemprop="datePublished">2015-04-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/04/19/thrift-example-cpp-and-php/">RPC框架Thrift例子-PHP调用C++后端程序</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言">前言</h2><p>前段时间用了一下Facebook的开源RPC框架Thrift，做PHP客户端调用C++后端程序，真心觉得Thrift不错！</p>
+<p>本文项目地址：<a href="https://github.com/zekunyan/ThriftDemo_PHP_CPP" target="_blank" rel="external">https://github.com/zekunyan/ThriftDemo_PHP_CPP</a></p>
+<p>先看看本文的例子示意图：</p>
+<p><img src="http://zorrochen.qiniudn.com/blog_thrift_example_cpp_and_php_1.jpg" alt="image"></p>
+<p><strong>流程</strong></p>
+<ol>
+<li>PHP客户端发起请求，请求参数是“Request”类型，里面有studentID参数。</li>
+<li>CPP服务端收到请求返回数据，返回类型为“Response”，里面包含了student的信息，此处只是简单的示例。</li>
+</ol>
+<h2 id="定义">定义</h2><h3 id="什么是RPC">什么是RPC</h3><p>远程过程调用（英语：Remote Procedure Call，缩写为 RPC）是一个计算机通信协议。该协议允许运行于一台计算机的程序调用另一台计算机的子程序，而程序员无需额外地为这个交互作用编程。 — 维基百科 - <a href="http://zh.wikipedia.org/wiki/%E9%81%A0%E7%A8%8B%E9%81%8E%E7%A8%8B%E8%AA%BF%E7%94%A8" target="_blank" rel="external">远程过程调用</a></p>
+<p>通俗点讲，就是跨计算机、跨网络调用。</p>
+<h3 id="什么是Thrift">什么是Thrift</h3><p>Apache Thrift 是Facebook实现的一种高效的、支持多种编程语言的远程服务调用(RPC)的框架。它采用接口描述语言定义并创建服务，支持可扩展的跨语言服务开发，所包含的代码生成引擎可以在多种语言中，如 C++, Java, Python, PHP, Ruby, Erlang, Perl, Haskell, C#, Cocoa, Smalltalk 等创建高效的、无缝的服务，其传输数据采用二进制格式，相对 XML 和 JSON 体积更小，对于高并发、大数据量和多语言的环境更有优势。 — <a href="https://www.ibm.com/developerworks/cn/java/j-lo-apachethrift/" target="_blank" rel="external">Apache Thrift - 可伸缩的跨语言服务开发框架</a></p>
+<h2 id="开发流程">开发流程</h2><ol>
+<li>配置环境。C++的如CMake、make、g++；PHP的如php、php-fpm、Apache（Nginx）。</li>
+<li>根据需求，编写thrift接口定义文件（IDL定义文件）。</li>
+<li>使用thrift程序，为不同的语言生成代码。</li>
+<li>根据需求，修改生成的代码（主要是Server端），编写实际的业务逻辑。</li>
+<li>编译、部署。</li>
+</ol>
+<h2 id="Thrift的接口定义文件">Thrift的接口定义文件</h2><p>在利用Thrift开发的过程中，重点就是编写接口定义文件。<br>一般来说，接口定义文件决定了RPC过程中的通信数据结构、通信接口定义等。</p>
+<p>总的来说，thrift的接口定义语法类似于C语言，包含了struct、enum、map、list等基础数据结构，同时支持大部分基本数据类型，如32位整型“i32”等。</p>
+<p>详细的接口定义请参考：</p>
+<ul>
+<li><a href="http://thrift.apache.org/docs/idl" target="_blank" rel="external">Thrift interface description language</a></li>
+<li><a href="https://git-wip-us.apache.org/repos/asf?p=thrift.git;a=blob_plain;f=tutorial/tutorial.thrift" target="_blank" rel="external">example.thrift</a></li>
+</ul>
+<p>看看本例子中的定义文件“TTG.thrift”：</p>
+<figure class="highlight thrift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> cpp TTG</span><br><span class="line"><span class="keyword">namespace</span> php TTG</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">ResponseState</span> </span>&#123;</span><br><span class="line">    StateOk = <span class="number">0</span>,</span><br><span class="line">    StateError = <span class="number">1</span>,</span><br><span class="line">    StateEmpty = <span class="number">2</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Request</span> </span>&#123;</span><br><span class="line">    <span class="number">1</span>: <span class="built_in">i32</span> studentID = <span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Response</span> </span>&#123;</span><br><span class="line">    <span class="number">1</span>: <span class="built_in">i32</span> studentID = <span class="number">0</span>,</span><br><span class="line">    <span class="number">2</span>: <span class="built_in">string</span> name,</span><br><span class="line">    <span class="number">3</span>: list&lt;<span class="keyword">string</span>&gt; infos,</span><br><span class="line">    <span class="number">4</span>: ResponseState state</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">service</span> <span class="title">TTGService</span> </span>&#123;</span><br><span class="line">    Response getStudentInfo(<span class="number">1</span>: Request request);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>先定义命名空间，尽量减少命名冲突。</li>
+<li>Request类型：PHP客户端请求的数据类型。</li>
+<li>Response类型：CPP服务端返回的数据类型。</li>
+<li>ResponseState枚举：定义返回的状态。</li>
+<li>TTGService：服务接口定义。</li>
+</ol>
+<h2 id="生成对应语言的代码！">生成对应语言的代码！</h2><p>是的，生成代码！这是我觉得Thrift框架最“神奇”的地方。我们只需要执行几条命令，就可以根据接口定义文件“生成”对应语言的代码。然后我们只需要将对应的业务逻辑加入到生成的代码中即可。</p>
+<p>如生成CPP服务端的代码：</p>
+<pre><code>thrift <span class="comment">--gen cpp TTG.thrift</span>
+</code></pre><p>然后就会生成如下代码。    </p>
+<pre><code>TTGService<span class="class">.cpp</span>
+TTGService<span class="class">.h</span>
+TTGService_server<span class="class">.skeleton</span><span class="class">.cpp</span>
+TTG_constants<span class="class">.cpp</span>
+TTG_constants<span class="class">.h</span>
+TTG_types<span class="class">.cpp</span>
+TTG_types.h
+</code></pre><h2 id="根据需要修改生成的代码">根据需要修改生成的代码</h2><p>生成CPP、PHP端的代码以后，我们就可以根据需要修改、添加业务代码。</p>
+<h3 id="CPP服务端">CPP服务端</h3><p>在生成CPP的代码时，会生成一个“TTGService_server.skeleton.cpp”文件，这个就是我们的CPP服务端的代码“架子”。其中重点如下：</p>
+<pre><code><span class="comment">//实现调用的接口</span>
+<span class="keyword">class</span> TTGServiceHandler : <span class="keyword">virtual</span> <span class="keyword">public</span> TTGServiceIf {
+ <span class="keyword">public</span>:
+  TTGServiceHandler() {
+    <span class="comment">// Your initialization goes here</span>
+  }
+
+  <span class="comment">//接口实现部分，实现getStudentInfo这个接口的具体细节，如根据request创建、返回对应的response</span>
+  <span class="function"><span class="keyword">void</span> <span class="title">getStudentInfo</span><span class="params">(Response&amp; _return, <span class="keyword">const</span> Request&amp; request)</span> </span>{
+    <span class="comment">// Your implementation goes here</span>
+    <span class="built_in">printf</span>(<span class="string">"getStudentInfo\n"</span>);
+  }
+
+};
+<span class="comment">//...</span>
+</code></pre><p>我们将其改成：</p>
+<pre><code>void getStudentInfo(Response &amp;_<span class="keyword">return</span>, <span class="keyword">const</span> Request &amp;request) {
+    <span class="comment">// 输出请求参数</span>
+    cout&lt;&lt;<span class="string">"Request: "</span>&lt;&lt;request.studentID&lt;&lt;endl;
+
+    <span class="comment">// 创建返回数据</span>
+    Response *response = new Response();
+
+    <span class="comment">//填充数据</span>
+    response-&gt;studentID = request.studentID;
+    response-&gt;name = <span class="string">"tutuge"</span>;
+    response-&gt;infos.push_back(<span class="string">"Info 1"</span>);
+    response-&gt;infos.push_back(<span class="string">"Info 2"</span>);
+    response-&gt;state = ResponseState::StateOk;
+
+    <span class="comment">//返回</span>
+    _<span class="keyword">return</span> = *response;
+}
+</code></pre><p>至此，CPP服务端的编写就完成了，接下来我们只需要编译、链接，执行最终生成的可执行文件即可。</p>
+<h3 id="PHP客户端">PHP客户端</h3><p>PHP客户端的编写比较简单，直接参考代码吧：<a href="https://github.com/zekunyan/ThriftDemo_PHP_CPP/blob/master/PHP/client.php" target="_blank" rel="external">https://github.com/zekunyan/ThriftDemo_PHP_CPP/blob/master/PHP/client.php</a></p>
+<h2 id="编译、链接，运行">编译、链接，运行</h2><p>用CMake，或者直接编写makefile均可，保证Thrift装好就行了。</p>
+<p>直接运行最后生成的可执行文件TTG.run即可。</p>
+<p>从浏览器，或者直接运行client.php，即可看到如下输出：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">object(TTG\Response)[<span class="number">9</span>]  <span class="keyword">public</span> <span class="string">'studentID'</span> =&gt; int <span class="number">100</span>  <span class="keyword">public</span> <span class="string">'name'</span> =&gt; string <span class="string">'tutuge'</span> (length=<span class="number">6</span>)  <span class="keyword">public</span> <span class="string">'infos'</span> =&gt;     <span class="keyword">array</span> (size=<span class="number">2</span>)      <span class="number">0</span> =&gt; string <span class="string">'Info 1'</span> (length=<span class="number">6</span>)      <span class="number">1</span> =&gt; string <span class="string">'Info 2'</span> (length=<span class="number">6</span>)  <span class="keyword">public</span> <span class="string">'state'</span> =&gt; int <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<h2 id="总结">总结</h2><p>Thrift是个好东西！就是文档好少=。=</p>
+<h2 id="参考">参考</h2><ul>
+<li><a href="http://thrift.apache.org/" target="_blank" rel="external">Apache Thrift</a></li>
+<li><a href="http://thrift.apache.org/tutorial/php" target="_blank" rel="external">Thrift PHP Tutorial</a></li>
+<li><a href="http://thrift.apache.org/tutorial/cpp" target="_blank" rel="external">Thrift C++ Tutorial</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Apache_Thrift" target="_blank" rel="external">Apache Thrift</a></li>
+<li><a href="https://www.ibm.com/developerworks/cn/java/j-lo-apachethrift/" target="_blank" rel="external">Apache Thrift - 可伸缩的跨语言服务开发框架</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://tutuge.me/2015/04/19/thrift-example-cpp-and-php/" data-id="ci8o8axa7000uf66ug4y58l92" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://tutuge.me/2015/04/19/thrift-example-cpp-and-php/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/原创/">原创</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-something-about-gcd" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2015/04/03/something-about-gcd/" class="article-date">
@@ -111,7 +250,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/04/03/something-about-gcd/" data-id="ci8fsw1fz000ud96u1ix5fck0" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/04/03/something-about-gcd/" data-id="ci8o8axaa0010f66uexxnmrxd" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -166,7 +305,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/29/bind-data-to-gcd-queue/" data-id="ci8fsw1g80013d96utwjvsr1y" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/29/bind-data-to-gcd-queue/" data-id="ci8o8axaj0019f66uobncbafz" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -219,7 +358,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/21/effective-objective-c-5-enum/" data-id="ci8fsw1g60010d96u6mt33w84" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/21/effective-objective-c-5-enum/" data-id="ci8o8axah0016f66ufwyvmi9n" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -293,7 +432,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/17/what-is-autoreleasepool/" data-id="ci8fsw1fw000rd96up4dcczv2" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/17/what-is-autoreleasepool/" data-id="ci8o8axa3000rf66ujle5q4bo" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -349,7 +488,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/15/有关宏定义的经验与技巧-简化代码-增强Log/" data-id="ci8fsw1fg0007d96udxgtj4cl" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/15/有关宏定义的经验与技巧-简化代码-增强Log/" data-id="ci8o8ax9l0007f66uul8hzq9z" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -400,7 +539,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/" data-id="ci8fsw1gm001kd96uxp5ayich" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/" data-id="ci8o8axas001qf66uwbll1phi" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -457,7 +596,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/" data-id="ci8fsw1gc0016d96u0dwbsvad" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/" data-id="ci8o8axal001cf66uoe2b5j2b" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -502,7 +641,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/06/关于评论不见了/" data-id="ci8fsw1fq000kd96uewm7ycm1" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/06/关于评论不见了/" data-id="ci8o8ax9v000kf66ul8g5cewp" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -553,7 +692,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/01/Entity和Model的不同-关于代码的数据层/" data-id="ci8fsw1gk001id96u6t9c62dq" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/01/Entity和Model的不同-关于代码的数据层/" data-id="ci8o8axaq001of66u8ltslrgd" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -570,61 +709,9 @@
 
 
   
-    <article id="post-一次审核被拒的经历-关于iCloud到底应该备份什么数据" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/02/28/一次审核被拒的经历-关于iCloud到底应该备份什么数据/" class="article-date">
-  <time datetime="2015-02-28T10:18:11.000Z" itemprop="datePublished">2015-02-28</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/02/28/一次审核被拒的经历-关于iCloud到底应该备份什么数据/">一次审核被拒的经历-关于iCloud到底应该备份什么数据</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言">前言</h2><p>项目最近一次审核被拒了=。=<br>仔细看了一下后，发现是没有遵守“<strong>iOS Data Storage Guidelines</strong>”。<br>在此总结一下。</p>
-<h2 id="被拒原因">被拒原因</h2><p>先看看被拒的反馈信息：</p>
-<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Apps must follow the iOS <span class="built_in">Data</span> Storage Guidelines <span class="literal">or</span> they will be rejected</span><br><span class="line"></span><br><span class="line"><span class="keyword">On</span> launch <span class="literal">and</span> content download, your app stores <span class="number">12.14</span> MB, which does <span class="literal">not</span> comply <span class="keyword">with</span> the iOS <span class="built_in">Data</span> Storage Guidelines<span class="built_in">.</span></span><br></pre></td></tr></table></figure>
-<p>大致意思就是App下载东西以后，在iCloud里面查看此App需要备份的体积变大了。  </p>
-        
-          <p class="article-more-link">
-            <a href="/2015/02/28/一次审核被拒的经历-关于iCloud到底应该备份什么数据/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://tutuge.me/2015/02/28/一次审核被拒的经历-关于iCloud到底应该备份什么数据/" data-id="ci8fsw1ft000md96u0zl0ls20" class="article-share-link" data-share="baidu">分享到</a>
-      
-
-      
-        <a href="http://tutuge.me/2015/02/28/一次审核被拒的经历-关于iCloud到底应该备份什么数据/#ds-thread" class="article-comment-link">评论</a>
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/原创/">原创</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/审核/">审核</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -637,7 +724,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/">iOS</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/原创/">原创</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/审核/">审核</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开源/">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/技巧/">技巧</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/杂烩/">杂烩</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/笔记/">笔记</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">4</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/">iOS</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/原创/">原创</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/审核/">审核</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开源/">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/技巧/">技巧</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/杂烩/">杂烩</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/笔记/">笔记</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">4</span></li></ul>
     </div>
   </div>
 
@@ -646,7 +733,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Android/" style="font-size: 10px;">Android</a><a href="/tags/iOS/" style="font-size: 17.5px;">iOS</a><a href="/tags/原创/" style="font-size: 20px;">原创</a><a href="/tags/审核/" style="font-size: 10px;">审核</a><a href="/tags/开源/" style="font-size: 10px;">开源</a><a href="/tags/技巧/" style="font-size: 10px;">技巧</a><a href="/tags/杂烩/" style="font-size: 12.5px;">杂烩</a><a href="/tags/笔记/" style="font-size: 15px;">笔记</a><a href="/tags/翻译/" style="font-size: 15px;">翻译</a>
+      <a href="/tags/Android/" style="font-size: 10px;">Android</a><a href="/tags/C/" style="font-size: 10px;">C++</a><a href="/tags/PHP/" style="font-size: 10px;">PHP</a><a href="/tags/iOS/" style="font-size: 17.5px;">iOS</a><a href="/tags/原创/" style="font-size: 20px;">原创</a><a href="/tags/审核/" style="font-size: 10px;">审核</a><a href="/tags/开源/" style="font-size: 10px;">开源</a><a href="/tags/技巧/" style="font-size: 10px;">技巧</a><a href="/tags/杂烩/" style="font-size: 12.5px;">杂烩</a><a href="/tags/笔记/" style="font-size: 15px;">笔记</a><a href="/tags/翻译/" style="font-size: 15px;">翻译</a>
     </div>
   </div>
 
@@ -655,7 +742,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -665,6 +752,10 @@
     <h3 class="widget-title">近期文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2015/04/19/thrift-example-cpp-and-php/">RPC框架Thrift例子-PHP调用C++后端程序</a>
+          </li>
         
           <li>
             <a href="/2015/04/03/something-about-gcd/">GCD使用经验与技巧浅谈</a>
@@ -680,10 +771,6 @@
         
           <li>
             <a href="/2015/03/17/what-is-autoreleasepool/">@autoreleasepool-内存的分配与释放</a>
-          </li>
-        
-          <li>
-            <a href="/2015/03/15/有关宏定义的经验与技巧-简化代码-增强Log/">有关宏定义的经验与技巧-简化代码-增强Log</a>
           </li>
         
       </ul>

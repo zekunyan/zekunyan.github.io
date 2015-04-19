@@ -4,7 +4,7 @@
   <subtitle><![CDATA[iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://tutuge.me/"/>
-  <updated>2015-04-06T03:11:10.000Z</updated>
+  <updated>2015-04-19T09:05:31.000Z</updated>
   <id>http://tutuge.me/</id>
   
   <author>
@@ -13,6 +13,121 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[RPC框架Thrift例子-PHP调用C++后端程序]]></title>
+    <link href="http://tutuge.me/2015/04/19/thrift-example-cpp-and-php/"/>
+    <id>http://tutuge.me/2015/04/19/thrift-example-cpp-and-php/</id>
+    <published>2015-04-19T09:04:56.000Z</published>
+    <updated>2015-04-19T09:05:31.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>前段时间用了一下Facebook的开源RPC框架Thrift，做PHP客户端调用C++后端程序，真心觉得Thrift不错！</p>
+<p>本文项目地址：<a href="https://github.com/zekunyan/ThriftDemo_PHP_CPP" target="_blank" rel="external">https://github.com/zekunyan/ThriftDemo_PHP_CPP</a></p>
+<p>先看看本文的例子示意图：</p>
+<p><img src="http://zorrochen.qiniudn.com/blog_thrift_example_cpp_and_php_1.jpg" alt="image"></p>
+<p><strong>流程</strong></p>
+<ol>
+<li>PHP客户端发起请求，请求参数是“Request”类型，里面有studentID参数。</li>
+<li>CPP服务端收到请求返回数据，返回类型为“Response”，里面包含了student的信息，此处只是简单的示例。</li>
+</ol>
+<h2 id="定义">定义</h2><h3 id="什么是RPC">什么是RPC</h3><p>远程过程调用（英语：Remote Procedure Call，缩写为 RPC）是一个计算机通信协议。该协议允许运行于一台计算机的程序调用另一台计算机的子程序，而程序员无需额外地为这个交互作用编程。 — 维基百科 - <a href="http://zh.wikipedia.org/wiki/%E9%81%A0%E7%A8%8B%E9%81%8E%E7%A8%8B%E8%AA%BF%E7%94%A8" target="_blank" rel="external">远程过程调用</a></p>
+<p>通俗点讲，就是跨计算机、跨网络调用。</p>
+<h3 id="什么是Thrift">什么是Thrift</h3><p>Apache Thrift 是Facebook实现的一种高效的、支持多种编程语言的远程服务调用(RPC)的框架。它采用接口描述语言定义并创建服务，支持可扩展的跨语言服务开发，所包含的代码生成引擎可以在多种语言中，如 C++, Java, Python, PHP, Ruby, Erlang, Perl, Haskell, C#, Cocoa, Smalltalk 等创建高效的、无缝的服务，其传输数据采用二进制格式，相对 XML 和 JSON 体积更小，对于高并发、大数据量和多语言的环境更有优势。 — <a href="https://www.ibm.com/developerworks/cn/java/j-lo-apachethrift/" target="_blank" rel="external">Apache Thrift - 可伸缩的跨语言服务开发框架</a></p>
+<h2 id="开发流程">开发流程</h2><ol>
+<li>配置环境。C++的如CMake、make、g++；PHP的如php、php-fpm、Apache（Nginx）。</li>
+<li>根据需求，编写thrift接口定义文件（IDL定义文件）。</li>
+<li>使用thrift程序，为不同的语言生成代码。</li>
+<li>根据需求，修改生成的代码（主要是Server端），编写实际的业务逻辑。</li>
+<li>编译、部署。</li>
+</ol>
+<h2 id="Thrift的接口定义文件">Thrift的接口定义文件</h2><p>在利用Thrift开发的过程中，重点就是编写接口定义文件。<br>一般来说，接口定义文件决定了RPC过程中的通信数据结构、通信接口定义等。</p>
+<p>总的来说，thrift的接口定义语法类似于C语言，包含了struct、enum、map、list等基础数据结构，同时支持大部分基本数据类型，如32位整型“i32”等。</p>
+<p>详细的接口定义请参考：</p>
+<ul>
+<li><a href="http://thrift.apache.org/docs/idl" target="_blank" rel="external">Thrift interface description language</a></li>
+<li><a href="https://git-wip-us.apache.org/repos/asf?p=thrift.git;a=blob_plain;f=tutorial/tutorial.thrift" target="_blank" rel="external">example.thrift</a></li>
+</ul>
+<p>看看本例子中的定义文件“TTG.thrift”：</p>
+<figure class="highlight thrift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> cpp TTG</span><br><span class="line"><span class="keyword">namespace</span> php TTG</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">ResponseState</span> </span>&#123;</span><br><span class="line">    StateOk = <span class="number">0</span>,</span><br><span class="line">    StateError = <span class="number">1</span>,</span><br><span class="line">    StateEmpty = <span class="number">2</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Request</span> </span>&#123;</span><br><span class="line">    <span class="number">1</span>: <span class="built_in">i32</span> studentID = <span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Response</span> </span>&#123;</span><br><span class="line">    <span class="number">1</span>: <span class="built_in">i32</span> studentID = <span class="number">0</span>,</span><br><span class="line">    <span class="number">2</span>: <span class="built_in">string</span> name,</span><br><span class="line">    <span class="number">3</span>: list&lt;<span class="keyword">string</span>&gt; infos,</span><br><span class="line">    <span class="number">4</span>: ResponseState state</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">service</span> <span class="title">TTGService</span> </span>&#123;</span><br><span class="line">    Response getStudentInfo(<span class="number">1</span>: Request request);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>先定义命名空间，尽量减少命名冲突。</li>
+<li>Request类型：PHP客户端请求的数据类型。</li>
+<li>Response类型：CPP服务端返回的数据类型。</li>
+<li>ResponseState枚举：定义返回的状态。</li>
+<li>TTGService：服务接口定义。</li>
+</ol>
+<h2 id="生成对应语言的代码！">生成对应语言的代码！</h2><p>是的，生成代码！这是我觉得Thrift框架最“神奇”的地方。我们只需要执行几条命令，就可以根据接口定义文件“生成”对应语言的代码。然后我们只需要将对应的业务逻辑加入到生成的代码中即可。</p>
+<p>如生成CPP服务端的代码：</p>
+<pre><code>thrift <span class="comment">--gen cpp TTG.thrift</span>
+</code></pre><p>然后就会生成如下代码。    </p>
+<pre><code>TTGService<span class="class">.cpp</span>
+TTGService<span class="class">.h</span>
+TTGService_server<span class="class">.skeleton</span><span class="class">.cpp</span>
+TTG_constants<span class="class">.cpp</span>
+TTG_constants<span class="class">.h</span>
+TTG_types<span class="class">.cpp</span>
+TTG_types.h
+</code></pre><h2 id="根据需要修改生成的代码">根据需要修改生成的代码</h2><p>生成CPP、PHP端的代码以后，我们就可以根据需要修改、添加业务代码。</p>
+<h3 id="CPP服务端">CPP服务端</h3><p>在生成CPP的代码时，会生成一个“TTGService_server.skeleton.cpp”文件，这个就是我们的CPP服务端的代码“架子”。其中重点如下：</p>
+<pre><code><span class="comment">//实现调用的接口</span>
+<span class="keyword">class</span> TTGServiceHandler : <span class="keyword">virtual</span> <span class="keyword">public</span> TTGServiceIf {
+ <span class="keyword">public</span>:
+  TTGServiceHandler() {
+    <span class="comment">// Your initialization goes here</span>
+  }
+
+  <span class="comment">//接口实现部分，实现getStudentInfo这个接口的具体细节，如根据request创建、返回对应的response</span>
+  <span class="function"><span class="keyword">void</span> <span class="title">getStudentInfo</span><span class="params">(Response&amp; _return, <span class="keyword">const</span> Request&amp; request)</span> </span>{
+    <span class="comment">// Your implementation goes here</span>
+    <span class="built_in">printf</span>(<span class="string">"getStudentInfo\n"</span>);
+  }
+
+};
+<span class="comment">//...</span>
+</code></pre><p>我们将其改成：</p>
+<pre><code>void getStudentInfo(Response &amp;_<span class="keyword">return</span>, <span class="keyword">const</span> Request &amp;request) {
+    <span class="comment">// 输出请求参数</span>
+    cout&lt;&lt;<span class="string">"Request: "</span>&lt;&lt;request.studentID&lt;&lt;endl;
+
+    <span class="comment">// 创建返回数据</span>
+    Response *response = new Response();
+
+    <span class="comment">//填充数据</span>
+    response-&gt;studentID = request.studentID;
+    response-&gt;name = <span class="string">"tutuge"</span>;
+    response-&gt;infos.push_back(<span class="string">"Info 1"</span>);
+    response-&gt;infos.push_back(<span class="string">"Info 2"</span>);
+    response-&gt;state = ResponseState::StateOk;
+
+    <span class="comment">//返回</span>
+    _<span class="keyword">return</span> = *response;
+}
+</code></pre><p>至此，CPP服务端的编写就完成了，接下来我们只需要编译、链接，执行最终生成的可执行文件即可。</p>
+<h3 id="PHP客户端">PHP客户端</h3><p>PHP客户端的编写比较简单，直接参考代码吧：<a href="https://github.com/zekunyan/ThriftDemo_PHP_CPP/blob/master/PHP/client.php" target="_blank" rel="external">https://github.com/zekunyan/ThriftDemo_PHP_CPP/blob/master/PHP/client.php</a></p>
+<h2 id="编译、链接，运行">编译、链接，运行</h2><p>用CMake，或者直接编写makefile均可，保证Thrift装好就行了。</p>
+<p>直接运行最后生成的可执行文件TTG.run即可。</p>
+<p>从浏览器，或者直接运行client.php，即可看到如下输出：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">object(TTG\Response)[<span class="number">9</span>]  <span class="keyword">public</span> <span class="string">'studentID'</span> =&gt; int <span class="number">100</span>  <span class="keyword">public</span> <span class="string">'name'</span> =&gt; string <span class="string">'tutuge'</span> (length=<span class="number">6</span>)  <span class="keyword">public</span> <span class="string">'infos'</span> =&gt;     <span class="keyword">array</span> (size=<span class="number">2</span>)      <span class="number">0</span> =&gt; string <span class="string">'Info 1'</span> (length=<span class="number">6</span>)      <span class="number">1</span> =&gt; string <span class="string">'Info 2'</span> (length=<span class="number">6</span>)  <span class="keyword">public</span> <span class="string">'state'</span> =&gt; int <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<h2 id="总结">总结</h2><p>Thrift是个好东西！就是文档好少=。=</p>
+<h2 id="参考">参考</h2><ul>
+<li><a href="http://thrift.apache.org/" target="_blank" rel="external">Apache Thrift</a></li>
+<li><a href="http://thrift.apache.org/tutorial/php" target="_blank" rel="external">Thrift PHP Tutorial</a></li>
+<li><a href="http://thrift.apache.org/tutorial/cpp" target="_blank" rel="external">Thrift C++ Tutorial</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Apache_Thrift" target="_blank" rel="external">Apache Thrift</a></li>
+<li><a href="https://www.ibm.com/developerworks/cn/java/j-lo-apachethrift/" target="_blank" rel="external">Apache Thrift - 可伸缩的跨语言服务开发框架</a></li>
+</ul>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h2 id="前言">前言</h2><p>前段时间用了一下Facebook的开源RPC框架Thrift，做PHP客户端调用C++后端程序，真心觉得Thrift不错！</p>
+<p>本文项目地址：<a href="https://github.com/zekunyan/Thrif]]>
+    </summary>
+    
+      <category term="C++" scheme="http://tutuge.me/tags/C/"/>
+    
+      <category term="PHP" scheme="http://tutuge.me/tags/PHP/"/>
+    
+      <category term="原创" scheme="http://tutuge.me/tags/%E5%8E%9F%E5%88%9B/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[GCD使用经验与技巧浅谈]]></title>
@@ -2125,34 +2240,6 @@ NSString <span class="keyword">*</span>str2 = str1;
       <category term="原创" scheme="http://tutuge.me/tags/%E5%8E%9F%E5%88%9B/"/>
     
       <category term="开源" scheme="http://tutuge.me/tags/%E5%BC%80%E6%BA%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[第一篇Blog]]></title>
-    <link href="http://tutuge.me/2014/11/01/%E7%AC%AC%E4%B8%80%E7%AF%87Blog/"/>
-    <id>http://tutuge.me/2014/11/01/第一篇Blog/</id>
-    <published>2014-10-31T16:13:15.000Z</published>
-    <updated>2015-04-06T03:12:41.000Z</updated>
-    <content type="html"><![CDATA[<p>拖了很久，终于开始写博客了。<br>一直觉得自己的知识储备不够，一直都在学习，一直都在积累。（其实就是懒好吗=。=）</p>
-<p>说点啥呢，想到啥就说啥吧~</p>
-<a id="more"></a>
-<p>从小就喜欢模型、乐高积木，喜欢拆东西，印象最深的就是把家里的高级录音机拆了，装不回去，塞到了床底下。。。</p>
-<p>上了学之后，又开始捣鼓四驱车，自己做马达，绕线圈，家里零件一大堆，串联一堆电池，组装遥控车，唯一的遗憾，就是没有做成遥控飞机（没钱=、=）。</p>
-<p>接着，家里有了电脑！！！这要感谢老爹，当时花了一万多，液晶显示器，刚上市的奔腾4啊！</p>
-<p>于是，我又开始拆电脑。。。换显卡、超频，跑分，再超频，再跑分，3DMark就是俺的祖宗啊~</p>
-<p>终于，走上了<strong>编程</strong>这条“<strong>不归路</strong>”，义无反顾，一直到了现在。</p>
-<p>用Dev-C++折腾C语言，数据结构、算法，接着又是C++，Window API，QT（这个真觉得不错），MFC（软件课设），Java，Python，Android（上线了几个小应用，拿了Google全国大学生Android应用开发大赛华中地区三等奖），iOS（上线应用，青桔音乐），Linux，还有各种MySQL、MongoDB等数据库的纠结，看各种博客。。。</p>
-<p>每天看的很多，想的也不少，但是终究不够精通，路还很长啊~</p>
-<p>当然，最感谢的就是我的女朋友~陈因素~</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>拖了很久，终于开始写博客了。<br>一直觉得自己的知识储备不够，一直都在学习，一直都在积累。（其实就是懒好吗=。=）</p>
-<p>说点啥呢，想到啥就说啥吧~</p>]]>
-    
-    </summary>
-    
-      <category term="杂烩" scheme="http://tutuge.me/tags/%E6%9D%82%E7%83%A9/"/>
     
   </entry>
   
