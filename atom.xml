@@ -4,7 +4,7 @@
   <subtitle><![CDATA[iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://tutuge.me/"/>
-  <updated>2015-04-19T09:05:31.000Z</updated>
+  <updated>2015-04-19T09:06:49.000Z</updated>
   <id>http://tutuge.me/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://tutuge.me/2015/04/19/thrift-example-cpp-and-php/"/>
     <id>http://tutuge.me/2015/04/19/thrift-example-cpp-and-php/</id>
     <published>2015-04-19T09:04:56.000Z</published>
-    <updated>2015-04-19T09:05:31.000Z</updated>
+    <updated>2015-04-19T09:06:49.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>前段时间用了一下Facebook的开源RPC框架Thrift，做PHP客户端调用C++后端程序，真心觉得Thrift不错！</p>
 <p>本文项目地址：<a href="https://github.com/zekunyan/ThriftDemo_PHP_CPP" target="_blank" rel="external">https://github.com/zekunyan/ThriftDemo_PHP_CPP</a></p>
 <p>先看看本文的例子示意图：</p>
@@ -29,6 +29,7 @@
 <li>PHP客户端发起请求，请求参数是“Request”类型，里面有studentID参数。</li>
 <li>CPP服务端收到请求返回数据，返回类型为“Response”，里面包含了student的信息，此处只是简单的示例。</li>
 </ol>
+<a id="more"></a>
 <h2 id="定义">定义</h2><h3 id="什么是RPC">什么是RPC</h3><p>远程过程调用（英语：Remote Procedure Call，缩写为 RPC）是一个计算机通信协议。该协议允许运行于一台计算机的程序调用另一台计算机的子程序，而程序员无需额外地为这个交互作用编程。 — 维基百科 - <a href="http://zh.wikipedia.org/wiki/%E9%81%A0%E7%A8%8B%E9%81%8E%E7%A8%8B%E8%AA%BF%E7%94%A8" target="_blank" rel="external">远程过程调用</a></p>
 <p>通俗点讲，就是跨计算机、跨网络调用。</p>
 <h3 id="什么是Thrift">什么是Thrift</h3><p>Apache Thrift 是Facebook实现的一种高效的、支持多种编程语言的远程服务调用(RPC)的框架。它采用接口描述语言定义并创建服务，支持可扩展的跨语言服务开发，所包含的代码生成引擎可以在多种语言中，如 C++, Java, Python, PHP, Ruby, Erlang, Perl, Haskell, C#, Cocoa, Smalltalk 等创建高效的、无缝的服务，其传输数据采用二进制格式，相对 XML 和 JSON 体积更小，对于高并发、大数据量和多语言的环境更有优势。 — <a href="https://www.ibm.com/developerworks/cn/java/j-lo-apachethrift/" target="_blank" rel="external">Apache Thrift - 可伸缩的跨语言服务开发框架</a></p>
@@ -118,7 +119,15 @@ TTG_types.h
 ]]></content>
     <summary type="html">
     <![CDATA[<h2 id="前言">前言</h2><p>前段时间用了一下Facebook的开源RPC框架Thrift，做PHP客户端调用C++后端程序，真心觉得Thrift不错！</p>
-<p>本文项目地址：<a href="https://github.com/zekunyan/Thrif]]>
+<p>本文项目地址：<a href="https://github.com/zekunyan/ThriftDemo_PHP_CPP">https://github.com/zekunyan/ThriftDemo_PHP_CPP</a></p>
+<p>先看看本文的例子示意图：</p>
+<p><img src="http://zorrochen.qiniudn.com/blog_thrift_example_cpp_and_php_1.jpg" alt="image"></p>
+<p><strong>流程</strong></p>
+<ol>
+<li>PHP客户端发起请求，请求参数是“Request”类型，里面有studentID参数。</li>
+<li>CPP服务端收到请求返回数据，返回类型为“Response”，里面包含了student的信息，此处只是简单的示例。</li>
+</ol>]]>
+    
     </summary>
     
       <category term="C++" scheme="http://tutuge.me/tags/C/"/>
