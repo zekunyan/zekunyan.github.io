@@ -4,7 +4,7 @@
   <subtitle><![CDATA[iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://tutuge.me/"/>
-  <updated>2015-04-19T09:06:49.000Z</updated>
+  <updated>2015-04-21T13:09:03.000Z</updated>
   <id>http://tutuge.me/</id>
   
   <author>
@@ -13,6 +13,48 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[UITextView编辑时插入自定义表情-续-自定义表情图片的大小]]></title>
+    <link href="http://tutuge.me/2015/04/21/resizable-nstextattachment/"/>
+    <id>http://tutuge.me/2015/04/21/resizable-nstextattachment/</id>
+    <published>2015-04-21T12:26:17.000Z</published>
+    <updated>2015-04-21T13:09:03.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>本文是基于<a href="http://tutuge.me/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/" target="_blank" rel="external">UITextView编辑时插入自定义表情-简单的图文混编</a>写的，主要实现了在UITextView插入表情图片时，自定义表情大小的功能。</p>
+<h4 id="Github">Github</h4><p>本文代码工程地址：<a href="https://github.com/zekunyan/UITextViewDIYEmojiExample" target="_blank" rel="external">https://github.com/zekunyan/UITextViewDIYEmojiExample</a></p>
+<h4 id="Gif示例图">Gif示例图</h4><p><img src="http://zorrochen.qiniudn.com/blog_resizable_nstextattachment_1.gif" alt="image"></p>
+<a id="more"></a>
+<h2 id="关键点">关键点</h2><p>首先要明确我们要什么，很简单，就是<strong>指定NSTextAttachment在被绘制时的大小</strong>。  </p>
+<p>所以，按照这个思路，就可以去找找NSTextAttachment类的相关方法，看能不能通过继承或其他的方式改变大小。</p>
+<p>幸运的是，NSTextAttachment实现了“<strong>NSTextAttachmentContainer</strong>”这个Protocol，而这个Protocol里面有如下方法：</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="pp">- <span class="params">(<span class="variable">CGRect</span>)</span>attachmentBoundsForTextContainer:<span class="params">(<span class="variable">NSTextContainer</span> *)</span>textContainer</span><br><span class="line">                      proposedLineFragment:<span class="params">(<span class="variable">CGRect</span>)</span>lineFrag</span><br><span class="line">                             glyphPosition:<span class="params">(<span class="variable">CGPoint</span>)</span>position</span><br><span class="line">                            characterIndex:<span class="params">(<span class="variable">NSUInteger</span>)</span>charIndex</span></span><br></pre></td></tr></table></figure>
+<p>再看看其解释：<br><figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Returns <span class="operator">the</span> layout bounds <span class="operator">of</span> <span class="operator">the</span> <span class="keyword">text</span> attachment <span class="built_in">to</span> <span class="operator">the</span> layout manager. (required)</span><br></pre></td></tr></table></figure></p>
+<p>也就是说，在绘制NSTextAttachment的内容的时候，内容的“Bounds”是通过这个方法获得的。所以，可以重写这个方法，来达到我们的目的。</p>
+<h2 id="继续扩展NSTextAttachment类">继续扩展NSTextAttachment类</h2><h3 id="保存自定义Size">保存自定义Size</h3><p>根据之前的定义，我们在自定义的类“EmojiTextAttachment”中再加一个保存大小的属性，如下：</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//EmojiTextAttachment类定义</span></span><br><span class="line"></span><br><span class="line"><span class="variable">@interface</span> <span class="attribute">EmojiTextAttachment </span>: NSTextAttachment</span><br><span class="line"><span class="comment">//表情的字符串表示，见前文</span></span><br><span class="line"><span class="variable">@property</span>(strong, nonatomic) NSString *emojiTag;</span><br><span class="line"></span><br><span class="line"><span class="comment">//新增：保存当前表情图片的大小</span></span><br><span class="line"><span class="variable">@property</span>(assign, nonatomic) CGFloat emojiSize;</span><br><span class="line"><span class="variable">@end</span></span><br></pre></td></tr></table></figure>
+<p>有了“<strong>emojiSize</strong>”这个属性，我们就可以在自由的指定每个NSTextAttachment的大小。</p>
+<h3 id="重写">重写</h3><p>接下来就是重写方法，不多说，见代码：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//EmojiTextAttachment实现</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">EmojiTextAttachment</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//重点！重写NSTextAttachmentContainer Protocol的方法</span></span><br><span class="line">- (<span class="built_in">CGRect</span>)attachmentBoundsForTextContainer:(<span class="built_in">NSTextContainer</span> *)textContainer proposedLineFragment:(<span class="built_in">CGRect</span>)lineFrag glyphPosition:(<span class="built_in">CGPoint</span>)position characterIndex:(<span class="built_in">NSUInteger</span>)charIndex &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//根据emojiSize计算新的大小</span></span><br><span class="line">    <span class="keyword">return</span> [<span class="keyword">self</span> scaleImageSizeToWidth:_emojiSize];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//计算新的图片大小</span></span><br><span class="line"><span class="comment">//这里不涉及对图片实际数据的压缩，所以不用异步处理~</span></span><br><span class="line"></span><br><span class="line">- (<span class="built_in">CGRect</span>)scaleImageSizeToWidth:(<span class="built_in">CGFloat</span>)width &#123;</span><br><span class="line">    <span class="comment">//缩放系数</span></span><br><span class="line">    <span class="built_in">CGFloat</span> factor = <span class="number">1.0</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//获取原本图片大小</span></span><br><span class="line">    <span class="built_in">CGSize</span> oriSize = [<span class="keyword">self</span><span class="variable">.image</span> size];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//计算缩放系数</span></span><br><span class="line">    factor = (<span class="built_in">CGFloat</span>) (width / oriSize<span class="variable">.width</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//创建新的Size</span></span><br><span class="line">    <span class="built_in">CGRect</span> newSize = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, oriSize<span class="variable">.width</span> * factor, oriSize<span class="variable">.height</span> * factor);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> newSize;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<h2 id="使用">使用</h2><p>增加了emojiSize属性后，我们就可以在创建表情，甚至创建后，自由的调整每个NSTextAttachment的大小。</p>
+<h2 id="总结">总结</h2><p>一共只增加了十几行代码，但是效果还是不错哒~</p>
+<p>求问：如何加载、显示Gif。。。=。=</p>
+<h2 id="参考">参考</h2><ul>
+<li><a href="https://developer.apple.com/library/prerelease/ios/documentation/UIKit/Reference/NSTextAttachment_Class_TextKit/index.html#//apple_ref/occ/instp/NSTextAttachment/fileType" target="_blank" rel="external">NSTextAttachment</a></li>
+<li><a href="https://developer.apple.com/library/prerelease/ios/documentation/UIKit/Reference/NSTextAttachmentContainer_Protocol/index.html#//apple_ref/occ/intfm/NSTextAttachmentContainer/attachmentBoundsForTextContainer:proposedLineFragment:glyphPosition:characterIndex:" target="_blank" rel="external">NSTextAttachmentContainer</a></li>
+</ul>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h2 id="前言">前言</h2><p>本文是基于<a href="http://tutuge.me/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/">UITextView编辑时插入自定义表情-简单的图文混编</a>写的，主要实现了在UITextView插入表情图片时，自定义表情大小的功能。</p>
+<h4 id="Github">Github</h4><p>本文代码工程地址：<a href="https://github.com/zekunyan/UITextViewDIYEmojiExample">https://github.com/zekunyan/UITextViewDIYEmojiExample</a></p>
+<h4 id="Gif示例图">Gif示例图</h4><p><img src="http://zorrochen.qiniudn.com/blog_resizable_nstextattachment_1.gif" alt="image"></p>]]>
+    
+    </summary>
+    
+      <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
+    
+      <category term="原创" scheme="http://tutuge.me/tags/%E5%8E%9F%E5%88%9B/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[RPC框架Thrift例子-PHP调用C++后端程序]]></title>
@@ -2191,64 +2233,6 @@ NSString <span class="keyword">*</span>str2 = str1;
       <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
     
       <category term="原创" scheme="http://tutuge.me/tags/%E5%8E%9F%E5%88%9B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[Android开源库-LinkTextView-原创]]></title>
-    <link href="http://tutuge.me/2014/11/02/LinkTextView-Android%E5%BC%80%E6%BA%90%E5%BA%93-%E5%8E%9F%E5%88%9B/"/>
-    <id>http://tutuge.me/2014/11/02/LinkTextView-Android开源库-原创/</id>
-    <published>2014-11-01T18:34:46.000Z</published>
-    <updated>2015-04-06T03:14:54.000Z</updated>
-    <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>近来因为项目的缘故，仔细研究了一下如何在Android的TextView里面绑定可以点击的链接，并且定制链接的颜色，包括正常状态、按下去时的文字、背景的颜色，当然，还有点击后的回调。</p>
-<p>为了以后方便自己，也为了方便更多的人，就把这些封装成了一个简单的开源库，也算是我自己的<strong><em>第一个开源库</em></strong>吧。</p>
-<h2 id="LinkTextView">LinkTextView</h2><p>名称：<a href="https://github.com/zekunyan/LinkTextView" target="_blank" rel="external">LinkTextView</a>。喜欢的话就Star一下吧。</p>
-<h3 id="Example">Example</h3><p><img src="http://zorrochen.qiniudn.com/LinkTextView_Sample.gif" alt="image"></p>
-<a id="more"></a>
-<h3 id="功能：">功能：<br></h3><ol>
-<li>可以方便的对TextView里面的文字增加可点击链接，并且绑定回调。</li>
-<li>可以为每个链接<strong>单独</strong>设置<strong>文字</strong>、链接<strong>背景</strong>的<strong>正常</strong>、<strong>按下</strong>状态下的颜色。</li>
-<li>可以为每个链接绑定任意类型的“附件”对象，作为点击链接时的回调参数。</li>
-</ol>
-<h2 id="讲解">讲解</h2><p>下面分重点讲解一下。</p>
-<h3 id="1-_为文字增加可点击链接，绑定回调。">1. 为文字增加可点击链接，绑定回调。</h3><p>为文字增加链接，已经是老生常谈了，真是一搜一大把，不过在这里还是简单讲一下。</p>
-<p>用过TextView应该都知道这个接口：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">setText</span> <span class="params">(CharSequence text)</span></span></span><br></pre></td></tr></table></figure></p>
-<p>其中CharSequence接口的子接口里面有Spannable，而由这个接口派生出来的类SpannableString，就是我们可以对TextView里面的文字做附加效果的原因。如改变颜色、增加超链接等，有兴趣的各位可以去仔细查查。下面简单的说说怎么加可点击的链接。</p>
-<p><strong>首先创建SpannableString</strong>：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SpannableString text = <span class="keyword">new</span> SpannableString(<span class="string">"LinkTextView dadada"</span>);</span><br></pre></td></tr></table></figure></p>
-<p><strong>绑定ClickableSpan回调</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ClickableSpan clickableSpan = <span class="keyword">new</span> ClickableSpan() &#123;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//点击了链接，做你想干的事吧=。=</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">text.setSpan(clickableSpan, <span class="number">0</span>, <span class="number">5</span>, <span class="number">0</span>);</span><br></pre></td></tr></table></figure></p>
-<p><strong>最后再setText</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">textView.setText(text);</span><br></pre></td></tr></table></figure></p>
-<p>看，绑定可以点击的链接就是这么简单。</p>
-<h3 id="2-_改变正常、按下时的文字、链接背景颜色。">2. 改变正常、按下时的文字、链接背景颜色。</h3><p>往往系统默认的链接颜色是不能满足我们的需求的，所以最好能对链接的文字、背景的按下、松开时的颜色做定制。</p>
-<p><strong><em>但是好坑=。=，Google居然没有为ClickableSpan增加按下时的回调</em></strong></p>
-<p>那就只好自己造轮子了。</p>
-<h4 id="首先">首先</h4><p>必须要能获取到链接按下时的回调，应该是onTouch什么的，于是，就查到了类：LinkMovementMethod。<br>在TextView中可以用方法：public final void setMovementMethod (MovementMethod movement)设定监听，而LinkMovementMethod类里面就可以监听到链接的onTouch！</p>
-<p><strong>LinkMovementMethod的onTouch就是介个样子的</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">boolean</span>	 <span class="title">onTouchEvent</span><span class="params">(TextView textView, Spannable spannable, MotionEvent event)</span></span></span><br></pre></td></tr></table></figure></p>
-<p>于是，我们可以通过event来判断是按下还是移动等等操作。<br>但是问题是，这里的spannable是整个TextView全部的文字，所以，只能通过event里面的x、y坐标，找到具体点击的是哪个链接。这里，要感谢stack overflow上的大神的<a href="http://stackoverflow.com/questions/20856105/change-the-text-color-of-a-clickablespan-when-pressed" target="_blank" rel="external">帖子</a>。</p>
-<p>具体的找点击链接的方法如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> TouchableSpan <span class="title">getPressedSpan</span><span class="params">(TextView textView, Spannable spannable, MotionEvent event)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//获取点击的x、y坐标</span></span><br><span class="line">    <span class="keyword">int</span> x = (<span class="keyword">int</span>) event.getX();</span><br><span class="line">    <span class="keyword">int</span> y = (<span class="keyword">int</span>) event.getY();</span><br><span class="line">    <span class="comment">//减去Padding</span></span><br><span class="line">    x -= textView.getTotalPaddingLeft();</span><br><span class="line">    y -= textView.getTotalPaddingTop();</span><br><span class="line">    <span class="comment">//加上滚动的偏移</span></span><br><span class="line">    x += textView.getScrollX();</span><br><span class="line">    y += textView.getScrollY();</span><br><span class="line">    <span class="comment">//获取第几行、以及偏移</span></span><br><span class="line">    Layout layout = textView.getLayout();</span><br><span class="line">    <span class="keyword">int</span> line = layout.getLineForVertical(y);</span><br><span class="line">    <span class="keyword">int</span> off = layout.getOffsetForHorizontal(line, x);</span><br><span class="line">    <span class="comment">//获取真正点击的链接</span></span><br><span class="line">    TouchableSpan[] link = spannable.getSpans(off, off, TouchableSpan.class);</span><br><span class="line">    TouchableSpan touchedSpan = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (link.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        touchedSpan = link[<span class="number">0</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> touchedSpan;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>到此，我们已经能获取到链接的点击状态，并且捕捉到具体点击的ClickableSpan。</p>
-<h4 id="接着">接着</h4><p>就是改变链接的文字、背景颜色。</p>
-<p>ClickableSpan的方法里面，除了<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View widget)</span></span>;</span><br></pre></td></tr></table></figure></p>
-<p>还有就是：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateDrawState</span><span class="params">(TextPaint textPaint)</span></span>;</span><br></pre></td></tr></table></figure></p>
-<p>很明显，就是更新文字渲染效果的。我们用如下两个方法，就能实现：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setColor</span> <span class="params">(<span class="keyword">int</span> color)</span></span>;</span><br><span class="line">bgColor属性</span><br></pre></td></tr></table></figure></p>
-<h4 id="最后">最后</h4><p>到目前为止，我们已经可以捕捉到链接的点击状态，能获取到真正的点击的链接，还有能刷新链接的颜色了，相信聪明的你一定能自己琢磨出来，怎么样实现文章开头的效果。=v=</p>
-<h4 id="本文参考">本文参考</h4><ol>
-<li>Android官方文档。</li>
-<li>StackOverFlow的：<a href="http://stackoverflow.com/questions/20856105/change-the-text-color-of-a-clickablespan-when-pressed" target="_blank" rel="external">Change the text color of a ClickableSpan when pressed。</a></li>
-</ol>
-]]></content>
-    <summary type="html">
-    <![CDATA[<h2 id="前言">前言</h2><p>近来因为项目的缘故，仔细研究了一下如何在Android的TextView里面绑定可以点击的链接，并且定制链接的颜色，包括正常状态、按下去时的文字、背景的颜色，当然，还有点击后的回调。</p>
-<p>为了以后方便自己，也为了方便更多的人，就把这些封装成了一个简单的开源库，也算是我自己的<strong><em>第一个开源库</em></strong>吧。</p>
-<h2 id="LinkTextView">LinkTextView</h2><p>名称：<a href="https://github.com/zekunyan/LinkTextView">LinkTextView</a>。喜欢的话就Star一下吧。</p>
-<h3 id="Example">Example</h3><p><img src="http://zorrochen.qiniudn.com/LinkTextView_Sample.gif" alt="image"></p>]]>
-    
-    </summary>
-    
-      <category term="Android" scheme="http://tutuge.me/tags/Android/"/>
-    
-      <category term="原创" scheme="http://tutuge.me/tags/%E5%8E%9F%E5%88%9B/"/>
-    
-      <category term="开源" scheme="http://tutuge.me/tags/%E5%BC%80%E6%BA%90/"/>
     
   </entry>
   
