@@ -185,7 +185,7 @@ TTG_types.h
     <link href="http://tutuge.me/2015/04/03/something-about-gcd/"/>
     <id>http://tutuge.me/2015/04/03/something-about-gcd/</id>
     <published>2015-04-03T13:59:56.000Z</published>
-    <updated>2015-04-06T03:11:10.000Z</updated>
+    <updated>2015-05-06T15:38:18.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>GCD(Grand Central Dispatch)可以说是Mac、iOS开发中的一大“利器”，本文就总结一些有关使用GCD的经验与技巧。</p>
 <h2 id="dispatch_once_t必须是全局或static变量">dispatch_once_t必须是全局或static变量</h2><p>这一条算是“老生常谈”了，但我认为还是有必要强调一次，毕竟非全局或非static的dispatch_once_t变量在使用时会导致非常不好排查的bug，正确的如下：</p>
 <pre><code><span class="comment">//静态变量，保证只有一份实例，才能确保只执行一次</span>
@@ -211,7 +211,7 @@ dispatch_queue_t <span class="built_in">queue</span> = dispatch_queue_create(<sp
 </code></pre><p><strong>Enqueue</strong>，就是入队，指的就是将一个Block在特定的延时以后，加入到指定的队列中，<strong>不是在特定的时间后立即运行！</strong>。</p>
 <p>看看如下代码示例：</p>
 <pre><code><span class="comment">//创建串行队列</span>
-<span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_CONCURRENT);
+<span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL);
 
 <span class="comment">//立即打印一条信息        </span>
 <span class="built_in">NSLog</span>(<span class="string">@"Begin add block..."</span>);        

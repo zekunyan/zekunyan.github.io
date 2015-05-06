@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://tutuge.me/2015/04/03/something-about-gcd/</loc>
+    <lastmod>2015-05-06T15:38:18.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://tutuge.me/2015/04/21/resizable-nstextattachment/</loc>
     <lastmod>2015-04-21T13:09:03.000Z</lastmod>
   </url>
@@ -109,11 +114,6 @@
   <url>
     <loc>http://tutuge.me/2014/11/01/%E7%AC%AC%E4%B8%80%E7%AF%87Blog/</loc>
     <lastmod>2015-04-06T03:12:41.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://tutuge.me/2015/04/03/something-about-gcd/</loc>
-    <lastmod>2015-04-06T03:11:10.000Z</lastmod>
   </url>
   
   <url>

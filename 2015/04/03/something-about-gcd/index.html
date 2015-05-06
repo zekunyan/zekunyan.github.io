@@ -123,7 +123,7 @@ dispatch_queue_t <span class="built_in">queue</span> = dispatch_queue_create(<sp
 </code></pre><p><strong>Enqueue</strong>，就是入队，指的就是将一个Block在特定的延时以后，加入到指定的队列中，<strong>不是在特定的时间后立即运行！</strong>。</p>
 <p>看看如下代码示例：</p>
 <pre><code><span class="comment">//创建串行队列</span>
-<span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_CONCURRENT);
+<span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL);
 
 <span class="comment">//立即打印一条信息        </span>
 <span class="built_in">NSLog</span>(<span class="string">@"Begin add block..."</span>);        
@@ -320,7 +320,7 @@ dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/04/03/something-about-gcd/" data-id="ci8rbvocz0010gu6usu98wkl8" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/04/03/something-about-gcd/" data-id="ci9cwtid100108pjfhhg3u25z" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
