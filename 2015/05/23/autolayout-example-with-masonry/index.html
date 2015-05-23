@@ -248,6 +248,17 @@ width = [self <span class="string">setView:</span>imageView4 <span class="string
 [imageView4 <span class="string">mas_makeConstraints:</span>^(MASConstraintMaker *make) {
     make.right.equalTo(_containerView.mas_right);
 }];
+</code></pre><p>控制ImageView显示、隐藏的时候，直接让其宽度等于0就行：</p>
+<pre><code>- (<span class="keyword">IBAction</span>)showOrHideImage:(<span class="built_in">UISwitch</span> *)sender {
+    <span class="built_in">NSUInteger</span> index = (<span class="built_in">NSUInteger</span>) sender<span class="variable">.tag</span>;
+    MASConstraint *width = _widthConstraints[index];
+
+    <span class="keyword">if</span> (sender<span class="variable">.on</span>) {
+        width<span class="variable">.equalTo</span>(@(IMAGE_SIZE));
+    } <span class="keyword">else</span> {
+        width<span class="variable">.equalTo</span>(@<span class="number">0</span>);
+    }
+}
 </code></pre><h3 id="小节-1">小节</h3><p>有时候用个“容器View”管理内部的View，往往会起到事半功倍的效果。而且在组织约束的时候，尽量的将约束统一起来，这样可以用一个函数去设置，减少代码量。</p>
 <h2 id="Case_3:_子View的宽度始终是父级View的一半（或者任意百分比）">Case 3: 子View的宽度始终是父级View的一半（或者任意百分比）</h2><p>其实这个很简单=。= 再看看这个公式：</p>
 <figure class="highlight vhdl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">viewA-<span class="keyword">attribute</span> = viewB-<span class="keyword">attribute</span> * multiplier + <span class="keyword">constant</span></span><br></pre></td></tr></table></figure>
@@ -281,7 +292,7 @@ width = [self <span class="string">setView:</span>imageView4 <span class="string
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/05/23/autolayout-example-with-masonry/" data-id="cia1ag2m6001fsajfdgedtwgd" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/05/23/autolayout-example-with-masonry/" data-id="cia1apcz4001fv0jfbxsjvfd9" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
