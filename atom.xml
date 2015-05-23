@@ -4,7 +4,7 @@
   <subtitle><![CDATA[iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://tutuge.me/"/>
-  <updated>2015-04-21T13:09:03.000Z</updated>
+  <updated>2015-05-23T17:05:48.000Z</updated>
   <id>http://tutuge.me/</id>
   
   <author>
@@ -13,6 +13,200 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[有趣的Autolayout示例-Masonry实现]]></title>
+    <link href="http://tutuge.me/2015/05/23/autolayout-example-with-masonry/"/>
+    <id>http://tutuge.me/2015/05/23/autolayout-example-with-masonry/</id>
+    <published>2015-05-23T11:59:22.000Z</published>
+    <updated>2015-05-23T17:05:48.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>好久没有写Blog了，这段时间有点忙啊=。=<br>本文举了3个比较有“特点”的Autolayout例子，源于微博上好友的提问，感觉比较有意思，也比较有代表性，就写了出来，分享给大家~<br>至于为什么用Masonry，那是因为它好用啊！（被问到过有关Masonry的问题，就索性用它来实现吧=。=）。</p>
+<h3 id="效果图">效果图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_1.gif" alt="image"></p>
+<h3 id="Github地址">Github地址</h3><p><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="external">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
+<a id="more"></a>
+<h3 id="关于例子工程结构">关于例子工程结构</h3><p>实现的时候采用的是用StoryBoard拖拽约束+Masonry手写代码相结合的方式实现。最关键的地方是用Masonry，为了更好地突出重点。其它的无关紧要的空间约束，直接就拖拽了。</p>
+<h2 id="关于Autolayout">关于Autolayout</h2><p>刚开始学习Autolayout的时候，什么“Leading Edges”、“Horizontal Centers”，好多啊，感觉一下子适应不来，有时候面对一个界面布局上的需求，可能都无从下手。</p>
+<p>总的来说，我觉得Autolayout的关键就是“<strong>Constraint（约束）</strong>”。其实就是一下两点：</p>
+<ol>
+<li>从显式设置frame的属性，到利用约束控制View的大小、位置。</li>
+<li>思考如何布局时，重点从单个的View，到整体所有View之间的相互关系。</li>
+</ol>
+<p>既然没有了具体设置View的frame属性，也就是说，系统会在运行时，通过我们设定的“约束”，计算出每个View的frame，再去绘制屏幕内容。</p>
+<p>也就是说，我们设置的Constraint，要能体现出View的<strong>位置（x、y坐标）</strong>、<strong>大小（宽高）</strong>。无论是用IB拖拽约束，还是手写代码，只要从这个角度去思考，很多问题就都能解决。</p>
+<p>有关Autolayout的知识，网上有很多，在这里就不详细列出了，但是有个公式倒是可以贴出来：</p>
+<figure class="highlight vhdl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">viewA-<span class="keyword">attribute</span> = viewB-<span class="keyword">attribute</span> * multiplier + <span class="keyword">constant</span></span><br></pre></td></tr></table></figure>
+<h2 id="关于Masonry">关于Masonry</h2><p>好用！</p>
+<h2 id="Case_1:_并排两个label，宽度由内容决定。父级View宽度不够时，优先显示左边label的内容">Case 1: 并排两个label，宽度由内容决定。父级View宽度不够时，优先显示左边label的内容</h2><p>遇到这种跟内容压缩、优先级有关的布局，就不得不提Autolayout中的两个重要的属性“<strong>Content Compression Resistance</strong>”和“<strong>Content Hugging</strong>”。</p>
+<h3 id="Content_Compression_Resistance_=_不许挤我！">Content Compression Resistance = 不许挤我！</h3><p>对，这个属性说白了就是“不许挤我”=。=<br>这个属性的优先级（Priority）越高，越不“容易”被压缩。也就是说，当整体的空间装不小所有的View的时候，Content Compression Resistance优先级越高的，现实的内容越完整。</p>
+<h3 id="Content_Hugging_=_抱紧！">Content Hugging = 抱紧！</h3><p>这个属性的优先级越高，整个View就要越“抱紧”View里面的内容。也就是View的大小不会随着父级View的扩大而扩大。</p>
+<h3 id="分析">分析</h3><p>根据要求，可以将约束分为两个部分：</p>
+<ol>
+<li>整体空间足够时，两个label的宽度由内容决定，也就是说，label的“Content Hugging”优先级很高，而且没有固定的Width属性。</li>
+<li>整体空间不够时，左边的label更不容易被压缩，也就是“Content Compression Resistance”优先级更高。</li>
+</ol>
+<p>重点：</p>
+<ol>
+<li>label不设置具体的宽度（width）属性，宽度由内容决定。</li>
+<li>显示的优先级由“Content Compression Resistance”属性的高低决定。</li>
+</ol>
+<h3 id="约束示例图">约束示例图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_2.png" alt="image"></p>
+<h3 id="关键代码">关键代码</h3><p>关键的代码如下：（label1是左边的label，label2是右边的）</p>
+<h4 id="设置位置">设置位置</h4><pre><code><span class="comment">// label1: 位于左上角</span>
+[_label1 mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) {
+    <span class="built_in">make</span>.top.equalTo(_contentView1.mas_top).with.offset(<span class="number">5</span>);
+    <span class="built_in">make</span>.left.equalTo(_contentView1.mas_left).with.offset(<span class="number">2</span>);
+
+    <span class="comment">// 40高度</span>
+    <span class="built_in">make</span>.height.equalTo(@<span class="number">40</span>);
+}];
+
+<span class="comment">// label2: 位于右上角</span>
+[_label2 mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) {
+    <span class="comment">//左边贴着label1</span>
+    <span class="built_in">make</span>.left.equalTo(_label1.mas_right).with.offset(<span class="number">2</span>);
+
+    <span class="comment">//上边贴着父view</span>
+    <span class="built_in">make</span>.top.equalTo(_contentView1.mas_top).with.offset(<span class="number">5</span>);
+
+    <span class="comment">//右边的间距保持大于等于padding.right，注意是lessThanOrEqual</span>
+    <span class="built_in">make</span>.right.lessThanOrEqualTo(_contentView1.mas_right).with.offset(-<span class="number">2</span>);
+
+    <span class="comment">//只设置高度40</span>
+    <span class="built_in">make</span>.height.equalTo(@<span class="number">40</span>);
+}];
+</code></pre><h4 id="设置内容约束">设置内容约束</h4><pre><code><span class="comment">//设置label1的content hugging 为1000</span>
+<span class="attr_selector">[_label1 setContentHuggingPriority:UILayoutPriorityRequired
+                           forAxis:UILayoutConstraintAxisHorizontal]</span>;
+
+<span class="comment">//设置label1的content compression 为1000</span>
+<span class="attr_selector">[_label1 setContentCompressionResistancePriority:UILayoutPriorityRequired
+                                         forAxis:UILayoutConstraintAxisHorizontal]</span>;
+
+<span class="comment">//设置右边的label2的content hugging 为1000</span>
+<span class="attr_selector">[_label2 setContentHuggingPriority:UILayoutPriorityRequired
+                           forAxis:UILayoutConstraintAxisHorizontal]</span>;
+
+<span class="comment">//设置右边的label2的content compression 为250</span>
+<span class="attr_selector">[_label2 setContentCompressionResistancePriority:UILayoutPriorityDefaultLow
+                                         forAxis:UILayoutConstraintAxisHorizontal]</span>;
+</code></pre><h3 id="小节">小节</h3><p>灵活运用“Content Compression Resistance”和“Content Hugging”属性。</p>
+<h2 id="Case_2:_四个ImageView整体居中，可以任意显示、隐藏">Case 2: 四个ImageView整体居中，可以任意显示、隐藏</h2><p>先看看示例的截图：<br><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_3.png" alt="image"></p>
+<p>下面的四个Switch控件分别控制上面对应位置的图片是否显示。</p>
+<h3 id="分析-1">分析</h3><ol>
+<li>首先就是整体居中，为了实现这个，最简单的办法就是将四个图片“装进”一个<strong>容器View</strong>里面，然后让这个容器View在整个页面中居中即可。这样就不用控制每个图片的居中效果了。</li>
+<li>然后就是显示与隐藏。在这里我直接控制图片ImageView的宽度，宽度为0的时候不就“隐藏”了吗。</li>
+</ol>
+<h3 id="约束示例图-1">约束示例图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_4.png" alt="image"></p>
+<p><strong>解释</strong></p>
+<p>之所以这么设置，主要目的有以下几点：</p>
+<ol>
+<li>尽量减少无效的约束，保证约束不多也不少。</li>
+<li>内部的每个imageView约束其实都只有四个：left、centerY、width和height，这样有个好处，就是可以写个函数，专门为View一次性添加这几个约束，大大减少代码量。</li>
+<li>最右边的imageView还要单独设置跟容器View的右边约束，是为了不用设置容器View的width，保证容器View是刚好包含内部的View的，这样整体才是居中的。</li>
+</ol>
+<h3 id="关键代码-1">关键代码</h3><p>先看看设置每个imageView约束的函数：</p>
+<pre><code>/<span class="keyword">*</span><span class="keyword">*</span>
+<span class="keyword">*</span>  设置view的宽高、左边约束，垂直中心约束
+<span class="keyword">*</span>
+<span class="keyword">*</span>  <span class="comment">@param view    要设置的view</span>
+<span class="keyword">*</span>  <span class="comment">@param size    CGSize</span>
+<span class="keyword">*</span>  <span class="comment">@param left    左边对齐的约束</span>
+<span class="keyword">*</span>  <span class="comment">@param centerY 垂直中心对齐的约束</span>
+<span class="keyword">*</span>
+<span class="keyword">*</span>  <span class="comment">@return 返回宽约束，用于显示、隐藏单个view</span>
+<span class="keyword">*</span>/
+- (MASConstraint <span class="keyword">*</span>)setView:(UIView <span class="keyword">*</span>)view size:(CGSize)size left:(MASViewAttribute <span class="keyword">*</span>)left centerY:(MASViewAttribute <span class="keyword">*</span>)centerY {
+
+    __block MASConstraint <span class="keyword">*</span>widthConstraint;
+
+    [view mas_makeConstraints:^(MASConstraintMaker <span class="keyword">*</span>make) {
+        //宽高固定
+        widthConstraint = make.width.equalTo(<span class="comment">@(size.width));</span>
+        make.height.equalTo(<span class="comment">@(size.height));</span>
+        //左边约束
+        make.left.equalTo(left);
+        //垂直中心对齐
+        make.centerY.equalTo(centerY);
+    }];
+
+    return widthConstraint;
+}
+</code></pre><p>接着就是设置容器View的代码：</p>
+<pre><code><span class="comment">//containerView 就是 容器View</span>
+
+[_containerView mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) {
+    <span class="comment">//只设置高度，宽度由子View决定</span>
+    <span class="built_in">make</span>.height.equalTo(@(IMAGE_SIZE));
+    <span class="comment">//水平居中</span>
+    <span class="built_in">make</span>.centerX.equalTo(self.view.mas_centerX);
+    <span class="comment">//距离父View顶部200点</span>
+    <span class="built_in">make</span>.top.equalTo(self.view.mas_top).offset(<span class="number">200</span>);
+}];
+</code></pre><p>最后是内部imageView的约束：</p>
+<pre><code><span class="comment">//分别设置每个imageView的宽高、左边、垂直中心约束，注意约束的对象</span>
+<span class="comment">//每个View的左边约束和左边的View的右边相等=。=，有点绕口...</span>
+
+UIImageView *imageView1 = _imageViews[<span class="number">0</span>];
+MASConstraint *width = [self <span class="string">setView:</span>imageView1 <span class="string">size:</span>imageViewSize <span class="string">left:</span>_containerView.mas_left <span class="string">centerY:</span>_containerView.mas_centerY];
+[_widthConstraints <span class="string">addObject:</span>width];
+
+UIImageView *imageView2 = _imageViews[<span class="number">1</span>];
+width = [self <span class="string">setView:</span>imageView2 <span class="string">size:</span>imageViewSize <span class="string">left:</span>imageView1.mas_right <span class="string">centerY:</span>_containerView.mas_centerY];
+[_widthConstraints <span class="string">addObject:</span>width];
+
+UIImageView *imageView3 = _imageViews[<span class="number">2</span>];
+width = [self <span class="string">setView:</span>imageView3 <span class="string">size:</span>imageViewSize <span class="string">left:</span>imageView2.mas_right <span class="string">centerY:</span>_containerView.mas_centerY];
+[_widthConstraints <span class="string">addObject:</span>width];
+
+UIImageView *imageView4 = _imageViews[<span class="number">3</span>];
+width = [self <span class="string">setView:</span>imageView4 <span class="string">size:</span>imageViewSize <span class="string">left:</span>imageView3.mas_right <span class="string">centerY:</span>_containerView.mas_centerY];
+[_widthConstraints <span class="string">addObject:</span>width];
+
+<span class="comment">//最后设置最右边的imageView的右边与父view的最有对齐</span>
+[imageView4 <span class="string">mas_makeConstraints:</span>^(MASConstraintMaker *make) {
+    make.right.equalTo(_containerView.mas_right);
+}];
+</code></pre><h3 id="小节-1">小节</h3><p>有时候用个“容器View”管理内部的View，往往会起到事半功倍的效果。而且在组织约束的时候，尽量的将约束统一起来，这样可以用一个函数去设置，减少代码量。</p>
+<h2 id="Case_3:_子View的宽度始终是父级View的一半（或者任意百分比）">Case 3: 子View的宽度始终是父级View的一半（或者任意百分比）</h2><p>其实这个很简单=。= 再看看这个公式：</p>
+<figure class="highlight vhdl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">viewA-<span class="keyword">attribute</span> = viewB-<span class="keyword">attribute</span> * multiplier + <span class="keyword">constant</span></span><br></pre></td></tr></table></figure>
+<p>这个是Autolayout里面一个约束的不同属性的基本组合关系，替换成宽度的话，就是下面这样：</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">子<span class="keyword">View</span>的宽度 = 父级<span class="keyword">View</span>宽度 * 系数 + 常数；</span><br></pre></td></tr></table></figure>
+<p>在Masonry里面，其实有个函数“<strong>multipliedBy</strong>”，就是用来设置multipler属性的（跟原本的NSLayoutConstraint的对应）。</p>
+<h3 id="关键代码-2">关键代码</h3><p>如下：</p>
+<pre><code><span class="collection">[subView mas_makeConstraints:^<span class="list">(<span class="keyword">MASConstraintMaker</span> *make)</span> <span class="collection">{
+    //上下左贴边
+    make.left.equalTo<span class="list">(<span class="keyword">_containerView.mas_left</span>)</span><span class="comment">;</span>
+    make.top.equalTo<span class="list">(<span class="keyword">_containerView.mas_top</span>)</span><span class="comment">;</span>
+    make.bottom.equalTo<span class="list">(<span class="keyword">_containerView.mas_bottom</span>)</span><span class="comment">;</span>
+
+    //宽度为父view的宽度的一半
+    make.width.equalTo<span class="list">(<span class="keyword">_containerView.mas_width</span>)</span>.multipliedBy<span class="list">(<span class="number">0.5</span>)</span><span class="comment">;</span>
+}</span>]</span><span class="comment">;</span>
+</code></pre><p>接着，只要控制父级View的宽度，子View的宽度就会随着变化了。</p>
+<h3 id="小节-2">小节</h3><p>multipliedBy在Masonry的Github主页里面没有=。=<br>所以要养成读头文件的习惯~</p>
+<h2 id="总结">总结</h2><p>有关Autolayout的东西还有好多没有写，什么动画啊、动态修改约束之类的，本文也算是个引子吧，任重而道远~  </p>
+<p>能看到这的朋友，也算是很有耐心了，哈哈~~</p>
+<h2 id="参考">参考</h2><ul>
+<li><a href="https://github.com/SnapKit/Masonry" target="_blank" rel="external">SnapKit/Masonry</a></li>
+<li><a href="http://adad184.com/2014/09/28/use-masonry-to-quick-solve-autolayout/" target="_blank" rel="external">Masonry介绍与使用实践(快速上手Autolayout)</a></li>
+<li><a href="http://www.vienta.me/2014/12/07/AutoLayout-忘掉Frame-拥抱Constraint（I）/" target="_blank" rel="external">AutoLayout:忘掉Frame,拥抱Constraint</a></li>
+<li><a href="https://www.zybuluo.com/MicroCai/note/73867#autolayout-基础" target="_blank" rel="external">Autolayout 基础</a></li>
+<li><a href="http://codingobjc.com/blog/2015/01/28/autolayoutzhong-de-content-compression-resistancehe-content-huggingdao-di-shi-shi-yao-yi-si/" target="_blank" rel="external">对Auto Layout中的Content Compression Resistance和Content Hugging的总结</a></li>
+<li><a href="https://developer.apple.com/library/ios/documentation/UserExperience/Conceptual/AutolayoutPG/Introduction/Introduction.html" target="_blank" rel="external">Auto Layout Guide</a></li>
+</ul>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h2 id="前言">前言</h2><p>好久没有写Blog了，这段时间有点忙啊=。=<br>本文举了3个比较有“特点”的Autolayout例子，源于微博上好友的提问，感觉比较有意思，也比较有代表性，就写了出来，分享给大家~<br>至于为什么用Masonry，那是因为它好用啊！（被问到过有关Masonry的问题，就索性用它来实现吧=。=）。</p>
+<h3 id="效果图">效果图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_1.gif" alt="image"></p>
+<h3 id="Github地址">Github地址</h3><p><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>]]>
+    
+    </summary>
+    
+      <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
+    
+      <category term="原创" scheme="http://tutuge.me/tags/%E5%8E%9F%E5%88%9B/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[UITextView编辑时插入自定义表情-续-自定义表情图片的大小]]></title>
@@ -2128,111 +2322,6 @@ NSString <span class="keyword">*</span>str2 = str1;
       <category term="笔记" scheme="http://tutuge.me/tags/%E7%AC%94%E8%AE%B0/"/>
     
       <category term="翻译" scheme="http://tutuge.me/tags/%E7%BF%BB%E8%AF%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[iOS项目的目录结构-原创]]></title>
-    <link href="http://tutuge.me/2015/02/01/iOS%E9%A1%B9%E7%9B%AE%E7%9A%84%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84-%E5%8E%9F%E5%88%9B/"/>
-    <id>http://tutuge.me/2015/02/01/iOS项目的目录结构-原创/</id>
-    <published>2015-01-31T18:27:21.000Z</published>
-    <updated>2015-04-06T03:14:44.000Z</updated>
-    <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>这段时间一直在做iOS的项目（<a href="https://itunes.apple.com/cn/app/qing-ju-yin-le-quan-guo-zui/id913235479?mt=8" target="_blank" rel="external">青桔音乐App</a>），随着代码量的上升，逐渐意识到项目的整体目录结构划分是多么重要，清晰的目录结构，能够更好的应对新的需求，更容易重构。虽然一直都是一个人在做=。=，但是还是深深地体会到目录结构的重要性。</p>
-<a id="more"></a>
-<h2 id="例子">例子</h2><p>说再多都不如来个例子实在，如下：(VC指的是viewController)</p>
-<pre><code><span class="string">|---General</span>
-    <span class="string">|---AppDelegate</span>
-    <span class="string">|---Application</span>
-    <span class="string">|---Constant</span>
-    <span class="string">|---UI</span>
-        <span class="string">|---View</span>
-        <span class="string">|---VC</span>
-        <span class="string">|---Common</span>
-    ...
-<span class="string">|---Entity</span>
-    <span class="string">|---BaseEntity</span>
-    ...
-<span class="string">|---Http</span>
-    <span class="string">|---Api</span>
-    <span class="string">|---Util</span>
-    <span class="string">|---CodeHandler</span>
-    <span class="string">|---ErrorHandler</span>
-    <span class="string">|---RequestHandler</span>
-    ...
-<span class="string">|---DB</span>
-    <span class="string">|---DBHelper</span>
-    <span class="string">|---DBService</span>
-    ...
-<span class="string">|---Util</span>
-    <span class="string">|---StringUtil</span>
-    <span class="string">|---NumberUtil</span>
-    <span class="string">|---TimeUtil</span>
-    ...
-<span class="string">|---Service</span>
-    <span class="string">|---AccountService</span>
-    <span class="string">|---ShareService</span>
-    ...
-<span class="string">|---Lib</span>
-    <span class="string">|---Umeng</span>
-    <span class="string">|---QQSDK</span>
-    <span class="string">|---SVProgressHUD</span>
-    ...
-<span class="string">|---Module</span>
-    <span class="string">|---Login</span>
-        <span class="string">|---View</span>
-        <span class="string">|---VC</span>
-        ...
-    <span class="string">|---Comment</span>
-    <span class="string">|---Feeds</span>
-    ...
-</code></pre><p>乍一看好多，别被吓到=。=，容我细细讲解。</p>
-<h2 id="详细讲解">详细讲解</h2><h3 id="General">General</h3><p>General好理解，放的就是如AppDelegate之类的、项目中最普通的、最常用的组件。</p>
-<p><strong>AppDelegate</strong>:<br>App的Delegate类实现，这个必须有，就不用说了吧。  </p>
-<p><strong>Application</strong>:<br>如果自定义实现了Application类，就放在这里。  </p>
-<p><strong>Constant</strong>:<br>顾名思义，常量，项目用到的所有公共常量，如enum枚举类型的、Notification的Tag，常用的颜色、字符串等等等，都可以按照自己的需求划分不同的Group，放到Constant里面。  </p>
-<p><strong>UI</strong>:<br>项目中自定义的UIView、UIViewController子类，和自定义的对UI的扩展，如Category之类的代码，就对应放在UI下的View、VC和Common中。</p>
-<p>如还有其他的通用组件，也不妨放到这里，做统一的管理。</p>
-<hr>
-<h3 id="Entity">Entity</h3><p>Entity，也有人喜欢叫Model（关于Entity和Model的区别，推荐看看<a href="http://blogsh.de/2011/09/08/models-vs-entities/" target="_blank" rel="external">这篇文章</a>，个人觉得研究研究Entity和Model概念的区别还是很有好处的），就是程序中的“实体”，如一个用户、一条评论、一首歌等等，简单来说就是一个独立“个体”的集合、打包，具体的自己查查吧，网上一大堆的，感觉跟JavaBean的概念比较像。</p>
-<p>通常来说，每个Entity类都比较简单，只包含若干个属性。但是有时候可能要做统一的处理，如，在从服务器取回的JSON数据解包成具体的Entity类，并且执行一系列初始化操作等等，所以可能要对所有的Entity类做统一处理。所以说，可以定制相应的BaseEntity基类，利用模板方法等办法，定制统一的初始化流程（好像扯远了=。=，这个后面会详细写篇东西分享给大家），BaseEntity就是放这些基类的东西的。</p>
-<hr>
-<h3 id="Http">Http</h3><p>这个Group里面放跟网络请求相关的东西，详细如下：</p>
-<p><strong>Api</strong>:<br>互联网应用少不了跟服务器打交道的各种网络接口，所以我在项目中把所有的API对应的相对URL地址、参数注释要求等等都放在了这里，好统一管理。</p>
-<p><strong>Util</strong>:<br>定义最基本的网络请求，如GET、POST、PUT等请求的基本封装，获取图片的基本封装。<br>一般来说就是定制统一的基本请求接口，对上层提供一致、稳定的服务，真正的网络请求，可以自己用iOS原生的Api写，也可以用AFNetworking等第三方库做封装，图片也可以灵活的用AFNetworking、SDWebImage这些优秀的库实现。还有就是，可以方便的统一对请求做处理，如错误处理、Http的Code、状态处理等等。还可以统一的增加请求参数，如统一为每个请求都增加用户的ID、token什么的。</p>
-<p><strong>CodeHandler</strong><br>大部分的API设计都会有相应的状态码、Code，为了方便扩展，可以把这些处理Code的类单独放在这里。</p>
-<p><strong>ErrorHandler</strong><br>这个就少不了了，对Http的错误进行单独处理，加Log什么的。</p>
-<p><strong>RequestHandler</strong><br>这个Group里面放的是真正实现接口的类，如什么UserHttpHandler、CommentHttpHandler之类的，就是具体实现了接口调用、处理返回数据、回调的类。</p>
-<p>Http里面的各个Group的类其实都是相互关联的，设计的时候可以定制统一的接口（Protocol），然后创建类实现（conform）这些接口，也就是面向接口的编程，以最大限度的减少接口层的各个职能之间的耦合，方便扩展。</p>
-<hr>
-<h3 id="DB">DB</h3><p>介于iOS的SQLite不是那么好用，所以非常有必要为操作数据库的类建立单独的地盘=。=  </p>
-<p><strong>DBHelper</strong>:<br>放基础的操作数据库的类，如简单的查找、插入、更新、事务更新等等操作，为负载的数据库业务逻辑封装底层接口。比如对流行的FMDB进行封装等等。</p>
-<p><strong>DBService</strong>:<br>这里放具体的数据库业务实现类，至于为什么叫“Service”，因为我也想不出什么好的名字了=。= 按照自己的业务逻辑组织即可。</p>
-<hr>
-<h3 id="Util">Util</h3><p>放常用的工具类的地方。如字符串操作的类StringUtil、时间计算格式化类TimeUtil等，按具体需求而定，这个就不用多说了吧。</p>
-<hr>
-<h3 id="Service">Service</h3><p>项目的需求多了，业务逻辑的代码就会越来越多，总不能都放在view controller里面吧。一些多处用到的，或者非常独立的业务代码，完全可以抽离出来，实现为单独的、跟界面无关的业务类。因为做的事很杂，所以干脆就叫Service了。<br><strong>AccountService</strong>、<strong>ShareService</strong>就是这种类。而且大部分的Service都应该是单例类，如<strong>AccountService</strong>类可能维护着程序运行期间的账户信息，<strong>ShareService</strong>对程序的分享功能做了统一处理等等，具体怎么用就随各位了。</p>
-<hr>
-<h3 id="Lib">Lib</h3><p>Lib，放各种第三方库，因项目需要修改过的第三方组件等，像什么友盟、QQSDK之类的就可以放这。当然，一些不会做改动的库最好还是用CocoaoPod做统一管理。</p>
-<hr>
-<h3 id="Module">Module</h3><p>终于讲到了最重要的地方。<br>iOS工程中最多的文件往往就是各种View、ViewController类，以前总是看到有人只创建两个Group，一个叫Views，另一个叫ViewControllers，然后所有的Views、ViewController都往里面塞，然后随着需求的增加，这两个Group也臃肿不堪。。。  </p>
-<p><strong>办法总是有的。就是为工程划分模块-Module</strong><br>如何划分Module？我认为，可以按照以下两点建立：  </p>
-<ol>
-<li>以页面跳转分支划分。  </li>
-<li>以功能划分。  </li>
-</ol>
-<p><strong>以页面跳转分支划分</strong><br>就是按照应用的页面设计与业务逻辑，从最顶级开始，一级一级页面往下跳转，找出其中的独立分支，归为一个Module模块。<br>举例来说，应用主界面有4个Tab页，就先分出四个Module，然后一级一级往下跳转，遇到分支就建立新的Module，如此递归的建立，就能大致划分出各个Module。当然，这么做是最粗糙的，还要根据情况，将不同的分支Module合并成一个Module，简化代码的组成。我在这只是提供个划分Module的方法，具体怎么设计就看各位读者了=。=</p>
-<p><strong>以功能划分</strong><br>这个好理解，无非就是根据前期项目的功能模块划分工程的代码Module组成。如什么用户设置Module、评论Module、登录Module等等。</p>
-<p>总的来数，就是要用Module将工程的代码分类管理，每个Module具有大致相同的结构，如都可能有本Module用到的View、ViewController，自定义的类Class等等，就是说，按照职能对代码划分，避免将所有的类都堆在一起，也好应对新的需求。</p>
-<h2 id="总结">总结</h2><p>啰啰嗦嗦说了一大堆，想必各位都看烦了吧=。=刚开始写博客，写到一个地方，又会引出另一块，写着写着容易写偏了。<br>写之前我也大致搜了一下，发现网上相关的资料好少，但是实际的经验告诉我，项目工程的目录结构非常重要，无论是对开发还是对后期的维护，所以想着应该写篇东西，分享我自己的经验给大家，有啥问题，多提意见啊~~~</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<h2 id="前言">前言</h2><p>这段时间一直在做iOS的项目（<a href="https://itunes.apple.com/cn/app/qing-ju-yin-le-quan-guo-zui/id913235479?mt=8">青桔音乐App</a>），随着代码量的上升，逐渐意识到项目的整体目录结构划分是多么重要，清晰的目录结构，能够更好的应对新的需求，更容易重构。虽然一直都是一个人在做=。=，但是还是深深地体会到目录结构的重要性。</p>]]>
-    
-    </summary>
-    
-      <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
-    
-      <category term="原创" scheme="http://tutuge.me/tags/%E5%8E%9F%E5%88%9B/"/>
     
   </entry>
   
