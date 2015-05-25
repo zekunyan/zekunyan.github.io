@@ -4,7 +4,7 @@
   <subtitle><![CDATA[iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://tutuge.me/"/>
-  <updated>2015-05-23T17:13:14.000Z</updated>
+  <updated>2015-05-25T07:42:14.000Z</updated>
   <id>http://tutuge.me/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://tutuge.me/2015/05/23/autolayout-example-with-masonry/"/>
     <id>http://tutuge.me/2015/05/23/autolayout-example-with-masonry/</id>
     <published>2015-05-23T11:59:22.000Z</published>
-    <updated>2015-05-23T17:13:14.000Z</updated>
+    <updated>2015-05-25T07:42:14.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>好久没有写Blog了，这段时间有点忙啊=。=<br>本文举了3个比较有“特点”的Autolayout例子，源于微博上好友的提问，感觉比较有意思，也比较有代表性，就写了出来，分享给大家~<br>至于为什么用Masonry，那是因为它好用啊！（被问到过有关Masonry的问题，就索性用它来实现吧=。=）。</p>
 <h3 id="效果图">效果图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_1.gif" alt="image"></p>
 <h3 id="Github地址">Github地址</h3><p><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="external">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
@@ -62,13 +62,15 @@
 
 <span class="comment">// label2: 位于右上角</span>
 [_label2 mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) {
-    <span class="comment">//左边贴着label1</span>
+    <span class="comment">//左边贴着label1，间隔2</span>
     <span class="built_in">make</span>.left.equalTo(_label1.mas_right).with.offset(<span class="number">2</span>);
 
-    <span class="comment">//上边贴着父view</span>
+    <span class="comment">//上边贴着父view，间隔5</span>
     <span class="built_in">make</span>.top.equalTo(_contentView1.mas_top).with.offset(<span class="number">5</span>);
 
-    <span class="comment">//右边的间距保持大于等于padding.right，注意是lessThanOrEqual</span>
+    <span class="comment">//右边的间隔保持大于等于2，注意是lessThanOrEqual</span>
+    <span class="comment">//这里的“lessThanOrEqualTo”放在从左往右的X轴上考虑会更好理解。</span>
+    <span class="comment">//即：label2的右边界的X坐标值“小于等于”containView的右边界的X坐标值。</span>
     <span class="built_in">make</span>.right.lessThanOrEqualTo(_contentView1.mas_right).with.offset(-<span class="number">2</span>);
 
     <span class="comment">//只设置高度40</span>
