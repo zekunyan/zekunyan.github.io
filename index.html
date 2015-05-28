@@ -106,7 +106,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/05/23/autolayout-example-with-masonry/" data-id="cia6enp50001fpf6uitn46s6u" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/05/23/autolayout-example-with-masonry/" data-id="cia7ypjr1001fi46u4chfc7gb" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -157,7 +157,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/04/21/resizable-nstextattachment/" data-id="cia6enp4r0013pf6ufhsgna2m" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/04/21/resizable-nstextattachment/" data-id="cia7ypjqp0013i46uhjftwnko" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -214,7 +214,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/04/19/thrift-example-cpp-and-php/" data-id="cia6enp4k000upf6u0pyexvgo" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/04/19/thrift-example-cpp-and-php/" data-id="cia7ypjqh000ui46u2aen0eaa" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -270,7 +270,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/04/03/something-about-gcd/" data-id="cia6enp4n0010pf6uzu8ipr20" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/04/03/something-about-gcd/" data-id="cia7ypjqk0010i46uswj3votw" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -309,7 +309,15 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="前言">前言</h2><p>看过GCD（Grand Central Dispatch）的Apple<a href="https://developer.apple.com/library/prerelease/mac/documentation/Performance/Reference/GCD_libdispatch_Ref/index.html">官方文档</a>的朋友一定见过“<strong>dispatch_set_context</strong>”和“<strong>dispatch_get_context</strong>”这两个函数，那么这两个函数该怎么用呢？  </p>
+        <h2 id="2015-5-28更新">2015-5-28更新</h2><p>下面评论的好友“@Jim”给了种新的思路，就是在清除context的函数里面，用“<strong>_bridge_transfer</strong>”转换context，把context的内存管理权限重新交给ARC，这样，就不用显式调用“<strong>CFRelease</strong>”了。如下：</p>
+<pre><code><span class="literal">void</span> cleanStaff(<span class="literal">void</span> <span class="subst">*</span>context) {
+    <span class="comment">//这里用_bridge_transfer转换，将内存管理权限交还给ARC</span>
+    <span class="built_in">Data</span> <span class="subst">*</span><span class="built_in">data</span> <span class="subst">=</span> (_bridge_transfer <span class="built_in">Data</span> <span class="subst">*</span>)(context);
+    NSLog(@<span class="string">"In clean, context number: %d"</span>, <span class="built_in">data</span><span class="built_in">.</span>number);
+
+    <span class="comment">//不用显式释放context的内存！</span>
+}
+</code></pre><h2 id="前言">前言</h2><p>看过GCD（Grand Central Dispatch）的Apple<a href="https://developer.apple.com/library/prerelease/mac/documentation/Performance/Reference/GCD_libdispatch_Ref/index.html">官方文档</a>的朋友一定见过“<strong>dispatch_set_context</strong>”和“<strong>dispatch_get_context</strong>”这两个函数，那么这两个函数该怎么用呢？  </p>
 <p>我们都知道，GCD的接口参数都是“C语言类型“的，那么，我们如何将NSObject类型（Foundation框架）的数据，传入GCD的接口呢？（即：Core Foundation和Foundation对象的转换）</p>
 <h2 id="本文关键字">本文关键字</h2><ul>
 <li>GCD：dispatch_set_context，dispatch_get_context</li>
@@ -325,7 +333,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/29/bind-data-to-gcd-queue/" data-id="cia6enp4y001cpf6uc5gg4eqt" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/29/bind-data-to-gcd-queue/" data-id="cia7ypjqy001ci46u2hjdex8b" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -378,7 +386,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/21/effective-objective-c-5-enum/" data-id="cia6enp4w0019pf6upyzhuefu" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/21/effective-objective-c-5-enum/" data-id="cia7ypjqv0019i46urqfo9ptt" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -452,7 +460,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/17/what-is-autoreleasepool/" data-id="cia6enp4i000rpf6uz2az0w6i" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/17/what-is-autoreleasepool/" data-id="cia7ypjqe000ri46uoyx1cyf3" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -508,7 +516,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/15/有关宏定义的经验与技巧-简化代码-增强Log/" data-id="cia6enp420007pf6u3ufls5zt" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/15/有关宏定义的经验与技巧-简化代码-增强Log/" data-id="cia7ypjpx0007i46uax8ongdi" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -559,7 +567,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/" data-id="cia6enp5d001wpf6ufhm03oo2" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/" data-id="cia7ypjre001wi46u1l85s0ua" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -616,7 +624,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/" data-id="cia6enp53001ipf6uxw4d15iu" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/" data-id="cia7ypjr4001ii46ux0fmdto7" class="article-share-link" data-share="baidu">分享到</a>
       
 
       

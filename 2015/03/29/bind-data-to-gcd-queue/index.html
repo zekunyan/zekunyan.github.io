@@ -6,18 +6,21 @@
   
   <title>为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权 | 土土哥的技术Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="前言看过GCD（Grand Central Dispatch）的Apple官方文档的朋友一定见过“dispatch_set_context”和“dispatch_get_context”这两个函数，那么这两个函数该怎么用呢？  
-我们都知道，GCD的接口参数都是“C语言类型“的，那么，我们如何将NSObject类型（Foundation框架）的数据，传入GCD的接口呢？（即：Core Founda">
+  <meta name="description" content="2015-5-28更新下面评论的好友“@Jim”给了种新的思路，就是在清除context的函数里面，用“_bridge_transfer”转换context，把context的内存管理权限重新交给ARC，这样，就不用显式调用“CFRelease”了。如下：
+void cleanStaff(void *context) {
+    //这里用_bridge_transfer转换，将内存管理权限交还给">
 <meta property="og:type" content="article">
 <meta property="og:title" content="为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权">
 <meta property="og:url" content="http://tutuge.me/2015/03/29/bind-data-to-gcd-queue/index.html">
 <meta property="og:site_name" content="土土哥的技术Blog">
-<meta property="og:description" content="前言看过GCD（Grand Central Dispatch）的Apple官方文档的朋友一定见过“dispatch_set_context”和“dispatch_get_context”这两个函数，那么这两个函数该怎么用呢？  
-我们都知道，GCD的接口参数都是“C语言类型“的，那么，我们如何将NSObject类型（Foundation框架）的数据，传入GCD的接口呢？（即：Core Founda">
+<meta property="og:description" content="2015-5-28更新下面评论的好友“@Jim”给了种新的思路，就是在清除context的函数里面，用“_bridge_transfer”转换context，把context的内存管理权限重新交给ARC，这样，就不用显式调用“CFRelease”了。如下：
+void cleanStaff(void *context) {
+    //这里用_bridge_transfer转换，将内存管理权限交还给">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权">
-<meta name="twitter:description" content="前言看过GCD（Grand Central Dispatch）的Apple官方文档的朋友一定见过“dispatch_set_context”和“dispatch_get_context”这两个函数，那么这两个函数该怎么用呢？  
-我们都知道，GCD的接口参数都是“C语言类型“的，那么，我们如何将NSObject类型（Foundation框架）的数据，传入GCD的接口呢？（即：Core Founda">
+<meta name="twitter:description" content="2015-5-28更新下面评论的好友“@Jim”给了种新的思路，就是在清除context的函数里面，用“_bridge_transfer”转换context，把context的内存管理权限重新交给ARC，这样，就不用显式调用“CFRelease”了。如下：
+void cleanStaff(void *context) {
+    //这里用_bridge_transfer转换，将内存管理权限交还给">
   
     <link rel="alternative" href="/atom.xml" title="土土哥的技术Blog" type="application/atom+xml">
   
@@ -95,7 +98,15 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="前言">前言</h2><p>看过GCD（Grand Central Dispatch）的Apple<a href="https://developer.apple.com/library/prerelease/mac/documentation/Performance/Reference/GCD_libdispatch_Ref/index.html" target="_blank" rel="external">官方文档</a>的朋友一定见过“<strong>dispatch_set_context</strong>”和“<strong>dispatch_get_context</strong>”这两个函数，那么这两个函数该怎么用呢？  </p>
+        <h2 id="2015-5-28更新">2015-5-28更新</h2><p>下面评论的好友“@Jim”给了种新的思路，就是在清除context的函数里面，用“<strong>_bridge_transfer</strong>”转换context，把context的内存管理权限重新交给ARC，这样，就不用显式调用“<strong>CFRelease</strong>”了。如下：</p>
+<pre><code><span class="literal">void</span> cleanStaff(<span class="literal">void</span> <span class="subst">*</span>context) {
+    <span class="comment">//这里用_bridge_transfer转换，将内存管理权限交还给ARC</span>
+    <span class="built_in">Data</span> <span class="subst">*</span><span class="built_in">data</span> <span class="subst">=</span> (_bridge_transfer <span class="built_in">Data</span> <span class="subst">*</span>)(context);
+    NSLog(@<span class="string">"In clean, context number: %d"</span>, <span class="built_in">data</span><span class="built_in">.</span>number);
+
+    <span class="comment">//不用显式释放context的内存！</span>
+}
+</code></pre><h2 id="前言">前言</h2><p>看过GCD（Grand Central Dispatch）的Apple<a href="https://developer.apple.com/library/prerelease/mac/documentation/Performance/Reference/GCD_libdispatch_Ref/index.html" target="_blank" rel="external">官方文档</a>的朋友一定见过“<strong>dispatch_set_context</strong>”和“<strong>dispatch_get_context</strong>”这两个函数，那么这两个函数该怎么用呢？  </p>
 <p>我们都知道，GCD的接口参数都是“C语言类型“的，那么，我们如何将NSObject类型（Foundation框架）的数据，传入GCD的接口呢？（即：Core Foundation和Foundation对象的转换）</p>
 <h2 id="本文关键字">本文关键字</h2><ul>
 <li>GCD：dispatch_set_context，dispatch_get_context</li>
@@ -233,7 +244,7 @@ typedef struct _Data {
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://tutuge.me/2015/03/29/bind-data-to-gcd-queue/" data-id="cia6enp4y001cpf6uc5gg4eqt" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://tutuge.me/2015/03/29/bind-data-to-gcd-queue/" data-id="cia7ypjqy001ci46u2hjdex8b" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
