@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://tutuge.me/2015/07/08/fill-nil-property-of-object/</loc>
+    <lastmod>2015-07-11T10:23:19.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://tutuge.me/2015/03/29/bind-data-to-gcd-queue/</loc>
     <lastmod>2015-05-28T09:11:59.000Z</lastmod>
   </url>
