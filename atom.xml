@@ -4,7 +4,7 @@
   <subtitle><![CDATA[iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://tutuge.me/"/>
-  <updated>2015-07-11T10:23:19.000Z</updated>
+  <updated>2015-07-25T11:31:34.000Z</updated>
   <id>http://tutuge.me/</id>
   
   <author>
@@ -13,6 +13,72 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[解决iOS项目的版本兼容问题-结合宏、Category和Runtime]]></title>
+    <link href="http://tutuge.me/2015/07/25/compatibility-with-macro-category-and-runtime/"/>
+    <id>http://tutuge.me/2015/07/25/compatibility-with-macro-category-and-runtime/</id>
+    <published>2015-07-24T16:39:03.000Z</published>
+    <updated>2015-07-25T11:31:34.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>最近，在做项目时，因为某种原因，突然要“适配”iOS6（也是醉了。。。），保证极少数的iOS6用户可以“用上”新的版本。哪怕界面上有瑕疵，只要功能正常就行。于是就只好花几天时间对iOS6进行紧急适配（心中一万头驼羊奔跑而过。。。）  </p>
+<p>本文总结了一些常规的，和“非常规”的iOS项目向老版本兼容的办法，结合了<strong>宏定义</strong>、<strong>Category</strong>和<strong>Runtime</strong>，大家看着消遣一下就好哈~</p>
+<a id="more"></a>
+<h2 id="重点概念">重点概念</h2><p>首先强调一些概念。</p>
+<h3 id="Deployment_Target_和_Base_SDK">Deployment Target 和 Base SDK</h3><p><strong>Deployment Target</strong><br>指的是你的APP能支持的最低系统版本，如要支持iOS6以上，就设置成iOS6即可。</p>
+<p><strong>Base SDK</strong><br>指的是用来编译APP的SDK（Software Development Kit）的版本，一般保持当前XCode支持的最新的就好，如iOS8.4。SDK其实就是包含了所有的你要用到的头文件、链接库的集合，你的APP里面用的各种类、函数，能编译、链接成最后的安装包，就要靠它，苹果每次升级系统，新推出的各种API，也是在SDK里面。所以一般Base SDK肯定是大于等于Deployment Target的版本。</p>
+<p><strong>区分</strong><br>既然Base SDK的版本大于等于Deployment Target的版本，那么就要小心了，因为<strong>“只要用到的类、方法，在当前的Base SDK版本里面存在，就可以<em>编译通过</em>！但是一旦运行APP的手机的系统版本低于这些类、方法的最低版本要求，APP就会Crash！”</strong>  </p>
+<p>所以并不是说，能编译通过的，就一定能<em>运行成功</em>！还要在<em>运行时检查</em>！简单来说，就是如下图：</p>
+<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_compatibility-with-macro-category-and-runtime_1.png" alt="image"></p>
+<h3 id="宏只在编译时生效！">宏只在编译时生效！</h3><p>宏定义只是纯粹的文本替换，只在编译时起作用。如下代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">if</span> __IPHONE_OS_VERSION_MIN_REQUIRED &gt;= 70000</span></span><br><span class="line">    NSLog(@<span class="string">"Tutuge"</span>);</span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<p>被宏定义包起来的代码是否会执行，在编译时就决定好了，无论你是用什么系统运行，宏定义再也没有什么卵用=。=</p>
+<h2 id="编译时检查SDK版本，运行时检查系统版本">编译时检查SDK版本，运行时检查系统版本</h2><p>这个是最基本的适配手段。  </p>
+<p>用到的宏如下：</p>
+<ol>
+<li><strong>__IPHONE_OS_VERSION_MAX_ALLOWED</strong>: 值等于Base SDK，即用于检查SDK版本的。</li>
+<li><strong>__IPHONE_OS_VERSION_MIN_REQUIRED</strong>: 值等于Deployment Target，检查支持的最小系统版本。</li>
+</ol>
+<p>运行时检查系统版本：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ([UIDevice currentDevice].systemVersion.floatValue &gt; <span class="number">8.0f</span>) &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>假如我们现在想用iOS8新的<strong>UIAlertController</strong>来显示提示框，应该如下判断：<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 编译时判断：检查SDK版本</span></span><br><span class="line"><span class="preprocessor">#if __IPHONE_OS_VERSION_MAX_ALLOWED &gt; 80000</span></span><br><span class="line">    <span class="comment">// 运行时判断：检查当前系统版本</span></span><br><span class="line">    <span class="keyword">if</span> ([<span class="built_in">UIDevice</span> currentDevice]<span class="variable">.systemVersion</span><span class="variable">.floatValue</span> &gt; <span class="number">8.0</span>f) &#123;</span><br><span class="line">        <span class="built_in">UIAlertController</span> *alertController =</span><br><span class="line">        [<span class="built_in">UIAlertController</span> alertControllerWithTitle:<span class="string">@"Tutuge"</span></span><br><span class="line">                                            message:<span class="string">@"Compatibility"</span></span><br><span class="line">                                     preferredStyle:<span class="built_in">UIAlertControllerStyleAlert</span>];</span><br><span class="line">        [alertController addAction:[<span class="built_in">UIAlertAction</span> actionWithTitle:<span class="string">@"Cancel"</span></span><br><span class="line">                                                            style:<span class="built_in">UIAlertActionStyleCancel</span></span><br><span class="line">                                                          handler:^(<span class="built_in">UIAlertAction</span> *action) &#123;</span><br><span class="line">                                                              <span class="built_in">NSLog</span>(<span class="string">@"Cancel"</span>);</span><br><span class="line">                                                          &#125;]];</span><br><span class="line">        [<span class="keyword">self</span> presentViewController:alertController animated:<span class="literal">YES</span> completion:<span class="literal">nil</span>];</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 用旧的代替</span></span><br><span class="line">        <span class="built_in">UIAlertView</span> *alertView = [[<span class="built_in">UIAlertView</span> alloc] initWithTitle:<span class="string">@"Tutuge"</span></span><br><span class="line">                                                            message:<span class="string">@"Compatibility"</span></span><br><span class="line">                                                           delegate:<span class="literal">nil</span></span><br><span class="line">                                                  cancelButtonTitle:<span class="string">@"Cancel"</span></span><br><span class="line">                                                  otherButtonTitles:<span class="literal">nil</span>];</span><br><span class="line">        [alertView show];</span><br><span class="line">    &#125;</span><br><span class="line"><span class="preprocessor">#else</span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"><span class="preprocessor">#endif</span></span><br></pre></td></tr></table></figure></p>
+<p>总的来说就是编译时、运行时的判断均不能少。</p>
+<h2 id="Weakly_Linked_-_运行时检查类、方法是否可用">Weakly Linked - 运行时检查类、方法是否可用</h2><p>除了用宏、系统版本检测，还可以用<strong>Weakly Linked</strong>特性做运行时的检查。</p>
+<p>对于iOS4.2以上的，有<strong>NS_CLASS_AVAILABLE</strong>标示的类，可以如下判断是否可用：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">if</span> __IPHONE_OS_VERSION_MAX_ALLOWED &gt; 80000</span></span><br><span class="line">    <span class="comment">// Weakly Linked判断</span></span><br><span class="line">    <span class="keyword">if</span> ([UIAlertController <span class="keyword">class</span>]) &#123;</span><br><span class="line">        <span class="comment">// 使用UIAlertController...</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 使用旧的方案...</span></span><br><span class="line">    &#125;</span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<p>也可以如下判断：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Class <span class="class"><span class="keyword">class</span> </span>= NSClassFromString (@<span class="string">"UIAlertController"</span>);</span><br><span class="line"><span class="keyword">if</span> (<span class="class"><span class="keyword">class</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 使用UIAlertController...</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 使用旧的方案...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于方法，如下判断:</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">if</span> ([UITableViewCell <span class="attribute">instancesRespondToSelector</span>:<span class="variable">@selector</span> (<span class="attribute">setSeparatorInset</span>:)]) &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125; <span class="tag">else</span> &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>至于用哪种方法，统一一下即可。</p>
+<h2 id="用Method_Swizzling做兼容">用Method Swizzling做兼容</h2><p>有关Runtime、Method Swizzling的资料很多，各位自行阅读哈~</p>
+<p>有时候，不同版本之间，同一个类、View控件的默认属性可能都会变化，如UILabel的背景色在iOS6上，默认是白色，而iOS6以后是透明的！如果在每个用到UILabel的地方，都手动设置一次背景色，代价太大。这个时候就需要Runtime的“黑魔法”上场。</p>
+<p>就以设置UILabel的默认背景色透明为例，就是在UILabel初始化时，如initWithFrame之前，先设置好透明背景色，简单的示例如下：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建Category</span></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">UILabel</span> (<span class="title">TTGCompatibility</span>)</span></span><br><span class="line"></span><br><span class="line">+ (<span class="keyword">void</span>)load &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 先判断系统版本，尽量减少Runtime的作用范围</span></span><br><span class="line">    <span class="keyword">if</span> ([<span class="built_in">UIDevice</span> currentDevice]<span class="variable">.systemVersion</span><span class="variable">.floatValue</span> &lt; <span class="number">7.0</span>f) &#123;</span><br><span class="line">        <span class="comment">// Method Swizzling</span></span><br><span class="line">        <span class="comment">// initWithFrame</span></span><br><span class="line">        Method oriMethod = class_getInstanceMethod(<span class="keyword">self</span>, <span class="keyword">@selector</span>(initWithFrame:));</span><br><span class="line">        Method newMethod = class_getInstanceMethod(<span class="keyword">self</span>, <span class="keyword">@selector</span>(compatible_initWithFrame:));</span><br><span class="line">        method_exchangeImplementations(oriMethod, newMethod);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// initWithCoder...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// initWithFrame</span></span><br><span class="line">- (<span class="keyword">id</span>)compatible_initWithFrame:(<span class="built_in">CGRect</span>)frame &#123;</span><br><span class="line">    <span class="keyword">id</span> newSelf = [<span class="keyword">self</span> compatible_initWithFrame:frame];</span><br><span class="line">    <span class="comment">// 设置透明背景色</span></span><br><span class="line">    ((<span class="built_in">UILabel</span> *)newSelf)<span class="variable">.backgroundColor</span> = [<span class="built_in">UIColor</span> clearColor];</span><br><span class="line">    <span class="keyword">return</span> newSelf;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// initWithCoder...</span></span><br></pre></td></tr></table></figure>
+<h2 id="运行时添加“Dummy”方法，减少代码改动">运行时添加“Dummy”方法，减少代码改动</h2><p>Dummy，意思是“假的、假动作、假人”，在这里指的是为旧版本不存在的方法提供一个“假的”替代方法，防止因新API找不到而导致的Crash。</p>
+<p>以UITableViewCell的<strong>“setSeparatorInset:”</strong>方法为例，在iOS6中，压根就不存在separatorInset，但是现有的代码里面大量的调用了这个方法，怎么办？难道一个一个的去加上判断条件？代价太大。 </p>
+<p>这个时候就可以用Runtime的手段，在运行时添加一个Dummy方法，去“<strong>代替接收</strong>”setSeparatorInset消息，防止在iOS6上的Crash。</p>
+<p>代码如下：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">UITableViewCell</span> (<span class="title">TTGCompatibility</span>)</span></span><br><span class="line"></span><br><span class="line">+ (<span class="keyword">void</span>)load &#123;</span><br><span class="line"><span class="comment">// 编译时判断SDK</span></span><br><span class="line"><span class="preprocessor">#if __IPHONE_OS_VERSION_MAX_ALLOWED &gt; __IPHONE_7_0</span></span><br><span class="line">    <span class="comment">// 运行时判断系统版本</span></span><br><span class="line">    <span class="keyword">if</span> ([<span class="built_in">UIDevice</span> currentDevice]<span class="variable">.systemVersion</span><span class="variable">.floatValue</span> &lt; <span class="number">7.0</span>f) &#123;</span><br><span class="line">        Method newMethod = class_getInstanceMethod(<span class="keyword">self</span>, <span class="keyword">@selector</span>(compatible_setSeparatorInset:));</span><br><span class="line">        <span class="comment">// 增加Dummy方法</span></span><br><span class="line">        class_addMethod(</span><br><span class="line">                <span class="keyword">self</span>,</span><br><span class="line">                <span class="keyword">@selector</span>(setSeparatorInset:),</span><br><span class="line">                method_getImplementation(newMethod),</span><br><span class="line">                method_getTypeEncoding(newMethod));</span><br><span class="line">    &#125;</span><br><span class="line"><span class="preprocessor">#endif</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// setSeparatorInset: 的Dummy方法</span></span><br><span class="line">- (<span class="keyword">void</span>)compatible_setSeparatorInset:(<span class="built_in">UIEdgeInsets</span>) inset &#123;</span><br><span class="line">    <span class="comment">// 空方法都可以，只是为了接收setSeparatorInset:消息。</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结">总结</h2><p>在适配旧版本时，除了基本的宏定义、[UIDevice currentDevice].systemVersion判断，适当的用Runtime，可以大大减少对现有代码的“干涉”，多种方法相结合才是最好的。</p>
+<p>嗯，还在用iOS6的用户，升个级呗=。=</p>
+<h2 id="参考">参考</h2><ul>
+<li><a href="https://developer.apple.com/library/ios/documentation/DeveloperTools/Conceptual/cross_development/Introduction/Introduction.html#//apple_ref/doc/uid/10000163-BCICHGIE" target="_blank" rel="external">SDK Compatibility Guide</a></li>
+<li><a href="http://git.devzeng.com/blog/ios-multiple-version-compatible.html" target="_blank" rel="external">iOS开发之多系统版本兼容</a></li>
+<li><a href="http://stackoverflow.com/questions/3057325/weak-linking-check-if-a-class-exists-and-use-that-class" target="_blank" rel="external">Weak Linking - check if a class exists and use that class</a></li>
+<li><a href="http://stackoverflow.com/questions/19789958/xcode-preprocessor-macro-to-check-if-base-sdk-ios-7-0" target="_blank" rel="external">Xcode preprocessor macro to check if Base SDK &gt;= iOS 7.0</a></li>
+<li><a href="http://xuzhongzhou.net/post/ios-sdk-compatibility-guide.html" target="_blank" rel="external">iOS SDK 兼容性指南</a></li>
+</ul>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h2 id="前言">前言</h2><p>最近，在做项目时，因为某种原因，突然要“适配”iOS6（也是醉了。。。），保证极少数的iOS6用户可以“用上”新的版本。哪怕界面上有瑕疵，只要功能正常就行。于是就只好花几天时间对iOS6进行紧急适配（心中一万头驼羊奔跑而过。。。）  </p>
+<p>本文总结了一些常规的，和“非常规”的iOS项目向老版本兼容的办法，结合了<strong>宏定义</strong>、<strong>Category</strong>和<strong>Runtime</strong>，大家看着消遣一下就好哈~</p>]]>
+    
+    </summary>
+    
+      <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
+    
+      <category term="原创" scheme="http://tutuge.me/tags/%E5%8E%9F%E5%88%9B/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[用Runtime的手段填充任意NSObject对象的nil属性]]></title>
@@ -2229,101 +2295,6 @@ dict[@<span class="string">"number1"</span>] = @<span class="number">6</span>;
     <summary type="html">
     <![CDATA[<h2 id="前言">前言</h2><p>item 3讲的是Objective-C里面的“字面量语法”-“Literal Syntax”，个人觉得非常有用。</p>
 <h2 id="Item_3_-_Prefer_Literal_Syntax_over_the_Equivalent_Methods">Item 3 - Prefer Literal Syntax over the Equivalent Methods</h2><p>本节讲了Objective-C中的“字面量语法”，并且建议我们更多的使用这种语法，而不是使用传统的等价的函数方法。</p>]]>
-    
-    </summary>
-    
-      <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
-    
-      <category term="原创" scheme="http://tutuge.me/tags/%E5%8E%9F%E5%88%9B/"/>
-    
-      <category term="笔记" scheme="http://tutuge.me/tags/%E7%AC%94%E8%AE%B0/"/>
-    
-      <category term="翻译" scheme="http://tutuge.me/tags/%E7%BF%BB%E8%AF%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[Effective-Objective-C-读书笔记-Item-2]]></title>
-    <link href="http://tutuge.me/2015/02/06/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-2/"/>
-    <id>http://tutuge.me/2015/02/06/Effective-Objective-C-读书笔记-Item-2/</id>
-    <published>2015-02-06T08:43:46.000Z</published>
-    <updated>2015-04-06T03:14:13.000Z</updated>
-    <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>第二弹来了。</p>
-<h2 id="Item_2_-_Minimize_Importing_Headers_in_Headers">Item 2 - Minimize Importing Headers in Headers</h2><p>这一节讲的是尽量在一个头文件中减少其它头文件的引入。</p>
-<a id="more"></a>
-<h2 id="头文件">头文件</h2><p>Objective-C和C语言、C++很像，都将类的实现与声明分开，用.h后缀名文件表示声明文件，用.m文件实现类。当要用到这个类的时候，只需要引入头文件即可，至于编译器、运行时是如何知道头文件里面的类对应的实现在哪里，在这了不做说明。一下用例子说明，先看看下面的类：</p>
-<pre><code><span class="comment">//Wheel.h</span>
-<span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
-
-<span class="comment">//车轮类</span>
-<span class="class"><span class="keyword">@interface</span> <span class="title">Wheel</span> : <span class="title">NSObject</span></span>
-<span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *manufacturer;
-<span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSUInteger</span> radius;
-<span class="keyword">@end</span>
-</code></pre><p>第二个类 </p>
-<pre><code><span class="comment">//Engine.h</span>
-<span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
-
-<span class="comment">//发动机类</span>
-<span class="class"><span class="keyword">@interface</span> <span class="title">Engine</span> : <span class="title">NSObject</span></span>
-<span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *manufacturer;
-<span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSUInteger</span> power;
-<span class="keyword">@end</span>
-</code></pre><p>然后就是车类Car：</p>
-<pre><code><span class="comment">//Car.h</span>
-<span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
-
-<span class="comment">//汽车类，只有一个轮子，不要奇怪=。=</span>
-<span class="class"><span class="keyword">@interface</span> <span class="title">Car</span> : <span class="title">NSObject</span></span>
-<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Wheel *wheel;
-<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Engine *engine;
-<span class="keyword">@end</span>
-</code></pre><p>注意到少了什么东西没有？<br>是的，写过C语言、C++的童鞋一下就能发现，Car类没有引入Engine和Wheel的头文件，肯定会编译出错的，因为编译器不知道Engine、Wheel类是啥。<br>那好，我们加上下面两行：</p>
-<pre><code><span class="id">#import</span> <span class="string">"Wheel.h"</span>
-<span class="id">#import</span> <span class="string">"Engine.h"</span>
-</code></pre><p>嗯。这样就不会出错了。但是这样真的好吗？Objective-C给我们提供了@class关键字，就是来解决这个问题的。</p>
-<h2 id="前置声明（forward_declaration）">前置声明（forward declaration）</h2><p>何为前置声明？看看下面的Car类的头文件例子。</p>
-<pre><code><span class="comment">//Car.h</span>
-<span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
-
-<span class="comment">//前置声明</span>
-<span class="class"><span class="keyword">@class</span> <span class="title">Wheel</span>;</span>
-<span class="class"><span class="keyword">@class</span> <span class="title">Engine</span>;</span>
-
-<span class="class"><span class="keyword">@interface</span> <span class="title">Car</span> : <span class="title">NSObject</span></span>
-<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Wheel *wheel;
-<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Engine *engine;
-<span class="keyword">@end</span>
-</code></pre><p>@class就是类的前置声明（forward declaration），就是告诉编译器“嗨，不用找了，Wheel类和Engine类是肯定存在的，用到的时候再找”。有了前置声明，我们就不用显式的引入Wheel类和Engine类了。</p>
-<p>当然，在Car类的实现文件.m文件中，我们还是要显式的引入Wheel和Engine类的，因为在这里我们要具体用到这两个类了，当然要知道类的细节。</p>
-<h3 id="为何不要import？">为何不要import？</h3><p>为什么不直接import呢？因为如果直接用import引入Wheel和Engine的声明，那么任何import引入了Car类的文件，也同时会引入Wheel、Engine类的声明，而且最终我们可能并不一定会直接跟Wheel、Engine类打交道，这样不就引入了“没有用”的类了吗？而且这样做很可能造成文件引入成“环”。 </p>
-<p>虽然import可以避免重复声明造成编译出错，传统的C语言、C++在声明的时候也可以通过如下方式避免重复声明：</p>
-<pre><code><span class="id">#ifndef</span> _WHEEL_H_
-<span class="hexcolor">#def</span>ine _WHEEL_H_
-
-<span class="comment">//声明内容...</span>
-
-#endif
-</code></pre><p>但是既然Objective-C有@class这种前置声明的办法，为何不用呢。</p>
-<h2 id="必须用import的时候">必须用import的时候</h2><p>当然，@class这样的前置声明并不能解决一切头文件引入的问题，如下这样的类，就必须要用import：</p>
-<pre><code><span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
-
-<span class="comment">//Car 的声明</span>
-<span class="preprocessor">#import <span class="title">"Car.h"</span></span>
-
-<span class="comment">//Driver protocol的定义</span>
-<span class="preprocessor">#import <span class="title">"Driver.h"</span></span>
-
-<span class="class"><span class="keyword">@interface</span> <span class="title">BigCar</span> : <span class="title">Car</span> &lt;<span class="title">Driver</span>&gt;</span>
-<span class="keyword">@end</span>
-</code></pre><p>是的，当类需要被继承、定义的protocol需要实现的时候，就需要import相关的头文件了（protocol的实现如果跟类的使用者没有关联，可以定义在类的实现文件中的“扩展category”中）,当然，还有@protocol这样的protocol的前置声明，怎么用就留给读者自己查阅相关资料了。</p>
-<h2 id="总结">总结</h2><p>大费周章的讲了这么多，其实目的就是一个：尽量少在头文件里面引入其他头文件。</p>
-<p>最终的目的就是<strong>只暴露最少的细节</strong>。</p>
-<p>写代码有段时间了，一直都在琢磨这句话，希望读者也能好好体会~</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<h2 id="前言">前言</h2><p>第二弹来了。</p>
-<h2 id="Item_2_-_Minimize_Importing_Headers_in_Headers">Item 2 - Minimize Importing Headers in Headers</h2><p>这一节讲的是尽量在一个头文件中减少其它头文件的引入。</p>]]>
     
     </summary>
     

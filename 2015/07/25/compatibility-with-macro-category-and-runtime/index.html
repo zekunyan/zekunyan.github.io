@@ -1,0 +1,344 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>解决iOS项目的版本兼容问题-结合宏、Category和Runtime | 土土哥的技术Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前言最近，在做项目时，因为某种原因，突然要“适配”iOS6（也是醉了。。。），保证极少数的iOS6用户可以“用上”新的版本。哪怕界面上有瑕疵，只要功能正常就行。于是就只好花几天时间对iOS6进行紧急适配（心中一万头驼羊奔跑而过。。。）  
+本文总结了一些常规的，和“非常规”的iOS项目向老版本兼容的办法，结合了宏定义、Category和Runtime，大家看着消遣一下就好哈~">
+<meta property="og:type" content="article">
+<meta property="og:title" content="解决iOS项目的版本兼容问题-结合宏、Category和Runtime">
+<meta property="og:url" content="http://tutuge.me/2015/07/25/compatibility-with-macro-category-and-runtime/index.html">
+<meta property="og:site_name" content="土土哥的技术Blog">
+<meta property="og:description" content="前言最近，在做项目时，因为某种原因，突然要“适配”iOS6（也是醉了。。。），保证极少数的iOS6用户可以“用上”新的版本。哪怕界面上有瑕疵，只要功能正常就行。于是就只好花几天时间对iOS6进行紧急适配（心中一万头驼羊奔跑而过。。。）  
+本文总结了一些常规的，和“非常规”的iOS项目向老版本兼容的办法，结合了宏定义、Category和Runtime，大家看着消遣一下就好哈~">
+<meta property="og:image" content="http://7nj2iz.com1.z0.glb.clouddn.com/blog_compatibility-with-macro-category-and-runtime_1.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="解决iOS项目的版本兼容问题-结合宏、Category和Runtime">
+<meta name="twitter:description" content="前言最近，在做项目时，因为某种原因，突然要“适配”iOS6（也是醉了。。。），保证极少数的iOS6用户可以“用上”新的版本。哪怕界面上有瑕疵，只要功能正常就行。于是就只好花几天时间对iOS6进行紧急适配（心中一万头驼羊奔跑而过。。。）  
+本文总结了一些常规的，和“非常规”的iOS项目向老版本兼容的办法，结合了宏定义、Category和Runtime，大家看着消遣一下就好哈~">
+  
+    <link rel="alternative" href="/atom.xml" title="土土哥的技术Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">土土哥的技术Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="http://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="tutuge.me">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-compatibility-with-macro-category-and-runtime" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/07/25/compatibility-with-macro-category-and-runtime/" class="article-date">
+  <time datetime="2015-07-24T16:39:03.000Z" itemprop="datePublished">2015-07-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      解决iOS项目的版本兼容问题-结合宏、Category和Runtime
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言">前言</h2><p>最近，在做项目时，因为某种原因，突然要“适配”iOS6（也是醉了。。。），保证极少数的iOS6用户可以“用上”新的版本。哪怕界面上有瑕疵，只要功能正常就行。于是就只好花几天时间对iOS6进行紧急适配（心中一万头驼羊奔跑而过。。。）  </p>
+<p>本文总结了一些常规的，和“非常规”的iOS项目向老版本兼容的办法，结合了<strong>宏定义</strong>、<strong>Category</strong>和<strong>Runtime</strong>，大家看着消遣一下就好哈~</p>
+<a id="more"></a>
+<h2 id="重点概念">重点概念</h2><p>首先强调一些概念。</p>
+<h3 id="Deployment_Target_和_Base_SDK">Deployment Target 和 Base SDK</h3><p><strong>Deployment Target</strong><br>指的是你的APP能支持的最低系统版本，如要支持iOS6以上，就设置成iOS6即可。</p>
+<p><strong>Base SDK</strong><br>指的是用来编译APP的SDK（Software Development Kit）的版本，一般保持当前XCode支持的最新的就好，如iOS8.4。SDK其实就是包含了所有的你要用到的头文件、链接库的集合，你的APP里面用的各种类、函数，能编译、链接成最后的安装包，就要靠它，苹果每次升级系统，新推出的各种API，也是在SDK里面。所以一般Base SDK肯定是大于等于Deployment Target的版本。</p>
+<p><strong>区分</strong><br>既然Base SDK的版本大于等于Deployment Target的版本，那么就要小心了，因为<strong>“只要用到的类、方法，在当前的Base SDK版本里面存在，就可以<em>编译通过</em>！但是一旦运行APP的手机的系统版本低于这些类、方法的最低版本要求，APP就会Crash！”</strong>  </p>
+<p>所以并不是说，能编译通过的，就一定能<em>运行成功</em>！还要在<em>运行时检查</em>！简单来说，就是如下图：</p>
+<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_compatibility-with-macro-category-and-runtime_1.png" alt="image"></p>
+<h3 id="宏只在编译时生效！">宏只在编译时生效！</h3><p>宏定义只是纯粹的文本替换，只在编译时起作用。如下代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">if</span> __IPHONE_OS_VERSION_MIN_REQUIRED &gt;= 70000</span></span><br><span class="line">    NSLog(@<span class="string">"Tutuge"</span>);</span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<p>被宏定义包起来的代码是否会执行，在编译时就决定好了，无论你是用什么系统运行，宏定义再也没有什么卵用=。=</p>
+<h2 id="编译时检查SDK版本，运行时检查系统版本">编译时检查SDK版本，运行时检查系统版本</h2><p>这个是最基本的适配手段。  </p>
+<p>用到的宏如下：</p>
+<ol>
+<li><strong>__IPHONE_OS_VERSION_MAX_ALLOWED</strong>: 值等于Base SDK，即用于检查SDK版本的。</li>
+<li><strong>__IPHONE_OS_VERSION_MIN_REQUIRED</strong>: 值等于Deployment Target，检查支持的最小系统版本。</li>
+</ol>
+<p>运行时检查系统版本：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ([UIDevice currentDevice].systemVersion.floatValue &gt; <span class="number">8.0f</span>) &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>假如我们现在想用iOS8新的<strong>UIAlertController</strong>来显示提示框，应该如下判断：<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 编译时判断：检查SDK版本</span></span><br><span class="line"><span class="preprocessor">#if __IPHONE_OS_VERSION_MAX_ALLOWED &gt; 80000</span></span><br><span class="line">    <span class="comment">// 运行时判断：检查当前系统版本</span></span><br><span class="line">    <span class="keyword">if</span> ([<span class="built_in">UIDevice</span> currentDevice]<span class="variable">.systemVersion</span><span class="variable">.floatValue</span> &gt; <span class="number">8.0</span>f) &#123;</span><br><span class="line">        <span class="built_in">UIAlertController</span> *alertController =</span><br><span class="line">        [<span class="built_in">UIAlertController</span> alertControllerWithTitle:<span class="string">@"Tutuge"</span></span><br><span class="line">                                            message:<span class="string">@"Compatibility"</span></span><br><span class="line">                                     preferredStyle:<span class="built_in">UIAlertControllerStyleAlert</span>];</span><br><span class="line">        [alertController addAction:[<span class="built_in">UIAlertAction</span> actionWithTitle:<span class="string">@"Cancel"</span></span><br><span class="line">                                                            style:<span class="built_in">UIAlertActionStyleCancel</span></span><br><span class="line">                                                          handler:^(<span class="built_in">UIAlertAction</span> *action) &#123;</span><br><span class="line">                                                              <span class="built_in">NSLog</span>(<span class="string">@"Cancel"</span>);</span><br><span class="line">                                                          &#125;]];</span><br><span class="line">        [<span class="keyword">self</span> presentViewController:alertController animated:<span class="literal">YES</span> completion:<span class="literal">nil</span>];</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 用旧的代替</span></span><br><span class="line">        <span class="built_in">UIAlertView</span> *alertView = [[<span class="built_in">UIAlertView</span> alloc] initWithTitle:<span class="string">@"Tutuge"</span></span><br><span class="line">                                                            message:<span class="string">@"Compatibility"</span></span><br><span class="line">                                                           delegate:<span class="literal">nil</span></span><br><span class="line">                                                  cancelButtonTitle:<span class="string">@"Cancel"</span></span><br><span class="line">                                                  otherButtonTitles:<span class="literal">nil</span>];</span><br><span class="line">        [alertView show];</span><br><span class="line">    &#125;</span><br><span class="line"><span class="preprocessor">#else</span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"><span class="preprocessor">#endif</span></span><br></pre></td></tr></table></figure></p>
+<p>总的来说就是编译时、运行时的判断均不能少。</p>
+<h2 id="Weakly_Linked_-_运行时检查类、方法是否可用">Weakly Linked - 运行时检查类、方法是否可用</h2><p>除了用宏、系统版本检测，还可以用<strong>Weakly Linked</strong>特性做运行时的检查。</p>
+<p>对于iOS4.2以上的，有<strong>NS_CLASS_AVAILABLE</strong>标示的类，可以如下判断是否可用：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">if</span> __IPHONE_OS_VERSION_MAX_ALLOWED &gt; 80000</span></span><br><span class="line">    <span class="comment">// Weakly Linked判断</span></span><br><span class="line">    <span class="keyword">if</span> ([UIAlertController <span class="keyword">class</span>]) &#123;</span><br><span class="line">        <span class="comment">// 使用UIAlertController...</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 使用旧的方案...</span></span><br><span class="line">    &#125;</span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<p>也可以如下判断：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Class <span class="class"><span class="keyword">class</span> </span>= NSClassFromString (@<span class="string">"UIAlertController"</span>);</span><br><span class="line"><span class="keyword">if</span> (<span class="class"><span class="keyword">class</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 使用UIAlertController...</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 使用旧的方案...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于方法，如下判断:</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">if</span> ([UITableViewCell <span class="attribute">instancesRespondToSelector</span>:<span class="variable">@selector</span> (<span class="attribute">setSeparatorInset</span>:)]) &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125; <span class="tag">else</span> &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>至于用哪种方法，统一一下即可。</p>
+<h2 id="用Method_Swizzling做兼容">用Method Swizzling做兼容</h2><p>有关Runtime、Method Swizzling的资料很多，各位自行阅读哈~</p>
+<p>有时候，不同版本之间，同一个类、View控件的默认属性可能都会变化，如UILabel的背景色在iOS6上，默认是白色，而iOS6以后是透明的！如果在每个用到UILabel的地方，都手动设置一次背景色，代价太大。这个时候就需要Runtime的“黑魔法”上场。</p>
+<p>就以设置UILabel的默认背景色透明为例，就是在UILabel初始化时，如initWithFrame之前，先设置好透明背景色，简单的示例如下：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建Category</span></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">UILabel</span> (<span class="title">TTGCompatibility</span>)</span></span><br><span class="line"></span><br><span class="line">+ (<span class="keyword">void</span>)load &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 先判断系统版本，尽量减少Runtime的作用范围</span></span><br><span class="line">    <span class="keyword">if</span> ([<span class="built_in">UIDevice</span> currentDevice]<span class="variable">.systemVersion</span><span class="variable">.floatValue</span> &lt; <span class="number">7.0</span>f) &#123;</span><br><span class="line">        <span class="comment">// Method Swizzling</span></span><br><span class="line">        <span class="comment">// initWithFrame</span></span><br><span class="line">        Method oriMethod = class_getInstanceMethod(<span class="keyword">self</span>, <span class="keyword">@selector</span>(initWithFrame:));</span><br><span class="line">        Method newMethod = class_getInstanceMethod(<span class="keyword">self</span>, <span class="keyword">@selector</span>(compatible_initWithFrame:));</span><br><span class="line">        method_exchangeImplementations(oriMethod, newMethod);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// initWithCoder...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// initWithFrame</span></span><br><span class="line">- (<span class="keyword">id</span>)compatible_initWithFrame:(<span class="built_in">CGRect</span>)frame &#123;</span><br><span class="line">    <span class="keyword">id</span> newSelf = [<span class="keyword">self</span> compatible_initWithFrame:frame];</span><br><span class="line">    <span class="comment">// 设置透明背景色</span></span><br><span class="line">    ((<span class="built_in">UILabel</span> *)newSelf)<span class="variable">.backgroundColor</span> = [<span class="built_in">UIColor</span> clearColor];</span><br><span class="line">    <span class="keyword">return</span> newSelf;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// initWithCoder...</span></span><br></pre></td></tr></table></figure>
+<h2 id="运行时添加“Dummy”方法，减少代码改动">运行时添加“Dummy”方法，减少代码改动</h2><p>Dummy，意思是“假的、假动作、假人”，在这里指的是为旧版本不存在的方法提供一个“假的”替代方法，防止因新API找不到而导致的Crash。</p>
+<p>以UITableViewCell的<strong>“setSeparatorInset:”</strong>方法为例，在iOS6中，压根就不存在separatorInset，但是现有的代码里面大量的调用了这个方法，怎么办？难道一个一个的去加上判断条件？代价太大。 </p>
+<p>这个时候就可以用Runtime的手段，在运行时添加一个Dummy方法，去“<strong>代替接收</strong>”setSeparatorInset消息，防止在iOS6上的Crash。</p>
+<p>代码如下：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">UITableViewCell</span> (<span class="title">TTGCompatibility</span>)</span></span><br><span class="line"></span><br><span class="line">+ (<span class="keyword">void</span>)load &#123;</span><br><span class="line"><span class="comment">// 编译时判断SDK</span></span><br><span class="line"><span class="preprocessor">#if __IPHONE_OS_VERSION_MAX_ALLOWED &gt; __IPHONE_7_0</span></span><br><span class="line">    <span class="comment">// 运行时判断系统版本</span></span><br><span class="line">    <span class="keyword">if</span> ([<span class="built_in">UIDevice</span> currentDevice]<span class="variable">.systemVersion</span><span class="variable">.floatValue</span> &lt; <span class="number">7.0</span>f) &#123;</span><br><span class="line">        Method newMethod = class_getInstanceMethod(<span class="keyword">self</span>, <span class="keyword">@selector</span>(compatible_setSeparatorInset:));</span><br><span class="line">        <span class="comment">// 增加Dummy方法</span></span><br><span class="line">        class_addMethod(</span><br><span class="line">                <span class="keyword">self</span>,</span><br><span class="line">                <span class="keyword">@selector</span>(setSeparatorInset:),</span><br><span class="line">                method_getImplementation(newMethod),</span><br><span class="line">                method_getTypeEncoding(newMethod));</span><br><span class="line">    &#125;</span><br><span class="line"><span class="preprocessor">#endif</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// setSeparatorInset: 的Dummy方法</span></span><br><span class="line">- (<span class="keyword">void</span>)compatible_setSeparatorInset:(<span class="built_in">UIEdgeInsets</span>) inset &#123;</span><br><span class="line">    <span class="comment">// 空方法都可以，只是为了接收setSeparatorInset:消息。</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结">总结</h2><p>在适配旧版本时，除了基本的宏定义、[UIDevice currentDevice].systemVersion判断，适当的用Runtime，可以大大减少对现有代码的“干涉”，多种方法相结合才是最好的。</p>
+<p>嗯，还在用iOS6的用户，升个级呗=。=</p>
+<h2 id="参考">参考</h2><ul>
+<li><a href="https://developer.apple.com/library/ios/documentation/DeveloperTools/Conceptual/cross_development/Introduction/Introduction.html#//apple_ref/doc/uid/10000163-BCICHGIE" target="_blank" rel="external">SDK Compatibility Guide</a></li>
+<li><a href="http://git.devzeng.com/blog/ios-multiple-version-compatible.html" target="_blank" rel="external">iOS开发之多系统版本兼容</a></li>
+<li><a href="http://stackoverflow.com/questions/3057325/weak-linking-check-if-a-class-exists-and-use-that-class" target="_blank" rel="external">Weak Linking - check if a class exists and use that class</a></li>
+<li><a href="http://stackoverflow.com/questions/19789958/xcode-preprocessor-macro-to-check-if-base-sdk-ios-7-0" target="_blank" rel="external">Xcode preprocessor macro to check if Base SDK &gt;= iOS 7.0</a></li>
+<li><a href="http://xuzhongzhou.net/post/ios-sdk-compatibility-guide.html" target="_blank" rel="external">iOS SDK 兼容性指南</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://tutuge.me/2015/07/25/compatibility-with-macro-category-and-runtime/" data-id="ciciz5mcu001fz26u8rpcdfx9" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://tutuge.me/2015/07/25/compatibility-with-macro-category-and-runtime/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/原创/">原创</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2015/07/08/fill-nil-property-of-object/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">用Runtime的手段填充任意NSObject对象的nil属性</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2015/07/25/compatibility-with-macro-category-and-runtime/" data-title="解决iOS项目的版本兼容问题-结合宏、Category和Runtime" data-url="http://tutuge.me/2015/07/25/compatibility-with-macro-category-and-runtime/"></div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/">iOS</a><span class="tag-list-count">20</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/原创/">原创</a><span class="tag-list-count">23</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/审核/">审核</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开源/">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/技巧/">技巧</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/杂烩/">杂烩</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/笔记/">笔记</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">4</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Android/" style="font-size: 10px;">Android</a><a href="/tags/C/" style="font-size: 10px;">C++</a><a href="/tags/PHP/" style="font-size: 10px;">PHP</a><a href="/tags/iOS/" style="font-size: 17.5px;">iOS</a><a href="/tags/原创/" style="font-size: 20px;">原创</a><a href="/tags/审核/" style="font-size: 10px;">审核</a><a href="/tags/开源/" style="font-size: 10px;">开源</a><a href="/tags/技巧/" style="font-size: 10px;">技巧</a><a href="/tags/杂烩/" style="font-size: 12.5px;">杂烩</a><a href="/tags/笔记/" style="font-size: 15px;">笔记</a><a href="/tags/翻译/" style="font-size: 15px;">翻译</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2015/07/25/compatibility-with-macro-category-and-runtime/">解决iOS项目的版本兼容问题-结合宏、Category和Runtime</a>
+          </li>
+        
+          <li>
+            <a href="/2015/07/08/fill-nil-property-of-object/">用Runtime的手段填充任意NSObject对象的nil属性</a>
+          </li>
+        
+          <li>
+            <a href="/2015/05/23/autolayout-example-with-masonry/">有趣的Autolayout示例-Masonry实现</a>
+          </li>
+        
+          <li>
+            <a href="/2015/04/21/resizable-nstextattachment/">UITextView编辑时插入自定义表情-续-自定义表情图片的大小</a>
+          </li>
+        
+          <li>
+            <a href="/2015/04/19/thrift-example-cpp-and-php/">RPC框架Thrift例子-PHP调用C++后端程序</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="http://suta.name" target="_blank">很赞的设计师：苏塔</a>
+          </li>
+        
+          <li>
+            <a href="http://neoyeelf.github.io" target="_blank">好友的博客：NeOye&#39;s blog</a>
+          </li>
+        
+          <li>
+            <a href="http://raytaylorlin.com" target="_blank">好友的博客：Ray Taylor Lin&#39;s world</a>
+          </li>
+        
+          <li>
+            <a href="http://bingyan.farbox.com" target="_blank">好友的博客：Howl写东西的地方</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2015 燕泽堃<br>
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1253507635'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1253507635' type='text/javascript'%3E%3C/script%3E"));</script>
+
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"tutuge"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>window._bd_share_config={"common":{},"share":{"bdCustomStyle":"/css/bdshare.css"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+</div>
+</body>
+</html>
