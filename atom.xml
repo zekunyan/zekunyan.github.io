@@ -4,7 +4,7 @@
   <subtitle><![CDATA[iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://tutuge.me/"/>
-  <updated>2015-07-25T11:31:34.000Z</updated>
+  <updated>2015-08-09T07:38:11.000Z</updated>
   <id>http://tutuge.me/</id>
   
   <author>
@@ -13,6 +13,130 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[有趣的Autolayout示例2-Masonry实现]]></title>
+    <link href="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/"/>
+    <id>http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/</id>
+    <published>2015-08-07T16:55:52.000Z</published>
+    <updated>2015-08-09T07:38:11.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>Masonry写的Autolayout示例又来了，仍然是三个小例子，分别是<strong>变高度的UITableViewCell、topLayoutGuide与bottomLayoutGuide，还有自定义的baseline</strong>，外加两个基本的知识点讲解，说不上“有趣”=。=，比较基础，写了很多，各位随意看看吧~</p>
+<p>上一篇：<a href="http://tutuge.me/2015/05/23/autolayout-example-with-masonry/" target="_blank" rel="external">有趣的Autolayout示例-Masonry实现</a></p>
+<p>Github地址：<br><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="external">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
+<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_1.gif" alt="Gif示例"></p>
+<a id="more"></a>
+<h2 id="知识点">知识点</h2><p>先讲讲两个知识点，很基础，但是很容易被忽略。</p>
+<h3 id="坐标系、top、right、offset">坐标系、top、right、offset</h3><p>先看看Masonry的Github主页的示例代码：<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">UIEdgeInsets padding = UIEdgeInsetsMake(<span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">[view1 mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">    make.top.equalTo(superview.mas_top).<span class="keyword">with</span>.<span class="command">offset</span>(padding.top);</span><br><span class="line">    make.left.equalTo(superview.mas_left).<span class="keyword">with</span>.<span class="command">offset</span>(padding.left);</span><br><span class="line">    make.bottom.equalTo(superview.mas_bottom).<span class="keyword">with</span>.<span class="command">offset</span>(-padding.bottom);</span><br><span class="line">    make.right.equalTo(superview.mas_right).<span class="keyword">with</span>.<span class="command">offset</span>(-padding.right);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure></p>
+<p>代码的意思很简单，就是view1的上下左右边距为padding对应的值。</p>
+<p>但是，为什么bottom、right的offset是<strong>负数</strong>呢？</p>
+<p>其实无论是Autolayout还是直接写frame，最终的结果都是要把我们的控件按照正确的位置绘制在屏幕上，也就是说，在一个统一的坐标系下，如下：</p>
+<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_2.png" alt="坐标系"></p>
+<p>而在Masonry里面，offset只是做了“加法”运算，举个例，上面的：<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make.top.equalTo(superview.mas_top).<span class="keyword">with</span>.<span class="command">offset</span>(padding.top);</span><br></pre></td></tr></table></figure></p>
+<p>其实等于下面的式子：<br><figure class="highlight fix"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">view1.top </span>=<span class="string"> superview.top + padding.top;</span></span><br></pre></td></tr></table></figure></p>
+<p>转换到坐标系里面，即是：<br><figure class="highlight fix"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">view1顶部的y坐标 </span>=<span class="string"> superview顶部的y坐标 + padding.top;</span></span><br></pre></td></tr></table></figure></p>
+<p>所以，如果我们想view1的bottom距底部间距为10，按照offset的“加法运算”，应该是下面这样：<br><figure class="highlight fix"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">view1底部的y坐标 </span>=<span class="string"> superview底部的y坐标 + (-10);</span></span><br></pre></td></tr></table></figure></p>
+<p>所以，代码里面的bottom的offset是负数。right也是一个道理。</p>
+<p>总的来说，就是布局的时候，始终要在坐标系下考虑。</p>
+<h3 id="约束的“等价”性">约束的“等价”性</h3><p>语文不好，还是用公式说明吧=。=<br>先看看Autolayout的基本公式：<br><figure class="highlight vhdl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">viewA-<span class="keyword">attribute</span> = viewB-<span class="keyword">attribute</span> * multiplier + <span class="keyword">constant</span></span><br></pre></td></tr></table></figure></p>
+<p>这个公式，跟下面的是等价的：<br><figure class="highlight vhdl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">viewB-<span class="keyword">attribute</span> = (viewA-<span class="keyword">attribute</span> - <span class="keyword">constant</span>) / multiplier</span><br></pre></td></tr></table></figure></p>
+<p>这个转换是如此的简单，小学生都会=。=，只是为了说明，我们在设置约束的时候，既可以从ViewA的角度考虑，也可以从ViewB的角度，两者完全<strong>等价</strong>！。</p>
+<p>说白了就是：“ViewA跟ViewB相距10”和“ViewB跟ViewA相距10”是一样的，如下两段代码，效果是一样的（注意正负数）：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// View2的顶部距离View1的底部10</span></span><br><span class="line">[view2 mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) &#123;</span><br><span class="line">    <span class="built_in">make</span>.top.equalTo(view1.mas_bottom).with.offset(<span class="number">10</span>);</span><br><span class="line">&#125;];</span><br><span class="line">    </span><br><span class="line"><span class="comment">// View1的底部距离View2的顶部10</span></span><br><span class="line">[view1 mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) &#123;</span><br><span class="line">    <span class="built_in">make</span>.bottom.equalTo(view2.mas_top).with.offset(-<span class="number">10</span>);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+<p>更进一步说，就是约束只是两个View之间的关系，对于系统来说，ViewA和ViewB的地位是<strong>平等</strong>的，我们设置约束的时候，没有<strong>主次</strong>之分。</p>
+<p>所以，我们在设置约束的时候，要从“<strong>整体</strong>”、“<strong>宏观</strong>”上考虑，更好地把握布局，避免重复约束。</p>
+<h2 id="Case_1:_变高UITableViewCell">Case 1: 变高UITableViewCell</h2><p>变高的UITableViewCell，这是个永恒的话题=。=</p>
+<p>不用Autolayout的话，计算Cell的高度的时候，就只能用sizeThatFits等方法，加上各种“魔鬼”数据的margin、padding来手动拼凑出Cell的高度。这种方法非常耗时，并且难以调试。</p>
+<p>有了Autolayout，就再也不用手动算高度了~</p>
+<h3 id="UITableViewCell">UITableViewCell</h3><p>先看看Cell的约束。</p>
+<h4 id="“自我约束”的Cell">“自我约束”的Cell</h4><p>既然要能让系统自己计算出Cell的高度，我们在设置约束的时候，就要让约束整体是“完整”、“自我约束”的。（这个很难用语言描述。。。）Cell里面的每一个View的大小、位置，都可以从约束中得到体现，而Cell的整体大小，也是从子View的约束综合计算得出的。</p>
+<p>如下面的Cell：</p>
+<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_3.png" alt="Cell"></p>
+<ol>
+<li>左上角的图片固定大小。</li>
+<li>标题的Label只显示一行，固定高度。</li>
+<li>内容的Label根据内容决定高度。</li>
+<li>两个Label宽度整体随着Cell的宽度变化。</li>
+</ol>
+<p>约束的设定如下：</p>
+<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_4.png" alt="约束示意"></p>
+<p>关键点:  </p>
+<ol>
+<li>内容Label的bottom和Cell的contentView的约束不可以省，因为cell的高度要由内部的约束决定，所以上下左右的约束一个不能少。</li>
+<li>内容Label的高度随着内容变化，即cell的高度随内容变化，这个时候可以设置Label的ContentHugging的优先级最高。</li>
+</ol>
+<h4 id="UILabel的preferredMaxLayoutWidth">UILabel的preferredMaxLayoutWidth</h4><p>Autolayout下，UILabel在多行显示时，有个很“坑”的属性需要设定，就是preferredMaxLayoutWidth。</p>
+<p>定义如下:<br><em><br>This property affects the size of the label when layout constraints are applied to it. During layout, if the text extends beyond the width specified by this property, the additional text is flowed to one or more new lines, thereby increasing the height of the label.
+</em></p>
+<p>如果我们要使用Autolayout自动计算多行UILabel的高度，这个属性就必须在运行时指定，要不然系统计算不出UILabel的宽度，例如：<br><figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 计算UILabel的preferredMaxLayoutWidth值，多行时必须设置这个值，否则系统无法决定Label的宽度</span></span><br><span class="line">label.preferredMaxWidth = [UIScreen mainScreen].bounds.<span class="built_in">size</span>.<span class="variable">width</span> - margin - padding;</span><br></pre></td></tr></table></figure></p>
+<p>手动计算宽度，感觉回到了没有Autolayout的时代=。=</p>
+<h4 id="Cell的关键代码">Cell的关键代码</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Avatar - 头像</span></span><br><span class="line">_avatarImageView = [UIImageView <span class="built_in">new</span>];</span><br><span class="line">[self.contentView addSubview:_avatarImageView];</span><br><span class="line">[_avatarImageView mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) &#123;</span><br><span class="line">    <span class="built_in">make</span>.width.and.height.equalTo(@<span class="number">44</span>); <span class="comment">// 宽高固定</span></span><br><span class="line">    <span class="built_in">make</span>.left.and.top.equalTo(self.contentView).with.offset(<span class="number">4</span>);</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line"><span class="comment">// Title - 单行</span></span><br><span class="line">_titleLabel = [UILabel <span class="built_in">new</span>];</span><br><span class="line">[self.contentView addSubview:_titleLabel];</span><br><span class="line">[_titleLabel mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) &#123;</span><br><span class="line">    <span class="built_in">make</span>.height.equalTo(@<span class="number">22</span>); <span class="comment">// 宽高固定</span></span><br><span class="line">    <span class="built_in">make</span>.top.equalTo(self.contentView).with.offset(<span class="number">4</span>);</span><br><span class="line">    <span class="built_in">make</span>.left.equalTo(_avatarImageView.mas_right).with.offset(<span class="number">4</span>);</span><br><span class="line">    <span class="built_in">make</span>.right.equalTo(self.contentView).with.offset(-<span class="number">4</span>);</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 计算UILabel的preferredMaxLayoutWidth值，多行时必须设置这个值，否则系统无法决定Label的宽度</span></span><br><span class="line">CGFloat preferredMaxWidth = [UIScreen mainScreen].bounds.size.width - (<span class="number">16</span> + <span class="number">4</span>) * <span class="number">2</span> - <span class="number">44</span> - <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Content - 多行</span></span><br><span class="line">_contentLabel = [UILabel <span class="built_in">new</span>];</span><br><span class="line">_contentLabel.numberOfLines = <span class="number">0</span>;</span><br><span class="line">_contentLabel.preferredMaxLayoutWidth = preferredMaxWidth; <span class="comment">// 多行时必须设置</span></span><br><span class="line">[self.contentView addSubview:_contentLabel];</span><br><span class="line"></span><br><span class="line">[_contentLabel mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) &#123;</span><br><span class="line">    <span class="built_in">make</span>.top.equalTo(_titleLabel.mas_bottom).with.offset(<span class="number">4</span>);</span><br><span class="line">    <span class="built_in">make</span>.left.equalTo(_avatarImageView.mas_right).with.offset(<span class="number">4</span>);</span><br><span class="line">    <span class="built_in">make</span>.right.equalTo(self.contentView).with.offset(-<span class="number">4</span>);</span><br><span class="line">    <span class="built_in">make</span>.bottom.equalTo(self.contentView).with.offset(-<span class="number">4</span>);</span><br><span class="line">&#125;];</span><br><span class="line"><span class="comment">// 设置高度的Content Hugging</span></span><br><span class="line">[_contentLabel setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];</span><br></pre></td></tr></table></figure>
+<h3 id="UITableView">UITableView</h3><p>再看看UITableView。</p>
+<h4 id="用systemLayoutSizeFittingSize:获取Cell的高度">用systemLayoutSizeFittingSize:获取Cell的高度</h4><p>在设定好Cell的约束以后，就可以用systemLayoutSizeFittingSize:方法获取Cell的实际高度，它的参数可以设定为两个系统常量，如下：</p>
+<ol>
+<li>UILayoutFittingCompressedSize: 返回合适的最小大小。</li>
+<li>UILayoutFittingExpandedSize: 返回合适的最大大小。</li>
+</ol>
+<h4 id="模板Cell">模板Cell</h4><p>为了在“- (CGFloat)tableView:(UITableView <em>)tableView heightForRowAtIndexPath:(NSIndexPath </em>)indexPath ”方法中计算Cell的高度，我们需要一个专门用于计算高度的Cell实例，可以说算是Cell的“模板”。一般来说，这个实例可以设置成函数的static变量，并只在第一次使用时初始化一次。</p>
+<h4 id="简单缓存高度">简单缓存高度</h4><p>为了避免每次滑动时计算高度，可以将Cell的高度缓存下来。如，保存在每一行对应的数据Model(Entity)中，例如：<br><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">@interface</span> <span class="attribute">Entity </span>: NSObject</span><br><span class="line"><span class="comment">// Data</span></span><br><span class="line"><span class="variable">@property</span> (copy, nonatomic) NSString *title;</span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"><span class="comment">// Cache height</span></span><br><span class="line"><span class="variable">@property</span> (assign, nonatomic) CGFloat cellHeight;</span><br><span class="line"><span class="variable">@end</span></span><br></pre></td></tr></table></figure></p>
+<p>每次要获取高度时，就可以先检查一下是否有缓存，减少计算量。</p>
+<h4 id="设置estimatedRowHeight以减少首次显示的计算量">设置estimatedRowHeight以减少首次显示的计算量</h4><p>默认情况下，首次显示之前，系统都会一次性全部计算出所有Cell的高度，这简直不能忍啊！要是有10000行，那岂不是要卡死=。=</p>
+<p>所以iOS 7以后，UITableView有了一个新的属性：estimatedRowHeight。</p>
+<p>从属性名上就可以看出，这个属性可以为Cell预先指定一个“估计”的高度值，这样的话，系统就可以先按照估计值布局，然后只获取显示范围内的Cell的高度，这样就不会一次性计算全部的了。</p>
+<h4 id="关键代码">关键代码</h4><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="built_in">CGFloat</span>)tableView:(<span class="built_in">UITableView</span> *)tableView heightForRowAtIndexPath:(<span class="built_in">NSIndexPath</span> *)indexPath &#123;</span><br><span class="line">    <span class="keyword">static</span> Case4Cell *templateCell;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;</span><br><span class="line">    <span class="built_in">dispatch_once</span>(&amp;onceToken, ^&#123;</span><br><span class="line">        templateCell = [tableView dequeueReusableCellWithIdentifier:<span class="built_in">NSStringFromClass</span>([Case4Cell class])];</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取对应的数据</span></span><br><span class="line">    Case4DataEntity *dataEntity = _data[(<span class="built_in">NSUInteger</span>) indexPath<span class="variable">.row</span>];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 填充数据</span></span><br><span class="line">    [templateCell setupData:dataEntity];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 判断高度是否已经计算过</span></span><br><span class="line">    <span class="keyword">if</span> (dataEntity<span class="variable">.cellHeight</span> &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// 根据当前数据，计算Cell的高度，注意+1</span></span><br><span class="line">        dataEntity<span class="variable">.cellHeight</span> = [templateCell<span class="variable">.contentView</span> systemLayoutSizeFittingSize:<span class="built_in">UILayoutFittingCompressedSize</span>]<span class="variable">.height</span> + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> dataEntity<span class="variable">.cellHeight</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="iOS_8的新特性">iOS 8的新特性</h3><p>iOS 8大大简化了Cell的高度计算，只要设置好Cell的约束，添加下面几行代码：<br><figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tableView.<span class="variable">rowHeight =</span> UITableViewAutomaticDimension;</span><br><span class="line">tableView.<span class="variable">estimatedRowHeight =</span> <span class="number">80</span>;</span><br></pre></td></tr></table></figure></p>
+<p>然后：<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="built_in">CGFloat</span>)tableView:(<span class="built_in">UITableView</span> *)tableView heightForRowAtIndexPath:(<span class="built_in">NSIndexPath</span> *)indexPath &#123;</span><br><span class="line">    <span class="comment">// 只用返回这个！</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">UITableViewAutomaticDimension</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>对！就只用这么几行代码就行！</p>
+<h2 id="Case_2:_topLayoutGuide和bottomLayoutGuide">Case 2: topLayoutGuide和bottomLayoutGuide</h2><h3 id="是什么">是什么</h3><p>topLayoutGuide和bottomLayoutGuide都是iOS 7以后，UIViewController的属性。</p>
+<p>在文档、头文件中，topLayoutGuide和bottomLayoutGuide的定义如下：<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>,<span class="keyword">readonly</span>,retain) <span class="keyword">id</span>&lt;<span class="built_in">UILayoutSupport</span>&gt; topLayoutGuide <span class="built_in">NS_AVAILABLE_IOS</span>(<span class="number">7</span>_0);</span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>,<span class="keyword">readonly</span>,retain) <span class="keyword">id</span>&lt;<span class="built_in">UILayoutSupport</span>&gt; bottomLayoutGuide <span class="built_in">NS_AVAILABLE_IOS</span>(<span class="number">7</span>_0);</span><br></pre></td></tr></table></figure></p>
+<p>而UILayoutSupport的定义更是简单：<br><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">@protocol</span> UILayoutSupport &lt;NSObject&gt;</span><br><span class="line"><span class="variable">@property</span>(nonatomic,readonly) CGFloat length;</span><br><span class="line"><span class="variable">@end</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>以topLayoutGuide为例</strong>：<br><em><br>The topLayoutGuide property comes into play when a view controller is frontmost onscreen. It indicates the highest vertical extent for content that you don’t want to appear behind a translucent or transparent UIKit bar (such as a status or navigation bar). This property implements the UILayoutSupport protocol and you can employ it as a constraint item when using the NSLayoutConstraint class.
+</em></p>
+<p>简单来说，topLayoutGuide表示当前页面的上方被status bar、navigation bar遮挡的部分。同理，bottomLayoutGuide表示下方被遮挡的部分。</p>
+<p>如下图:<br><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_5.jpg?imageView2/0/w/400/q/100" alt="topLayoutGuide和bottomLayoutGuide"></p>
+<h3 id="解决的问题">解决的问题</h3><p>有些时候，一个ViewController可能单独显示出来，也可能内嵌在UINavigationController里面显示出来。在这两种情况下，页面的“<strong>可视范围</strong>”是不一样的，很明显，NavigationBar会遮挡住一部分，用了UITabBarController时，tabBar也会遮挡住下方一部分。再加上各种Bar都可以隐藏，情况会变得更复杂。</p>
+<p>难道要为每种情况去写一份布局代码？</p>
+<h3 id="如何使用">如何使用</h3><p>为了解决上面的问题，就需要在设置约束时，加进topLayoutGuide和bottomLayoutGuide。</p>
+<h4 id="用法1:_强制转换为UIView">用法1: 强制转换为UIView</h4><p>定义上，topLayoutGuide和bottomLayoutGuide都是id，但是实际中是什么呢？跟UIView有什么关系？<br>看看如下代码的运行结果：<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="constant">NSLog</span>(@<span class="string">"%d"</span>, [<span class="keyword">self</span>.topLayoutGuide <span class="symbol">isKindOfClass:</span>[<span class="constant">UIView</span> <span class="class"><span class="keyword">class</span>]]);</span></span><br></pre></td></tr></table></figure></p>
+<p>结果是：”1”</p>
+<p><strong>也就是说，在运行期间，topLayoutGuide和bottomLayoutGuide就是UIView的子类</strong>。</p>
+<p>所以，第一种方法就是强制转换成UIView，直接运用在Masonry的约束里面，正如较旧的Masonry官方示例中的一样：<br><figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="collection">[topView makeConstraints:^<span class="list">(<span class="keyword">MASConstraintMaker</span> *make)</span> <span class="collection">&#123;</span><br><span class="line">    // 强制转换</span><br><span class="line">    UIView *topLayoutGuide = <span class="list">(<span class="keyword">id</span>)</span>self.topLayoutGuide;</span><br><span class="line">    make.top.equalTo<span class="list">(<span class="keyword">topLayoutGuide.mas_bottom</span>)</span><span class="comment">;</span></span><br><span class="line">    // ...</span><br><span class="line">&#125;</span>]</span><span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
+<p>但是这样存在着风险，万一哪天苹果改变了topLayoutGuide和bottomLayoutGuide的实现方法，这么用就Crash了=。=</p>
+<h4 id="用法2:_直接使用length属性">用法2: 直接使用length属性</h4><p>第二种方法，就是直接使用UILayoutSupport定义的length属性。<br>这个时候就有个地方要特别注意，在运行到viewDidLoad的时候，length的值是0，因为这个时候界面还没有被绘制，所以一个解决方法就是在ViewController的<strong>updateViewConstraints</strong>方法里面去使用length值添加约束。如下：</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">-</span> (void)<span class="tag">updateViewConstraints</span> &#123;</span><br><span class="line">    <span class="attr_selector">[_topView mas_updateConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">        // 直接利用其length属性</span><br><span class="line">        make.top.equalTo(self.view.mas_top).with.offset(self.topLayoutGuide.length);</span><br><span class="line">    &#125;]</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="attr_selector">[super updateViewConstraints]</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="用法3:_使用新版的mas_topLayoutGuide和mas_bottomLayoutGuide">用法3: 使用新版的mas_topLayoutGuide和mas_bottomLayoutGuide</h4><p>在<a href="https://github.com/SnapKit/Masonry/commit/c99e65c2eb40a02106d87a1487f96c0f4b1b72c0" target="_blank" rel="external">Masonry的新版</a>中，为UIViewController增加了一个新的Category: “MASAdditions”，增加了mas_topLayoutGuide和mas_bottomLayoutGuide两个方法，这样的话，我们就可以优雅的使用topLayoutGuide和bottomLayoutGuide了~<br><figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="collection">[_topView mas_makeConstraints:^<span class="list">(<span class="keyword">MASConstraintMaker</span> *make)</span> <span class="collection">&#123;</span><br><span class="line">    // 不用强制转换，也不用在updateViewConstraints里面更新了</span><br><span class="line">    make.top.equalTo<span class="list">(<span class="keyword">self.mas_topLayoutGuide</span>)</span><span class="comment">;</span></span><br><span class="line">    // ...</span><br><span class="line">&#125;</span>]</span><span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="示例">示例</h3><p>直接看Demo吧，比较简单。</p>
+<h2 id="Case_3:_自定义baseline">Case 3: 自定义baseline</h2><p>最后一个Case，讲讲baseline。<br>baseline，翻译过来就是“基线”，在Autolayout里面对应着<strong>NSLayoutFormatAlignAllBaseline</strong>，也是一种对齐的标准。例如，UIButton的baseline就是内部的文字，如果一排button按照baseline对齐的话，就是下面这样：<br><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_6.jpg" alt="Buttons baseline align"></p>
+<p>对于自定义的View来说，baseline默认就是整个view的底部，如果想改变baseline的话，可以重写UIView的<strong>viewForBaselineLayout</strong>，返回当成baseline的view即可。</p>
+<p>如下面的自定义view：</p>
+<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_7.jpg" alt="Custom baseline"></p>
+<p>很明显，baseline就是显示图片的UIImageView，代码也很简单:<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 自定义的View中</span></span><br><span class="line"><span class="comment">// 返回自定义的baseline的view</span></span><br><span class="line">- (<span class="built_in">UIView</span> *)viewForBaselineLayout &#123;</span><br><span class="line">    <span class="keyword">return</span> _imageView;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>灵活的使用baseline，可以更加方便的进行布局。</p>
+<h2 id="总结">总结</h2><p>写了好长，能全部看完的朋友，嗯，你是个优秀的程序员=。=</p>
+<p>后面打算用Swift的SnapKit把所有的Case全部实现一次。</p>
+<h2 id="参考">参考</h2><ul>
+<li><a href="http://chun.tips/blog/2014/10/23/xi-shu-autolayoutyi-lai-uiviewhe-uiviewcontrollerxin-zeng-de-xiang-guan-api-uiviewpian/" target="_blank" rel="external">细数AutoLayout以来UIView和UIViewController新增的相关API – UIView篇</a></li>
+<li><a href="https://developer.apple.com/library/ios/qa/qa1797/_index.html" target="_blank" rel="external">Preventing the Status Bar from Covering Your Views</a></li>
+<li><a href="http://www.objc.io/issues/3-views/advanced-auto-layout-toolbox/#intrinsic-content-size" target="_blank" rel="external">Advanced Auto Layout Toolbox</a></li>
+<li><a href="http://chun.tips/blog/2014/10/25/xi-shu-autolayoutyi-lai-uiviewhe-uiviewcontrollerxin-zeng-de-xiang-guan-api-uiviewcontrollerpian/" target="_blank" rel="external">细数AutoLayout以来UIView和UIViewController新增的相关API – UIViewController篇</a></li>
+<li><a href="http://www.wugaojun.com/blog/2015/05/24/autolayoutshi-zhan-cellgao-du-bu-gu-ding-de-uitableview/" target="_blank" rel="external">AutoLayout实战:cell高度不固定的UITableView</a></li>
+<li><a href="http://www.jianshu.com/p/d5d897ffe118" target="_blank" rel="external">AutoLayout下多行UILabel无法显示多行文本的问题</a></li>
+<li><a href="https://grayluo.github.io/WeiFocusIo/autolayout/2015/02/01/autolayout5/" target="_blank" rel="external">AutoLayout深入浅出五-UITableView动态高度</a></li>
+<li><a href="http://www.brynbodayle.com/faster-uitableviews-with-ios-7/" target="_blank" rel="external">Faster UITableViews with iOS 7</a></li>
+</ul>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h2 id="前言">前言</h2><p>Masonry写的Autolayout示例又来了，仍然是三个小例子，分别是<strong>变高度的UITableViewCell、topLayoutGuide与bottomLayoutGuide，还有自定义的baseline</strong>，外加两个基本的知识点讲解，说不上“有趣”=。=，比较基础，写了很多，各位随意看看吧~</p>
+<p>上一篇：<a href="http://tutuge.me/2015/05/23/autolayout-example-with-masonry/">有趣的Autolayout示例-Masonry实现</a></p>
+<p>Github地址：<br><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
+<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_1.gif" alt="Gif示例"></p>]]>
+    
+    </summary>
+    
+      <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
+    
+      <category term="原创" scheme="http://tutuge.me/tags/%E5%8E%9F%E5%88%9B/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[解决iOS项目的版本兼容问题-结合宏、Category和Runtime]]></title>
@@ -2207,104 +2331,6 @@ NSLog(@<span class="string">"Name: %@"</span>, userEntity.name);
       <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
     
       <category term="原创" scheme="http://tutuge.me/tags/%E5%8E%9F%E5%88%9B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[Effective-Objective-C-读书笔记-Item-3]]></title>
-    <link href="http://tutuge.me/2015/02/14/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-3/"/>
-    <id>http://tutuge.me/2015/02/14/Effective-Objective-C-读书笔记-Item-3/</id>
-    <published>2015-02-14T08:51:51.000Z</published>
-    <updated>2015-04-06T03:14:25.000Z</updated>
-    <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>item 3讲的是Objective-C里面的“字面量语法”-“Literal Syntax”，个人觉得非常有用。</p>
-<h2 id="Item_3_-_Prefer_Literal_Syntax_over_the_Equivalent_Methods">Item 3 - Prefer Literal Syntax over the Equivalent Methods</h2><p>本节讲了Objective-C中的“字面量语法”，并且建议我们更多的使用这种语法，而不是使用传统的等价的函数方法。</p>
-<a id="more"></a>
-<h2 id="引子">引子</h2><p>当我们使用Objective-C编程的时候，总会经常使用到几种Foundation框架中的基本类，如NSString、NSNumber、NSArray、NSDictionary，或者是它们的子类。例如，当我们想创建一个字符串的时候，会这么写：</p>
-<pre><code>NSString *<span class="keyword">str</span> = @<span class="string">"a string"</span>;
-</code></pre><p>不知道各位写这句的时候有没有觉得奇怪？为什么不用先“alloc”，再“initWithXXX”这么来创建呢。是的，这里创建字符串，就用到了Objective-C提供的“字面量语法”-“Literal Syntax”，而这种语法的“标志”就是“@”符号。<br>有了字面量语法，我们就不用每次创建一些基本类型的时候，写一大堆alloc、init了。</p>
-<h2 id="NSNumber">NSNumber</h2><p>字符串可以用字面量语法创建，数字类NSNumber肯定也可以，如下：</p>
-<pre><code>NSNumber <span class="keyword">*</span>intNum = <span class="comment">@1;</span>
-NSNumber <span class="keyword">*</span>floatNum = <span class="comment">@1.1f;</span>
-NSNumber <span class="keyword">*</span>doubleNum = <span class="comment">@1.1;</span>
-NSNumber <span class="keyword">*</span>boolNum = <span class="comment">@YES;</span>
-NSNumber <span class="keyword">*</span>charNum = <span class="comment">@'a';</span>
-
-//不用字面量语法
-NSNumber <span class="keyword">*</span>intNumber = [[NSNumber alloc] initWithInt:1];
-</code></pre><p>看，是不是很方便~</p>
-<h2 id="NSArray">NSArray</h2><h3 id="创建">创建</h3><p>数组算是最常用的一种数据结构了，如果没有字面量语法，创建数组可能是这样：</p>
-<pre><code><span class="constant">NSArray </span>*numbers = [[<span class="constant">NSArray </span>alloc] <span class="symbol">initWithObjects:</span>
-    <span class="variable">@1</span>, <span class="variable">@1</span>.<span class="number">1</span>, <span class="variable">@2</span>.0f, <span class="variable">@YES</span>, <span class="keyword">nil</span>];
-</code></pre><p>用字面量语法的话，就是这样：</p>
-<pre><code>NSArray <span class="variable">*numbers</span> = <span class="variable">@[</span><span class="variable">@1</span>, <span class="variable">@1</span>.1, <span class="variable">@2</span>.0f, <span class="variable">@YES</span>];
-</code></pre><h3 id="存取值">存取值</h3><p>创建了数组，肯定要从数组里面取值，用NSArray的方法就是这样：</p>
-<pre><code><span class="comment">//取</span>
-NSNumber <span class="variable">*aNumber</span> = [numbers objectAtIndex:<span class="number">2</span>];
-<span class="comment">//存</span>
-NSMutableArray <span class="variable">*mutableArray</span> = [[NSMutableArray alloc] initWithArray:
-    <span class="variable">@[</span><span class="variable">@1</span>, <span class="variable">@2</span>, <span class="variable">@3</span>]];
-[mutableArray replaceObjectAtIndex:<span class="number">1</span> withObject:<span class="variable">@4</span>];
-</code></pre><p>跟C语言、Java这些语法很不一样啊，人家都是通过中括号“[]”直接用下标取值就可以。有了字面量同语法，Objective-C也可以这样:</p>
-<pre><code><span class="comment">//取</span>
-NSNumber <span class="variable">*aNumber</span> = numbers[<span class="number">2</span>];
-<span class="comment">//存</span>
-NSMutableArray <span class="variable">*mutableArray</span> = [[NSMutableArray alloc] initWithArray:
-    <span class="variable">@[</span><span class="variable">@1</span>, <span class="variable">@2</span>, <span class="variable">@3</span>]];
-mutableArray[<span class="number">1</span>] = <span class="variable">@4</span>;
-</code></pre><h3 id="要注意的地方">要注意的地方</h3><p>传统的通过“initWithObjects”方法创建数组的时候，是根据最后的“nil”判断数组是否结束的，也就是说，用于初始化数组的元素中有“nil”值也不会导致异常（Exception），如下语句：</p>
-<pre><code><span class="built_in">NSNumber</span> *number1 = @<span class="number">1</span>;
-<span class="built_in">NSNumber</span> *number2 = <span class="literal">nil</span>; <span class="comment">//空指针</span>
-<span class="built_in">NSNumber</span> *number3 = @<span class="number">3</span>;
-
-<span class="comment">//创建</span>
-<span class="built_in">NSArray</span> *numbers = [[<span class="built_in">NSArray</span> alloc] initWithObjects:
-    number1, number2, number3, <span class="literal">nil</span>];
-
-<span class="comment">//输出为1，因为number2，创建到number2就截止了</span>
-<span class="built_in">NSLog</span>(<span class="string">@"numbers count: %d"</span>, numbers<span class="variable">.count</span>);
-</code></pre><p>但是，如果用字面量语法创建，就是出问题：</p>
-<pre><code>NSNumber <span class="keyword">*</span>number1 = <span class="comment">@1;</span>
-NSNumber <span class="keyword">*</span>number2 = nil;
-NSNumber <span class="keyword">*</span>number3 = <span class="comment">@3;</span>
-
-//创建出现异常！！！
-NSArray <span class="keyword">*</span>numbers = <span class="comment">@[number1, number2, number3];</span>
-
-NSLog(<span class="comment">@"numbers count: %d", numbers.count);</span>
-</code></pre><p>因为字面量语法只是单纯的将中括号中的元素全部加到数组中，但是，Objective-C中的数组是不可以存放nil值的，所以程序会运行时抛出异常。    </p>
-<h2 id="NSDictionary">NSDictionary</h2><h3 id="创建-1">创建</h3><p>如果不用字面量语法创建字典，传统的创建函数简直令人匪夷所思：</p>
-<pre><code><span class="comment">// number1-&gt;@1</span>
-<span class="comment">// number2-&gt;@2</span>
-<span class="built_in">NSDictionary</span> *dict = [[<span class="built_in">NSDictionary</span> alloc] initWithObjectsAndKeys:
-    @<span class="number">1</span>, <span class="string">@"number1"</span>, @<span class="number">2</span>, <span class="string">@"number2"</span>, <span class="literal">nil</span>];
-</code></pre><p>是不是很奇怪，<strong>value在前面，key在后面</strong></p>
-<p>所以，还是用新的语法吧：</p>
-<pre><code>NSDictionary *dict = @{@<span class="string">"number1"</span> : <span class="localvars">@1</span>, @<span class="string">"number2"</span> : <span class="localvars">@2</span>}<span class="comment">;</span>
-</code></pre><p>这样才符合“常识”嘛，key在前，value在后面，跟JSON的定义一样。  </p>
-<h3 id="存取值-1">存取值</h3><p>取值的语法跟NSArray的语法很想，只不过是将下标数字变成了key：</p>
-<pre><code><span class="comment">//传统</span>
-NSNumber *number1 = [dict <span class="string">objectForKey:</span>@<span class="string">"number1"</span>];
-[dict <span class="string">setValue:</span>@<span class="number">5</span> <span class="string">forKey:</span>@<span class="string">"number1"</span>];
-
-<span class="comment">//字面量语法</span>
-NSNumber *number2 = dict[@<span class="string">"number1"</span>];
-dict[@<span class="string">"number1"</span>] = @<span class="number">6</span>;
-</code></pre><h3 id="注意">注意</h3><p>需要注意的地方，跟创建数组一样，NSDictionary的value不能为nil值，否则会抛出异常。</p>
-<h2 id="总结">总结</h2><p>总的来说，使用字面量语法可以让代码更加清晰、简单，毕竟，更少的代码，有时候意味着更少的错误。      </p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<h2 id="前言">前言</h2><p>item 3讲的是Objective-C里面的“字面量语法”-“Literal Syntax”，个人觉得非常有用。</p>
-<h2 id="Item_3_-_Prefer_Literal_Syntax_over_the_Equivalent_Methods">Item 3 - Prefer Literal Syntax over the Equivalent Methods</h2><p>本节讲了Objective-C中的“字面量语法”，并且建议我们更多的使用这种语法，而不是使用传统的等价的函数方法。</p>]]>
-    
-    </summary>
-    
-      <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
-    
-      <category term="原创" scheme="http://tutuge.me/tags/%E5%8E%9F%E5%88%9B/"/>
-    
-      <category term="笔记" scheme="http://tutuge.me/tags/%E7%AC%94%E8%AE%B0/"/>
-    
-      <category term="翻译" scheme="http://tutuge.me/tags/%E7%BF%BB%E8%AF%91/"/>
     
   </entry>
   
