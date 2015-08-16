@@ -1,405 +1,27 @@
 
 
-<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<style>
-body {
-  font-family: Helvetica, arial, sans-serif;
-  font-size: 14px;
-  line-height: 1.6;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  background-color: white;
-  padding: 30px; }
-
-body > *:first-child {
-  margin-top: 0 !important; }
-body > *:last-child {
-  margin-bottom: 0 !important; }
-
-a {
-  color: #4183C4; }
-a.absent {
-  color: #cc0000; }
-a.anchor {
-  display: block;
-  padding-left: 30px;
-  margin-left: -30px;
-  cursor: pointer;
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0; }
-
-h1, h2, h3, h4, h5, h6 {
-  margin: 20px 0 10px;
-  padding: 0;
-  font-weight: bold;
-  -webkit-font-smoothing: antialiased;
-  cursor: text;
-  position: relative; }
-
-h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
-  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA09pVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoMTMuMCAyMDEyMDMwNS5tLjQxNSAyMDEyLzAzLzA1OjIxOjAwOjAwKSAgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OUM2NjlDQjI4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OUM2NjlDQjM4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5QzY2OUNCMDg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo5QzY2OUNCMTg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PsQhXeAAAABfSURBVHjaYvz//z8DJYCRUgMYQAbAMBQIAvEqkBQWXI6sHqwHiwG70TTBxGaiWwjCTGgOUgJiF1J8wMRAIUA34B4Q76HUBelAfJYSA0CuMIEaRP8wGIkGMA54bgQIMACAmkXJi0hKJQAAAABJRU5ErkJggg==) no-repeat 10px center;
-  text-decoration: none; }
-
-h1 tt, h1 code {
-  font-size: inherit; }
-
-h2 tt, h2 code {
-  font-size: inherit; }
-
-h3 tt, h3 code {
-  font-size: inherit; }
-
-h4 tt, h4 code {
-  font-size: inherit; }
-
-h5 tt, h5 code {
-  font-size: inherit; }
-
-h6 tt, h6 code {
-  font-size: inherit; }
-
-h1 {
-  font-size: 28px;
-  color: black; }
-
-h2 {
-  font-size: 24px;
-  border-bottom: 1px solid #cccccc;
-  color: black; }
-
-h3 {
-  font-size: 18px; }
-
-h4 {
-  font-size: 16px; }
-
-h5 {
-  font-size: 14px; }
-
-h6 {
-  color: #777777;
-  font-size: 14px; }
-
-p, blockquote, ul, ol, dl, li, table, pre {
-  margin: 15px 0; }
-
-hr {
-  background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAECAYAAACtBE5DAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OENDRjNBN0E2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OENDRjNBN0I2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4Q0NGM0E3ODY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4Q0NGM0E3OTY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PqqezsUAAAAfSURBVHjaYmRABcYwBiM2QSA4y4hNEKYDQxAEAAIMAHNGAzhkPOlYAAAAAElFTkSuQmCC) repeat-x 0 0;
-  border: 0 none;
-  color: #cccccc;
-  height: 4px;
-  padding: 0;
-}
-
-body > h2:first-child {
-  margin-top: 0;
-  padding-top: 0; }
-body > h1:first-child {
-  margin-top: 0;
-  padding-top: 0; }
-  body > h1:first-child + h2 {
-    margin-top: 0;
-    padding-top: 0; }
-body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
-  margin-top: 0;
-  padding-top: 0; }
-
-a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
-  margin-top: 0;
-  padding-top: 0; }
-
-h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
-  margin-top: 0; }
-
-li p.first {
-  display: inline-block; }
-li {
-  margin: 0; }
-ul, ol {
-  padding-left: 30px; }
-
-ul :first-child, ol :first-child {
-  margin-top: 0; }
-
-dl {
-  padding: 0; }
-  dl dt {
-    font-size: 14px;
-    font-weight: bold;
-    font-style: italic;
-    padding: 0;
-    margin: 15px 0 5px; }
-    dl dt:first-child {
-      padding: 0; }
-    dl dt > :first-child {
-      margin-top: 0; }
-    dl dt > :last-child {
-      margin-bottom: 0; }
-  dl dd {
-    margin: 0 0 15px;
-    padding: 0 15px; }
-    dl dd > :first-child {
-      margin-top: 0; }
-    dl dd > :last-child {
-      margin-bottom: 0; }
-
-blockquote {
-  border-left: 4px solid #dddddd;
-  padding: 0 15px;
-  color: #777777; }
-  blockquote > :first-child {
-    margin-top: 0; }
-  blockquote > :last-child {
-    margin-bottom: 0; }
-
-table {
-  padding: 0;border-collapse: collapse; }
-  table tr {
-    border-top: 1px solid #cccccc;
-    background-color: white;
-    margin: 0;
-    padding: 0; }
-    table tr:nth-child(2n) {
-      background-color: #f8f8f8; }
-    table tr th {
-      font-weight: bold;
-      border: 1px solid #cccccc;
-      margin: 0;
-      padding: 6px 13px; }
-    table tr td {
-      border: 1px solid #cccccc;
-      margin: 0;
-      padding: 6px 13px; }
-    table tr th :first-child, table tr td :first-child {
-      margin-top: 0; }
-    table tr th :last-child, table tr td :last-child {
-      margin-bottom: 0; }
-
-img {
-  max-width: 100%; }
-
-span.frame {
-  display: block;
-  overflow: hidden; }
-  span.frame > span {
-    border: 1px solid #dddddd;
-    display: block;
-    float: left;
-    overflow: hidden;
-    margin: 13px 0 0;
-    padding: 7px;
-    width: auto; }
-  span.frame span img {
-    display: block;
-    float: left; }
-  span.frame span span {
-    clear: both;
-    color: #333333;
-    display: block;
-    padding: 5px 0 0; }
-span.align-center {
-  display: block;
-  overflow: hidden;
-  clear: both; }
-  span.align-center > span {
-    display: block;
-    overflow: hidden;
-    margin: 13px auto 0;
-    text-align: center; }
-  span.align-center span img {
-    margin: 0 auto;
-    text-align: center; }
-span.align-right {
-  display: block;
-  overflow: hidden;
-  clear: both; }
-  span.align-right > span {
-    display: block;
-    overflow: hidden;
-    margin: 13px 0 0;
-    text-align: right; }
-  span.align-right span img {
-    margin: 0;
-    text-align: right; }
-span.float-left {
-  display: block;
-  margin-right: 13px;
-  overflow: hidden;
-  float: left; }
-  span.float-left span {
-    margin: 13px 0 0; }
-span.float-right {
-  display: block;
-  margin-left: 13px;
-  overflow: hidden;
-  float: right; }
-  span.float-right > span {
-    display: block;
-    overflow: hidden;
-    margin: 13px auto 0;
-    text-align: right; }
-
-code, tt {
-  margin: 0 2px;
-  padding: 0 5px;
-  white-space: nowrap;
-  border: 1px solid #eaeaea;
-  background-color: #f8f8f8;
-  border-radius: 3px; }
-
-pre code {
-  margin: 0;
-  padding: 0;
-  white-space: pre;
-  border: none;
-  background: transparent; }
-
-.highlight pre {
-  background-color: #f8f8f8;
-  border: 1px solid #cccccc;
-  font-size: 13px;
-  line-height: 19px;
-  overflow: auto;
-  padding: 6px 10px;
-  border-radius: 3px; }
-
-pre {
-  background-color: #f8f8f8;
-  border: 1px solid #cccccc;
-  font-size: 13px;
-  line-height: 19px;
-  overflow: auto;
-  padding: 6px 10px;
-  border-radius: 3px; }
-  pre code, pre tt {
-    background-color: transparent;
-    border: none; }
-
-sup {
-    font-size: 0.83em;
-    vertical-align: super;
-    line-height: 0;
-}
-* {
-	-webkit-print-color-adjust: exact;
-}
-@media screen and (min-width: 914px) {
-    body {
-        width: 854px;
-        margin:0 auto;
-    }
-}
-@media print {
-	table, pre {
-		page-break-inside: avoid;
-	}
-	pre {
-		word-wrap: break-word;
-	}
-}
-</style>
-<title>联系方式</title>
-
-</head>
-<body>
-<h2>联系方式</h2>
-
-<table>
-<thead>
-<tr>
-<th align="left">手机 </th>
-<th align="left"> 18666430574</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="left">Email </td>
-<td align="left"> zekunyan@163.com</td>
-</tr>
-<tr>
-<td align="left">QQ </td>
-<td align="left"> 522587261</td>
-</tr>
-</tbody>
-</table>
-
-
-<h2>个人信息</h2>
-
-<table>
-<thead>
-<tr>
-<th align="left">姓名 </th>
-<th align="left"> 燕泽堃</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="left">现居地 </td>
-<td align="left"> 湖北武汉</td>
-</tr>
-<tr>
-<td align="left">户籍 </td>
-<td align="left"> 广东东莞</td>
-</tr>
-<tr>
-<td align="left">学校 </td>
-<td align="left"> 华中科技大学</td>
-</tr>
-<tr>
-<td align="left">专业 </td>
-<td align="left"> 电子信息工程</td>
-</tr>
-<tr>
-<td align="left">实验室 </td>
-<td align="left"> <a href="http://www.qingvoice.com/members" target="_blank" rel="external">互联网中心</a></td>
-</tr>
-<tr>
-<td align="left">Github </td>
-<td align="left"> <a href="https://github.com/zekunyan" target="_blank" rel="external">https://github.com/zekunyan</a></td>
-</tr>
-<tr>
-<td align="left">博客 </td>
-<td align="left"> <a href="http://tutuge.me" target="_blank" rel="external">http://tutuge.me</a></td>
-</tr>
-<tr>
-<td align="left">SMS </td>
-<td align="left"> <a href="http://weibo.com/zekunyan" target="_blank" rel="external">http://weibo.com/zekunyan</a></td>
-</tr>
-<tr>
-<td align="left">开发经验 </td>
-<td align="left"> iOS、Android开发</td>
-</tr>
-</tbody>
-</table>
-
-
-<h2>教育经历</h2>
-
-<p>电子信息工程 （2010-2014）<br>
-华中科技大学  本科</p>
-
-<p>电子与通信工程 （2014-2016）<br>
-华中科技大学 工程硕士</p>
-
-<h2>求职意向</h2>
-
-<p>iOS客户端开发</p>
-
-<h2>主要项目经历</h2>
-
-<h3>1. <a href="https://itunes.apple.com/us/app/qing-ju-yin-le-quan-guo-zui/id913235479?l=zh&amp;ls=1&amp;mt=8" target="_blank" rel="external">青桔音乐iOS客户端</a> (2014.7-2015.2)</h3>
-
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="http://mdp.tylingsoft.com/bower_components/github-markdown-css/github-markdown.css">
+<link rel="stylesheet" href="http://mdp.tylingsoft.com/bower_components/font-awesome-min/css/font-awesome.min.css">
+<link rel="stylesheet" href="http://mdp.tylingsoft.com/bower_components/ionicons-min/css/ionicons.min.css">
+<link rel="stylesheet" href="http://mdp.tylingsoft.com/bower_components/katex-build/katex.min.css">
+<link rel="stylesheet" href="http://mdp.tylingsoft.com/markdown-plus.css">
+<script src="http://mdp.tylingsoft.com/bower_components/jquery-dist/jquery.min.js"></script>
+<script src="http://mdp.tylingsoft.com/bower_components/ace-min-noconflict/ace.js" charset="utf-8"></script>
+<script src="http://mdp.tylingsoft.com/bower_components/ace-min-noconflict/ext-static_highlight.js"></script>
+<script src="http://mdp.tylingsoft.com/bower_components/katex-build/katex.min.js"></script>
+<script>$(function(){ $('img[src^="bower_components/emoji-icons/"]').each(function(){ $(this).attr('src', 'http://mdp.tylingsoft.com/' + $(this).attr('src')); }); });</script>
+</head><body><article class="markdown-body" id="preview" data-open-title="Hide Preview" data-closed-title="Show Preview"><h2 id="-" data-line="1">联系方式</h2>
+<p>Email:  zekunyan@163.com</p>
+<h2 id="-" data-line="4">个人信息</h2>
+<p>Github：<a href="https://github.com/zekunyan" target="_blank" rel="external">https://github.com/zekunyan</a><br>博客：<a href="http://tutuge.me" target="_blank" rel="external">http://tutuge.me</a><br>微博：<a href="http://weibo.com/zekunyan" target="_blank" rel="external">http://weibo.com/zekunyan</a><br>开发经验  iOS、Android、后台开发</p>
+<h2 id="-" data-line="10">教育经历</h2>
+<p>电子信息工程 （2010-2014）<br>华中科技大学  本科</p>
+<p>电子与通信工程 （2014-2016）<br>华中科技大学 工程硕士</p>
+<h2 id="-" data-line="17">主要项目经历</h2>
+<h3 id="1-ios-https-itunes-apple-com-us-app-qing-ju-yin-le-quan-guo-zui-id913235479-l-zh-ls-1-mt-8-" data-line="18">1. <a href="https://itunes.apple.com/us/app/qing-ju-yin-le-quan-guo-zui/id913235479?l=zh&amp;ls=1&amp;mt=8" target="_blank" rel="external">青桔音乐iOS客户端</a></h3>
 <p>简介：<a href="http://www.qingvoice.com" target="_blank" rel="external">青桔音乐</a>，定位校园音乐主题社交平台，为全国高校校园音乐用户提供属于自己的高品质音乐社交服务。全国高校“校园好声音”网络大赛合作平台。</p>
-
 <p>独立完成开发，并持续迭代新版、重构。</p>
-
 <ul>
 <li>实现类微信朋友圈的“动态”页面，并通过优化，保证其性能与流畅度。</li>
 <li>通过NSProxy、Objective-C Runtime等技术设计并实现模块化的网络接口层。</li>
@@ -407,118 +29,69 @@ sup {
 <li>实现在文本中嵌入自定义表情，并自动维护表情图片的更新、缓存。</li>
 <li>实现评论列表、输入框等复杂UI控件的重用。</li>
 <li>运用委托者、模板方法、代理、MVC、MVVM等设计模式，优化代码结构。</li>
-<li>运用AutoLayout，实现3.5寸到5.5寸屏幕的原生适配。</li>
 <li>合理运用AFNetworking、FMDB、SDWebImage、JSONModel等开源库。</li>
 </ul>
-
-
-<p>测试账号：dev@qingvoice.com 密码：qingvoice</p>
-
-<h3>2. IBM VRAID Web Client Plugin (2014.1-2014.6)</h3>
-
-<p>IBM VRAID Web Client Plugin 是VMWare vSphere平台上的一款在Web端管理IBM VRAID硬件的插件。</p>
-
-<p>独立完成前后端开发，并向IBM提供测试、设计、部署文档。</p>
-
-<p>项目的<strong>难点</strong>在于IBM方面只提供了基于CIM标准的底层通信接口，所以如何集成到VMWare vSphere的Web Client平台上是项目的关键。主要工作如下：</p>
-
+<h3 id="2-" data-line="31">2. 波波攒-实时在线对战游戏</h3>
+<p>2015华中科技大学联创团队HackDay参赛作品。<br>iOS客户端+PHP、Node.js、SocketIO、MySQL后台。 </p>
 <ul>
-<li>用Java实现后端与底层CIM Provider的通信。</li>
-<li>按照平台要求，用Adobe Flex完成前端开发。</li>
-<li>利用Frinje Framework和JSON实现前后端通信。</li>
+<li>采用SpriteKit编写iOS端游戏部分。</li>
+<li>SocketIO+Http方式实现客户端与服务器间通信。</li>
 </ul>
-
-
-<h3>3. Android应用-<a href="http://app.mi.com/detail/49044" target="_blank" rel="external">VNote笔记</a>（2013.8-2013.11）</h3>
-
-<p><strong>Google 2013 年第四届 Android 应用开发中国大学生挑战赛-华中赛区-<a href="http://www.google.cn/university/androidchallenge/2013/regional.html#tab=group5" target="_blank" rel="external">三等奖</a></strong></p>
-
-<p>独立完成开发。</p>
-
-<p>简介：Vnote 笔记是一款简洁、美观的多功能记事软件。它可记录文字、照片、录音、涂鸦，可对笔记加密，做提醒。配合悬浮笔记，您能随时随地的做记录。Vnote 笔记是您生活中不可或缺的好帮手。</p>
-
-<h3>4. 其它项目</h3>
-
-<h5>Android项目</h5>
-
+<p>独立完成前后台开发。</p>
+<h3 id="3-android-vnote-http-app-mi-com-detail-49044-" data-line="40">3. Android应用-<a href="http://app.mi.com/detail/49044" target="_blank" rel="external">VNote笔记</a></h3>
+<p><strong>Google 2013 年第四届 Android 应用开发中国大学生挑战赛-华中赛区-<a href="http://www.google.cn/university/androidchallenge/2013/regional.html#tab=group5" target="_blank" rel="external">三等奖</a></strong>  </p>
+<p>多功能笔记应用，可记录文字、待办事项、图片、录音、涂鸦，同时支持悬浮笔记。<br>独立完成设计、美工、开发。</p>
+<h3 id="4-" data-line="46">4. 其它项目</h3>
+<h5 id="android-" data-line="48">Android项目</h5>
 <ul>
 <li><a href="http://www.appchina.com/app/com.example.android_broadcast_wifi" target="_blank" rel="external">WIFI助手</a> （2012.12）Wifi优先级管理、桌面Widget应用。</li>
 <li><a href="http://www.appchina.com/app/com.zorro.android_bluetoothsharefile" target="_blank" rel="external">蓝牙共享文件</a> (2012.10) 通过蓝牙在手机间共享文件。</li>
 <li><a href="http://www.appchina.com/app/com.zorro.shareapp" target="_blank" rel="external">蓝牙分享应用</a> (2012.9) 通过蓝牙在手机间分享已安装的应用的安装包，免去再下载的麻烦。</li>
 <li><a href="http://www.appchina.com/app/zx.android.cfunctions" target="_blank" rel="external">C语言函数查询</a> (2011.10) 手机端查看、搜索所有常用C语言标准库的函数原型、中文解释与实例。</li>
 </ul>
-
-
-<h5>其它</h5>
-
+<h5 id="-" data-line="54">其它</h5>
 <ul>
+<li>IBM VRAID vSphere Web Client Plugin，与IBM合作项目，VMWare vSphere平台上管理硬件的Web插件。</li>
 <li>基于Facebook的RPC框架Thrift，编写C++后端、PHP前端的Web服务程序。</li>
 <li>维护基于Java RMI、MySQL、MongoDB、Lucene的简单分布式数据处理系统。</li>
 </ul>
-
-
-<h2>开源项目</h2>
-
-<h4>Android-<a href="https://github.com/zekunyan/LinkTextView" target="_blank" rel="external">LinkTextView</a> (2014.10)</h4>
-
-<ol>
-<li>可以方便的对TextView里面的文字增加可点击链接，并且绑定回调。</li>
-<li>可以为每个链接单独设置文字、链接背景的正常、按下状态下的颜色。</li>
-<li>可以为每个链接绑定任意类型的“附件”对象，作为点击链接时的回调参数。</li>
-</ol>
-
-
-<h4>iOS-<a href="https://github.com/zekunyan/UITextViewDIYEmojiExample" target="_blank" rel="external">UITextViewDIYEmojiExample</a>: 在UITextView中插入自定义表情示例</h4>
-
-<h4>iOS-<a href="https://github.com/zekunyan/HttpProxyExample" target="_blank" rel="external">HttpProxyExample</a>: NSProxy示例</h4>
-
-<h4>iOS-<a href="https://github.com/zekunyan/AutoReleasePoolTestExample" target="_blank" rel="external">AutoReleasePoolTestExample</a>: @autoreleasepool的优化循环内存占用的示例。</h4>
-
-<h4>iOS-<a href="https://github.com/zekunyan/iOS-Tasks" target="_blank" rel="external">iOS-Tasks</a>: 实验室学习iOS同学的Github聚集地。</h4>
-
-<h2>Github</h2>
-
-<p>Followers: 12, 被Star总数：61</p>
-
-<h2>博客</h2>
-
-<p>日均PV：200左右</p>
-
+<h2 id="-" data-line="59">开源项目</h2>
+<h4 id="android-linktextview-https-github-com-zekunyan-linktextview-" data-line="61">Android-<a href="https://github.com/zekunyan/LinkTextView" target="_blank" rel="external">LinkTextView</a></h4>
+<h4 id="ios-autolayoutexamplewithmasonry-https-github-com-zekunyan-autolayoutexamplewithmasonry-autolayout-" data-line="63">iOS-<a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="external">AutolayoutExampleWithMasonry</a>: Autolayout示例</h4>
+<h4 id="ios-uitextviewdiyemojiexample-https-github-com-zekunyan-uitextviewdiyemojiexample-uitextview-" data-line="65">iOS-<a href="https://github.com/zekunyan/UITextViewDIYEmojiExample" target="_blank" rel="external">UITextViewDIYEmojiExample</a>: 在UITextView中插入自定义表情示例</h4>
+<h4 id="ios-httpproxyexample-https-github-com-zekunyan-httpproxyexample-nsproxy-" data-line="67">iOS-<a href="https://github.com/zekunyan/HttpProxyExample" target="_blank" rel="external">HttpProxyExample</a>: NSProxy示例</h4>
+<h4 id="ios-autoreleasepooltestexample-https-github-com-zekunyan-autoreleasepooltestexample-autoreleasepool-" data-line="69">iOS-<a href="https://github.com/zekunyan/AutoReleasePoolTestExample" target="_blank" rel="external">AutoReleasePoolTestExample</a>: @autoreleasepool的优化循环内存占用的示例</h4>
+<h4 id="ios-ios-tasks-https-github-com-zekunyan-ios-tasks-ios-github-" data-line="71">iOS-<a href="https://github.com/zekunyan/iOS-Tasks" target="_blank" rel="external">iOS-Tasks</a>: 实验室学习iOS同学的Github聚集地</h4>
+<h2 id="github" data-line="73">Github</h2>
+<p>Followers: 28, 被Star总数：168</p>
+<h2 id="-" data-line="76">博客</h2>
+<p>日均PV：250左右，被收入”中文 iOS/Mac 开发博客列表”。</p>
 <ul>
+<li><a href="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/" target="_blank" rel="external">有趣的Autolayout示例-Masonry实现系列</a></li>
+<li><a href="http://tutuge.me/2015/07/08/fill-nil-property-of-object/" target="_blank" rel="external">用Runtime的手段填充任意NSObject对象的nil属性</a></li>
 <li><a href="http://tutuge.me/2015/03/17/what-is-autoreleasepool/" target="_blank" rel="external">@autoreleasepool-内存的分配与释放</a>: 详解@autoreleasepool的作用，并附带利用@autoreleasepool优化循环内存占用的例子。</li>
-<li><a href="http://tutuge.me/2015/04/03/something-about-gcd/" target="_blank" rel="external">GCD使用经验与技巧浅谈</a>: 总结使用GCD的经验与遇到的“坑”。</li>
+<li><a href="http://tutuge.me/2015/04/03/something-about-gcd/" target="_blank" rel="external">GCD使用经验与技巧浅谈</a></li>
 <li><a href="http://tutuge.me/2015/03/29/bind-data-to-gcd-queue/" target="_blank" rel="external">为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权</a>: 以GCD的context为例，探讨关于Core Foundation和Foundation对象间的内存控制权问题。</li>
-<li><a href="http://tutuge.me/2015/03/15/%E6%9C%89%E5%85%B3%E5%AE%8F%E5%AE%9A%E4%B9%89%E7%9A%84%E7%BB%8F%E9%AA%8C%E4%B8%8E%E6%8A%80%E5%B7%A7-%E7%AE%80%E5%8C%96%E4%BB%A3%E7%A0%81-%E5%A2%9E%E5%BC%BALog/" target="_blank" rel="external">有关宏定义的经验与技巧-简化代码-增强Log</a>: 在iOS、Mac开发中，使用宏定义的一些小技巧。</li>
-<li><a href="http://tutuge.me/2015/03/07/UITextView%E7%BC%96%E8%BE%91%E6%97%B6%E6%8F%92%E5%85%A5%E8%87%AA%E5%AE%9A%E4%B9%89%E8%A1%A8%E6%83%85-%E7%AE%80%E5%8D%95%E7%9A%84%E5%9B%BE%E6%96%87%E6%B7%B7%E7%BC%96/" target="_blank" rel="external">UITextView编辑时插入自定义表情-简单的图文混编
-</a>: 简单总结一种在UITextView中编辑时插入自定义表情图片，并获取带有表情标志的文本字符串的办法。</li>
+<li><a href="http://tutuge.me/2015/04/21/resizable-nstextattachment/" target="_blank" rel="external">UITextView编辑时插入自定义表情-简单的图文混编系列
+</a></li>
 <li><a href="http://tutuge.me/2015/03/01/Entity%E5%92%8CModel%E7%9A%84%E4%B8%8D%E5%90%8C-%E5%85%B3%E4%BA%8E%E4%BB%A3%E7%A0%81%E7%9A%84%E6%95%B0%E6%8D%AE%E5%B1%82/" target="_blank" rel="external">Entity和Model的不同-关于代码的数据层</a>: 简单探讨编程时所说的Entity和Model的区别。</li>
 <li><a href="http://tutuge.me/2015/02/19/%E6%8F%90%E5%8D%87UITableView%E6%80%A7%E8%83%BD-%E5%A4%8D%E6%9D%82%E9%A1%B5%E9%9D%A2%E7%9A%84%E4%BC%98%E5%8C%96/" target="_blank" rel="external">提升UITableView性能-复杂页面的优化</a>: 结合项目“青桔音乐”的“动态”页面，总结如何提高复杂UITableView页面的流畅度、性能。</li>
 <li><a href="http://tutuge.me/2015/02/16/%E5%88%A9%E7%94%A8NSProxy%E5%AE%9E%E7%8E%B0%E6%B6%88%E6%81%AF%E8%BD%AC%E5%8F%91-%E6%A8%A1%E5%9D%97%E5%8C%96%E7%9A%84%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E5%88%9B/" target="_blank" rel="external">利用NSProxy实现消息转发-模块化的网络接口层设计-原创</a>: 利用NSproxy消息转发，实现模块化的网络接口层设计。</li>
 <li><a href="http://tutuge.me/2015/02/18/NSString%E7%9A%84Copy%E4%B8%8E%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" target="_blank" rel="external">NSString的Copy与内存分配</a>: 探索跟NSString相关的内存分配问题。</li>
-<li><a href="http://tutuge.me/2015/02/19/Block%E7%B1%BB%E5%9E%8B%E5%8F%98%E9%87%8F-%E7%BC%93%E5%AD%98Http%E8%AF%B7%E6%B1%82%E4%B8%8E%E5%9B%9E%E8%B0%83/" target="_blank" rel="external">Block类型变量-缓存Http请求与回调</a>: 结合项目“青桔音乐”中网络请求的OAuth机制，总结如何缓存Http请求。</li>
 <li><a href="http://tutuge.me/2015/02/01/iOS%E9%A1%B9%E7%9B%AE%E7%9A%84%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84-%E5%8E%9F%E5%88%9B/" target="_blank" rel="external">iOS项目的目录结构-原创</a>: 根据项目经验，总结中等iOS项目中的目录（Group）设计、代码结构设计。</li>
-<li><a href="http://tutuge.me/2015/02/28/%E4%B8%80%E6%AC%A1%E5%AE%A1%E6%A0%B8%E8%A2%AB%E6%8B%92%E7%9A%84%E7%BB%8F%E5%8E%86-%E5%85%B3%E4%BA%8EiCloud%E5%88%B0%E5%BA%95%E5%BA%94%E8%AF%A5%E5%A4%87%E4%BB%BD%E4%BB%80%E4%B9%88%E6%95%B0%E6%8D%AE/" target="_blank" rel="external">一次审核被拒的经历-关于iCloud到底应该备份什么数据
-</a>: 根据一次审核被拒的经历，总结iCloud备份与App的各个目录之间的关系。</li>
 <li><a href="http://tutuge.me/2014/11/02/LinkTextView-Android%E5%BC%80%E6%BA%90%E5%BA%93-%E5%8E%9F%E5%88%9B/" target="_blank" rel="external">Android开源库-LinkTextView-原创</a>: 开源库LinkTextView的主要技术实现。</li>
-<li>Effective Objective-C 读书笔记系列: <a href="http://tutuge.me/2015/02/05/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-1/" target="_blank" rel="external">Effective-Objective-C-读书笔记-Item-1</a>, <a href="http://tutuge.me/2015/02/06/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-2/" target="_blank" rel="external">Effective-Objective-C-读书笔记-Item-2</a>, <a href="http://tutuge.me/2015/02/14/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-3/" target="_blank" rel="external">Effective-Objective-C-读书笔记-Item-3</a>, <a href="http://tutuge.me/2015/03/11/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-4-%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%AE%9A%E4%B9%89%E5%B8%B8%E9%87%8F/" target="_blank" rel="external">Effective-Objective-C-读书笔记-Item-4-如何正确定义常量</a></li>
+<li>Effective Objective-C 读书笔记系列</li>
 </ul>
-
-
-<h2>技能</h2>
-
+<h2 id="-" data-line="94">技能</h2>
 <ul>
 <li>熟悉：C, C++, Java, Objective-C</li>
-<li>了解：PHP, Python, html, js, css, Linux Shell脚本</li>
+<li>了解：PHP, Python, html, js, css, Node.js, Linux Shell脚本</li>
 <li>数据库：MySQL, SQLite, MongoDB</li>
 <li>小型网站Linux服务器维护，华科蝴蝶Hudbt网站（PHP+nginx+memcache）服务器管理员。</li>
 <li>版本管理：Git</li>
 <li>文档编写：Markdown</li>
 </ul>
-
-
-<h2>致谢</h2>
-
+<h2 id="-" data-line="103">致谢</h2>
 <p>感谢您花时间阅读我的简历，期待能有机会和您共事。</p>
-</body>
-</html>
+</article></body></html>
 
