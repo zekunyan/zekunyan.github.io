@@ -256,8 +256,9 @@
     <link href="http://tutuge.me/2015/05/23/autolayout-example-with-masonry/"/>
     <id>http://tutuge.me/2015/05/23/autolayout-example-with-masonry/</id>
     <published>2015-05-23T11:59:22.000Z</published>
-    <updated>2015-05-25T07:42:14.000Z</updated>
-    <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>好久没有写Blog了，这段时间有点忙啊=。=<br>本文举了3个比较有“特点”的Autolayout例子，源于微博上好友的提问，感觉比较有意思，也比较有代表性，就写了出来，分享给大家~<br>至于为什么用Masonry，那是因为它好用啊！（被问到过有关Masonry的问题，就索性用它来实现吧=。=）。</p>
+    <updated>2015-09-01T16:17:29.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="更新">更新</h2><p>2015-9-1: 感谢“王振宇C艹”指出打字错误，已经修改了哈~</p>
+<h2 id="前言">前言</h2><p>好久没有写Blog了，这段时间有点忙啊=。=<br>本文举了3个比较有“特点”的Autolayout例子，源于微博上好友的提问，感觉比较有意思，也比较有代表性，就写了出来，分享给大家~<br>至于为什么用Masonry，那是因为它好用啊！（被问到过有关Masonry的问题，就索性用它来实现吧=。=）。</p>
 <h3 id="效果图">效果图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_1.gif" alt="image"></p>
 <h3 id="Github地址">Github地址</h3><p><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="external">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
 <a id="more"></a>
@@ -274,7 +275,7 @@
 <figure class="highlight vhdl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">viewA-<span class="keyword">attribute</span> = viewB-<span class="keyword">attribute</span> * multiplier + <span class="keyword">constant</span></span><br></pre></td></tr></table></figure>
 <h2 id="关于Masonry">关于Masonry</h2><p>好用！</p>
 <h2 id="Case_1:_并排两个label，宽度由内容决定。父级View宽度不够时，优先显示左边label的内容">Case 1: 并排两个label，宽度由内容决定。父级View宽度不够时，优先显示左边label的内容</h2><p>遇到这种跟内容压缩、优先级有关的布局，就不得不提Autolayout中的两个重要的属性“<strong>Content Compression Resistance</strong>”和“<strong>Content Hugging</strong>”。</p>
-<h3 id="Content_Compression_Resistance_=_不许挤我！">Content Compression Resistance = 不许挤我！</h3><p>对，这个属性说白了就是“不许挤我”=。=<br>这个属性的优先级（Priority）越高，越不“容易”被压缩。也就是说，当整体的空间装不小所有的View的时候，Content Compression Resistance优先级越高的，现实的内容越完整。</p>
+<h3 id="Content_Compression_Resistance_=_不许挤我！">Content Compression Resistance = 不许挤我！</h3><p>对，这个属性说白了就是“不许挤我”=。=<br>这个属性的优先级（Priority）越高，越不“容易”被压缩。也就是说，当整体的空间装不下所有的View的时候，Content Compression Resistance优先级越高的，显示的内容越完整。</p>
 <h3 id="Content_Hugging_=_抱紧！">Content Hugging = 抱紧！</h3><p>这个属性的优先级越高，整个View就要越“抱紧”View里面的内容。也就是View的大小不会随着父级View的扩大而扩大。</p>
 <h3 id="分析">分析</h3><p>根据要求，可以将约束分为两个部分：</p>
 <ol>
@@ -446,7 +447,8 @@ width = [self <span class="string">setView:</span>imageView4 <span class="string
 </ul>
 ]]></content>
     <summary type="html">
-    <![CDATA[<h2 id="前言">前言</h2><p>好久没有写Blog了，这段时间有点忙啊=。=<br>本文举了3个比较有“特点”的Autolayout例子，源于微博上好友的提问，感觉比较有意思，也比较有代表性，就写了出来，分享给大家~<br>至于为什么用Masonry，那是因为它好用啊！（被问到过有关Masonry的问题，就索性用它来实现吧=。=）。</p>
+    <![CDATA[<h2 id="更新">更新</h2><p>2015-9-1: 感谢“王振宇C艹”指出打字错误，已经修改了哈~</p>
+<h2 id="前言">前言</h2><p>好久没有写Blog了，这段时间有点忙啊=。=<br>本文举了3个比较有“特点”的Autolayout例子，源于微博上好友的提问，感觉比较有意思，也比较有代表性，就写了出来，分享给大家~<br>至于为什么用Masonry，那是因为它好用啊！（被问到过有关Masonry的问题，就索性用它来实现吧=。=）。</p>
 <h3 id="效果图">效果图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_1.gif" alt="image"></p>
 <h3 id="Github地址">Github地址</h3><p><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>]]>
     
