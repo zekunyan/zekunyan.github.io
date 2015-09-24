@@ -245,7 +245,7 @@
 <li>网络接口的具体实现，按照业务划分到不同的类中，如“<strong>UserHttpHandler</strong>”、“<strong>CommentHttpHandler</strong>”。</li>
 </ul>
 <p>其实，按照面向对象的原则，就是接口代理类<strong>HttpProxy</strong>拥有若干个按照业务划分的接口（Interface），这些接口的所有方法组成了网络层的不同的Http请求。如下图：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_http_proxy_1_1.jpg" alt="image"></p>
+<p><img src="http://zorrochen.qiniudn.com/blog_ios_http_proxy_1_1.jpg" alt="请求示意图"></p>
 <p>那么，调用的时候，所有接口都用HttpProxy调用，如：</p>
 <pre><code><span class="comment">//实际调用的是UserHttpHandler类的方法</span>
 <span class="attr_selector">[[HttpProxy sharedInstance]</span> <span class="tag">getUserWithID</span>:@<span class="tag">100</span>];

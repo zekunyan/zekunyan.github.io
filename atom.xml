@@ -4,7 +4,7 @@
   <subtitle><![CDATA[iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://tutuge.me/"/>
-  <updated>2015-08-09T07:38:11.000Z</updated>
+  <updated>2015-09-24T10:55:10.000Z</updated>
   <id>http://tutuge.me/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/"/>
     <id>http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/</id>
     <published>2015-08-07T16:55:52.000Z</published>
-    <updated>2015-08-09T07:38:11.000Z</updated>
+    <updated>2015-09-24T10:55:10.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>Masonry写的Autolayout示例又来了，仍然是三个小例子，分别是<strong>变高度的UITableViewCell、topLayoutGuide与bottomLayoutGuide，还有自定义的baseline</strong>，外加两个基本的知识点讲解，说不上“有趣”=。=，比较基础，写了很多，各位随意看看吧~</p>
 <p>上一篇：<a href="http://tutuge.me/2015/05/23/autolayout-example-with-masonry/" target="_blank" rel="external">有趣的Autolayout示例-Masonry实现</a></p>
 <p>Github地址：<br><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="external">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
@@ -105,10 +105,10 @@
 <figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">-</span> (void)<span class="tag">updateViewConstraints</span> &#123;</span><br><span class="line">    <span class="attr_selector">[_topView mas_updateConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">        // 直接利用其length属性</span><br><span class="line">        make.top.equalTo(self.view.mas_top).with.offset(self.topLayoutGuide.length);</span><br><span class="line">    &#125;]</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="attr_selector">[super updateViewConstraints]</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h4 id="用法3:_使用新版的mas_topLayoutGuide和mas_bottomLayoutGuide">用法3: 使用新版的mas_topLayoutGuide和mas_bottomLayoutGuide</h4><p>在<a href="https://github.com/SnapKit/Masonry/commit/c99e65c2eb40a02106d87a1487f96c0f4b1b72c0" target="_blank" rel="external">Masonry的新版</a>中，为UIViewController增加了一个新的Category: “MASAdditions”，增加了mas_topLayoutGuide和mas_bottomLayoutGuide两个方法，这样的话，我们就可以优雅的使用topLayoutGuide和bottomLayoutGuide了~<br><figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="collection">[_topView mas_makeConstraints:^<span class="list">(<span class="keyword">MASConstraintMaker</span> *make)</span> <span class="collection">&#123;</span><br><span class="line">    // 不用强制转换，也不用在updateViewConstraints里面更新了</span><br><span class="line">    make.top.equalTo<span class="list">(<span class="keyword">self.mas_topLayoutGuide</span>)</span><span class="comment">;</span></span><br><span class="line">    // ...</span><br><span class="line">&#125;</span>]</span><span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
 <h3 id="示例">示例</h3><p>直接看Demo吧，比较简单。</p>
-<h2 id="Case_3:_自定义baseline">Case 3: 自定义baseline</h2><p>最后一个Case，讲讲baseline。<br>baseline，翻译过来就是“基线”，在Autolayout里面对应着<strong>NSLayoutFormatAlignAllBaseline</strong>，也是一种对齐的标准。例如，UIButton的baseline就是内部的文字，如果一排button按照baseline对齐的话，就是下面这样：<br><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_6.jpg" alt="Buttons baseline align"></p>
+<h2 id="Case_3:_自定义baseline">Case 3: 自定义baseline</h2><p>最后一个Case，讲讲baseline。<br>baseline，翻译过来就是“基线”，在Autolayout里面对应着<strong>NSLayoutFormatAlignAllBaseline</strong>，也是一种对齐的标准。例如，UIButton的baseline就是内部的文字，如果一排button按照baseline对齐的话，就是下面这样：<br><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_6.jpg" alt="按钮按照baseline对其"></p>
 <p>对于自定义的View来说，baseline默认就是整个view的底部，如果想改变baseline的话，可以重写UIView的<strong>viewForBaselineLayout</strong>，返回当成baseline的view即可。</p>
 <p>如下面的自定义view：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_7.jpg" alt="Custom baseline"></p>
+<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_7.jpg" alt="自定义baseline"></p>
 <p>很明显，baseline就是显示图片的UIImageView，代码也很简单:<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 自定义的View中</span></span><br><span class="line"><span class="comment">// 返回自定义的baseline的view</span></span><br><span class="line">- (<span class="built_in">UIView</span> *)viewForBaselineLayout &#123;</span><br><span class="line">    <span class="keyword">return</span> _imageView;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>灵活的使用baseline，可以更加方便的进行布局。</p>
 <h2 id="总结">总结</h2><p>写了好长，能全部看完的朋友，嗯，你是个优秀的程序员=。=</p>
@@ -143,7 +143,7 @@
     <link href="http://tutuge.me/2015/07/25/compatibility-with-macro-category-and-runtime/"/>
     <id>http://tutuge.me/2015/07/25/compatibility-with-macro-category-and-runtime/</id>
     <published>2015-07-24T16:39:03.000Z</published>
-    <updated>2015-07-25T11:31:34.000Z</updated>
+    <updated>2015-09-24T10:55:35.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>最近，在做项目时，因为某种原因，突然要“适配”iOS6（也是醉了。。。），保证极少数的iOS6用户可以“用上”新的版本。哪怕界面上有瑕疵，只要功能正常就行。于是就只好花几天时间对iOS6进行紧急适配（心中一万头驼羊奔跑而过。。。）  </p>
 <p>本文总结了一些常规的，和“非常规”的iOS项目向老版本兼容的办法，结合了<strong>宏定义</strong>、<strong>Category</strong>和<strong>Runtime</strong>，大家看着消遣一下就好哈~</p>
 <a id="more"></a>
@@ -152,7 +152,7 @@
 <p><strong>Base SDK</strong><br>指的是用来编译APP的SDK（Software Development Kit）的版本，一般保持当前XCode支持的最新的就好，如iOS8.4。SDK其实就是包含了所有的你要用到的头文件、链接库的集合，你的APP里面用的各种类、函数，能编译、链接成最后的安装包，就要靠它，苹果每次升级系统，新推出的各种API，也是在SDK里面。所以一般Base SDK肯定是大于等于Deployment Target的版本。</p>
 <p><strong>区分</strong><br>既然Base SDK的版本大于等于Deployment Target的版本，那么就要小心了，因为<strong>“只要用到的类、方法，在当前的Base SDK版本里面存在，就可以<em>编译通过</em>！但是一旦运行APP的手机的系统版本低于这些类、方法的最低版本要求，APP就会Crash！”</strong>  </p>
 <p>所以并不是说，能编译通过的，就一定能<em>运行成功</em>！还要在<em>运行时检查</em>！简单来说，就是如下图：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_compatibility-with-macro-category-and-runtime_1.png" alt="image"></p>
+<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_compatibility-with-macro-category-and-runtime_1.png" alt="兼容示意图"></p>
 <h3 id="宏只在编译时生效！">宏只在编译时生效！</h3><p>宏定义只是纯粹的文本替换，只在编译时起作用。如下代码：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">if</span> __IPHONE_OS_VERSION_MIN_REQUIRED &gt;= 70000</span></span><br><span class="line">    NSLog(@<span class="string">"Tutuge"</span>);</span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
 <p>被宏定义包起来的代码是否会执行，在编译时就决定好了，无论你是用什么系统运行，宏定义再也没有什么卵用=。=</p>
@@ -256,10 +256,10 @@
     <link href="http://tutuge.me/2015/05/23/autolayout-example-with-masonry/"/>
     <id>http://tutuge.me/2015/05/23/autolayout-example-with-masonry/</id>
     <published>2015-05-23T11:59:22.000Z</published>
-    <updated>2015-09-10T08:11:43.000Z</updated>
+    <updated>2015-09-24T10:54:10.000Z</updated>
     <content type="html"><![CDATA[<h2 id="更新">更新</h2><p>2015-9-1: 感谢“王振宇C艹”指出打字错误，已经修改了哈~<br>2015-9-10: 第二篇: <a href="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/" target="_blank" rel="external">有趣的Autolayout示例2-Masonry实现</a></p>
 <h2 id="前言">前言</h2><p>好久没有写Blog了，这段时间有点忙啊=。=<br>本文举了3个比较有“特点”的Autolayout例子，源于微博上好友的提问，感觉比较有意思，也比较有代表性，就写了出来，分享给大家~<br>至于为什么用Masonry，那是因为它好用啊！（被问到过有关Masonry的问题，就索性用它来实现吧=。=）。</p>
-<h3 id="效果图">效果图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_1.gif" alt="image"></p>
+<h3 id="效果图">效果图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_1.gif" alt="效果图"></p>
 <h3 id="Github地址">Github地址</h3><p><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="external">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
 <a id="more"></a>
 <h3 id="关于例子工程结构">关于例子工程结构</h3><p>实现的时候采用的是用StoryBoard拖拽约束+Masonry手写代码相结合的方式实现。最关键的地方是用Masonry，为了更好地突出重点。其它的无关紧要的空间约束，直接就拖拽了。</p>
@@ -287,7 +287,7 @@
 <li>label不设置具体的宽度（width）属性，宽度由内容决定。</li>
 <li>显示的优先级由“Content Compression Resistance”属性的高低决定。</li>
 </ol>
-<h3 id="约束示例图">约束示例图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_2.png" alt="image"></p>
+<h3 id="约束示例图">约束示例图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_2.png" alt="约束示例图"></p>
 <h3 id="关键代码">关键代码</h3><p>关键的代码如下：（label1是左边的label，label2是右边的）</p>
 <h4 id="设置位置">设置位置</h4><pre><code><span class="comment">// label1: 位于左上角</span>
 [_label1 mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) {
@@ -330,13 +330,13 @@
 <span class="attr_selector">[_label2 setContentCompressionResistancePriority:UILayoutPriorityDefaultLow
                                          forAxis:UILayoutConstraintAxisHorizontal]</span>;
 </code></pre><h3 id="小节">小节</h3><p>灵活运用“Content Compression Resistance”和“Content Hugging”属性。</p>
-<h2 id="Case_2:_四个ImageView整体居中，可以任意显示、隐藏">Case 2: 四个ImageView整体居中，可以任意显示、隐藏</h2><p>先看看示例的截图：<br><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_3.png" alt="image"></p>
+<h2 id="Case_2:_四个ImageView整体居中，可以任意显示、隐藏">Case 2: 四个ImageView整体居中，可以任意显示、隐藏</h2><p>先看看示例的截图：<br><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_3.png" alt="效果图"></p>
 <p>下面的四个Switch控件分别控制上面对应位置的图片是否显示。</p>
 <h3 id="分析-1">分析</h3><ol>
 <li>首先就是整体居中，为了实现这个，最简单的办法就是将四个图片“装进”一个<strong>容器View</strong>里面，然后让这个容器View在整个页面中居中即可。这样就不用控制每个图片的居中效果了。</li>
 <li>然后就是显示与隐藏。在这里我直接控制图片ImageView的宽度，宽度为0的时候不就“隐藏”了吗。</li>
 </ol>
-<h3 id="约束示例图-1">约束示例图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_4.png" alt="image"></p>
+<h3 id="约束示例图-1">约束示例图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_4.png" alt="约束示例图"></p>
 <p><strong>解释</strong></p>
 <p>之所以这么设置，主要目的有以下几点：</p>
 <ol>
@@ -449,7 +449,7 @@ width = [self <span class="string">setView:</span>imageView4 <span class="string
     <summary type="html">
     <![CDATA[<h2 id="更新">更新</h2><p>2015-9-1: 感谢“王振宇C艹”指出打字错误，已经修改了哈~<br>2015-9-10: 第二篇: <a href="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/">有趣的Autolayout示例2-Masonry实现</a></p>
 <h2 id="前言">前言</h2><p>好久没有写Blog了，这段时间有点忙啊=。=<br>本文举了3个比较有“特点”的Autolayout例子，源于微博上好友的提问，感觉比较有意思，也比较有代表性，就写了出来，分享给大家~<br>至于为什么用Masonry，那是因为它好用啊！（被问到过有关Masonry的问题，就索性用它来实现吧=。=）。</p>
-<h3 id="效果图">效果图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_1.gif" alt="image"></p>
+<h3 id="效果图">效果图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_1.gif" alt="效果图"></p>
 <h3 id="Github地址">Github地址</h3><p><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>]]>
     
     </summary>
@@ -465,10 +465,10 @@ width = [self <span class="string">setView:</span>imageView4 <span class="string
     <link href="http://tutuge.me/2015/04/21/resizable-nstextattachment/"/>
     <id>http://tutuge.me/2015/04/21/resizable-nstextattachment/</id>
     <published>2015-04-21T12:26:17.000Z</published>
-    <updated>2015-04-21T13:09:03.000Z</updated>
+    <updated>2015-09-24T10:57:12.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>本文是基于<a href="http://tutuge.me/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/" target="_blank" rel="external">UITextView编辑时插入自定义表情-简单的图文混编</a>写的，主要实现了在UITextView插入表情图片时，自定义表情大小的功能。</p>
 <h4 id="Github">Github</h4><p>本文代码工程地址：<a href="https://github.com/zekunyan/UITextViewDIYEmojiExample" target="_blank" rel="external">https://github.com/zekunyan/UITextViewDIYEmojiExample</a></p>
-<h4 id="Gif示例图">Gif示例图</h4><p><img src="http://zorrochen.qiniudn.com/blog_resizable_nstextattachment_1.gif" alt="image"></p>
+<h4 id="Gif示例图">Gif示例图</h4><p><img src="http://zorrochen.qiniudn.com/blog_resizable_nstextattachment_1.gif" alt="Gif示例图"></p>
 <a id="more"></a>
 <h2 id="关键点">关键点</h2><p>首先要明确我们要什么，很简单，就是<strong>指定NSTextAttachment在被绘制时的大小</strong>。  </p>
 <p>所以，按照这个思路，就可以去找找NSTextAttachment类的相关方法，看能不能通过继承或其他的方式改变大小。</p>
@@ -492,7 +492,7 @@ width = [self <span class="string">setView:</span>imageView4 <span class="string
     <summary type="html">
     <![CDATA[<h2 id="前言">前言</h2><p>本文是基于<a href="http://tutuge.me/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/">UITextView编辑时插入自定义表情-简单的图文混编</a>写的，主要实现了在UITextView插入表情图片时，自定义表情大小的功能。</p>
 <h4 id="Github">Github</h4><p>本文代码工程地址：<a href="https://github.com/zekunyan/UITextViewDIYEmojiExample">https://github.com/zekunyan/UITextViewDIYEmojiExample</a></p>
-<h4 id="Gif示例图">Gif示例图</h4><p><img src="http://zorrochen.qiniudn.com/blog_resizable_nstextattachment_1.gif" alt="image"></p>]]>
+<h4 id="Gif示例图">Gif示例图</h4><p><img src="http://zorrochen.qiniudn.com/blog_resizable_nstextattachment_1.gif" alt="Gif示例图"></p>]]>
     
     </summary>
     
@@ -507,11 +507,11 @@ width = [self <span class="string">setView:</span>imageView4 <span class="string
     <link href="http://tutuge.me/2015/04/19/thrift-example-cpp-and-php/"/>
     <id>http://tutuge.me/2015/04/19/thrift-example-cpp-and-php/</id>
     <published>2015-04-19T09:04:56.000Z</published>
-    <updated>2015-04-19T09:06:49.000Z</updated>
+    <updated>2015-09-24T10:57:32.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>前段时间用了一下Facebook的开源RPC框架Thrift，做PHP客户端调用C++后端程序，真心觉得Thrift不错！</p>
 <p>本文项目地址：<a href="https://github.com/zekunyan/ThriftDemo_PHP_CPP" target="_blank" rel="external">https://github.com/zekunyan/ThriftDemo_PHP_CPP</a></p>
 <p>先看看本文的例子示意图：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_thrift_example_cpp_and_php_1.jpg" alt="image"></p>
+<p><img src="http://zorrochen.qiniudn.com/blog_thrift_example_cpp_and_php_1.jpg" alt="通信示意图"></p>
 <p><strong>流程</strong></p>
 <ol>
 <li>PHP客户端发起请求，请求参数是“Request”类型，里面有studentID参数。</li>
@@ -609,7 +609,7 @@ TTG_types.h
     <![CDATA[<h2 id="前言">前言</h2><p>前段时间用了一下Facebook的开源RPC框架Thrift，做PHP客户端调用C++后端程序，真心觉得Thrift不错！</p>
 <p>本文项目地址：<a href="https://github.com/zekunyan/ThriftDemo_PHP_CPP">https://github.com/zekunyan/ThriftDemo_PHP_CPP</a></p>
 <p>先看看本文的例子示意图：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_thrift_example_cpp_and_php_1.jpg" alt="image"></p>
+<p><img src="http://zorrochen.qiniudn.com/blog_thrift_example_cpp_and_php_1.jpg" alt="通信示意图"></p>
 <p><strong>流程</strong></p>
 <ol>
 <li>PHP客户端发起请求，请求参数是“Request”类型，里面有studentID参数。</li>
@@ -1046,7 +1046,7 @@ typedef struct _Data {
     <link href="http://tutuge.me/2015/03/21/effective-objective-c-5-enum/"/>
     <id>http://tutuge.me/2015/03/21/effective-objective-c-5-enum/</id>
     <published>2015-03-21T12:52:57.000Z</published>
-    <updated>2015-04-06T03:13:57.000Z</updated>
+    <updated>2015-09-24T11:00:38.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>Enum，也就是枚举，从C语言开始就有了，C++、Java、Objective-C、Swift这些语言，当然都有对应的枚举类型，功能可能有多有少，但是最核心的还是一个—-规范的定义代码中的状态、选项等“常量”。</p>
 <h2 id="Item_5_-_Use_Enumerations_for_States,_Options,_and_Status_Codes">Item 5 - Use Enumerations for States, Options, and Status Codes</h2><p>本节的内容就是如何正确的使用枚举。</p>
 <h2 id="状态与选项的区别（states_and_options）">状态与选项的区别（states and options）</h2><p>在用<strong>enum</strong>之前，我个人觉得，区分一下状态和选项的概念还是很必要的。</p>
@@ -1114,7 +1114,7 @@ TTGDirection direction = TTGDirectionTop | TTGDirectionLeft | TTGDirectionBottom
     <span class="built_in">NSLog</span>(<span class="string">@"bottom"</span>);
 }
 </code></pre><p><strong>direction</strong>变量的实际内存如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_effective_objective_c_5_enum_2.jpg" alt="image"></p>
+<p><img src="http://zorrochen.qiniudn.com/blog_effective_objective_c_5_enum_2.jpg" alt="内存示意图"></p>
 <p>这样，用位运算，就可以同时支持多个值。</p>
 <h2 id="enum在Objective-C中的“升级版”">enum在Objective-C中的“升级版”</h2><p>一般来说，我们不能指定枚举变量的实际类型是什么，就是说，我们不知道枚举最后是int型，还是其他的什么类型。但是从C++ 11开始，我们可以为枚举指定其实际的存储类型，如下语法：</p>
 <pre><code><span class="tag">enum</span> <span class="rule"><span class="attribute">TTGState </span>:<span class="value"> NSInteger {<span class="comment">/*...*/</span>}</span></span>;
@@ -1157,7 +1157,7 @@ TTGDirection direction = TTGDirectionTop | TTGDirectionLeft | TTGDirectionBottom
     <link href="http://tutuge.me/2015/03/17/what-is-autoreleasepool/"/>
     <id>http://tutuge.me/2015/03/17/what-is-autoreleasepool/</id>
     <published>2015-03-17T12:21:56.000Z</published>
-    <updated>2015-04-06T03:15:31.000Z</updated>
+    <updated>2015-09-24T10:58:23.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>开发过iOS、Mac的朋友应该对“<strong>@autoreleasepool</strong>”不陌生。只要在Xcode里创建一个工程，就能看到下面这样的代码：</p>
 <pre><code><span class="comment">//iOS program</span>
 <span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> * argv[]) {
@@ -1176,7 +1176,7 @@ TTGDirection direction = TTGDirectionTop | TTGDirectionLeft | TTGDirectionBottom
 </code></pre><p>看，每个<strong>main</strong>函数的主体都被<strong>@autoreleasepool</strong>的Block块包在里面，也就是说，接下来所有的对象创建都在这个block里面。</p>
 <p>那么，<strong>@autoreleasepool</strong>的作用到底是什么呢？我们开发中可以用它来做什么呢？  </p>
 <p>可以在某些情况下，大幅度降低程序的内存占用，如下图:</p>
-<p><img src="https://camo.githubusercontent.com/2c1f07459d33c72de07d8a9305703b2ba40abfc4/687474703a2f2f7a6f72726f6368656e2e71696e6975646e2e636f6d2f626c6f675f776861745f69735f6175746f72656c65617365706f6f6c5f312e706e673f696d61676556696577322f302f682f343030" alt="image"></p>
+<p><img src="https://camo.githubusercontent.com/2c1f07459d33c72de07d8a9305703b2ba40abfc4/687474703a2f2f7a6f72726f6368656e2e71696e6975646e2e636f6d2f626c6f675f776861745f69735f6175746f72656c65617365706f6f6c5f312e706e673f696d61676556696577322f302f682f343030" alt="autoreleasepool测试内存占用图"></p>
 <ul>
 <li>测试的内容：500000次循环，每次循环创建一个NSNumber实例和两个NSString实例。</li>
 <li>图：红线表示没有用<strong>@autoreleasepool</strong>时的内存占用。</li>
@@ -1248,7 +1248,7 @@ TTGDirection direction = TTGDirectionTop | TTGDirectionLeft | TTGDirectionBottom
 </code></pre><p>看，每个<strong>main</strong>函数的主体都被<strong>@autoreleasepool</strong>的Block块包在里面，也就是说，接下来所有的对象创建都在这个block里面。</p>
 <p>那么，<strong>@autoreleasepool</strong>的作用到底是什么呢？我们开发中可以用它来做什么呢？  </p>
 <p>可以在某些情况下，大幅度降低程序的内存占用，如下图:</p>
-<p><img src="https://camo.githubusercontent.com/2c1f07459d33c72de07d8a9305703b2ba40abfc4/687474703a2f2f7a6f72726f6368656e2e71696e6975646e2e636f6d2f626c6f675f776861745f69735f6175746f72656c65617365706f6f6c5f312e706e673f696d61676556696577322f302f682f343030" alt="image"></p>
+<p><img src="https://camo.githubusercontent.com/2c1f07459d33c72de07d8a9305703b2ba40abfc4/687474703a2f2f7a6f72726f6368656e2e71696e6975646e2e636f6d2f626c6f675f776861745f69735f6175746f72656c65617365706f6f6c5f312e706e673f696d61676556696577322f302f682f343030" alt="autoreleasepool测试内存占用图"></p>
 <ul>
 <li>测试的内容：500000次循环，每次循环创建一个NSNumber实例和两个NSString实例。</li>
 <li>图：红线表示没有用<strong>@autoreleasepool</strong>时的内存占用。</li>
@@ -1554,7 +1554,7 @@ typedef <span class="keyword">struct</span> Complex {
     <link href="http://tutuge.me/2015/03/07/UITextView%E7%BC%96%E8%BE%91%E6%97%B6%E6%8F%92%E5%85%A5%E8%87%AA%E5%AE%9A%E4%B9%89%E8%A1%A8%E6%83%85-%E7%AE%80%E5%8D%95%E7%9A%84%E5%9B%BE%E6%96%87%E6%B7%B7%E7%BC%96/"/>
     <id>http://tutuge.me/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/</id>
     <published>2015-03-07T03:04:38.000Z</published>
-    <updated>2015-04-06T03:15:09.000Z</updated>
+    <updated>2015-09-24T10:59:01.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>在iOS开发中，经常需要用UITextView作为编辑文本的输入控件。<br>但是如何在编辑时插入自定义表情呢？就是像发微博时那样？  </p>
 <p>本文简单的用<strong>NSTextAttachment</strong>、<strong>NSAttributedString</strong>的特性，实现了</p>
 <ul>
@@ -1563,7 +1563,7 @@ typedef <span class="keyword">struct</span> Complex {
 </ul>
 <h2 id="示例">示例</h2><p>本文代码工程地址：<a href="https://github.com/zekunyan/UITextViewDIYEmojiExample" target="_blank" rel="external">https://github.com/zekunyan/UITextViewDIYEmojiExample</a></p>
 <p>效果图：</p>
-<p><img src="http://zorrochen.qiniudn.com/inputEmoji_Sample.gif" alt="image"></p>
+<p><img src="http://zorrochen.qiniudn.com/inputEmoji_Sample.gif" alt="效果图"></p>
 <a id="more"></a>
 <h2 id="背景知识">背景知识</h2><ul>
 <li>NSAttributedString及其子类，用于显示富文本。</li>
@@ -1572,7 +1572,7 @@ typedef <span class="keyword">struct</span> Complex {
 </ul>
 <h3 id="表情与其标志">表情与其标志</h3><p>首先需要明确的是，我们的自定义表情一定是有一一对应的“<strong>标志</strong>”的，如“<strong>[/emoji_haha]</strong>”。<br>就是说，为了方便处理，方便在数据库、网络传输中保存、传输带有表情图片的文本，我们必须要为每种表情取特定的“<strong>名字</strong>”，数据库中储存的、网络传输的文本就只包含这些标志名字就行，在显示的时候做对应的替换。</p>
 <p>如：</p>
-<p><strong>tutuge.me<img src="http://zorrochen.qiniudn.com/blog_uitextview_input_emoji_emoji_1.png" alt="image"></strong></p>
+<p><strong>tutuge.me<img src="http://zorrochen.qiniudn.com/blog_uitextview_input_emoji_emoji_1.png" alt="表情"></strong></p>
 <p>对应的纯文本就是：</p>
 <p><strong>tutuge.me[/emoji_1]</strong></p>
 <h2 id="插入并显示表情图片">插入并显示表情图片</h2><p>插入表情很简单，直接实例化<strong>NSTextAttachment</strong>类，将需要的表情的UIImage实例赋值给NSTextAttachment的image属性，然后用“<strong>[NSAttributedString attributedStringWithAttachment:]</strong>”方法实例化一个NSAttributedString的对象，插入到UITextView的textStorage对应的位置即可。</p>
@@ -1675,7 +1675,7 @@ emojiTextAttachment.image = emojiImage;
 </ul>
 <h2 id="示例">示例</h2><p>本文代码工程地址：<a href="https://github.com/zekunyan/UITextViewDIYEmojiExample">https://github.com/zekunyan/UITextViewDIYEmojiExample</a></p>
 <p>效果图：</p>
-<p><img src="http://zorrochen.qiniudn.com/inputEmoji_Sample.gif" alt="image"></p>]]>
+<p><img src="http://zorrochen.qiniudn.com/inputEmoji_Sample.gif" alt="效果图"></p>]]>
     
     </summary>
     
@@ -1981,10 +1981,10 @@ typedef <span class="typename">void</span> (^http_fail)();
     <link href="http://tutuge.me/2015/02/19/%E6%8F%90%E5%8D%87UITableView%E6%80%A7%E8%83%BD-%E5%A4%8D%E6%9D%82%E9%A1%B5%E9%9D%A2%E7%9A%84%E4%BC%98%E5%8C%96/"/>
     <id>http://tutuge.me/2015/02/19/提升UITableView性能-复杂页面的优化/</id>
     <published>2015-02-18T17:28:41.000Z</published>
-    <updated>2015-04-06T03:13:03.000Z</updated>
+    <updated>2015-09-24T11:01:15.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。</p>
 <p>之前的做的项目，<a href="https://itunes.apple.com/us/app/qing-ju-yin-le-quan-guo-zui/id913235479?l=zh&amp;ls=1&amp;mt=8" target="_blank" rel="external">青桔音乐iOS客户端</a>里面的首页就是一个类似微信朋友圈的“动态”页面，大致如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_1.png?imageView2/0/h/300" alt="image"></p>
+<p><img src="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_1.png?imageView2/0/h/300" alt="青桔动态页面"></p>
 <p>如果是你，你会怎么实现这个页面呢？</p>
 <p>这还用问，当然是用UITableView+自定义的UITableViewCell。</p>
 <p>UITableView是可以滑动的，为了不让用户在滑动中感到有卡顿，该如何优化？下面，我就写一下我自己在做项目时的“经验”~</p>
@@ -2006,7 +2006,7 @@ typedef <span class="typename">void</span> (^http_fail)();
 <li>基于Cell的重用，真正运行时铺满屏幕所需的Cell数量大致是固定的，设为<strong>N</strong>个。所以如果如果只有一种Cell，那就是只有<strong>N</strong>个Cell的实例；但是如果有<strong>M</strong>种Cell，那么运行时最多可能会是“<strong>M x N = MN</strong>”个Cell的实例，虽然可能并不会占用太多内存，但是能少点不是更好吗。</li>
 </ul>
 <h4 id="善用hidden隐藏（显示）Subview">善用hidden隐藏（显示）Subview</h4><p>既然只定义一种Cell，那该如何显示不同类型的内容呢？<br>答案就是，把所有不同类型的view都定义好，放在cell里面，通过hidden显示、隐藏，来显示不同类型的内容。如下图定义Cell：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_2.jpg?imageView2/0/h/400" alt="image"></p>
+<p><img src="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_2.jpg?imageView2/0/h/400" alt="Cell示意图"></p>
 <p>图中的Subview1、Subview2、Subview3就是不同类型Cell的不同之处，所以我们在“<strong>cellForRowAtIndexPath</strong>”函数中，设置Cell的样式、内容时，就可以通过显示、隐藏这三个子view来显示。</p>
 <p>毕竟，在用户快速滑动中，只是单纯的显示、隐藏subview比实时创建要快得多。</p>
 <h3 id="提前计算并缓存每个Cell的高度">提前计算并缓存每个Cell的高度</h3><p>开发过Android，用过Android的ListView以后，对UITableView需要提前计算Cell的高度很不适应。=。= </p>
@@ -2075,7 +2075,7 @@ typedef <span class="typename">void</span> (^http_fail)();
     <summary type="html">
     <![CDATA[<h2 id="前言">前言</h2><p>随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。</p>
 <p>之前的做的项目，<a href="https://itunes.apple.com/us/app/qing-ju-yin-le-quan-guo-zui/id913235479?l=zh&amp;ls=1&amp;mt=8">青桔音乐iOS客户端</a>里面的首页就是一个类似微信朋友圈的“动态”页面，大致如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_1.png?imageView2/0/h/300" alt="image"></p>
+<p><img src="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_1.png?imageView2/0/h/300" alt="青桔动态页面"></p>
 <p>如果是你，你会怎么实现这个页面呢？</p>
 <p>这还用问，当然是用UITableView+自定义的UITableViewCell。</p>
 <p>UITableView是可以滑动的，为了不让用户在滑动中感到有卡顿，该如何优化？下面，我就写一下我自己在做项目时的“经验”~</p>]]>
@@ -2093,7 +2093,7 @@ typedef <span class="typename">void</span> (^http_fail)();
     <link href="http://tutuge.me/2015/02/18/NSString%E7%9A%84Copy%E4%B8%8E%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/"/>
     <id>http://tutuge.me/2015/02/18/NSString的Copy与内存分配/</id>
     <published>2015-02-18T09:00:47.000Z</published>
-    <updated>2015-04-06T03:15:00.000Z</updated>
+    <updated>2015-09-24T10:59:42.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>不管是用什么语言开发，字符串应该算是用的最多的了。在Objective-C中，字符串类是NSString，以及其子类NSMutableString等。所以，对于字符串类，编程语言、编译器等往往会做特殊处理。下面我就说说我自己在项目中发现的NSString的“奇怪”的地方。</p>
 <a id="more"></a>
 <h2 id="字符串常量，copy，mutableCopy">字符串常量，copy，mutableCopy</h2><h3 id="Example">Example</h3><p>先看看如下面的代码，猜猜会输出什么：</p>
@@ -2149,7 +2149,7 @@ NSLog(@<span class="string">"Name: %@"</span>, userEntity.name);
 <pre><code><span class="attribute">Name</span>: <span class="string">tutuge blog</span>
 </code></pre><p>看，我们明明是保存的“tutuge”，怎么到后面输出的是“tutuge blog”？</p>
 <h3 id="让NSString类型的Property为Copy型">让NSString类型的Property为Copy型</h3><p>因为name的Property属性是strong的，所以赋值后，它跟showName均指向同一个NSMutableString实例，如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_nsstring_copy_1_1.jpg" alt="image"></p>
+<p><img src="http://zorrochen.qiniudn.com/blog_ios_nsstring_copy_1_1.jpg" alt="内存示意图"></p>
 <p>所以改变了showName，当然name输出的值也就变了。<br>这个时候，name的property属性就不能是strong了，应该是copy，如下：</p>
 <pre><code><span class="comment">//UserEntity.h</span>
 
@@ -2157,7 +2157,7 @@ NSLog(@<span class="string">"Name: %@"</span>, userEntity.name);
 <span class="variable">@property</span>(copy, nonatomic) NSString *name;
 <span class="variable">@end</span>
 </code></pre><p>这样的话，当“<strong>userEntity.name = showName;</strong>”这句运行后，内存布局如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_nsstring_copy_1_2.jpg" alt="image"></p>
+<p><img src="http://zorrochen.qiniudn.com/blog_ios_nsstring_copy_1_2.jpg" alt="内存示意图"></p>
 <p>这样，就避免了这个问题。</p>
 <h2 id="总结">总结</h2><p>很所时候，代码并不是看上去那样“运行”的，多试试，多查阅资料，就能了解其中的奥秘了~</p>
 ]]></content>
@@ -2177,7 +2177,7 @@ NSLog(@<span class="string">"Name: %@"</span>, userEntity.name);
     <link href="http://tutuge.me/2015/02/16/%E5%88%A9%E7%94%A8NSProxy%E5%AE%9E%E7%8E%B0%E6%B6%88%E6%81%AF%E8%BD%AC%E5%8F%91-%E6%A8%A1%E5%9D%97%E5%8C%96%E7%9A%84%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E5%88%9B/"/>
     <id>http://tutuge.me/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/</id>
     <published>2015-02-16T10:52:08.000Z</published>
-    <updated>2015-04-06T03:12:54.000Z</updated>
+    <updated>2015-09-24T11:01:45.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>之前在做项目的时候，所有业务的网络接口方法，全部都写在了一个文件里面，一开始还好，毕竟每个方法的代码也只是十几行，增加、修改也比较容易。但是随着接口的增多，这个文件慢慢居然超过了1000行，里面几十个方法都写在一起，实在是不好维护。  </p>
 <p>虽然保持这样也没有什么，多用用Cmd+F就能找到。但是，真是越看越不顺眼😳， 代码一定要有“美感”啊~😝</p>
 <p>所以在查阅了大量文章后，终于想出了本文即将说明的办法，越发觉得Objective-C的“消息”机制是多么的赞~😚</p>
@@ -2193,7 +2193,7 @@ NSLog(@<span class="string">"Name: %@"</span>, userEntity.name);
 <li>网络接口的具体实现，按照业务划分到不同的类中，如“<strong>UserHttpHandler</strong>”、“<strong>CommentHttpHandler</strong>”。</li>
 </ul>
 <p>其实，按照面向对象的原则，就是接口代理类<strong>HttpProxy</strong>拥有若干个按照业务划分的接口（Interface），这些接口的所有方法组成了网络层的不同的Http请求。如下图：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_http_proxy_1_1.jpg" alt="image"></p>
+<p><img src="http://zorrochen.qiniudn.com/blog_ios_http_proxy_1_1.jpg" alt="请求示意图"></p>
 <p>那么，调用的时候，所有接口都用HttpProxy调用，如：</p>
 <pre><code><span class="comment">//实际调用的是UserHttpHandler类的方法</span>
 <span class="attr_selector">[[HttpProxy sharedInstance]</span> <span class="tag">getUserWithID</span>:@<span class="tag">100</span>];

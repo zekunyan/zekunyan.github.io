@@ -249,7 +249,7 @@
 </ul>
 <h2 id="示例">示例</h2><p>本文代码工程地址：<a href="https://github.com/zekunyan/UITextViewDIYEmojiExample" target="_blank" rel="external">https://github.com/zekunyan/UITextViewDIYEmojiExample</a></p>
 <p>效果图：</p>
-<p><img src="http://zorrochen.qiniudn.com/inputEmoji_Sample.gif" alt="image"></p>
+<p><img src="http://zorrochen.qiniudn.com/inputEmoji_Sample.gif" alt="效果图"></p>
 <a id="more"></a>
 <h2 id="背景知识">背景知识</h2><ul>
 <li>NSAttributedString及其子类，用于显示富文本。</li>
@@ -258,7 +258,7 @@
 </ul>
 <h3 id="表情与其标志">表情与其标志</h3><p>首先需要明确的是，我们的自定义表情一定是有一一对应的“<strong>标志</strong>”的，如“<strong>[/emoji_haha]</strong>”。<br>就是说，为了方便处理，方便在数据库、网络传输中保存、传输带有表情图片的文本，我们必须要为每种表情取特定的“<strong>名字</strong>”，数据库中储存的、网络传输的文本就只包含这些标志名字就行，在显示的时候做对应的替换。</p>
 <p>如：</p>
-<p><strong>tutuge.me<img src="http://zorrochen.qiniudn.com/blog_uitextview_input_emoji_emoji_1.png" alt="image"></strong></p>
+<p><strong>tutuge.me<img src="http://zorrochen.qiniudn.com/blog_uitextview_input_emoji_emoji_1.png" alt="表情"></strong></p>
 <p>对应的纯文本就是：</p>
 <p><strong>tutuge.me[/emoji_1]</strong></p>
 <h2 id="插入并显示表情图片">插入并显示表情图片</h2><p>插入表情很简单，直接实例化<strong>NSTextAttachment</strong>类，将需要的表情的UIImage实例赋值给NSTextAttachment的image属性，然后用“<strong>[NSAttributedString attributedStringWithAttachment:]</strong>”方法实例化一个NSAttributedString的对象，插入到UITextView的textStorage对应的位置即可。</p>

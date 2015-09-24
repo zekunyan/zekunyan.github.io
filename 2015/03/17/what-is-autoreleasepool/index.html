@@ -252,7 +252,7 @@ int main(int argc, char * argv[]) {
 </code></pre><p>看，每个<strong>main</strong>函数的主体都被<strong>@autoreleasepool</strong>的Block块包在里面，也就是说，接下来所有的对象创建都在这个block里面。</p>
 <p>那么，<strong>@autoreleasepool</strong>的作用到底是什么呢？我们开发中可以用它来做什么呢？  </p>
 <p>可以在某些情况下，大幅度降低程序的内存占用，如下图:</p>
-<p><img src="https://camo.githubusercontent.com/2c1f07459d33c72de07d8a9305703b2ba40abfc4/687474703a2f2f7a6f72726f6368656e2e71696e6975646e2e636f6d2f626c6f675f776861745f69735f6175746f72656c65617365706f6f6c5f312e706e673f696d61676556696577322f302f682f343030" alt="image"></p>
+<p><img src="https://camo.githubusercontent.com/2c1f07459d33c72de07d8a9305703b2ba40abfc4/687474703a2f2f7a6f72726f6368656e2e71696e6975646e2e636f6d2f626c6f675f776861745f69735f6175746f72656c65617365706f6f6c5f312e706e673f696d61676556696577322f302f682f343030" alt="autoreleasepool测试内存占用图"></p>
 <ul>
 <li>测试的内容：500000次循环，每次循环创建一个NSNumber实例和两个NSString实例。</li>
 <li>图：红线表示没有用<strong>@autoreleasepool</strong>时的内存占用。</li>

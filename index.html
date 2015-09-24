@@ -452,7 +452,7 @@
         
           <h2 id="更新">更新</h2><p>2015-9-1: 感谢“王振宇C艹”指出打字错误，已经修改了哈~<br>2015-9-10: 第二篇: <a href="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/">有趣的Autolayout示例2-Masonry实现</a></p>
 <h2 id="前言">前言</h2><p>好久没有写Blog了，这段时间有点忙啊=。=<br>本文举了3个比较有“特点”的Autolayout例子，源于微博上好友的提问，感觉比较有意思，也比较有代表性，就写了出来，分享给大家~<br>至于为什么用Masonry，那是因为它好用啊！（被问到过有关Masonry的问题，就索性用它来实现吧=。=）。</p>
-<h3 id="效果图">效果图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_1.gif" alt="image"></p>
+<h3 id="效果图">效果图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_1.gif" alt="效果图"></p>
 <h3 id="Github地址">Github地址</h3><p><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
           <div class="post-more-link text-center">
             <a class="btn" href="/2015/05/23/autolayout-example-with-masonry/#more" rel="contents">
@@ -528,7 +528,7 @@
         
           <h2 id="前言">前言</h2><p>本文是基于<a href="http://tutuge.me/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/">UITextView编辑时插入自定义表情-简单的图文混编</a>写的，主要实现了在UITextView插入表情图片时，自定义表情大小的功能。</p>
 <h4 id="Github">Github</h4><p>本文代码工程地址：<a href="https://github.com/zekunyan/UITextViewDIYEmojiExample">https://github.com/zekunyan/UITextViewDIYEmojiExample</a></p>
-<h4 id="Gif示例图">Gif示例图</h4><p><img src="http://zorrochen.qiniudn.com/blog_resizable_nstextattachment_1.gif" alt="image"></p>
+<h4 id="Gif示例图">Gif示例图</h4><p><img src="http://zorrochen.qiniudn.com/blog_resizable_nstextattachment_1.gif" alt="Gif示例图"></p>
           <div class="post-more-link text-center">
             <a class="btn" href="/2015/04/21/resizable-nstextattachment/#more" rel="contents">
               阅读全文 &raquo;
@@ -604,7 +604,7 @@
           <h2 id="前言">前言</h2><p>前段时间用了一下Facebook的开源RPC框架Thrift，做PHP客户端调用C++后端程序，真心觉得Thrift不错！</p>
 <p>本文项目地址：<a href="https://github.com/zekunyan/ThriftDemo_PHP_CPP">https://github.com/zekunyan/ThriftDemo_PHP_CPP</a></p>
 <p>先看看本文的例子示意图：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_thrift_example_cpp_and_php_1.jpg" alt="image"></p>
+<p><img src="http://zorrochen.qiniudn.com/blog_thrift_example_cpp_and_php_1.jpg" alt="通信示意图"></p>
 <p><strong>流程</strong></p>
 <ol>
 <li>PHP客户端发起请求，请求参数是“Request”类型，里面有studentID参数。</li>
@@ -944,7 +944,7 @@
 </code></pre><p>看，每个<strong>main</strong>函数的主体都被<strong>@autoreleasepool</strong>的Block块包在里面，也就是说，接下来所有的对象创建都在这个block里面。</p>
 <p>那么，<strong>@autoreleasepool</strong>的作用到底是什么呢？我们开发中可以用它来做什么呢？  </p>
 <p>可以在某些情况下，大幅度降低程序的内存占用，如下图:</p>
-<p><img src="https://camo.githubusercontent.com/2c1f07459d33c72de07d8a9305703b2ba40abfc4/687474703a2f2f7a6f72726f6368656e2e71696e6975646e2e636f6d2f626c6f675f776861745f69735f6175746f72656c65617365706f6f6c5f312e706e673f696d61676556696577322f302f682f343030" alt="image"></p>
+<p><img src="https://camo.githubusercontent.com/2c1f07459d33c72de07d8a9305703b2ba40abfc4/687474703a2f2f7a6f72726f6368656e2e71696e6975646e2e636f6d2f626c6f675f776861745f69735f6175746f72656c65617365706f6f6c5f312e706e673f696d61676556696577322f302f682f343030" alt="autoreleasepool测试内存占用图"></p>
 <ul>
 <li>测试的内容：500000次循环，每次循环创建一个NSNumber实例和两个NSString实例。</li>
 <li>图：红线表示没有用<strong>@autoreleasepool</strong>时的内存占用。</li>

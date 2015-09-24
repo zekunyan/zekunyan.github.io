@@ -230,7 +230,7 @@
       
         <span itemprop="articleBody"><h2 id="更新">更新</h2><p>2015-9-1: 感谢“王振宇C艹”指出打字错误，已经修改了哈~<br>2015-9-10: 第二篇: <a href="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/" target="_blank" rel="external">有趣的Autolayout示例2-Masonry实现</a></p>
 <h2 id="前言">前言</h2><p>好久没有写Blog了，这段时间有点忙啊=。=<br>本文举了3个比较有“特点”的Autolayout例子，源于微博上好友的提问，感觉比较有意思，也比较有代表性，就写了出来，分享给大家~<br>至于为什么用Masonry，那是因为它好用啊！（被问到过有关Masonry的问题，就索性用它来实现吧=。=）。</p>
-<h3 id="效果图">效果图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_1.gif" alt="image"></p>
+<h3 id="效果图">效果图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_1.gif" alt="效果图"></p>
 <h3 id="Github地址">Github地址</h3><p><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="external">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
 <a id="more"></a>
 <h3 id="关于例子工程结构">关于例子工程结构</h3><p>实现的时候采用的是用StoryBoard拖拽约束+Masonry手写代码相结合的方式实现。最关键的地方是用Masonry，为了更好地突出重点。其它的无关紧要的空间约束，直接就拖拽了。</p>
@@ -258,7 +258,7 @@
 <li>label不设置具体的宽度（width）属性，宽度由内容决定。</li>
 <li>显示的优先级由“Content Compression Resistance”属性的高低决定。</li>
 </ol>
-<h3 id="约束示例图">约束示例图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_2.png" alt="image"></p>
+<h3 id="约束示例图">约束示例图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_2.png" alt="约束示例图"></p>
 <h3 id="关键代码">关键代码</h3><p>关键的代码如下：（label1是左边的label，label2是右边的）</p>
 <h4 id="设置位置">设置位置</h4><pre><code><span class="comment">// label1: 位于左上角</span>
 [_label1 mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) {
@@ -301,13 +301,13 @@
 <span class="attr_selector">[_label2 setContentCompressionResistancePriority:UILayoutPriorityDefaultLow
                                          forAxis:UILayoutConstraintAxisHorizontal]</span>;
 </code></pre><h3 id="小节">小节</h3><p>灵活运用“Content Compression Resistance”和“Content Hugging”属性。</p>
-<h2 id="Case_2:_四个ImageView整体居中，可以任意显示、隐藏">Case 2: 四个ImageView整体居中，可以任意显示、隐藏</h2><p>先看看示例的截图：<br><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_3.png" alt="image"></p>
+<h2 id="Case_2:_四个ImageView整体居中，可以任意显示、隐藏">Case 2: 四个ImageView整体居中，可以任意显示、隐藏</h2><p>先看看示例的截图：<br><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_3.png" alt="效果图"></p>
 <p>下面的四个Switch控件分别控制上面对应位置的图片是否显示。</p>
 <h3 id="分析-1">分析</h3><ol>
 <li>首先就是整体居中，为了实现这个，最简单的办法就是将四个图片“装进”一个<strong>容器View</strong>里面，然后让这个容器View在整个页面中居中即可。这样就不用控制每个图片的居中效果了。</li>
 <li>然后就是显示与隐藏。在这里我直接控制图片ImageView的宽度，宽度为0的时候不就“隐藏”了吗。</li>
 </ol>
-<h3 id="约束示例图-1">约束示例图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_4.png" alt="image"></p>
+<h3 id="约束示例图-1">约束示例图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_4.png" alt="约束示例图"></p>
 <p><strong>解释</strong></p>
 <p>之所以这么设置，主要目的有以下几点：</p>
 <ol>

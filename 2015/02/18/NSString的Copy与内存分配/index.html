@@ -278,7 +278,7 @@ NSLog(@<span class="string">"Name: %@"</span>, userEntity.name);
 <pre><code><span class="attribute">Name</span>: <span class="string">tutuge blog</span>
 </code></pre><p>看，我们明明是保存的“tutuge”，怎么到后面输出的是“tutuge blog”？</p>
 <h3 id="让NSString类型的Property为Copy型">让NSString类型的Property为Copy型</h3><p>因为name的Property属性是strong的，所以赋值后，它跟showName均指向同一个NSMutableString实例，如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_nsstring_copy_1_1.jpg" alt="image"></p>
+<p><img src="http://zorrochen.qiniudn.com/blog_ios_nsstring_copy_1_1.jpg" alt="内存示意图"></p>
 <p>所以改变了showName，当然name输出的值也就变了。<br>这个时候，name的property属性就不能是strong了，应该是copy，如下：</p>
 <pre><code><span class="comment">//UserEntity.h</span>
 
@@ -286,7 +286,7 @@ NSLog(@<span class="string">"Name: %@"</span>, userEntity.name);
 <span class="variable">@property</span>(copy, nonatomic) NSString *name;
 <span class="variable">@end</span>
 </code></pre><p>这样的话，当“<strong>userEntity.name = showName;</strong>”这句运行后，内存布局如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_nsstring_copy_1_2.jpg" alt="image"></p>
+<p><img src="http://zorrochen.qiniudn.com/blog_ios_nsstring_copy_1_2.jpg" alt="内存示意图"></p>
 <p>这样，就避免了这个问题。</p>
 <h2 id="总结">总结</h2><p>很所时候，代码并不是看上去那样“运行”的，多试试，多查阅资料，就能了解其中的奥秘了~</p>
 </span>
