@@ -32,7 +32,7 @@
 
 
 
-  <meta name="keywords" content="iOS,原创," />
+  <meta name="keywords" content="Swift,iOS,原创," />
 
 
 
@@ -43,29 +43,19 @@
   <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.1" />
 
 
-<meta name="description" content="前言随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。
-之前的做的项目，青桔音乐iOS客户端里面的首页就是一个类似微信朋友圈的“动态”页面，大致如下：
-
-如果是你，你会怎么实现这个页面呢？
-这还用问，当然是用UITableView+自定义的UITableViewCell">
+<meta name="description" content="TTGSnackbar国庆期间，用Swift写了个简单的控件库：TTGSnackbar，模仿Android的Snackbar的=。=
+Github: https://github.com/zekunyan/TTGSnackbar">
 <meta property="og:type" content="article">
-<meta property="og:title" content="提升UITableView性能-复杂页面的优化">
-<meta property="og:url" content="http://tutuge.me/2015/02/19/提升UITableView性能-复杂页面的优化/index.html">
+<meta property="og:title" content="Swift写的库-TTGSnackbar">
+<meta property="og:url" content="http://tutuge.me/2015/10/09/ttgsnackbar-lib/index.html">
 <meta property="og:site_name" content="土土哥的技术Blog">
-<meta property="og:description" content="前言随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。
-之前的做的项目，青桔音乐iOS客户端里面的首页就是一个类似微信朋友圈的“动态”页面，大致如下：
-
-如果是你，你会怎么实现这个页面呢？
-这还用问，当然是用UITableView+自定义的UITableViewCell">
-<meta property="og:image" content="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_1.png?imageView2/0/h/300">
-<meta property="og:image" content="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_2.jpg?imageView2/0/h/400">
+<meta property="og:description" content="TTGSnackbar国庆期间，用Swift写了个简单的控件库：TTGSnackbar，模仿Android的Snackbar的=。=
+Github: https://github.com/zekunyan/TTGSnackbar">
+<meta property="og:image" content="http://7nj2iz.com1.z0.glb.clouddn.com/TTGSnackbar_1.gif">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="提升UITableView性能-复杂页面的优化">
-<meta name="twitter:description" content="前言随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。
-之前的做的项目，青桔音乐iOS客户端里面的首页就是一个类似微信朋友圈的“动态”页面，大致如下：
-
-如果是你，你会怎么实现这个页面呢？
-这还用问，当然是用UITableView+自定义的UITableViewCell">
+<meta name="twitter:title" content="Swift写的库-TTGSnackbar">
+<meta name="twitter:description" content="TTGSnackbar国庆期间，用Swift写了个简单的控件库：TTGSnackbar，模仿Android的Snackbar的=。=
+Github: https://github.com/zekunyan/TTGSnackbar">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -75,7 +65,7 @@
   };
 </script>
 
-  <title> 提升UITableView性能-复杂页面的优化 | 土土哥的技术Blog </title>
+  <title> Swift写的库-TTGSnackbar | 土土哥的技术Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -201,7 +191,7 @@
           
           
             
-              提升UITableView性能-复杂页面的优化
+              Swift写的库-TTGSnackbar
             
           
         </h1>
@@ -210,8 +200,8 @@
       <div class="post-meta">
         <span class="post-time">
           发表于
-          <time itemprop="dateCreated" datetime="2015-02-19T01:28:41+08:00" content="2015-02-19">
-            2015-02-19
+          <time itemprop="dateCreated" datetime="2015-10-09T19:49:09+08:00" content="2015-10-09">
+            2015-10-09
           </time>
         </span>
 
@@ -221,8 +211,8 @@
           
             <span class="post-comments-count">
               &nbsp; | &nbsp;
-              <a href="/2015/02/19/提升UITableView性能-复杂页面的优化/#comments" itemprop="discussionUrl">
-                <span class="post-comments-count ds-thread-count" data-thread-key="2015/02/19/提升UITableView性能-复杂页面的优化/" itemprop="commentsCount"></span>
+              <a href="/2015/10/09/ttgsnackbar-lib/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/09/ttgsnackbar-lib/" itemprop="commentsCount"></span>
               </a>
             </span>
           
@@ -236,95 +226,9 @@
       
 
       
-        <span itemprop="articleBody"><h2 id="前言">前言</h2><p>随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。</p>
-<p>之前的做的项目，<a href="https://itunes.apple.com/us/app/qing-ju-yin-le-quan-guo-zui/id913235479?l=zh&amp;ls=1&amp;mt=8" target="_blank" rel="external">青桔音乐iOS客户端</a>里面的首页就是一个类似微信朋友圈的“动态”页面，大致如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_1.png?imageView2/0/h/300" alt="青桔动态页面"></p>
-<p>如果是你，你会怎么实现这个页面呢？</p>
-<p>这还用问，当然是用UITableView+自定义的UITableViewCell。</p>
-<p>UITableView是可以滑动的，为了不让用户在滑动中感到有卡顿，该如何优化？下面，我就写一下我自己在做项目时的“经验”~</p>
-<a id="more"></a>
-<h2 id="优化">优化</h2><p>主要分为以下几点：</p>
-<ul>
-<li>只定义一种Cell。</li>
-<li>提前计算并缓存每个Cell的高度。</li>
-<li>提前创建真正显示的、需要加工的数据并缓存。</li>
-<li>缓存View！</li>
-<li>其它。</li>
-</ul>
-<h3 id="只定义一种Cell">只定义一种Cell</h3><p>乍一看，这个界面至少有3种样式的Cell，为什么只定义一种呢？</p>
-<h4 id="分析结构">分析结构</h4><p>仔细分析一下，页面中每个Cell的内容都有头像、标题、正文、评论、其它（歌曲、图片、歌手）。所以，从整体上看，每个Cell的结构是一致的！</p>
-<h4 id="重用=大致固定数量的Cell">重用=大致固定数量的Cell</h4><p>并且，凡是认真研究过UITableView的人应该都知道，Apple已经为我们提供了Cell的重用，如用“<strong>registerNib:forCellReuseIdentifier</strong>”方法注册自定义Cell的Nib，然后在“<strong>cellForRowAtIndexPath</strong>”的时候用“<strong>dequeueReusableCellWithIdentifier</strong>”获取可以重用的Cell，所以，无论UITableView要显示内容有多少，真正创建出的Cell可能只有5、6个。</p>
-<p>所以，我们完全可以只创建一种Cell，虽然这样一个Cell的“体积”可能会很大，但是介于Cell的数量不会很多，所以完全可以接受。</p>
-<h5 id="只定义一种Cell的好处"><strong>只定义一种Cell的好处</strong></h5><ul>
-<li>减少代码量，减少Nib文件的数量，统一一个Nib文件定义Cell，容易修改、维护。</li>
-<li>基于Cell的重用，真正运行时铺满屏幕所需的Cell数量大致是固定的，设为<strong>N</strong>个。所以如果如果只有一种Cell，那就是只有<strong>N</strong>个Cell的实例；但是如果有<strong>M</strong>种Cell，那么运行时最多可能会是“<strong>M x N = MN</strong>”个Cell的实例，虽然可能并不会占用太多内存，但是能少点不是更好吗。</li>
-</ul>
-<h4 id="善用hidden隐藏（显示）Subview">善用hidden隐藏（显示）Subview</h4><p>既然只定义一种Cell，那该如何显示不同类型的内容呢？<br>答案就是，把所有不同类型的view都定义好，放在cell里面，通过hidden显示、隐藏，来显示不同类型的内容。如下图定义Cell：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_2.jpg?imageView2/0/h/400" alt="Cell示意图"></p>
-<p>图中的Subview1、Subview2、Subview3就是不同类型Cell的不同之处，所以我们在“<strong>cellForRowAtIndexPath</strong>”函数中，设置Cell的样式、内容时，就可以通过显示、隐藏这三个子view来显示。</p>
-<p>毕竟，在用户快速滑动中，只是单纯的显示、隐藏subview比实时创建要快得多。</p>
-<h3 id="提前计算并缓存每个Cell的高度">提前计算并缓存每个Cell的高度</h3><p>开发过Android，用过Android的ListView以后，对UITableView需要提前计算Cell的高度很不适应。=。= </p>
-<p>首先要确定的是，在iOS中，系统会先调用“<strong>tableView:heightForRowAtIndexPath:</strong>”获取每个Cell即将显示的高度，从而确定整个UITableView的布局。然后才调用“<strong>tableView:cellForRowAtIndexPath</strong>”获取每个Cell，我们也是在这里填充、设置Cell的。</p>
-<p><strong>所以，既然高度总会被用到，那就早早的在获取数据时就计算好吧！</strong></p>
-<h4 id="在Model（Entity）中计算并保存Cell的高度">在Model（Entity）中计算并保存Cell的高度</h4><p>其实，在Model（Entity）中保存UI的参数是很奇怪的=。=（最好放在ViewModel中，就是MVVM模式的），我们的Entity可能就是下面的样子：</p>
-<pre><code><span class="class"><span class="keyword">@interface</span> <span class="title">DataEntity</span> : <span class="title">NSObject</span></span>
-
-<span class="comment">//原始数据</span>
-<span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *content;
-<span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *title;
-
-<span class="comment">//Cell 高度</span>
-<span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> cellHeight;
-
-<span class="comment">//计算高度</span>
-- (<span class="keyword">void</span>)calculateCellHeight;
-
-<span class="keyword">@end</span>
-</code></pre><p>这样，就不用在“<strong>tableView:heightForRowAtIndexPath:</strong>”中每次都计算了。</p>
-<h3 id="提前创建真正显示的、需要加工的数据并缓存">提前创建真正显示的、需要加工的数据并缓存</h3><p>Cell中显示的内容，很多时候可能并不是直接从服务器拿到的数据，而是经过“加工”的数据。如本文中的“动态”也，每个Cell的标题、正文都有可点击的连接Link、表情图片等富文本内容，而我们一般用NSAttributeString类来显示。</p>
-<p>既然每次都会用到，倒不如在获取到数据的时候就创建、加工好这些内容，等到需要现实的时候，直接拿来用不就行了。</p>
-<p>所以，我们的Entity类可能变成下面这个样子: </p>
-<pre><code><span class="class"><span class="keyword">@interface</span> <span class="title">DataEntity</span> : <span class="title">NSObject</span></span>
-
-<span class="comment">//原始数据</span>
-<span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *content;
-<span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *title;
-
-<span class="comment">//Cell 高度</span>
-<span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> cellHeight;
-
-<span class="comment">//真正显示的内容</span>
-<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSAttributedString</span> *showTitle;
-<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSAttributedString</span> *showContent;
-
-<span class="comment">//计算高度</span>
-- (<span class="keyword">void</span>)calculateCellHeight;
-
-<span class="comment">//创建、加工真正显示的内容</span>
-- (<span class="keyword">void</span>)setupShowTitileAndContent;
-
-<span class="keyword">@end</span>
-</code></pre><p>这样，在“<strong>tableView:cellForRowAtIndexPath</strong>”中，我们直接拿showTitle、showContent来显示就好，不用再创建。</p>
-<h3 id="缓存View!">缓存View!</h3><p>什么？缓存View？！</p>
-<p>是的，当Cell中的部分View是非常独立的，并且不便于重用的，而且“体积”非常小，在内存可控的前提下，我们完全可以将这些view缓存起来！</p>
-<p>方法当然也是将缓存的view放在Entity中~。</p>
-<h3 id="其它">其它</h3><p>当然，还有其他的优化方法，简单说一说：</p>
-<ul>
-<li>尽量设置Cell的view为opaque，避免GPU对Cell下面的内容也进行绘制。</li>
-<li>避免大量的图片缩放、颜色渐变等。</li>
-<li>避免同步的从网络、文件获取数据（这个是必须的=。=）</li>
-<li>用shadowPath创建阴影。</li>
-<li>尽量减少subview的数量，如多用drawRect绘制元素，替代用view显示。</li>
-<li>尽量显示“<strong>大小刚好合适</strong>”的图片资源。</li>
-</ul>
-<h2 id="总结">总结</h2><p>总的来说，就是：</p>
-<p><strong>缓存一切可以缓存的！就是“用空间替换时间”！</strong></p>
-<p><strong>在UITableView的Delegate、DataSource方法中，减少任何不必要的操作</strong></p>
-<h2 id="参考，推荐阅读">参考，推荐阅读</h2><ul>
-<li><a href="http://www.raywenderlich.com/31166/25-ios-app-performance-tips-tricks#tableviews" target="_blank" rel="external">25 iOS App Performance Tips &amp; Tricks</a></li>
-<li><a href="http://stackoverflow.com/questions/1352479/tricks-for-improving-iphone-uitableview-scrolling-performance" target="_blank" rel="external">Tricks for improving iPhone UITableView scrolling performance?</a></li>
-<li><a href="http://stackoverflow.com/questions/6172158/how-can-i-speed-up-a-uitableview" target="_blank" rel="external">How can I speed up a UITableView?</a></li>
-</ul>
+        <span itemprop="articleBody"><h2 id="TTGSnackbar">TTGSnackbar</h2><p>国庆期间，用Swift写了个简单的控件库：TTGSnackbar，模仿Android的Snackbar的=。=</p>
+<p>Github: <a href="https://github.com/zekunyan/TTGSnackbar" target="_blank" rel="external">https://github.com/zekunyan/TTGSnackbar</a></p>
+<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/TTGSnackbar_1.gif" alt="示例"></p>
 </span>
       
     </div>
@@ -332,6 +236,8 @@
     <footer class="post-footer">
       
         <div class="post-tags">
+          
+            <a href="/tags/Swift/" rel="tag">#Swift</a>
           
             <a href="/tags/iOS/" rel="tag">#iOS</a>
           
@@ -344,13 +250,11 @@
         <div class="post-nav">
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/02/19/Block类型变量-缓存Http请求与回调/" rel="prev">Block类型变量-缓存Http请求与回调</a>
-            
           </div>
 
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/02/18/NSString的Copy与内存分配/" rel="next">NSString的Copy与内存分配</a>
+              <a href="/2015/08/08/autolayout-example-with-masonry2/" rel="next">有趣的Autolayout示例2-Masonry实现</a>
             
           </div>
         </div>
@@ -365,10 +269,10 @@
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2015/02/19/提升UITableView性能-复杂页面的优化/"
-     data-title="提升UITableView性能-复杂页面的优化"
+        <div class="ds-share flat" data-thread-key="2015/10/09/ttgsnackbar-lib/"
+     data-title="Swift写的库-TTGSnackbar"
      data-content=""
-     data-url="http://tutuge.me/2015/02/19/提升UITableView性能-复杂页面的优化/">
+     data-url="http://tutuge.me/2015/10/09/ttgsnackbar-lib/">
   <div class="ds-share-inline">
     <ul  class="ds-share-icons-16">
 
@@ -394,8 +298,8 @@
         
           <div class="comments" id="comments">
             
-              <div class="ds-thread" data-thread-key="2015/02/19/提升UITableView性能-复杂页面的优化/"
-                   data-title="提升UITableView性能-复杂页面的优化" data-url="http://tutuge.me/2015/02/19/提升UITableView性能-复杂页面的优化/">
+              <div class="ds-thread" data-thread-key="2015/10/09/ttgsnackbar-lib/"
+                   data-title="Swift写的库-TTGSnackbar" data-url="http://tutuge.me/2015/10/09/ttgsnackbar-lib/">
               </div>
             
           </div>
@@ -527,7 +431,7 @@
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化"><span class="nav-number">2.</span> <span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#只定义一种Cell"><span class="nav-number">2.1.</span> <span class="nav-text">只定义一种Cell</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#分析结构"><span class="nav-number">2.1.1.</span> <span class="nav-text">分析结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#重用=大致固定数量的Cell"><span class="nav-number">2.1.2.</span> <span class="nav-text">重用=大致固定数量的Cell</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#只定义一种Cell的好处"><span class="nav-number">2.1.2.1.</span> <span class="nav-text">只定义一种Cell的好处</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#善用hidden隐藏（显示）Subview"><span class="nav-number">2.1.3.</span> <span class="nav-text">善用hidden隐藏（显示）Subview</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提前计算并缓存每个Cell的高度"><span class="nav-number">2.2.</span> <span class="nav-text">提前计算并缓存每个Cell的高度</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#在Model（Entity）中计算并保存Cell的高度"><span class="nav-number">2.2.1.</span> <span class="nav-text">在Model（Entity）中计算并保存Cell的高度</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提前创建真正显示的、需要加工的数据并缓存"><span class="nav-number">2.3.</span> <span class="nav-text">提前创建真正显示的、需要加工的数据并缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存View!"><span class="nav-number">2.4.</span> <span class="nav-text">缓存View!</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其它"><span class="nav-number">2.5.</span> <span class="nav-text">其它</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考，推荐阅读"><span class="nav-number">4.</span> <span class="nav-text">参考，推荐阅读</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#TTGSnackbar"><span class="nav-number">1.</span> <span class="nav-text">TTGSnackbar</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
