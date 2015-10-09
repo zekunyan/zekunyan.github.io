@@ -4,7 +4,7 @@
   <subtitle><![CDATA[iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://tutuge.me/"/>
-  <updated>2015-10-09T12:22:29.000Z</updated>
+  <updated>2015-10-09T14:32:38.000Z</updated>
   <id>http://tutuge.me/</id>
   
   <author>
@@ -19,10 +19,10 @@
     <link href="http://tutuge.me/2015/10/09/ttgsnackbar-lib/"/>
     <id>http://tutuge.me/2015/10/09/ttgsnackbar-lib/</id>
     <published>2015-10-09T11:49:09.000Z</published>
-    <updated>2015-10-09T12:22:29.000Z</updated>
+    <updated>2015-10-09T14:32:38.000Z</updated>
     <content type="html"><![CDATA[<h2 id="TTGSnackbar">TTGSnackbar</h2><p>国庆期间，用Swift写了个简单的控件库：TTGSnackbar，模仿Android的Snackbar的=。=</p>
 <p>Github: <a href="https://github.com/zekunyan/TTGSnackbar" target="_blank" rel="external">https://github.com/zekunyan/TTGSnackbar</a></p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/TTGSnackbar_1.gif" alt="示例"></p>
+<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/TTGSnackbar_6.gif" alt="示例"></p>
 ]]></content>
     <summary type="html">
     <![CDATA[<h2 id="TTGSnackbar">TTGSnackbar</h2><p>国庆期间，用Swift写了个简单的控件库：TTGSnackbar，模仿Android的Snackbar的=。=</p>
