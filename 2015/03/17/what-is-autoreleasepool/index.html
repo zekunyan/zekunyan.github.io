@@ -23,7 +23,7 @@
 
 
   
-    <link href='//fonts.useso.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+    <link href='//fonts.lug.ustc.edu.cn/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
   
 
 
@@ -351,18 +351,18 @@ int main(int argc, char * argv[]) {
 
       
         <div class="post-nav">
-          <div class="post-nav-prev post-nav-item">
+          <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/03/21/effective-objective-c-5-enum/" rel="prev">
-                <i class="fa fa-chevron-left"></i> Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5
+              <a href="/2015/03/15/有关宏定义的经验与技巧-简化代码-增强Log/" rel="next" title="有关宏定义的经验与技巧-简化代码-增强Log">
+                <i class="fa fa-chevron-left"></i> 有关宏定义的经验与技巧-简化代码-增强Log
               </a>
             
           </div>
 
-          <div class="post-nav-next post-nav-item">
+          <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/03/15/有关宏定义的经验与技巧-简化代码-增强Log/" rel="next">
-                有关宏定义的经验与技巧-简化代码-增强Log <i class="fa fa-chevron-right"></i>
+              <a href="/2015/03/21/effective-objective-c-5-enum/" rel="prev" title="Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5">
+                Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -430,6 +430,8 @@ int main(int argc, char * argv[]) {
     <div class="sidebar-inner">
 
       
+
+      
         <ul class="sidebar-nav motion-element">
           <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
             文章目录
@@ -440,7 +442,7 @@ int main(int argc, char * argv[]) {
         </ul>
       
 
-      <section class="site-overview">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" src="/uploads/avatar_comic_240.png" alt="土土哥" itemprop="image"/>
           <p class="site-author-name" itemprop="name">土土哥</p>
@@ -542,7 +544,7 @@ int main(int argc, char * argv[]) {
       </section>
 
       
-        <section class="post-toc-wrap motion-element sidebar-panel-active">
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
           <div class="post-toc-indicator-top post-toc-indicator"></div>
           <div class="post-toc">
             
@@ -608,6 +610,7 @@ int main(int argc, char * argv[]) {
     (function() {
       var ds = document.createElement('script');
       ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
       ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
       ds.charset = 'UTF-8';
       (document.getElementsByTagName('head')[0]
@@ -615,6 +618,7 @@ int main(int argc, char * argv[]) {
     })();
   </script>
     
+
     
   
   
@@ -786,12 +790,14 @@ int main(int argc, char * argv[]) {
     });
 
     // Expand sidebar on post detail page by default, when post has a toc.
-    var $tocContent = $('.post-toc-content');
-    if (isDesktop() && CONFIG.sidebar === 'post') {
-      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
-        displaySidebar();
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
       }
-    }
+    };
   });
 </script>
 
@@ -799,13 +805,18 @@ int main(int argc, char * argv[]) {
 
   <script type="text/javascript">
     $(document).ready(function () {
-      if (CONFIG.sidebar === 'always') {
-        displaySidebar();
-      }
-      if (isMobile()) {
-        FastClick.attach(document.body);
-      }
 
+      isMobile() && FastClick.attach(document.body);
+
+      // Define Motion Sequence.
+      motionIntegrator
+        .add(motionMiddleWares.logo)
+        .add(motionMiddleWares.menu)
+        .add(motionMiddleWares.backToTop)
+        .add(motionMiddleWares.postList)
+        .add(motionMiddleWares.sidebar);
+
+      // Bootstrap Motion.
       motionIntegrator.bootstrap();
     });
   </script>

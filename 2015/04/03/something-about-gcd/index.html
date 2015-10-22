@@ -23,7 +23,7 @@
 
 
   
-    <link href='//fonts.useso.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+    <link href='//fonts.lug.ustc.edu.cn/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
   
 
 
@@ -491,18 +491,18 @@ dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
 
       
         <div class="post-nav">
-          <div class="post-nav-prev post-nav-item">
+          <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/04/19/thrift-example-cpp-and-php/" rel="prev">
-                <i class="fa fa-chevron-left"></i> RPC框架Thrift例子-PHP调用C++后端程序
+              <a href="/2015/03/29/bind-data-to-gcd-queue/" rel="next" title="为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权">
+                <i class="fa fa-chevron-left"></i> 为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权
               </a>
             
           </div>
 
-          <div class="post-nav-next post-nav-item">
+          <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/03/29/bind-data-to-gcd-queue/" rel="next">
-                为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权 <i class="fa fa-chevron-right"></i>
+              <a href="/2015/04/19/thrift-example-cpp-and-php/" rel="prev" title="RPC框架Thrift例子-PHP调用C++后端程序">
+                RPC框架Thrift例子-PHP调用C++后端程序 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -570,6 +570,8 @@ dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
     <div class="sidebar-inner">
 
       
+
+      
         <ul class="sidebar-nav motion-element">
           <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
             文章目录
@@ -580,7 +582,7 @@ dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
         </ul>
       
 
-      <section class="site-overview">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" src="/uploads/avatar_comic_240.png" alt="土土哥" itemprop="image"/>
           <p class="site-author-name" itemprop="name">土土哥</p>
@@ -682,7 +684,7 @@ dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
       </section>
 
       
-        <section class="post-toc-wrap motion-element sidebar-panel-active">
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
           <div class="post-toc-indicator-top post-toc-indicator"></div>
           <div class="post-toc">
             
@@ -748,6 +750,7 @@ dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
     (function() {
       var ds = document.createElement('script');
       ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
       ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
       ds.charset = 'UTF-8';
       (document.getElementsByTagName('head')[0]
@@ -755,6 +758,7 @@ dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
     })();
   </script>
     
+
     
   
   
@@ -926,12 +930,14 @@ dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
     });
 
     // Expand sidebar on post detail page by default, when post has a toc.
-    var $tocContent = $('.post-toc-content');
-    if (isDesktop() && CONFIG.sidebar === 'post') {
-      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
-        displaySidebar();
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
       }
-    }
+    };
   });
 </script>
 
@@ -939,13 +945,18 @@ dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
 
   <script type="text/javascript">
     $(document).ready(function () {
-      if (CONFIG.sidebar === 'always') {
-        displaySidebar();
-      }
-      if (isMobile()) {
-        FastClick.attach(document.body);
-      }
 
+      isMobile() && FastClick.attach(document.body);
+
+      // Define Motion Sequence.
+      motionIntegrator
+        .add(motionMiddleWares.logo)
+        .add(motionMiddleWares.menu)
+        .add(motionMiddleWares.backToTop)
+        .add(motionMiddleWares.postList)
+        .add(motionMiddleWares.sidebar);
+
+      // Bootstrap Motion.
       motionIntegrator.bootstrap();
     });
   </script>
