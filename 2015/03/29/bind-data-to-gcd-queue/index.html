@@ -32,7 +32,7 @@
 <link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
 
 
-    <meta name="description" content="Coder" />
+    <meta name="description" content="程序猿" />
 
 
 
@@ -57,6 +57,7 @@ void cleanStaff(void *context) {
 <meta property="og:description" content="2015-5-28更新下面评论的好友“@Jim”给了种新的思路，就是在清除context的函数里面，用“_bridge_transfer”转换context，把context的内存管理权限重新交给ARC，这样，就不用显式调用“CFRelease”了。如下：
 void cleanStaff(void *context) {
     //这里用_bridge_transfer转换，将内存管理权限交还给">
+<meta property="og:updated_time" content="2015-05-28T09:11:59.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权">
 <meta name="twitter:description" content="2015-5-28更新下面评论的好友“@Jim”给了种新的思路，就是在清除context的函数里面，用“_bridge_transfer”转换context，把context的内存管理权限重新交给ARC，这样，就不用显式调用“CFRelease”了。如下：
@@ -148,7 +149,7 @@ void cleanStaff(void *context) {
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
             
             首页
           </a>
@@ -158,7 +159,7 @@ void cleanStaff(void *context) {
         <li class="menu-item menu-item-about">
           <a href="/about" rel="section">
             
-              <i class="menu-item-icon fa fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
             
             关于
           </a>
@@ -168,7 +169,7 @@ void cleanStaff(void *context) {
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
             
             归档
           </a>
@@ -178,7 +179,7 @@ void cleanStaff(void *context) {
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
             
             标签
           </a>
@@ -258,9 +259,9 @@ void cleanStaff(void *context) {
 
       
         <span itemprop="articleBody"><h2 id="2015-5-28更新">2015-5-28更新</h2><p>下面评论的好友“@Jim”给了种新的思路，就是在清除context的函数里面，用“<strong>_bridge_transfer</strong>”转换context，把context的内存管理权限重新交给ARC，这样，就不用显式调用“<strong>CFRelease</strong>”了。如下：</p>
-<pre><code><span class="literal">void</span> cleanStaff(<span class="literal">void</span> <span class="subst">*</span>context) {
+<pre><code><span class="literal">void</span> cleanStaff(<span class="literal">void</span> *context) {
     <span class="comment">//这里用_bridge_transfer转换，将内存管理权限交还给ARC</span>
-    <span class="built_in">Data</span> <span class="subst">*</span><span class="built_in">data</span> <span class="subst">=</span> (_bridge_transfer <span class="built_in">Data</span> <span class="subst">*</span>)(context);
+    <span class="built_in">Data</span> *<span class="built_in">data</span> = (_bridge_transfer <span class="built_in">Data</span> *)(context);
     NSLog(@<span class="string">"In clean, context number: %d"</span>, <span class="built_in">data</span><span class="built_in">.</span>number);
 
     <span class="comment">//不用显式释放context的内存！</span>
@@ -275,9 +276,9 @@ void cleanStaff(void *context) {
 <a id="more"></a>
 <h2 id="dispatch_set(get)_context">dispatch_set(get)_context</h2><p>先看看这两个函数的原型：</p>
 <pre><code><span class="comment">//设置context</span>
-<span class="function"><span class="keyword">void</span> <span class="title">dispatch_set_context</span> <span class="params">( dispatch_object_t <span class="keyword">object</span>, <span class="keyword">void</span> *context )</span></span>;
+<span class="keyword">void</span> dispatch<span class="number">_</span>set<span class="number">_</span>context ( dispatch<span class="number">_</span><span class="keyword">object</span><span class="number">_</span>t <span class="keyword">object</span>, <span class="keyword">void</span> *context );
 <span class="comment">//获取context</span>
-<span class="keyword">void</span> * dispatch_get_context ( dispatch_object_t <span class="keyword">object</span> );
+<span class="keyword">void</span> * dispatch<span class="number">_</span>get<span class="number">_</span>context ( dispatch<span class="number">_</span><span class="keyword">object</span><span class="number">_</span>t <span class="keyword">object</span> );
 </code></pre><p>这里的object一般指的就是通过dispatch_queue_create创建的队列。 </p>
 <p>所以，这两个函数分别完成了将context“绑定”到特定GCD队列和从GCD队列获取对应context的任务。</p>
 <h3 id="什么是context">什么是context</h3><p>在上述函数原型中，context是一个“<strong>void类型指针</strong>”，学过C语言的朋友应该都知道，void型指针可以指向任意类型，就是说，context在这里可以是任意类型的指针。</p>
@@ -289,19 +290,19 @@ typedef struct _Data {
 } <span class="built_in">Data</span>;
 
 <span class="comment">//定义队列的finalizer函数，用于释放context内存</span>
-<span class="literal">void</span> cleanStaff(<span class="literal">void</span> <span class="subst">*</span>context) {
-    NSLog(@<span class="string">"In clean, context number: %d"</span>, ((<span class="built_in">Data</span> <span class="subst">*</span>)context)<span class="subst">-&gt;</span>number);
+<span class="literal">void</span> cleanStaff(<span class="literal">void</span> *context) {
+    NSLog(@<span class="string">"In clean, context number: %d"</span>, ((<span class="built_in">Data</span> *)context)<span class="subst">-&gt;</span>number);
     <span class="comment">//释放，如果是new出来的对象，就要用delete</span>
     free(context);
 }
 
-<span class="subst">-</span> (<span class="literal">void</span>)testBody {
+- (<span class="literal">void</span>)testBody {
     <span class="comment">//创建队列</span>
-    dispatch_queue_t <span class="built_in">queue</span> <span class="subst">=</span> dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL);
+    dispatch_queue_t <span class="built_in">queue</span> = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL);
 
     <span class="comment">//创建Data类型context数据并初始化</span>
-    <span class="built_in">Data</span> <span class="subst">*</span>myData <span class="subst">=</span> malloc(sizeof(<span class="built_in">Data</span>));
-    myData<span class="subst">-&gt;</span>number <span class="subst">=</span> <span class="number">10</span>;
+    <span class="built_in">Data</span> *myData = malloc(sizeof(<span class="built_in">Data</span>));
+    myData<span class="subst">-&gt;</span>number = <span class="number">10</span>;
 
     <span class="comment">//绑定context</span>
     dispatch_set_context(<span class="built_in">queue</span>, myData);
@@ -311,16 +312,16 @@ typedef struct _Data {
 
     dispatch_async(<span class="built_in">queue</span>, ^{
         <span class="comment">//获取队列的context数据</span>
-        <span class="built_in">Data</span> <span class="subst">*</span><span class="built_in">data</span> <span class="subst">=</span> dispatch_get_context(<span class="built_in">queue</span>);
+        <span class="built_in">Data</span> *<span class="built_in">data</span> = dispatch_get_context(<span class="built_in">queue</span>);
         <span class="comment">//打印</span>
         NSLog(@<span class="string">"1: context number: %d"</span>, <span class="built_in">data</span><span class="subst">-&gt;</span>number);
         <span class="comment">//修改context保存的数据</span>
-        <span class="built_in">data</span><span class="subst">-&gt;</span>number <span class="subst">=</span> <span class="number">20</span>;
+        <span class="built_in">data</span><span class="subst">-&gt;</span>number = <span class="number">20</span>;
     });
 }
 </code></pre><p>上面的代码运行后如下：</p>
-<pre><code>2015<span class="tag">-03-29</span> 20<span class="pseudo">:28</span><span class="pseudo">:16</span><span class="class">.854</span> <span class="tag">GCDTest</span><span class="attr_selector">[37787:1443423]</span> 1: <span class="tag">context</span> <span class="rule"><span class="attribute">number</span>:<span class="value"> <span class="number">10</span>
-<span class="number">2015</span>-<span class="number">03</span>-<span class="number">29</span> <span class="number">20</span>:<span class="number">28</span>:<span class="number">16.855</span> GCDTest[<span class="number">37787</span>:<span class="number">1443423</span>] In clean, context number: <span class="number">20</span></span></span>
+<pre><code><span class="number">2015</span>-<span class="number">03</span>-<span class="number">29</span> <span class="number">20</span>:<span class="number">28</span>:<span class="number">16.854</span> GCDTest[<span class="number">37787</span>:<span class="number">1443423</span>] <span class="number">1</span>: context number: <span class="number">10</span>
+<span class="number">2015</span>-<span class="number">03</span>-<span class="number">29</span> <span class="number">20</span>:<span class="number">28</span>:<span class="number">16.855</span> GCDTest[<span class="number">37787</span>:<span class="number">1443423</span>] In clean, context number: <span class="number">20</span>
 </code></pre><p>看，通过为队列设置context，我们就能为队列绑定自定义的数据，然后在合适的时候取出来用。</p>
 <h2 id="NSObject类型的context">NSObject类型的context</h2><p>在Mac、iOS的开发过程中，我们大部分用的都是Foundation框架下的类，就是如NSString、NSDictionary这些NSObject类型的类。<br>但是上面的<strong>dispatch_set(get)_context</strong>接受的context参数是C语言类型的，即Core Foundation类型的，我们如何转换呢？</p>
 <p><strong>由于ARC不能管理Core Foundation Object的生命周期</strong>，所以我们必须先转换context的“类型”，以便转换内存管理权。</p>
@@ -359,7 +360,7 @@ typedef struct _Data {
 
 - (<span class="keyword">void</span>)testBody {
     <span class="comment">//创建队列</span>
-    dispatch_queue_t <span class="built_in">queue</span> = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL);
+    <span class="keyword">dispatch_queue_t</span> <span class="built_in">queue</span> = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL);
 
     <span class="comment">//创建Data类型context数据并初始化</span>
     Data *myData = [Data <span class="keyword">new</span>];
@@ -387,9 +388,9 @@ typedef struct _Data {
 <li>在队列任务中，用dispatch_get_context获取context的时候，用<strong>__bridge</strong>转换，维持context的内存管理权不变，防止出了作用域context被释放。</li>
 <li>最后用<strong>CFRelease</strong>释放context内存。</li>
 </ul>
-<h3 id="运行结果">运行结果</h3><pre><code>2015<span class="tag">-03-29</span> 21<span class="pseudo">:12</span><span class="pseudo">:41</span><span class="class">.631</span> <span class="tag">GCDTest</span><span class="attr_selector">[38131:1465900]</span> 1: <span class="tag">context</span> <span class="rule"><span class="attribute">number</span>:<span class="value"> <span class="number">10</span>
+<h3 id="运行结果">运行结果</h3><pre><code><span class="number">2015</span>-<span class="number">03</span>-<span class="number">29</span> <span class="number">21</span>:<span class="number">12</span>:<span class="number">41.631</span> GCDTest[<span class="number">38131</span>:<span class="number">1465900</span>] <span class="number">1</span>: context number: <span class="number">10</span>
 <span class="number">2015</span>-<span class="number">03</span>-<span class="number">29</span> <span class="number">21</span>:<span class="number">12</span>:<span class="number">41.632</span> GCDTest[<span class="number">38131</span>:<span class="number">1465900</span>] In clean, context number: <span class="number">20</span>
-<span class="number">2015</span>-<span class="number">03</span>-<span class="number">29</span> <span class="number">21</span>:<span class="number">12</span>:<span class="number">41.632</span> GCDTest[<span class="number">38131</span>:<span class="number">1465900</span>] Data dealloc...</span></span>
+<span class="number">2015</span>-<span class="number">03</span>-<span class="number">29</span> <span class="number">21</span>:<span class="number">12</span>:<span class="number">41.632</span> GCDTest[<span class="number">38131</span>:<span class="number">1465900</span>] Data dealloc...
 </code></pre><p>由结果可知，我们的context对象在最后显式调用<strong>CFRelease</strong>才被释放。</p>
 <h2 id="总结">总结</h2><p>总的来说，就是合理运用__bridge_retained(transfer)关键字转换对象的内存管理权，让我们自己控制对象的生命周期。</p>
 <h2 id="参考">参考</h2><ul>
@@ -442,30 +443,38 @@ typedef struct _Data {
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2015/03/29/bind-data-to-gcd-queue/"
-     data-title="为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权"
-     data-content=""
-     data-url="http://tutuge.me/2015/03/29/bind-data-to-gcd-queue/">
-  <div class="ds-share-inline">
-    <ul  class="ds-share-icons-16">
-
-      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
-      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
-      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
-      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
-      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
-
-    </ul>
-    <div class="ds-share-icons-more">
-    </div>
-  </div>
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
 </div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
       
     </div>
   </div>
 
  </div>
 
+        
+            <!-- 多说热评文章-->
+            <p>热评文章</p>
+            <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
         
 
         
@@ -511,11 +520,11 @@ typedef struct _Data {
           <img class="site-author-image" src="/uploads/avatar_comic_240.png" alt="土土哥" itemprop="image"/>
           <p class="site-author-name" itemprop="name">土土哥</p>
         </div>
-        <p class="site-description motion-element" itemprop="description">iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言</p>
+        <p class="site-description motion-element" itemprop="description">程序猿</p>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">27</span>
+              <span class="site-state-item-count">28</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -550,19 +559,19 @@ typedef struct _Data {
             
               <span class="links-of-author-item">
                 <a href="https://github.com/zekunyan" target="_blank">
-                  <i class="fa fa-github"></i> GitHub
+                  <i class="fa fa-github fa-fw"></i> GitHub
                 </a>
               </span>
             
               <span class="links-of-author-item">
                 <a href="https://twitter.com/zorro_tutuge" target="_blank">
-                  <i class="fa fa-twitter"></i> Twitter
+                  <i class="fa fa-twitter fa-fw"></i> Twitter
                 </a>
               </span>
             
               <span class="links-of-author-item">
                 <a href="http://weibo.com/zekunyan" target="_blank">
-                  <i class="fa fa-weibo"></i> Weibo
+                  <i class="fa fa-weibo fa-fw"></i> Weibo
                 </a>
               </span>
             
@@ -682,6 +691,8 @@ typedef struct _Data {
     })();
   </script>
     
+     
+
 
     
   

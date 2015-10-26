@@ -32,7 +32,7 @@
 <link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
 
 
-    <meta name="description" content="Coder" />
+    <meta name="description" content="程序猿" />
 
 
 
@@ -47,15 +47,15 @@
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
 
 
-<meta name="description" content="Coder">
+<meta name="description" content="程序猿">
 <meta property="og:type" content="website">
 <meta property="og:title" content="土土哥的技术Blog">
 <meta property="og:url" content="http://tutuge.me/page/2/index.html">
 <meta property="og:site_name" content="土土哥的技术Blog">
-<meta property="og:description" content="Coder">
+<meta property="og:description" content="程序猿">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="土土哥的技术Blog">
-<meta name="twitter:description" content="Coder">
+<meta name="twitter:description" content="程序猿">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -144,7 +144,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
             
             首页
           </a>
@@ -154,7 +154,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about" rel="section">
             
-              <i class="menu-item-icon fa fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
             
             关于
           </a>
@@ -164,7 +164,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
             
             归档
           </a>
@@ -174,7 +174,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
             
             标签
           </a>
@@ -196,6 +196,93 @@
       <div class="main-inner">
         <div id="content" class="content"> 
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                <a class="post-title-link" href="/2015/03/21/effective-objective-c-5-enum/" itemprop="url">
+                  Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-03-21T20:52:57+08:00" content="2015-03-21">
+              2015-03-21
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/03/21/effective-objective-c-5-enum/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/21/effective-objective-c-5-enum/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h2 id="前言">前言</h2><p>Enum，也就是枚举，从C语言开始就有了，C++、Java、Objective-C、Swift这些语言，当然都有对应的枚举类型，功能可能有多有少，但是最核心的还是一个—规范的定义代码中的状态、选项等“常量”。</p>
+<h2 id="Item_5_-_Use_Enumerations_for_States,_Options,_and_Status_Codes">Item 5 - Use Enumerations for States, Options, and Status Codes</h2><p>本节的内容就是如何正确的使用枚举。</p>
+<h2 id="状态与选项的区别（states_and_options）">状态与选项的区别（states and options）</h2><p>在用<strong>enum</strong>之前，我个人觉得，区分一下状态和选项的概念还是很必要的。</p>
+<p><strong>状态</strong>，同时只能有一种，如“<strong>OK</strong>”，“<strong>Error</strong>”，不可能同时是OK和Error。<br><strong>选项</strong>，同时可以有一种或一种以上，如App可以<strong>同时</strong>支持横屏和竖屏，横屏竖屏在这个时候就是“屏幕方向”的两种不同的选项。</p>
+<p>接下来，我们看看如何用枚举定义状态和选项。</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/03/21/effective-objective-c-5-enum/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
     
       
 
@@ -365,11 +452,11 @@
       
         
           <h2 id="前言">前言</h2><p>宏定义、#define啥的，我们经常遇到。<br>一般来说，最常用的可能就是定义一些常量、简单的“函数”，如下：</p>
-<pre><code>//定义常量<span class="constant">PI</span>
-<span class="comment">#define PI 3.1415926</span>
-<span class="comment">
-//定义“函数”MIN</span>
-<span class="comment">#define MIN(A,B) ((A) &lt; (B) ? (A) : (B))</span>
+<pre><code><span class="comment">//定义常量PI</span>
+<span class="preprocessor">#<span class="keyword">define</span> PI <span class="number">3.1415926</span></span>
+
+<span class="comment">//定义“函数”MIN</span>
+<span class="preprocessor">#<span class="keyword">define</span> MIN(A,B) ((A) &lt; (B) ? (A) : (B))</span>
 </code></pre><p>但是，这样定义常量、函数，有一定的风险。（见：<a href="http://tutuge.me/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/">Effective-Objective-C-读书笔记-Item-4-如何正确定义常量</a>, <a href="http://onevcat.com/2014/01/black-magic-in-macro/">宏定义的黑魔法 - 宏菜鸟起飞手册</a>）</p>
 <p>本文就列出几条我个人在iOS开发当中常用的经验与技巧。</p>
           <div class="post-more-link text-center">
@@ -800,7 +887,7 @@
         
           <h2 id="前言">前言</h2><p>项目最近一次审核被拒了=。=<br>仔细看了一下后，发现是没有遵守“<strong>iOS Data Storage Guidelines</strong>”。<br>在此总结一下。</p>
 <h2 id="被拒原因">被拒原因</h2><p>先看看被拒的反馈信息：</p>
-<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Apps must follow the iOS <span class="built_in">Data</span> Storage Guidelines <span class="literal">or</span> they will be rejected</span><br><span class="line"></span><br><span class="line"><span class="keyword">On</span> launch <span class="literal">and</span> content download, your app stores <span class="number">12.14</span> MB, which does <span class="literal">not</span> comply <span class="keyword">with</span> the iOS <span class="built_in">Data</span> Storage Guidelines<span class="built_in">.</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Apps must follow <span class="keyword">the</span> iOS Data Storage Guidelines <span class="keyword">or</span> they will be rejected</span><br><span class="line"></span><br><span class="line">On <span class="command">launch</span> <span class="keyword">and</span> content download, your app stores <span class="number">12.14</span> MB, which <span class="keyword">does</span> <span class="keyword">not</span> comply <span class="keyword">with</span> <span class="keyword">the</span> iOS Data Storage Guidelines.</span><br></pre></td></tr></table></figure>
 <p>大致意思就是App下载东西以后，在iCloud里面查看此App需要备份的体积变大了。  </p>
           <div class="post-more-link text-center">
             <a class="btn" href="/2015/02/28/一次审核被拒的经历-关于iCloud到底应该备份什么数据/#more" rel="contents">
@@ -884,8 +971,8 @@
 
       
         
-          <h2 id="前言">前言</h2><p>Objective-C中的Blocks实在是太好用了，有了它，我们就可以将“代码块”封装起来，当成变量使用、传递，所以，在Objective-C中，iOS中，许多的回调是用Block来完成的。</p>
-<h2 id="问题">问题</h2><p>我自己在之前的项目中，就遇到过一个问题。因为项目的需要，手机端所有的跟服务器的通信都需要“加密”，在经过一番调研后，我们使用的是类似OAuth机制（至于什么是OAuth，各位Google一下就明白了，大部分的公共API都用到了这种机制）。</p>
+          <p>##前言<br>Objective-C中的Blocks实在是太好用了，有了它，我们就可以将“代码块”封装起来，当成变量使用、传递，所以，在Objective-C中，iOS中，许多的回调是用Block来完成的。</p>
+<p>##问题<br>我自己在之前的项目中，就遇到过一个问题。因为项目的需要，手机端所有的跟服务器的通信都需要“加密”，在经过一番调研后，我们使用的是类似OAuth机制（至于什么是OAuth，各位Google一下就明白了，大部分的公共API都用到了这种机制）。</p>
           <div class="post-more-link text-center">
             <a class="btn" href="/2015/02/19/Block类型变量-缓存Http请求与回调/#more" rel="contents">
               阅读全文 &raquo;
@@ -968,7 +1055,8 @@
 
       
         
-          <h2 id="前言">前言</h2><p>随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。</p>
+          <p>##前言</p>
+<p>随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。</p>
 <p>之前的做的项目，<a href="https://itunes.apple.com/us/app/qing-ju-yin-le-quan-guo-zui/id913235479?l=zh&amp;ls=1&amp;mt=8">青桔音乐iOS客户端</a>里面的首页就是一个类似微信朋友圈的“动态”页面，大致如下：</p>
 <p><img src="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_1.png?imageView2/0/h/300" alt="青桔动态页面"></p>
 <p>如果是你，你会怎么实现这个页面呢？</p>
@@ -976,89 +1064,6 @@
 <p>UITableView是可以滑动的，为了不让用户在滑动中感到有卡顿，该如何优化？下面，我就写一下我自己在做项目时的“经验”~</p>
           <div class="post-more-link text-center">
             <a class="btn" href="/2015/02/19/提升UITableView性能-复杂页面的优化/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                <a class="post-title-link" href="/2015/02/18/NSString的Copy与内存分配/" itemprop="url">
-                  NSString的Copy与内存分配
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-02-18T17:00:47+08:00" content="2015-02-18">
-              2015-02-18
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/02/18/NSString的Copy与内存分配/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/02/18/NSString的Copy与内存分配/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h2 id="前言">前言</h2><p>不管是用什么语言开发，字符串应该算是用的最多的了。在Objective-C中，字符串类是NSString，以及其子类NSMutableString等。所以，对于字符串类，编程语言、编译器等往往会做特殊处理。下面我就说说我自己在项目中发现的NSString的“奇怪”的地方。</p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/02/18/NSString的Copy与内存分配/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1118,11 +1123,11 @@
           <img class="site-author-image" src="/uploads/avatar_comic_240.png" alt="土土哥" itemprop="image"/>
           <p class="site-author-name" itemprop="name">土土哥</p>
         </div>
-        <p class="site-description motion-element" itemprop="description">iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言</p>
+        <p class="site-description motion-element" itemprop="description">程序猿</p>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">27</span>
+              <span class="site-state-item-count">28</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1157,19 +1162,19 @@
             
               <span class="links-of-author-item">
                 <a href="https://github.com/zekunyan" target="_blank">
-                  <i class="fa fa-github"></i> GitHub
+                  <i class="fa fa-github fa-fw"></i> GitHub
                 </a>
               </span>
             
               <span class="links-of-author-item">
                 <a href="https://twitter.com/zorro_tutuge" target="_blank">
-                  <i class="fa fa-twitter"></i> Twitter
+                  <i class="fa fa-twitter fa-fw"></i> Twitter
                 </a>
               </span>
             
               <span class="links-of-author-item">
                 <a href="http://weibo.com/zekunyan" target="_blank">
-                  <i class="fa fa-weibo"></i> Weibo
+                  <i class="fa fa-weibo fa-fw"></i> Weibo
                 </a>
               </span>
             
@@ -1278,6 +1283,8 @@
     })();
   </script>
     
+     
+
 
     
   

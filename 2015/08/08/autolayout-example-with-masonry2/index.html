@@ -32,7 +32,7 @@
 <link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
 
 
-    <meta name="description" content="Coder" />
+    <meta name="description" content="程序猿" />
 
 
 
@@ -64,6 +64,7 @@ Github地址：https://git">
 <meta property="og:image" content="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_5.jpg?imageView2/0/w/400/q/100">
 <meta property="og:image" content="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_6.jpg">
 <meta property="og:image" content="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_7.jpg">
+<meta property="og:updated_time" content="2015-09-24T10:55:10.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="有趣的Autolayout示例2-Masonry实现">
 <meta name="twitter:description" content="前言Masonry写的Autolayout示例又来了，仍然是三个小例子，分别是变高度的UITableViewCell、topLayoutGuide与bottomLayoutGuide，还有自定义的baseline，外加两个基本的知识点讲解，说不上“有趣”=。=，比较基础，写了很多，各位随意看看吧~
@@ -155,7 +156,7 @@ Github地址：https://git">
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
             
             首页
           </a>
@@ -165,7 +166,7 @@ Github地址：https://git">
         <li class="menu-item menu-item-about">
           <a href="/about" rel="section">
             
-              <i class="menu-item-icon fa fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
             
             关于
           </a>
@@ -175,7 +176,7 @@ Github地址：https://git">
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
             
             归档
           </a>
@@ -185,7 +186,7 @@ Github地址：https://git">
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
             
             标签
           </a>
@@ -265,7 +266,7 @@ Github地址：https://git">
 
       
         <span itemprop="articleBody"><h2 id="前言">前言</h2><p>Masonry写的Autolayout示例又来了，仍然是三个小例子，分别是<strong>变高度的UITableViewCell、topLayoutGuide与bottomLayoutGuide，还有自定义的baseline</strong>，外加两个基本的知识点讲解，说不上“有趣”=。=，比较基础，写了很多，各位随意看看吧~</p>
-<p>上一篇：<a href="http://tutuge.me/2015/05/23/autolayout-example-with-masonry/" target="_blank" rel="external">有趣的Autolayout示例-Masonry实现</a></p>
+<p>上一篇：<a href="http://tutuge.me/2015/05/23/autolayout-example-with-masonry/">有趣的Autolayout示例-Masonry实现</a></p>
 <p>Github地址：<br><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="external">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
 <p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_1.gif" alt="Gif示例"></p>
 <a id="more"></a>
@@ -275,10 +276,10 @@ Github地址：https://git">
 <p>但是，为什么bottom、right的offset是<strong>负数</strong>呢？</p>
 <p>其实无论是Autolayout还是直接写frame，最终的结果都是要把我们的控件按照正确的位置绘制在屏幕上，也就是说，在一个统一的坐标系下，如下：</p>
 <p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_2.png" alt="坐标系"></p>
-<p>而在Masonry里面，offset只是做了“加法”运算，举个例，上面的：<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make.top.equalTo(superview.mas_top).<span class="keyword">with</span>.<span class="command">offset</span>(padding.top);</span><br></pre></td></tr></table></figure></p>
-<p>其实等于下面的式子：<br><figure class="highlight fix"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">view1.top </span>=<span class="string"> superview.top + padding.top;</span></span><br></pre></td></tr></table></figure></p>
-<p>转换到坐标系里面，即是：<br><figure class="highlight fix"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">view1顶部的y坐标 </span>=<span class="string"> superview顶部的y坐标 + padding.top;</span></span><br></pre></td></tr></table></figure></p>
-<p>所以，如果我们想view1的bottom距底部间距为10，按照offset的“加法运算”，应该是下面这样：<br><figure class="highlight fix"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">view1底部的y坐标 </span>=<span class="string"> superview底部的y坐标 + (-10);</span></span><br></pre></td></tr></table></figure></p>
+<p>而在Masonry里面，offset只是做了“加法”运算，举个例，上面的：<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">make</span><span class="class">.top</span><span class="class">.equalTo</span>(<span class="tag">superview</span><span class="class">.mas_top</span>)<span class="class">.with</span><span class="class">.offset</span>(<span class="tag">padding</span><span class="class">.top</span>);</span><br></pre></td></tr></table></figure></p>
+<p>其实等于下面的式子：<br><figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">view1.top = superview.top + padding.top<span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
+<p>转换到坐标系里面，即是：<br><figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">view1顶部的y坐标 = superview顶部的y坐标 + padding.top<span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
+<p>所以，如果我们想view1的bottom距底部间距为10，按照offset的“加法运算”，应该是下面这样：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">view1底部的y坐标 = superview底部的y坐标 + (-<span class="number">10</span>);</span><br></pre></td></tr></table></figure></p>
 <p>所以，代码里面的bottom的offset是负数。right也是一个道理。</p>
 <p>总的来说，就是布局的时候，始终要在坐标系下考虑。</p>
 <h3 id="约束的“等价”性">约束的“等价”性</h3><p>语文不好，还是用公式说明吧=。=<br>先看看Autolayout的基本公式：<br><figure class="highlight vhdl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">viewA-<span class="keyword">attribute</span> = viewB-<span class="keyword">attribute</span> * multiplier + <span class="keyword">constant</span></span><br></pre></td></tr></table></figure></p>
@@ -313,7 +314,7 @@ Github地址：https://git">
 </em></p>
 <p>如果我们要使用Autolayout自动计算多行UILabel的高度，这个属性就必须在运行时指定，要不然系统计算不出UILabel的宽度，例如：<br><figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 计算UILabel的preferredMaxLayoutWidth值，多行时必须设置这个值，否则系统无法决定Label的宽度</span></span><br><span class="line">label.preferredMaxWidth = [UIScreen mainScreen].bounds.<span class="built_in">size</span>.<span class="variable">width</span> - margin - padding;</span><br></pre></td></tr></table></figure></p>
 <p>手动计算宽度，感觉回到了没有Autolayout的时代=。=</p>
-<h4 id="Cell的关键代码">Cell的关键代码</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Avatar - 头像</span></span><br><span class="line">_avatarImageView = [UIImageView <span class="built_in">new</span>];</span><br><span class="line">[self.contentView addSubview:_avatarImageView];</span><br><span class="line">[_avatarImageView mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) &#123;</span><br><span class="line">    <span class="built_in">make</span>.width.and.height.equalTo(@<span class="number">44</span>); <span class="comment">// 宽高固定</span></span><br><span class="line">    <span class="built_in">make</span>.left.and.top.equalTo(self.contentView).with.offset(<span class="number">4</span>);</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line"><span class="comment">// Title - 单行</span></span><br><span class="line">_titleLabel = [UILabel <span class="built_in">new</span>];</span><br><span class="line">[self.contentView addSubview:_titleLabel];</span><br><span class="line">[_titleLabel mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) &#123;</span><br><span class="line">    <span class="built_in">make</span>.height.equalTo(@<span class="number">22</span>); <span class="comment">// 宽高固定</span></span><br><span class="line">    <span class="built_in">make</span>.top.equalTo(self.contentView).with.offset(<span class="number">4</span>);</span><br><span class="line">    <span class="built_in">make</span>.left.equalTo(_avatarImageView.mas_right).with.offset(<span class="number">4</span>);</span><br><span class="line">    <span class="built_in">make</span>.right.equalTo(self.contentView).with.offset(-<span class="number">4</span>);</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 计算UILabel的preferredMaxLayoutWidth值，多行时必须设置这个值，否则系统无法决定Label的宽度</span></span><br><span class="line">CGFloat preferredMaxWidth = [UIScreen mainScreen].bounds.size.width - (<span class="number">16</span> + <span class="number">4</span>) * <span class="number">2</span> - <span class="number">44</span> - <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Content - 多行</span></span><br><span class="line">_contentLabel = [UILabel <span class="built_in">new</span>];</span><br><span class="line">_contentLabel.numberOfLines = <span class="number">0</span>;</span><br><span class="line">_contentLabel.preferredMaxLayoutWidth = preferredMaxWidth; <span class="comment">// 多行时必须设置</span></span><br><span class="line">[self.contentView addSubview:_contentLabel];</span><br><span class="line"></span><br><span class="line">[_contentLabel mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) &#123;</span><br><span class="line">    <span class="built_in">make</span>.top.equalTo(_titleLabel.mas_bottom).with.offset(<span class="number">4</span>);</span><br><span class="line">    <span class="built_in">make</span>.left.equalTo(_avatarImageView.mas_right).with.offset(<span class="number">4</span>);</span><br><span class="line">    <span class="built_in">make</span>.right.equalTo(self.contentView).with.offset(-<span class="number">4</span>);</span><br><span class="line">    <span class="built_in">make</span>.bottom.equalTo(self.contentView).with.offset(-<span class="number">4</span>);</span><br><span class="line">&#125;];</span><br><span class="line"><span class="comment">// 设置高度的Content Hugging</span></span><br><span class="line">[_contentLabel setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];</span><br></pre></td></tr></table></figure>
+<h4 id="Cell的关键代码">Cell的关键代码</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Avatar - 头像</span></span><br><span class="line">_avatarImageView = [UIImageView <span class="keyword">new</span>];</span><br><span class="line">[self.contentView addSubview:_avatarImageView];</span><br><span class="line">[_avatarImageView mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">    make.width.and.height.equalTo(@<span class="number">44</span>); <span class="comment">// 宽高固定</span></span><br><span class="line">    make.left.and.top.equalTo(self.contentView).with.offset(<span class="number">4</span>);</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line"><span class="comment">// Title - 单行</span></span><br><span class="line">_titleLabel = [UILabel <span class="keyword">new</span>];</span><br><span class="line">[self.contentView addSubview:_titleLabel];</span><br><span class="line">[_titleLabel mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">    make.height.equalTo(@<span class="number">22</span>); <span class="comment">// 宽高固定</span></span><br><span class="line">    make.top.equalTo(self.contentView).with.offset(<span class="number">4</span>);</span><br><span class="line">    make.left.equalTo(_avatarImageView.mas_right).with.offset(<span class="number">4</span>);</span><br><span class="line">    make.right.equalTo(self.contentView).with.offset(-<span class="number">4</span>);</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 计算UILabel的preferredMaxLayoutWidth值，多行时必须设置这个值，否则系统无法决定Label的宽度</span></span><br><span class="line">CGFloat preferredMaxWidth = [UIScreen mainScreen].bounds.size.width - (<span class="number">16</span> + <span class="number">4</span>) * <span class="number">2</span> - <span class="number">44</span> - <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Content - 多行</span></span><br><span class="line">_contentLabel = [UILabel <span class="keyword">new</span>];</span><br><span class="line">_contentLabel.numberOfLines = <span class="number">0</span>;</span><br><span class="line">_contentLabel.preferredMaxLayoutWidth = preferredMaxWidth; <span class="comment">// 多行时必须设置</span></span><br><span class="line">[self.contentView addSubview:_contentLabel];</span><br><span class="line"></span><br><span class="line">[_contentLabel mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">    make.top.equalTo(_titleLabel.mas_bottom).with.offset(<span class="number">4</span>);</span><br><span class="line">    make.left.equalTo(_avatarImageView.mas_right).with.offset(<span class="number">4</span>);</span><br><span class="line">    make.right.equalTo(self.contentView).with.offset(-<span class="number">4</span>);</span><br><span class="line">    make.bottom.equalTo(self.contentView).with.offset(-<span class="number">4</span>);</span><br><span class="line">&#125;];</span><br><span class="line"><span class="comment">// 设置高度的Content Hugging</span></span><br><span class="line">[_contentLabel setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];</span><br></pre></td></tr></table></figure>
 <h3 id="UITableView">UITableView</h3><p>再看看UITableView。</p>
 <h4 id="用systemLayoutSizeFittingSize:获取Cell的高度">用systemLayoutSizeFittingSize:获取Cell的高度</h4><p>在设定好Cell的约束以后，就可以用systemLayoutSizeFittingSize:方法获取Cell的实际高度，它的参数可以设定为两个系统常量，如下：</p>
 <ol>
@@ -327,7 +328,7 @@ Github地址：https://git">
 <p>所以iOS 7以后，UITableView有了一个新的属性：estimatedRowHeight。</p>
 <p>从属性名上就可以看出，这个属性可以为Cell预先指定一个“估计”的高度值，这样的话，系统就可以先按照估计值布局，然后只获取显示范围内的Cell的高度，这样就不会一次性计算全部的了。</p>
 <h4 id="关键代码">关键代码</h4><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="built_in">CGFloat</span>)tableView:(<span class="built_in">UITableView</span> *)tableView heightForRowAtIndexPath:(<span class="built_in">NSIndexPath</span> *)indexPath &#123;</span><br><span class="line">    <span class="keyword">static</span> Case4Cell *templateCell;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;</span><br><span class="line">    <span class="built_in">dispatch_once</span>(&amp;onceToken, ^&#123;</span><br><span class="line">        templateCell = [tableView dequeueReusableCellWithIdentifier:<span class="built_in">NSStringFromClass</span>([Case4Cell class])];</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取对应的数据</span></span><br><span class="line">    Case4DataEntity *dataEntity = _data[(<span class="built_in">NSUInteger</span>) indexPath<span class="variable">.row</span>];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 填充数据</span></span><br><span class="line">    [templateCell setupData:dataEntity];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 判断高度是否已经计算过</span></span><br><span class="line">    <span class="keyword">if</span> (dataEntity<span class="variable">.cellHeight</span> &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// 根据当前数据，计算Cell的高度，注意+1</span></span><br><span class="line">        dataEntity<span class="variable">.cellHeight</span> = [templateCell<span class="variable">.contentView</span> systemLayoutSizeFittingSize:<span class="built_in">UILayoutFittingCompressedSize</span>]<span class="variable">.height</span> + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> dataEntity<span class="variable">.cellHeight</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="iOS_8的新特性">iOS 8的新特性</h3><p>iOS 8大大简化了Cell的高度计算，只要设置好Cell的约束，添加下面几行代码：<br><figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tableView.<span class="variable">rowHeight =</span> UITableViewAutomaticDimension;</span><br><span class="line">tableView.<span class="variable">estimatedRowHeight =</span> <span class="number">80</span>;</span><br></pre></td></tr></table></figure></p>
+<h3 id="iOS_8的新特性">iOS 8的新特性</h3><p>iOS 8大大简化了Cell的高度计算，只要设置好Cell的约束，添加下面几行代码：<br><figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tableView.rowHeight = UITableViewAutomaticDimension<span class="comment">;</span></span><br><span class="line">tableView.estimatedRowHeight = 80<span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
 <p>然后：<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="built_in">CGFloat</span>)tableView:(<span class="built_in">UITableView</span> *)tableView heightForRowAtIndexPath:(<span class="built_in">NSIndexPath</span> *)indexPath &#123;</span><br><span class="line">    <span class="comment">// 只用返回这个！</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">UITableViewAutomaticDimension</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>对！就只用这么几行代码就行！</p>
 <h2 id="Case_2:_topLayoutGuide和bottomLayoutGuide">Case 2: topLayoutGuide和bottomLayoutGuide</h2><h3 id="是什么">是什么</h3><p>topLayoutGuide和bottomLayoutGuide都是iOS 7以后，UIViewController的属性。</p>
@@ -411,30 +412,38 @@ Github地址：https://git">
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2015/08/08/autolayout-example-with-masonry2/"
-     data-title="有趣的Autolayout示例2-Masonry实现"
-     data-content=""
-     data-url="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/">
-  <div class="ds-share-inline">
-    <ul  class="ds-share-icons-16">
-
-      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
-      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
-      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
-      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
-      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
-
-    </ul>
-    <div class="ds-share-icons-more">
-    </div>
-  </div>
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
 </div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
       
     </div>
   </div>
 
  </div>
 
+        
+            <!-- 多说热评文章-->
+            <p>热评文章</p>
+            <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
         
 
         
@@ -480,11 +489,11 @@ Github地址：https://git">
           <img class="site-author-image" src="/uploads/avatar_comic_240.png" alt="土土哥" itemprop="image"/>
           <p class="site-author-name" itemprop="name">土土哥</p>
         </div>
-        <p class="site-description motion-element" itemprop="description">iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言</p>
+        <p class="site-description motion-element" itemprop="description">程序猿</p>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">27</span>
+              <span class="site-state-item-count">28</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -519,19 +528,19 @@ Github地址：https://git">
             
               <span class="links-of-author-item">
                 <a href="https://github.com/zekunyan" target="_blank">
-                  <i class="fa fa-github"></i> GitHub
+                  <i class="fa fa-github fa-fw"></i> GitHub
                 </a>
               </span>
             
               <span class="links-of-author-item">
                 <a href="https://twitter.com/zorro_tutuge" target="_blank">
-                  <i class="fa fa-twitter"></i> Twitter
+                  <i class="fa fa-twitter fa-fw"></i> Twitter
                 </a>
               </span>
             
               <span class="links-of-author-item">
                 <a href="http://weibo.com/zekunyan" target="_blank">
-                  <i class="fa fa-weibo"></i> Weibo
+                  <i class="fa fa-weibo fa-fw"></i> Weibo
                 </a>
               </span>
             
@@ -651,6 +660,8 @@ Github地址：https://git">
     })();
   </script>
     
+     
+
 
     
   

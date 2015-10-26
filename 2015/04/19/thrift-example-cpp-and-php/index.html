@@ -32,7 +32,7 @@
 <link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
 
 
-    <meta name="description" content="Coder" />
+    <meta name="description" content="程序猿" />
 
 
 
@@ -68,6 +68,7 @@ CPP服务端收到请求返回数据，返回类型为">
 PHP客户端发起请求，请求参数是“Request”类型，里面有studentID参数。
 CPP服务端收到请求返回数据，返回类型为">
 <meta property="og:image" content="http://zorrochen.qiniudn.com/blog_thrift_example_cpp_and_php_1.jpg">
+<meta property="og:updated_time" content="2015-09-24T10:57:32.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RPC框架Thrift例子-PHP调用C++后端程序">
 <meta name="twitter:description" content="前言前段时间用了一下Facebook的开源RPC框架Thrift，做PHP客户端调用C++后端程序，真心觉得Thrift不错！
@@ -164,7 +165,7 @@ CPP服务端收到请求返回数据，返回类型为">
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
             
             首页
           </a>
@@ -174,7 +175,7 @@ CPP服务端收到请求返回数据，返回类型为">
         <li class="menu-item menu-item-about">
           <a href="/about" rel="section">
             
-              <i class="menu-item-icon fa fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
             
             关于
           </a>
@@ -184,7 +185,7 @@ CPP服务端收到请求返回数据，返回类型为">
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
             
             归档
           </a>
@@ -194,7 +195,7 @@ CPP服务端收到请求返回数据，返回类型为">
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
             
             标签
           </a>
@@ -283,9 +284,9 @@ CPP服务端收到请求返回数据，返回类型为">
 <li>CPP服务端收到请求返回数据，返回类型为“Response”，里面包含了student的信息，此处只是简单的示例。</li>
 </ol>
 <a id="more"></a>
-<h2 id="定义">定义</h2><h3 id="什么是RPC">什么是RPC</h3><p>远程过程调用（英语：Remote Procedure Call，缩写为 RPC）是一个计算机通信协议。该协议允许运行于一台计算机的程序调用另一台计算机的子程序，而程序员无需额外地为这个交互作用编程。 — 维基百科 - <a href="http://zh.wikipedia.org/wiki/%E9%81%A0%E7%A8%8B%E9%81%8E%E7%A8%8B%E8%AA%BF%E7%94%A8" target="_blank" rel="external">远程过程调用</a></p>
+<h2 id="定义">定义</h2><h3 id="什么是RPC">什么是RPC</h3><p>远程过程调用（英语：Remote Procedure Call，缩写为 RPC）是一个计算机通信协议。该协议允许运行于一台计算机的程序调用另一台计算机的子程序，而程序员无需额外地为这个交互作用编程。 – 维基百科 - <a href="http://zh.wikipedia.org/wiki/%E9%81%A0%E7%A8%8B%E9%81%8E%E7%A8%8B%E8%AA%BF%E7%94%A8" target="_blank" rel="external">远程过程调用</a></p>
 <p>通俗点讲，就是跨计算机、跨网络调用。</p>
-<h3 id="什么是Thrift">什么是Thrift</h3><p>Apache Thrift 是Facebook实现的一种高效的、支持多种编程语言的远程服务调用(RPC)的框架。它采用接口描述语言定义并创建服务，支持可扩展的跨语言服务开发，所包含的代码生成引擎可以在多种语言中，如 C++, Java, Python, PHP, Ruby, Erlang, Perl, Haskell, C#, Cocoa, Smalltalk 等创建高效的、无缝的服务，其传输数据采用二进制格式，相对 XML 和 JSON 体积更小，对于高并发、大数据量和多语言的环境更有优势。 — <a href="https://www.ibm.com/developerworks/cn/java/j-lo-apachethrift/" target="_blank" rel="external">Apache Thrift - 可伸缩的跨语言服务开发框架</a></p>
+<h3 id="什么是Thrift">什么是Thrift</h3><p>Apache Thrift 是Facebook实现的一种高效的、支持多种编程语言的远程服务调用(RPC)的框架。它采用接口描述语言定义并创建服务，支持可扩展的跨语言服务开发，所包含的代码生成引擎可以在多种语言中，如 C++, Java, Python, PHP, Ruby, Erlang, Perl, Haskell, C#, Cocoa, Smalltalk 等创建高效的、无缝的服务，其传输数据采用二进制格式，相对 XML 和 JSON 体积更小，对于高并发、大数据量和多语言的环境更有优势。 – <a href="https://www.ibm.com/developerworks/cn/java/j-lo-apachethrift/" target="_blank" rel="external">Apache Thrift - 可伸缩的跨语言服务开发框架</a></p>
 <h2 id="开发流程">开发流程</h2><ol>
 <li>配置环境。C++的如CMake、make、g++；PHP的如php、php-fpm、Apache（Nginx）。</li>
 <li>根据需求，编写thrift接口定义文件（IDL定义文件）。</li>
@@ -301,7 +302,7 @@ CPP服务端收到请求返回数据，返回类型为">
 <li><a href="https://git-wip-us.apache.org/repos/asf?p=thrift.git;a=blob_plain;f=tutorial/tutorial.thrift" target="_blank" rel="external">example.thrift</a></li>
 </ul>
 <p>看看本例子中的定义文件“TTG.thrift”：</p>
-<figure class="highlight thrift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> cpp TTG</span><br><span class="line"><span class="keyword">namespace</span> php TTG</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">ResponseState</span> </span>&#123;</span><br><span class="line">    StateOk = <span class="number">0</span>,</span><br><span class="line">    StateError = <span class="number">1</span>,</span><br><span class="line">    StateEmpty = <span class="number">2</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Request</span> </span>&#123;</span><br><span class="line">    <span class="number">1</span>: <span class="built_in">i32</span> studentID = <span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Response</span> </span>&#123;</span><br><span class="line">    <span class="number">1</span>: <span class="built_in">i32</span> studentID = <span class="number">0</span>,</span><br><span class="line">    <span class="number">2</span>: <span class="built_in">string</span> name,</span><br><span class="line">    <span class="number">3</span>: list&lt;<span class="keyword">string</span>&gt; infos,</span><br><span class="line">    <span class="number">4</span>: ResponseState state</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">service</span> <span class="title">TTGService</span> </span>&#123;</span><br><span class="line">    Response getStudentInfo(<span class="number">1</span>: Request request);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> cpp TTG</span><br><span class="line"><span class="keyword">namespace</span> php TTG</span><br><span class="line"></span><br><span class="line"><span class="keyword">enum</span> ResponseState &#123;</span><br><span class="line">    StateOk = <span class="number">0</span>,</span><br><span class="line">    StateError = <span class="number">1</span>,</span><br><span class="line">    StateEmpty = <span class="number">2</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> Request &#123;</span><br><span class="line">    <span class="number">1</span>: i32 studentID = <span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> Response &#123;</span><br><span class="line">    <span class="number">1</span>: i32 studentID = <span class="number">0</span>,</span><br><span class="line">    <span class="number">2</span>: <span class="built_in">string</span> name,</span><br><span class="line">    <span class="number">3</span>: <span class="built_in">list</span>&lt;<span class="built_in">string</span>&gt; infos,</span><br><span class="line">    <span class="number">4</span>: ResponseState state</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">service TTGService &#123;</span><br><span class="line">    <span class="function">Response <span class="title">getStudentInfo</span><span class="params">(<span class="number">1</span>: Request request)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ol>
 <li>先定义命名空间，尽量减少命名冲突。</li>
 <li>Request类型：PHP客户端请求的数据类型。</li>
@@ -360,7 +361,7 @@ TTG_types.h
 <h2 id="编译、链接，运行">编译、链接，运行</h2><p>用CMake，或者直接编写makefile均可，保证Thrift装好就行了。</p>
 <p>直接运行最后生成的可执行文件TTG.run即可。</p>
 <p>从浏览器，或者直接运行client.php，即可看到如下输出：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">object(TTG\Response)[<span class="number">9</span>]  <span class="keyword">public</span> <span class="string">'studentID'</span> =&gt; int <span class="number">100</span>  <span class="keyword">public</span> <span class="string">'name'</span> =&gt; string <span class="string">'tutuge'</span> (length=<span class="number">6</span>)  <span class="keyword">public</span> <span class="string">'infos'</span> =&gt;     <span class="keyword">array</span> (size=<span class="number">2</span>)      <span class="number">0</span> =&gt; string <span class="string">'Info 1'</span> (length=<span class="number">6</span>)      <span class="number">1</span> =&gt; string <span class="string">'Info 2'</span> (length=<span class="number">6</span>)  <span class="keyword">public</span> <span class="string">'state'</span> =&gt; int <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight zephir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">object(TTG\Response)[<span class="number">9</span>]  <span class="keyword">public</span> <span class="string">'studentID'</span> =&gt; <span class="keyword">int</span> <span class="number">100</span>  <span class="keyword">public</span> <span class="string">'name'</span> =&gt; string <span class="string">'tutuge'</span> (length=<span class="number">6</span>)  <span class="keyword">public</span> <span class="string">'infos'</span> =&gt;     <span class="keyword">array</span> (size=<span class="number">2</span>)      <span class="number">0</span> =&gt; string <span class="string">'Info 1'</span> (length=<span class="number">6</span>)      <span class="number">1</span> =&gt; string <span class="string">'Info 2'</span> (length=<span class="number">6</span>)  <span class="keyword">public</span> <span class="string">'state'</span> =&gt; <span class="keyword">int</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
 <h2 id="总结">总结</h2><p>Thrift是个好东西！就是文档好少=。=</p>
 <h2 id="参考">参考</h2><ul>
 <li><a href="http://thrift.apache.org/" target="_blank" rel="external">Apache Thrift</a></li>
@@ -415,30 +416,38 @@ TTG_types.h
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2015/04/19/thrift-example-cpp-and-php/"
-     data-title="RPC框架Thrift例子-PHP调用C++后端程序"
-     data-content=""
-     data-url="http://tutuge.me/2015/04/19/thrift-example-cpp-and-php/">
-  <div class="ds-share-inline">
-    <ul  class="ds-share-icons-16">
-
-      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
-      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
-      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
-      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
-      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
-
-    </ul>
-    <div class="ds-share-icons-more">
-    </div>
-  </div>
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
 </div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
       
     </div>
   </div>
 
  </div>
 
+        
+            <!-- 多说热评文章-->
+            <p>热评文章</p>
+            <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
         
 
         
@@ -484,11 +493,11 @@ TTG_types.h
           <img class="site-author-image" src="/uploads/avatar_comic_240.png" alt="土土哥" itemprop="image"/>
           <p class="site-author-name" itemprop="name">土土哥</p>
         </div>
-        <p class="site-description motion-element" itemprop="description">iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言</p>
+        <p class="site-description motion-element" itemprop="description">程序猿</p>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">27</span>
+              <span class="site-state-item-count">28</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -523,19 +532,19 @@ TTG_types.h
             
               <span class="links-of-author-item">
                 <a href="https://github.com/zekunyan" target="_blank">
-                  <i class="fa fa-github"></i> GitHub
+                  <i class="fa fa-github fa-fw"></i> GitHub
                 </a>
               </span>
             
               <span class="links-of-author-item">
                 <a href="https://twitter.com/zorro_tutuge" target="_blank">
-                  <i class="fa fa-twitter"></i> Twitter
+                  <i class="fa fa-twitter fa-fw"></i> Twitter
                 </a>
               </span>
             
               <span class="links-of-author-item">
                 <a href="http://weibo.com/zekunyan" target="_blank">
-                  <i class="fa fa-weibo"></i> Weibo
+                  <i class="fa fa-weibo fa-fw"></i> Weibo
                 </a>
               </span>
             
@@ -655,6 +664,8 @@ TTG_types.h
     })();
   </script>
     
+     
+
 
     
   

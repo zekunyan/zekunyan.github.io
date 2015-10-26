@@ -32,7 +32,7 @@
 <link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
 
 
-    <meta name="description" content="Coder" />
+    <meta name="description" content="程序猿" />
 
 
 
@@ -56,6 +56,7 @@
 <meta property="og:description" content="前言最近，在做项目时，因为某种原因，突然要“适配”iOS6（也是醉了。。。），保证极少数的iOS6用户可以“用上”新的版本。哪怕界面上有瑕疵，只要功能正常就行。于是就只好花几天时间对iOS6进行紧急适配（心中一万头驼羊奔跑而过。。。）  
 本文总结了一些常规的，和“非常规”的iOS项目向老版本兼容的办法，结合了宏定义、Category和Runtime，大家看着消遣一下就好哈~">
 <meta property="og:image" content="http://7nj2iz.com1.z0.glb.clouddn.com/blog_compatibility-with-macro-category-and-runtime_1.png">
+<meta property="og:updated_time" content="2015-09-24T10:55:35.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="解决iOS项目的版本兼容问题-结合宏、Category和Runtime">
 <meta name="twitter:description" content="前言最近，在做项目时，因为某种原因，突然要“适配”iOS6（也是醉了。。。），保证极少数的iOS6用户可以“用上”新的版本。哪怕界面上有瑕疵，只要功能正常就行。于是就只好花几天时间对iOS6进行紧急适配（心中一万头驼羊奔跑而过。。。）  
@@ -146,7 +147,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
             
             首页
           </a>
@@ -156,7 +157,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about" rel="section">
             
-              <i class="menu-item-icon fa fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
             
             关于
           </a>
@@ -166,7 +167,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
             
             归档
           </a>
@@ -176,7 +177,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
             
             标签
           </a>
@@ -265,7 +266,7 @@
 <p>所以并不是说，能编译通过的，就一定能<em>运行成功</em>！还要在<em>运行时检查</em>！简单来说，就是如下图：</p>
 <p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_compatibility-with-macro-category-and-runtime_1.png" alt="兼容示意图"></p>
 <h3 id="宏只在编译时生效！">宏只在编译时生效！</h3><p>宏定义只是纯粹的文本替换，只在编译时起作用。如下代码：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">if</span> __IPHONE_OS_VERSION_MIN_REQUIRED &gt;= 70000</span></span><br><span class="line">    NSLog(@<span class="string">"Tutuge"</span>);</span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">if</span> __IPHONE_OS_VERSION_MIN_REQUIRED &gt;= <span class="number">70000</span></span></span><br><span class="line">    NSLog(@<span class="string">"Tutuge"</span>);</span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
 <p>被宏定义包起来的代码是否会执行，在编译时就决定好了，无论你是用什么系统运行，宏定义再也没有什么卵用=。=</p>
 <h2 id="编译时检查SDK版本，运行时检查系统版本">编译时检查SDK版本，运行时检查系统版本</h2><p>这个是最基本的适配手段。  </p>
 <p>用到的宏如下：</p>
@@ -278,7 +279,7 @@
 <p>总的来说就是编译时、运行时的判断均不能少。</p>
 <h2 id="Weakly_Linked_-_运行时检查类、方法是否可用">Weakly Linked - 运行时检查类、方法是否可用</h2><p>除了用宏、系统版本检测，还可以用<strong>Weakly Linked</strong>特性做运行时的检查。</p>
 <p>对于iOS4.2以上的，有<strong>NS_CLASS_AVAILABLE</strong>标示的类，可以如下判断是否可用：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">if</span> __IPHONE_OS_VERSION_MAX_ALLOWED &gt; 80000</span></span><br><span class="line">    <span class="comment">// Weakly Linked判断</span></span><br><span class="line">    <span class="keyword">if</span> ([UIAlertController <span class="keyword">class</span>]) &#123;</span><br><span class="line">        <span class="comment">// 使用UIAlertController...</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 使用旧的方案...</span></span><br><span class="line">    &#125;</span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">if</span> __IPHONE_OS_VERSION_MAX_ALLOWED &gt; <span class="number">80000</span></span></span><br><span class="line">    <span class="comment">// Weakly Linked判断</span></span><br><span class="line">    <span class="keyword">if</span> ([UIAlertController <span class="keyword">class</span>]) &#123;</span><br><span class="line">        <span class="comment">// 使用UIAlertController...</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 使用旧的方案...</span></span><br><span class="line">    &#125;</span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
 <p>也可以如下判断：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Class <span class="class"><span class="keyword">class</span> </span>= NSClassFromString (@<span class="string">"UIAlertController"</span>);</span><br><span class="line"><span class="keyword">if</span> (<span class="class"><span class="keyword">class</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 使用UIAlertController...</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 使用旧的方案...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>对于方法，如下判断:</p>
@@ -346,30 +347,38 @@
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2015/07/25/compatibility-with-macro-category-and-runtime/"
-     data-title="解决iOS项目的版本兼容问题-结合宏、Category和Runtime"
-     data-content=""
-     data-url="http://tutuge.me/2015/07/25/compatibility-with-macro-category-and-runtime/">
-  <div class="ds-share-inline">
-    <ul  class="ds-share-icons-16">
-
-      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
-      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
-      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
-      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
-      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
-
-    </ul>
-    <div class="ds-share-icons-more">
-    </div>
-  </div>
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
 </div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
       
     </div>
   </div>
 
  </div>
 
+        
+            <!-- 多说热评文章-->
+            <p>热评文章</p>
+            <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
         
 
         
@@ -415,11 +424,11 @@
           <img class="site-author-image" src="/uploads/avatar_comic_240.png" alt="土土哥" itemprop="image"/>
           <p class="site-author-name" itemprop="name">土土哥</p>
         </div>
-        <p class="site-description motion-element" itemprop="description">iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言</p>
+        <p class="site-description motion-element" itemprop="description">程序猿</p>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">27</span>
+              <span class="site-state-item-count">28</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -454,19 +463,19 @@
             
               <span class="links-of-author-item">
                 <a href="https://github.com/zekunyan" target="_blank">
-                  <i class="fa fa-github"></i> GitHub
+                  <i class="fa fa-github fa-fw"></i> GitHub
                 </a>
               </span>
             
               <span class="links-of-author-item">
                 <a href="https://twitter.com/zorro_tutuge" target="_blank">
-                  <i class="fa fa-twitter"></i> Twitter
+                  <i class="fa fa-twitter fa-fw"></i> Twitter
                 </a>
               </span>
             
               <span class="links-of-author-item">
                 <a href="http://weibo.com/zekunyan" target="_blank">
-                  <i class="fa fa-weibo"></i> Weibo
+                  <i class="fa fa-weibo fa-fw"></i> Weibo
                 </a>
               </span>
             
@@ -586,6 +595,8 @@
     })();
   </script>
     
+     
+
 
     
   

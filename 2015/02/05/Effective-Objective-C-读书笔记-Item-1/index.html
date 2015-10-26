@@ -32,7 +32,7 @@
 <link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
 
 
-    <meta name="description" content="Coder" />
+    <meta name="description" content="程序猿" />
 
 
 
@@ -56,6 +56,7 @@ Item 1 - Familiarize Yourself with Objective-C’s Roots第一章的目的，就
 <meta property="og:description" content="前言一直都在做项目，没什么时间作总结，感觉很不是滋味。现在放假了，嗯，终于有时间了~~哈哈（天生程序猿一枚好不好=。=）最近开始读英文版的Effective Objective-C 2.0，觉得不错，就总结些东西，分享给各位读者吧。
 Item 1 - Familiarize Yourself with Objective-C’s Roots第一章的目的，就是让大家熟悉Objective-C，自然，">
 <meta property="og:image" content="http://zorrochen.qiniudn.com/blog_effective_objective_c_item_1_1.jpg">
+<meta property="og:updated_time" content="2015-04-06T03:14:04.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Effective-Objective-C-读书笔记-Item-1">
 <meta name="twitter:description" content="前言一直都在做项目，没什么时间作总结，感觉很不是滋味。现在放假了，嗯，终于有时间了~~哈哈（天生程序猿一枚好不好=。=）最近开始读英文版的Effective Objective-C 2.0，觉得不错，就总结些东西，分享给各位读者吧。
@@ -146,7 +147,7 @@ Item 1 - Familiarize Yourself with Objective-C’s Roots第一章的目的，就
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
             
             首页
           </a>
@@ -156,7 +157,7 @@ Item 1 - Familiarize Yourself with Objective-C’s Roots第一章的目的，就
         <li class="menu-item menu-item-about">
           <a href="/about" rel="section">
             
-              <i class="menu-item-icon fa fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
             
             关于
           </a>
@@ -166,7 +167,7 @@ Item 1 - Familiarize Yourself with Objective-C’s Roots第一章的目的，就
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
             
             归档
           </a>
@@ -176,7 +177,7 @@ Item 1 - Familiarize Yourself with Objective-C’s Roots第一章的目的，就
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
             
             标签
           </a>
@@ -261,7 +262,7 @@ Item 1 - Familiarize Yourself with Objective-C’s Roots第一章的目的，就
 <h2 id="消息与运行时">消息与运行时</h2><p>总的来说，Objective-C跟C++、Java这些面向对象的语言是非常相似的，但是还是有许多不同的地方。如果你是第一次看到Objective-C的语法，一定觉得非常奇怪，因为Objective-C使用的是基于消息（Message）的框架，而不是传统的方法、函数调用。如下：</p>
 <pre><code><span class="comment">//Objective-C</span>
 Person *person = [Person <span class="keyword">new</span>];
-[person <span class="string">setName:</span>@<span class="string">"tutuge"</span> <span class="string">age:</span><span class="number">24</span>];
+[person setName:@<span class="string">"tutuge"</span> age:<span class="number">24</span>];
 
 <span class="comment">//Java</span>
 Person person = <span class="keyword">new</span> Person();
@@ -277,12 +278,12 @@ person-&gt;setNameAndAge(<span class="string">"tutuge"</span>, <span class="numb
 </ul>
 <p>其实，连被调方法的对象类型，都是在运行时决定的。所以说，Objective-C的运行时系统，担负了绝大部分的工作。这么设计的优点，举个例子，就是当运行时系统升级时，原有的代码不用重新编译即可“享受”升级带来的好处。</p>
 <h2 id="C的超集">C的超集</h2><p>Objective-C是C语言的超集，所以C语言所具有的一切特性，Objective-C都可以兼容，充分理解C语言的内存模型，对理解Objective-C很有帮助。如下：</p>
-<pre><code>NSString *<span class="keyword">str</span> = @<span class="string">"a string"</span>;
+<pre><code><span class="label">NSString</span> *<span class="keyword">str </span>= <span class="comment">@"a string";</span>
 </code></pre><p>这一行代码跟C语言没有什么不同，（忽略@符号=。=），原理跟C语言也是一致的，就是str指针是NSString类型的指针，指向了一块存着字符串“a string”的内存区域。不同的是，在Objective-C里，所有的对象只可以声明为指针类型，所以如下代码是不合理的：</p>
 <pre><code>NSString <span class="keyword">str</span>;
 </code></pre><p>为了更充分的理解，咱们看看如下例子：</p>
-<pre><code>NSString <span class="keyword">*</span>str1 = <span class="comment">@"a string";</span>
-NSString <span class="keyword">*</span>str2 = str1;
+<pre><code><span class="label">NSString</span> *<span class="keyword">str1 </span>= <span class="comment">@"a string";</span>
+<span class="label">NSString</span> *<span class="keyword">str2 </span>= <span class="keyword">str1;</span>
 </code></pre><p>熟悉C语言的朋友应该知道这是怎么回事，内存当中只有一块区域储存着“a string”这个字符串，str1、str2都是指向着这个区域的字符串指针。如下图：</p>
 <p><img src="http://zorrochen.qiniudn.com/blog_effective_objective_c_item_1_1.jpg" alt="image"></p>
 <ul>
@@ -292,8 +293,8 @@ NSString <span class="keyword">*</span>str2 = str1;
 </ul>
 <p>此处的栈内存、堆内存跟C语言中的概念也是一样的，不同的是，在Objective-C中，我们不用手动去malloc、free内存，Objective-C使用内存计数计数帮我们管理内存。</p>
 <h2 id="结构体，基本类型">结构体，基本类型</h2><p>在Objective-C中，并不是所有的变量都是指针类型的，像int、float、double这些依旧是传统的“栈上分配”的，当然，还有结构体struct、枚举enum、联合union等。如：</p>
-<pre><code><span class="built_in">CGPoint</span> point = <span class="built_in">CGPointMake</span>(<span class="number">10</span>, <span class="number">10</span>);
-<span class="built_in">CGRect</span> frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">10</span>);
+<pre><code>CGPoint point = CGPointMake(<span class="number">10</span>, <span class="number">10</span>);
+CGRect frame = CGRectMake(<span class="number">0</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">10</span>);
 </code></pre><p>这的CGPoint、CGRect都是结构体，但是都是直接在栈上分配内存的，以减少过度使用Objective-C类型的类（减少运行时的压力），各位读者使用的时候要注意。</p>
 <h2 id="总结">总结</h2><p>零散的说了一些Objective-C的特点，远远不足以讲明白Objective-C，我这只是根据Effective Objective-C这本书给个引子，还是推荐Apple的官方教程、文档，要想掌握扎实，还是要一步一步来~</p>
 </span>
@@ -344,30 +345,38 @@ NSString <span class="keyword">*</span>str2 = str1;
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2015/02/05/Effective-Objective-C-读书笔记-Item-1/"
-     data-title="Effective-Objective-C-读书笔记-Item-1"
-     data-content=""
-     data-url="http://tutuge.me/2015/02/05/Effective-Objective-C-读书笔记-Item-1/">
-  <div class="ds-share-inline">
-    <ul  class="ds-share-icons-16">
-
-      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
-      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
-      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
-      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
-      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
-
-    </ul>
-    <div class="ds-share-icons-more">
-    </div>
-  </div>
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
 </div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
       
     </div>
   </div>
 
  </div>
 
+        
+            <!-- 多说热评文章-->
+            <p>热评文章</p>
+            <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
         
 
         
@@ -413,11 +422,11 @@ NSString <span class="keyword">*</span>str2 = str1;
           <img class="site-author-image" src="/uploads/avatar_comic_240.png" alt="土土哥" itemprop="image"/>
           <p class="site-author-name" itemprop="name">土土哥</p>
         </div>
-        <p class="site-description motion-element" itemprop="description">iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言</p>
+        <p class="site-description motion-element" itemprop="description">程序猿</p>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">27</span>
+              <span class="site-state-item-count">28</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -452,19 +461,19 @@ NSString <span class="keyword">*</span>str2 = str1;
             
               <span class="links-of-author-item">
                 <a href="https://github.com/zekunyan" target="_blank">
-                  <i class="fa fa-github"></i> GitHub
+                  <i class="fa fa-github fa-fw"></i> GitHub
                 </a>
               </span>
             
               <span class="links-of-author-item">
                 <a href="https://twitter.com/zorro_tutuge" target="_blank">
-                  <i class="fa fa-twitter"></i> Twitter
+                  <i class="fa fa-twitter fa-fw"></i> Twitter
                 </a>
               </span>
             
               <span class="links-of-author-item">
                 <a href="http://weibo.com/zekunyan" target="_blank">
-                  <i class="fa fa-weibo"></i> Weibo
+                  <i class="fa fa-weibo fa-fw"></i> Weibo
                 </a>
               </span>
             
@@ -584,6 +593,8 @@ NSString <span class="keyword">*</span>str2 = str1;
     })();
   </script>
     
+     
+
 
     
   

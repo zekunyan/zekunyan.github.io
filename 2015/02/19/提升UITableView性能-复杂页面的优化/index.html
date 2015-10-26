@@ -32,7 +32,7 @@
 <link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
 
 
-    <meta name="description" content="Coder" />
+    <meta name="description" content="程序猿" />
 
 
 
@@ -47,29 +47,33 @@
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
 
 
-<meta name="description" content="前言随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。
+<meta name="description" content="##前言
+随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。
 之前的做的项目，青桔音乐iOS客户端里面的首页就是一个类似微信朋友圈的“动态”页面，大致如下：
 
 如果是你，你会怎么实现这个页面呢？
-这还用问，当然是用UITableView+自定义的UITableViewCell">
+这还用问，当然是用UITableView+自定义的UITableViewC">
 <meta property="og:type" content="article">
 <meta property="og:title" content="提升UITableView性能-复杂页面的优化">
 <meta property="og:url" content="http://tutuge.me/2015/02/19/提升UITableView性能-复杂页面的优化/index.html">
 <meta property="og:site_name" content="土土哥的技术Blog">
-<meta property="og:description" content="前言随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。
+<meta property="og:description" content="##前言
+随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。
 之前的做的项目，青桔音乐iOS客户端里面的首页就是一个类似微信朋友圈的“动态”页面，大致如下：
 
 如果是你，你会怎么实现这个页面呢？
-这还用问，当然是用UITableView+自定义的UITableViewCell">
+这还用问，当然是用UITableView+自定义的UITableViewC">
 <meta property="og:image" content="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_1.png?imageView2/0/h/300">
 <meta property="og:image" content="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_2.jpg?imageView2/0/h/400">
+<meta property="og:updated_time" content="2015-09-24T11:01:15.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="提升UITableView性能-复杂页面的优化">
-<meta name="twitter:description" content="前言随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。
+<meta name="twitter:description" content="##前言
+随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。
 之前的做的项目，青桔音乐iOS客户端里面的首页就是一个类似微信朋友圈的“动态”页面，大致如下：
 
 如果是你，你会怎么实现这个页面呢？
-这还用问，当然是用UITableView+自定义的UITableViewCell">
+这还用问，当然是用UITableView+自定义的UITableViewC">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -156,7 +160,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
             
             首页
           </a>
@@ -166,7 +170,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about" rel="section">
             
-              <i class="menu-item-icon fa fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
             
             关于
           </a>
@@ -176,7 +180,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
             
             归档
           </a>
@@ -186,7 +190,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
             
             标签
           </a>
@@ -265,14 +269,16 @@
       
 
       
-        <span itemprop="articleBody"><h2 id="前言">前言</h2><p>随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。</p>
+        <span itemprop="articleBody"><p>##前言</p>
+<p>随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。</p>
 <p>之前的做的项目，<a href="https://itunes.apple.com/us/app/qing-ju-yin-le-quan-guo-zui/id913235479?l=zh&amp;ls=1&amp;mt=8" target="_blank" rel="external">青桔音乐iOS客户端</a>里面的首页就是一个类似微信朋友圈的“动态”页面，大致如下：</p>
 <p><img src="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_1.png?imageView2/0/h/300" alt="青桔动态页面"></p>
 <p>如果是你，你会怎么实现这个页面呢？</p>
 <p>这还用问，当然是用UITableView+自定义的UITableViewCell。</p>
 <p>UITableView是可以滑动的，为了不让用户在滑动中感到有卡顿，该如何优化？下面，我就写一下我自己在做项目时的“经验”~</p>
 <a id="more"></a>
-<h2 id="优化">优化</h2><p>主要分为以下几点：</p>
+<p>##优化</p>
+<p>主要分为以下几点：</p>
 <ul>
 <li>只定义一种Cell。</li>
 <li>提前计算并缓存每个Cell的高度。</li>
@@ -398,30 +404,38 @@
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2015/02/19/提升UITableView性能-复杂页面的优化/"
-     data-title="提升UITableView性能-复杂页面的优化"
-     data-content=""
-     data-url="http://tutuge.me/2015/02/19/提升UITableView性能-复杂页面的优化/">
-  <div class="ds-share-inline">
-    <ul  class="ds-share-icons-16">
-
-      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
-      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
-      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
-      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
-      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
-
-    </ul>
-    <div class="ds-share-icons-more">
-    </div>
-  </div>
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
 </div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
       
     </div>
   </div>
 
  </div>
 
+        
+            <!-- 多说热评文章-->
+            <p>热评文章</p>
+            <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
         
 
         
@@ -467,11 +481,11 @@
           <img class="site-author-image" src="/uploads/avatar_comic_240.png" alt="土土哥" itemprop="image"/>
           <p class="site-author-name" itemprop="name">土土哥</p>
         </div>
-        <p class="site-description motion-element" itemprop="description">iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言</p>
+        <p class="site-description motion-element" itemprop="description">程序猿</p>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">27</span>
+              <span class="site-state-item-count">28</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -506,19 +520,19 @@
             
               <span class="links-of-author-item">
                 <a href="https://github.com/zekunyan" target="_blank">
-                  <i class="fa fa-github"></i> GitHub
+                  <i class="fa fa-github fa-fw"></i> GitHub
                 </a>
               </span>
             
               <span class="links-of-author-item">
                 <a href="https://twitter.com/zorro_tutuge" target="_blank">
-                  <i class="fa fa-twitter"></i> Twitter
+                  <i class="fa fa-twitter fa-fw"></i> Twitter
                 </a>
               </span>
             
               <span class="links-of-author-item">
                 <a href="http://weibo.com/zekunyan" target="_blank">
-                  <i class="fa fa-weibo"></i> Weibo
+                  <i class="fa fa-weibo fa-fw"></i> Weibo
                 </a>
               </span>
             
@@ -569,7 +583,7 @@
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化"><span class="nav-number">2.</span> <span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#只定义一种Cell"><span class="nav-number">2.1.</span> <span class="nav-text">只定义一种Cell</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#分析结构"><span class="nav-number">2.1.1.</span> <span class="nav-text">分析结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#重用=大致固定数量的Cell"><span class="nav-number">2.1.2.</span> <span class="nav-text">重用=大致固定数量的Cell</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#只定义一种Cell的好处"><span class="nav-number">2.1.2.1.</span> <span class="nav-text">只定义一种Cell的好处</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#善用hidden隐藏（显示）Subview"><span class="nav-number">2.1.3.</span> <span class="nav-text">善用hidden隐藏（显示）Subview</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提前计算并缓存每个Cell的高度"><span class="nav-number">2.2.</span> <span class="nav-text">提前计算并缓存每个Cell的高度</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#在Model（Entity）中计算并保存Cell的高度"><span class="nav-number">2.2.1.</span> <span class="nav-text">在Model（Entity）中计算并保存Cell的高度</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提前创建真正显示的、需要加工的数据并缓存"><span class="nav-number">2.3.</span> <span class="nav-text">提前创建真正显示的、需要加工的数据并缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存View!"><span class="nav-number">2.4.</span> <span class="nav-text">缓存View!</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其它"><span class="nav-number">2.5.</span> <span class="nav-text">其它</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考，推荐阅读"><span class="nav-number">4.</span> <span class="nav-text">参考，推荐阅读</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#只定义一种Cell"><span class="nav-number">1.</span> <span class="nav-text">只定义一种Cell</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#分析结构"><span class="nav-number">1.1.</span> <span class="nav-text">分析结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#重用=大致固定数量的Cell"><span class="nav-number">1.2.</span> <span class="nav-text">重用=大致固定数量的Cell</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#只定义一种Cell的好处"><span class="nav-number">1.2.1.</span> <span class="nav-text">只定义一种Cell的好处</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#善用hidden隐藏（显示）Subview"><span class="nav-number">1.3.</span> <span class="nav-text">善用hidden隐藏（显示）Subview</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提前计算并缓存每个Cell的高度"><span class="nav-number">2.</span> <span class="nav-text">提前计算并缓存每个Cell的高度</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#在Model（Entity）中计算并保存Cell的高度"><span class="nav-number">2.1.</span> <span class="nav-text">在Model（Entity）中计算并保存Cell的高度</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提前创建真正显示的、需要加工的数据并缓存"><span class="nav-number">3.</span> <span class="nav-text">提前创建真正显示的、需要加工的数据并缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存View!"><span class="nav-number">4.</span> <span class="nav-text">缓存View!</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其它"><span class="nav-number">5.</span> <span class="nav-text">其它</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number"></span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考，推荐阅读"><span class="nav-number"></span> <span class="nav-text">参考，推荐阅读</span></a></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
@@ -638,6 +652,8 @@
     })();
   </script>
     
+     
+
 
     
   

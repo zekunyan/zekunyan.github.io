@@ -961,7 +961,7 @@ body {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #f5f;
+  background: #83d258;
 }
 .sidebar-nav {
   margin: 0 0 20px;
@@ -1190,17 +1190,10 @@ body {
   cursor: zoom-out;
   cursor: -webkit-zoom-in;
 }
-.post-body .pic-title {
-  margin: 0 auto;
+.post-body .image-caption,
+.post-body .figure .caption {
+  margin: 10px auto 15px;
   text-align: center;
-}
-.post-body .pic-title span {
-  display: inline-block;
-  min-width: 10%;
-  min-height: 20px;
-  margin: 10px auto 0;
-  padding: 2px 0;
-  border-bottom: 1px solid #999;
   font-size: 14px;
   color: #999;
   font-weight: bold;

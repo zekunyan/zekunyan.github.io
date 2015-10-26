@@ -32,7 +32,7 @@
 <link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
 
 
-    <meta name="description" content="Coder" />
+    <meta name="description" content="程序猿" />
 
 
 
@@ -47,22 +47,23 @@
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
 
 
-<meta name="description" content="前言Enum，也就是枚举，从C语言开始就有了，C++、Java、Objective-C、Swift这些语言，当然都有对应的枚举类型，功能可能有多有少，但是最核心的还是一个—-规范的定义代码中的状态、选项等“常量”。
+<meta name="description" content="前言Enum，也就是枚举，从C语言开始就有了，C++、Java、Objective-C、Swift这些语言，当然都有对应的枚举类型，功能可能有多有少，但是最核心的还是一个—规范的定义代码中的状态、选项等“常量”。
 Item 5 - Use Enumerations for States, Options, and Status Codes本节的内容就是如何正确的使用枚举。
-状态与选项的区别（st">
+状态与选项的区别（sta">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5">
 <meta property="og:url" content="http://tutuge.me/2015/03/21/effective-objective-c-5-enum/index.html">
 <meta property="og:site_name" content="土土哥的技术Blog">
-<meta property="og:description" content="前言Enum，也就是枚举，从C语言开始就有了，C++、Java、Objective-C、Swift这些语言，当然都有对应的枚举类型，功能可能有多有少，但是最核心的还是一个—-规范的定义代码中的状态、选项等“常量”。
+<meta property="og:description" content="前言Enum，也就是枚举，从C语言开始就有了，C++、Java、Objective-C、Swift这些语言，当然都有对应的枚举类型，功能可能有多有少，但是最核心的还是一个—规范的定义代码中的状态、选项等“常量”。
 Item 5 - Use Enumerations for States, Options, and Status Codes本节的内容就是如何正确的使用枚举。
-状态与选项的区别（st">
+状态与选项的区别（sta">
 <meta property="og:image" content="http://zorrochen.qiniudn.com/blog_effective_objective_c_5_enum_2.jpg">
+<meta property="og:updated_time" content="2015-09-24T11:00:38.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5">
-<meta name="twitter:description" content="前言Enum，也就是枚举，从C语言开始就有了，C++、Java、Objective-C、Swift这些语言，当然都有对应的枚举类型，功能可能有多有少，但是最核心的还是一个—-规范的定义代码中的状态、选项等“常量”。
+<meta name="twitter:description" content="前言Enum，也就是枚举，从C语言开始就有了，C++、Java、Objective-C、Swift这些语言，当然都有对应的枚举类型，功能可能有多有少，但是最核心的还是一个—规范的定义代码中的状态、选项等“常量”。
 Item 5 - Use Enumerations for States, Options, and Status Codes本节的内容就是如何正确的使用枚举。
-状态与选项的区别（st">
+状态与选项的区别（sta">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -149,7 +150,7 @@ Item 5 - Use Enumerations for States, Options, and Status Codes本节的内容�
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
             
             首页
           </a>
@@ -159,7 +160,7 @@ Item 5 - Use Enumerations for States, Options, and Status Codes本节的内容�
         <li class="menu-item menu-item-about">
           <a href="/about" rel="section">
             
-              <i class="menu-item-icon fa fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
             
             关于
           </a>
@@ -169,7 +170,7 @@ Item 5 - Use Enumerations for States, Options, and Status Codes本节的内容�
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
             
             归档
           </a>
@@ -179,7 +180,7 @@ Item 5 - Use Enumerations for States, Options, and Status Codes本节的内容�
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
             
             标签
           </a>
@@ -258,16 +259,16 @@ Item 5 - Use Enumerations for States, Options, and Status Codes本节的内容�
       
 
       
-        <span itemprop="articleBody"><h2 id="前言">前言</h2><p>Enum，也就是枚举，从C语言开始就有了，C++、Java、Objective-C、Swift这些语言，当然都有对应的枚举类型，功能可能有多有少，但是最核心的还是一个—-规范的定义代码中的状态、选项等“常量”。</p>
+        <span itemprop="articleBody"><h2 id="前言">前言</h2><p>Enum，也就是枚举，从C语言开始就有了，C++、Java、Objective-C、Swift这些语言，当然都有对应的枚举类型，功能可能有多有少，但是最核心的还是一个—规范的定义代码中的状态、选项等“常量”。</p>
 <h2 id="Item_5_-_Use_Enumerations_for_States,_Options,_and_Status_Codes">Item 5 - Use Enumerations for States, Options, and Status Codes</h2><p>本节的内容就是如何正确的使用枚举。</p>
 <h2 id="状态与选项的区别（states_and_options）">状态与选项的区别（states and options）</h2><p>在用<strong>enum</strong>之前，我个人觉得，区分一下状态和选项的概念还是很必要的。</p>
 <p><strong>状态</strong>，同时只能有一种，如“<strong>OK</strong>”，“<strong>Error</strong>”，不可能同时是OK和Error。<br><strong>选项</strong>，同时可以有一种或一种以上，如App可以<strong>同时</strong>支持横屏和竖屏，横屏竖屏在这个时候就是“屏幕方向”的两种不同的选项。</p>
 <p>接下来，我们看看如何用枚举定义状态和选项。</p>
 <a id="more"></a>
 <h2 id="enum与状态（states）">enum与状态（states）</h2><h4 id="不好的做法">不好的做法</h4><p>经常看到这样的写法：</p>
-<pre><code><span class="preprocessor">#<span class="keyword">define</span> STATE_OK 0</span>
-<span class="preprocessor">#<span class="keyword">define</span> STATE_ERROR 1</span>
-<span class="preprocessor">#<span class="keyword">define</span> STATE_UNKNOW 2</span>
+<pre><code><span class="preprocessor">#<span class="keyword">define</span> STATE_OK <span class="number">0</span></span>
+<span class="preprocessor">#<span class="keyword">define</span> STATE_ERROR <span class="number">1</span></span>
+<span class="preprocessor">#<span class="keyword">define</span> STATE_UNKNOW <span class="number">2</span></span>
 
 <span class="comment">//直接用int型变量接收</span>
 <span class="keyword">int</span> STATE = STATE_UNKNOW;
@@ -276,14 +277,14 @@ Item 5 - Use Enumerations for States, Options, and Status Codes本节的内容�
 <li>宏定义没有类型约束，只是单纯的替换。</li>
 <li>无法限制状态的所有情况，如，认为的将STATE赋值成3，程序可能就会出错，找不到匹配的状态，因为编译器不会对“<strong>STATE = 3;</strong>”提出警告。</li>
 </ul>
-<h4 id="正确的做法">正确的做法</h4><pre><code>typedef enum _TTGState {
-    TTGStateOK  = <span class="number">0</span>,
-    TTGStateError,
-    TTGStateUnknow
-} TTGState;
+<h4 id="正确的做法">正确的做法</h4><pre><code>typedef <span class="class"><span class="keyword">enum</span> <span class="title">_TTGState</span> {</span>
+    <span class="constant">TTGStateOK</span>  = <span class="number">0</span>,
+    <span class="constant">TTGStateError</span>,
+    <span class="constant">TTGStateUnknow</span>
+} <span class="constant">TTGState</span>;
 
-//指明枚举类型
-TTGState <span class="keyword">state</span> = TTGStateOK;
+<span class="regexp">//</span>指明枚举类型
+<span class="constant">TTGState</span> state = <span class="constant">TTGStateOK</span>;
 </code></pre><p>用的时候就如下：</p>
 <pre><code>- (<span class="typename">void</span>)<span class="string">dealWithState:</span>(TTGState)state {
     <span class="keyword">switch</span> (state) {
@@ -300,12 +301,12 @@ TTGState <span class="keyword">state</span> = TTGStateOK;
 }
 </code></pre><h2 id="enum与选项_(options)">enum与选项 (options)</h2><p>选项，就是说一个“选项变量”的类型要能够同时表示一个或多个组合的选择，如下例子：</p>
 <pre><code><span class="comment">//方向，可同时支持一个或多个方向</span>
-typedef <span class="class"><span class="keyword">enum</span> _<span class="title">TTGDirection</span> </span>{
-<span class="constant">    TTGDirectionNone</span> = <span class="number">0</span>,
-<span class="constant">    TTGDirectionTop</span> = <span class="number">1</span> &lt;&lt; <span class="number">0</span>,
-<span class="constant">    TTGDirectionLeft</span> = <span class="number">1</span> &lt;&lt; <span class="number">1</span>,
-<span class="constant">    TTGDirectionRight</span> = <span class="number">1</span> &lt;&lt; <span class="number">2</span>,
-<span class="constant">    TTGDirectionBottom</span> = <span class="number">1</span> &lt;&lt; <span class="number">3</span>
+<span class="keyword">typedef</span> <span class="keyword">enum</span> _TTGDirection {
+    TTGDirectionNone = <span class="number">0</span>,
+    TTGDirectionTop = <span class="number">1</span> &lt;&lt; <span class="number">0</span>,
+    TTGDirectionLeft = <span class="number">1</span> &lt;&lt; <span class="number">1</span>,
+    TTGDirectionRight = <span class="number">1</span> &lt;&lt; <span class="number">2</span>,
+    TTGDirectionBottom = <span class="number">1</span> &lt;&lt; <span class="number">3</span>
 } TTGDirection;
 </code></pre><p>看，这里的选项是用<strong>位运算</strong>的方式定义的，这样的好处就是，我们的选项变量可以如下表示：</p>
 <pre><code><span class="comment">//用“或”运算同时赋值多个选项</span>
@@ -328,17 +329,17 @@ TTGDirection direction = TTGDirectionTop | TTGDirectionLeft | TTGDirectionBottom
 <p><img src="http://zorrochen.qiniudn.com/blog_effective_objective_c_5_enum_2.jpg" alt="内存示意图"></p>
 <p>这样，用位运算，就可以同时支持多个值。</p>
 <h2 id="enum在Objective-C中的“升级版”">enum在Objective-C中的“升级版”</h2><p>一般来说，我们不能指定枚举变量的实际类型是什么，就是说，我们不知道枚举最后是int型，还是其他的什么类型。但是从C++ 11开始，我们可以为枚举指定其实际的存储类型，如下语法：</p>
-<pre><code><span class="tag">enum</span> <span class="rule"><span class="attribute">TTGState </span>:<span class="value"> NSInteger {<span class="comment">/*...*/</span>}</span></span>;
+<pre><code><span class="class"><span class="keyword">enum</span> <span class="title">TTGState</span> : <span class="title">NSInteger</span> {/*...*/};</span>
 </code></pre><p>但是，我们在定义枚举的时候如何保证兼容性呢？Foundation框架已经为我们提供了更加“统一、便捷”的枚举定义方法，我们重新定义上面的例子：</p>
 <pre><code><span class="comment">//NS_ENUM，定义状态等普通枚举</span>
-<span class="keyword">typedef</span> <span class="built_in">NS_ENUM</span>(<span class="built_in">NSUInteger</span>, TTGState) {
+<span class="function"><span class="keyword">typedef</span> <span class="title">NS_ENUM</span><span class="params">(NSUInteger, TTGState)</span> </span>{
     TTGStateOK = <span class="number">0</span>,
     TTGStateError,
     TTGStateUnknow
 };
 
 <span class="comment">//NS_OPTIONS，定义选项</span>
-<span class="keyword">typedef</span> <span class="built_in">NS_OPTIONS</span>(<span class="built_in">NSUInteger</span>, TTGDirection) {
+<span class="function"><span class="keyword">typedef</span> <span class="title">NS_OPTIONS</span><span class="params">(NSUInteger, TTGDirection)</span> </span>{
     TTGDirectionNone = <span class="number">0</span>,
     TTGDirectionTop = <span class="number">1</span> &lt;&lt; <span class="number">0</span>,
     TTGDirectionLeft = <span class="number">1</span> &lt;&lt; <span class="number">1</span>,
@@ -391,30 +392,38 @@ TTGDirection direction = TTGDirectionTop | TTGDirectionLeft | TTGDirectionBottom
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2015/03/21/effective-objective-c-5-enum/"
-     data-title="Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5"
-     data-content=""
-     data-url="http://tutuge.me/2015/03/21/effective-objective-c-5-enum/">
-  <div class="ds-share-inline">
-    <ul  class="ds-share-icons-16">
-
-      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
-      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
-      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
-      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
-      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
-
-    </ul>
-    <div class="ds-share-icons-more">
-    </div>
-  </div>
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
 </div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
       
     </div>
   </div>
 
  </div>
 
+        
+            <!-- 多说热评文章-->
+            <p>热评文章</p>
+            <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
         
 
         
@@ -460,11 +469,11 @@ TTGDirection direction = TTGDirectionTop | TTGDirectionLeft | TTGDirectionBottom
           <img class="site-author-image" src="/uploads/avatar_comic_240.png" alt="土土哥" itemprop="image"/>
           <p class="site-author-name" itemprop="name">土土哥</p>
         </div>
-        <p class="site-description motion-element" itemprop="description">iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言</p>
+        <p class="site-description motion-element" itemprop="description">程序猿</p>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">27</span>
+              <span class="site-state-item-count">28</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -499,19 +508,19 @@ TTGDirection direction = TTGDirectionTop | TTGDirectionLeft | TTGDirectionBottom
             
               <span class="links-of-author-item">
                 <a href="https://github.com/zekunyan" target="_blank">
-                  <i class="fa fa-github"></i> GitHub
+                  <i class="fa fa-github fa-fw"></i> GitHub
                 </a>
               </span>
             
               <span class="links-of-author-item">
                 <a href="https://twitter.com/zorro_tutuge" target="_blank">
-                  <i class="fa fa-twitter"></i> Twitter
+                  <i class="fa fa-twitter fa-fw"></i> Twitter
                 </a>
               </span>
             
               <span class="links-of-author-item">
                 <a href="http://weibo.com/zekunyan" target="_blank">
-                  <i class="fa fa-weibo"></i> Weibo
+                  <i class="fa fa-weibo fa-fw"></i> Weibo
                 </a>
               </span>
             
@@ -631,6 +640,8 @@ TTGDirection direction = TTGDirectionTop | TTGDirectionLeft | TTGDirectionBottom
     })();
   </script>
     
+     
+
 
     
   
