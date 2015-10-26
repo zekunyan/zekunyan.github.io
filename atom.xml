@@ -4,7 +4,7 @@
   <subtitle><![CDATA[iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://tutuge.me/"/>
-  <updated>2015-10-26T08:41:47.000Z</updated>
+  <updated>2015-10-26T09:08:15.000Z</updated>
   <id>http://tutuge.me/</id>
   
   <author>
@@ -16,10 +16,10 @@
   
   <entry>
     <title><![CDATA[Swift开源项目: TTGEmojiRate的实现]]></title>
-    <link href="http://tutuge.me/2015/10/24/ttgemojirate-lib/"/>
-    <id>http://tutuge.me/2015/10/24/ttgemojirate-lib/</id>
-    <published>2015-10-24T11:32:42.000Z</published>
-    <updated>2015-10-26T08:41:47.000Z</updated>
+    <link href="http://tutuge.me/2015/10/25/ttgemojirate-lib/"/>
+    <id>http://tutuge.me/2015/10/25/ttgemojirate-lib/</id>
+    <published>2015-10-25T11:32:42.000Z</published>
+    <updated>2015-10-26T09:08:15.000Z</updated>
     <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>前段时间在Dribbble上发现了一个<a href="https://dribbble.com/shots/2211556-Rating-Version-A" target="_blank" rel="external">Rating控件</a>的演示动画，控件以Emoji表情为基础，结合了上下滑动手势，正好最近正在深入学习iOS动画、绘图相关的知识，就尝试着用<code>UIBezierPath</code>实现了出来。本文就是TTGEmojiRate的实现过程。</p>
 <p>Github: <a href="https://github.com/zekunyan/TTGEmojiRate" target="_blank" rel="external">https://github.com/zekunyan/TTGEmojiRate</a></p>
 <p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/TTGEmojiRate_screenshot2.gif" alt="TTGEmojiRate Example"></p>
