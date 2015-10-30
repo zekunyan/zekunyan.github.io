@@ -1,11 +1,10 @@
 <!doctype html>
-<html class="theme-next use-motion theme-next-mist">
+<html class="theme-next   use-motion ">
 <head>
-  
-
-<meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
 
 
 <meta http-equiv="Cache-Control" content="no-transform" />
@@ -18,7 +17,12 @@
 
 
 
-  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
 
 
 
@@ -27,16 +31,15 @@
   
 
 
-<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
 
-<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
 
-
-    <meta name="description" content="程序猿" />
-
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
 
 
   <meta name="keywords" content="iOS,原创," />
+
+
 
 
 
@@ -44,7 +47,12 @@
 
 
 
+
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
 
 
 <meta name="description" content="前言好久没有写东西了，忙啊。前段时间参加了一下我们华科联创的HackDay（本人在读研=。=，目前在阿里实习），作品是一款实时在线对战游戏 - 波波攒，（介绍请看知乎）从iOS游戏客户端（用的SpriteKit）到后台（PHP CI + Node + SocketIO + MySQL）全是自己一个人倒腾出来的，做了一把真正的全栈工程师，爽啊~后面会完善整个游戏，增加角色、优化啥的，过上一段时间会上">
@@ -59,14 +67,14 @@
 <meta name="twitter:description" content="前言好久没有写东西了，忙啊。前段时间参加了一下我们华科联创的HackDay（本人在读研=。=，目前在阿里实习），作品是一款实时在线对战游戏 - 波波攒，（介绍请看知乎）从iOS游戏客户端（用的SpriteKit）到后台（PHP CI + Node + SocketIO + MySQL）全是自己一个人倒腾出来的，做了一把真正的全栈工程师，爽啊~后面会完善整个游戏，增加角色、优化啥的，过上一段时间会上">
 
 
+
 <script type="text/javascript" id="hexo.configuration">
   var CONFIG = {
     scheme: 'Mist',
-    sidebar: 'post'
+    sidebar: 'post',
+    motion: true
   };
 </script>
-
-
 
   <title> 用Runtime的手段填充任意NSObject对象的nil属性 | 土土哥的技术Blog </title>
 </head>
@@ -193,11 +201,16 @@
 
     <main id="main" class="main">
       <div class="main-inner">
-        <div id="content" class="content"> 
+        <div id="content" class="content">
+          
 
   <div id="posts" class="posts-expand">
     
 
+  
+  
+
+  
   
   
 
@@ -350,23 +363,25 @@
     </div>
   </div>
 
- </div>
+
+        </div>
 
         
-            <!-- 多说热评文章-->
-            <p>热评文章</p>
-            <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
-        
+
+  <p>热评文章</p>
+  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
+
 
         
-          <div class="comments" id="comments">
-            
-              <div class="ds-thread" data-thread-key="2015/07/08/fill-nil-property-of-object/"
-                   data-title="用Runtime的手段填充任意NSObject对象的nil属性" data-url="http://tutuge.me/2015/07/08/fill-nil-property-of-object/">
-              </div>
-            
-          </div>
-        
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/07/08/fill-nil-property-of-object/"
+           data-title="用Runtime的手段填充任意NSObject对象的nil属性" data-url="http://tutuge.me/2015/07/08/fill-nil-property-of-object/">
+      </div>
+    
+  </div>
+
+
       </div>
 
       
@@ -429,7 +444,7 @@
         
           <div class="feed-link motion-element">
             <a href="/atom.xml" rel="alternate">
-              <i class="menu-item-icon icon-next-feed"></i>
+              <i class="fa fa-rss"></i>
               RSS
             </a>
           </div>
@@ -440,19 +455,25 @@
             
               <span class="links-of-author-item">
                 <a href="https://github.com/zekunyan" target="_blank">
-                  <i class="fa fa-github fa-fw"></i> GitHub
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
                 </a>
               </span>
             
               <span class="links-of-author-item">
                 <a href="https://twitter.com/zorro_tutuge" target="_blank">
-                  <i class="fa fa-twitter fa-fw"></i> Twitter
+                  
+                    <i class="fa fa-twitter"></i> Twitter
+                  
                 </a>
               </span>
             
               <span class="links-of-author-item">
                 <a href="http://weibo.com/zekunyan" target="_blank">
-                  <i class="fa fa-weibo fa-fw"></i> Weibo
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
                 </a>
               </span>
             
@@ -499,14 +520,20 @@
 
       
         <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
           <div class="post-toc">
+            
+              
             
             
               <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#初衷"><span class="nav-number">2.</span> <span class="nav-text">初衷</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决步骤"><span class="nav-number">3.</span> <span class="nav-text">解决步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Runtime"><span class="nav-number">4.</span> <span class="nav-text">Runtime</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#示例"><span class="nav-number">5.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重点_-_解析property_getAttributes函数的结果"><span class="nav-number">6.</span> <span class="nav-text">重点 - 解析property_getAttributes函数的结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#效果"><span class="nav-number">7.</span> <span class="nav-text">效果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">9.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
           </div>
-          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
         </section>
       
 
@@ -518,7 +545,8 @@
     </main>
 
     <footer id="footer" class="footer">
-      <div class="footer-inner"> <div class="copyright" >
+      <div class="footer-inner">
+        <div class="copyright" >
   
   &copy;  2014 - 
   <span itemprop="copyrightYear">2015</span>
@@ -542,7 +570,8 @@
 </div>
 
 
- </div>
+
+      </div>
     </footer>
 
     <div class="back-to-top"></div>
@@ -552,6 +581,7 @@
 
   
   
+
   
     
 
@@ -577,24 +607,21 @@
 
     
   
+
   
   <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
   <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
 
 
   <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
-  
-
   <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
-  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
 
-  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.2" id="motion.global"></script>
-
-
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
 
 
-  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.2"></script>
   <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
 
   
   
@@ -679,7 +706,7 @@
 
     function tocOverflowIndicator (indicator, action) {
       var $indicator = $(indicator);
-      var opacity = action === 'show' ? 0.4 : 0;
+      var opacity = action === 'show' ? 1 : 0;
       $indicator.velocity ?
         $indicator.velocity('stop').velocity({
           opacity: opacity
@@ -759,23 +786,7 @@
 
 
 
-  <script type="text/javascript">
-    $(document).ready(function () {
-
-      isMobile() && FastClick.attach(document.body);
-
-      // Define Motion Sequence.
-      motionIntegrator
-        .add(motionMiddleWares.logo)
-        .add(motionMiddleWares.menu)
-        .add(motionMiddleWares.backToTop)
-        .add(motionMiddleWares.postList)
-        .add(motionMiddleWares.sidebar);
-
-      // Bootstrap Motion.
-      motionIntegrator.bootstrap();
-    });
-  </script>
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
 
   
   
@@ -783,15 +794,5 @@
   
   
 
-  
-  <script type="text/javascript" src="/js/lazyload.js"></script>
-  <script type="text/javascript">
-    $(function () {
-      $("#posts").find('img').lazyload({
-        placeholder: "/images/loading.gif",
-        effect: "fadeIn"
-      });
-    });
-  </script>
 </body>
 </html>

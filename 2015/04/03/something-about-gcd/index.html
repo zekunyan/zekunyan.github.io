@@ -1,11 +1,10 @@
 <!doctype html>
-<html class="theme-next use-motion theme-next-mist">
+<html class="theme-next   use-motion ">
 <head>
-  
-
-<meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
 
 
 <meta http-equiv="Cache-Control" content="no-transform" />
@@ -18,7 +17,12 @@
 
 
 
-  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
 
 
 
@@ -27,16 +31,15 @@
   
 
 
-<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
 
-<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
 
-
-    <meta name="description" content="程序猿" />
-
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
 
 
   <meta name="keywords" content="iOS,原创," />
+
+
 
 
 
@@ -44,7 +47,12 @@
 
 
 
+
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
 
 
 <meta name="description" content="前言GCD(Grand Central Dispatch)可以说是Mac、iOS开发中的一大“利器”，本文就总结一些有关使用GCD的经验与技巧。
@@ -65,14 +73,14 @@ dispatch_once_t必须是全局或static变量这一条算是“老生常谈”�
 //静态变量，保证只有一份实例">
 
 
+
 <script type="text/javascript" id="hexo.configuration">
   var CONFIG = {
     scheme: 'Mist',
-    sidebar: 'post'
+    sidebar: 'post',
+    motion: true
   };
 </script>
-
-
 
   <title> GCD使用经验与技巧浅谈 | 土土哥的技术Blog </title>
 </head>
@@ -199,11 +207,16 @@ dispatch_once_t必须是全局或static变量这一条算是“老生常谈”�
 
     <main id="main" class="main">
       <div class="main-inner">
-        <div id="content" class="content"> 
+        <div id="content" class="content">
+          
 
   <div id="posts" class="posts-expand">
     
 
+  
+  
+
+  
   
   
 
@@ -545,23 +558,25 @@ dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
     </div>
   </div>
 
- </div>
+
+        </div>
 
         
-            <!-- 多说热评文章-->
-            <p>热评文章</p>
-            <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
-        
+
+  <p>热评文章</p>
+  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
+
 
         
-          <div class="comments" id="comments">
-            
-              <div class="ds-thread" data-thread-key="2015/04/03/something-about-gcd/"
-                   data-title="GCD使用经验与技巧浅谈" data-url="http://tutuge.me/2015/04/03/something-about-gcd/">
-              </div>
-            
-          </div>
-        
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/04/03/something-about-gcd/"
+           data-title="GCD使用经验与技巧浅谈" data-url="http://tutuge.me/2015/04/03/something-about-gcd/">
+      </div>
+    
+  </div>
+
+
       </div>
 
       
@@ -624,7 +639,7 @@ dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
         
           <div class="feed-link motion-element">
             <a href="/atom.xml" rel="alternate">
-              <i class="menu-item-icon icon-next-feed"></i>
+              <i class="fa fa-rss"></i>
               RSS
             </a>
           </div>
@@ -635,19 +650,25 @@ dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
             
               <span class="links-of-author-item">
                 <a href="https://github.com/zekunyan" target="_blank">
-                  <i class="fa fa-github fa-fw"></i> GitHub
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
                 </a>
               </span>
             
               <span class="links-of-author-item">
                 <a href="https://twitter.com/zorro_tutuge" target="_blank">
-                  <i class="fa fa-twitter fa-fw"></i> Twitter
+                  
+                    <i class="fa fa-twitter"></i> Twitter
+                  
                 </a>
               </span>
             
               <span class="links-of-author-item">
                 <a href="http://weibo.com/zekunyan" target="_blank">
-                  <i class="fa fa-weibo fa-fw"></i> Weibo
+                  
+                    <i class="fa fa-weibo"></i> Weibo
+                  
                 </a>
               </span>
             
@@ -694,14 +715,20 @@ dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
 
       
         <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
           <div class="post-toc">
+            
+              
             
             
               <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dispatch_once_t必须是全局或static变量"><span class="nav-number">2.</span> <span class="nav-text">dispatch_once_t必须是全局或static变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dispatch_queue_create的第二个参数"><span class="nav-number">3.</span> <span class="nav-text">dispatch_queue_create的第二个参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dispatch_after是延迟提交，不是延迟运行"><span class="nav-number">4.</span> <span class="nav-text">dispatch_after是延迟提交，不是延迟运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正确创建dispatch_time_t"><span class="nav-number">5.</span> <span class="nav-text">正确创建dispatch_time_t</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dispatch_suspend_!=_立即停止队列的运行"><span class="nav-number">6.</span> <span class="nav-text">dispatch_suspend != 立即停止队列的运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#“同步”的dispatch_apply"><span class="nav-number">7.</span> <span class="nav-text">“同步”的dispatch_apply</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#避免死锁！"><span class="nav-number">8.</span> <span class="nav-text">避免死锁！</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#dispatch_sync导致的死锁"><span class="nav-number">8.0.1.</span> <span class="nav-text">dispatch_sync导致的死锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#dispatch_apply导致的死锁！"><span class="nav-number">8.0.2.</span> <span class="nav-text">dispatch_apply导致的死锁！</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#灵活使用dispatch_group"><span class="nav-number">9.</span> <span class="nav-text">灵活使用dispatch_group</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#添加任务"><span class="nav-number">9.0.1.</span> <span class="nav-text">添加任务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#添加结束任务"><span class="nav-number">9.0.2.</span> <span class="nav-text">添加结束任务</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用dispatch_barrier_async,dispatch_barrier_sync的注意事项"><span class="nav-number">10.</span> <span class="nav-text">使用dispatch_barrier_async,dispatch_barrier_sync的注意事项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dispatch_set_context与dispatch_set_finalizer_f的配合使用"><span class="nav-number">11.</span> <span class="nav-text">dispatch_set_context与dispatch_set_finalizer_f的配合使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">12.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">13.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
           </div>
-          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
         </section>
       
 
@@ -713,7 +740,8 @@ dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
     </main>
 
     <footer id="footer" class="footer">
-      <div class="footer-inner"> <div class="copyright" >
+      <div class="footer-inner">
+        <div class="copyright" >
   
   &copy;  2014 - 
   <span itemprop="copyrightYear">2015</span>
@@ -737,7 +765,8 @@ dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
 </div>
 
 
- </div>
+
+      </div>
     </footer>
 
     <div class="back-to-top"></div>
@@ -747,6 +776,7 @@ dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
 
   
   
+
   
     
 
@@ -772,24 +802,21 @@ dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
 
     
   
+
   
   <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
   <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
 
 
   <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
-  
-
   <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
-  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
 
-  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.2" id="motion.global"></script>
-
-
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
 
 
-  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.2"></script>
   <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
 
   
   
@@ -874,7 +901,7 @@ dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
 
     function tocOverflowIndicator (indicator, action) {
       var $indicator = $(indicator);
-      var opacity = action === 'show' ? 0.4 : 0;
+      var opacity = action === 'show' ? 1 : 0;
       $indicator.velocity ?
         $indicator.velocity('stop').velocity({
           opacity: opacity
@@ -954,23 +981,7 @@ dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
 
 
 
-  <script type="text/javascript">
-    $(document).ready(function () {
-
-      isMobile() && FastClick.attach(document.body);
-
-      // Define Motion Sequence.
-      motionIntegrator
-        .add(motionMiddleWares.logo)
-        .add(motionMiddleWares.menu)
-        .add(motionMiddleWares.backToTop)
-        .add(motionMiddleWares.postList)
-        .add(motionMiddleWares.sidebar);
-
-      // Bootstrap Motion.
-      motionIntegrator.bootstrap();
-    });
-  </script>
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
 
   
   
@@ -978,15 +989,5 @@ dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);
   
   
 
-  
-  <script type="text/javascript" src="/js/lazyload.js"></script>
-  <script type="text/javascript">
-    $(function () {
-      $("#posts").find('img').lazyload({
-        placeholder: "/images/loading.gif",
-        effect: "fadeIn"
-      });
-    });
-  </script>
 </body>
 </html>

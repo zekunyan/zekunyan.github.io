@@ -141,7 +141,13 @@ $(document).ready(function () {
           begin: function () {
             $('.sidebar .motion-element').velocity(
               'transition.slideRightIn',
-              {stagger: 50, drag: true}
+              {
+                stagger: 50,
+                drag: true,
+                complete: function () {
+                  self.sidebarEl.trigger('sidebar.motion.complete');
+                }
+              }
             );
           },
           complete: function () {
@@ -274,14 +280,6 @@ $(document).ready(function () {
       if (CONFIG.sidebar === 'always') {
         displaySidebar();
       }
-      integrator.next();
-    },
-
-    backToTop: function (integrator) {
-      var $b2top = $('.back-to-top');
-      $b2top.on('click', function () {
-        $('body').velocity('scroll');
-      });
       integrator.next();
     }
   };
