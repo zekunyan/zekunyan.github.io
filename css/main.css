@@ -961,7 +961,7 @@ body {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #2e67be;
+  background: #3695d5;
 }
 .sidebar-nav {
   margin: 0 0 20px;
@@ -1355,7 +1355,7 @@ body {
 .post-more-link {
   margin-top: 50px;
 }
-.posts-expand .fancybox img {
+.posts-expand .post-body .fancybox img {
   margin: 0 auto;
 }
 @media (max-width: 767px) {

@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://tutuge.me/2015/07/25/compatibility-with-macro-category-and-runtime/</loc>
+    <lastmod>2015-11-16T17:03:36.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://tutuge.me/about/index.html</loc>
     <lastmod>2015-10-26T13:28:17.000Z</lastmod>
   </url>
@@ -59,11 +64,6 @@
   <url>
     <loc>http://tutuge.me/2015/04/21/resizable-nstextattachment/</loc>
     <lastmod>2015-09-24T10:57:12.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://tutuge.me/2015/07/25/compatibility-with-macro-category-and-runtime/</loc>
-    <lastmod>2015-09-24T10:55:35.000Z</lastmod>
   </url>
   
   <url>
