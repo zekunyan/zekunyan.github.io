@@ -758,7 +758,6 @@ body {
   .site-nav {
     display: none;
     margin: 0 -10px;
-    padding: 0 0;
     clear: both;
     border-top: 1px solid #ddd;
   }
@@ -775,8 +774,13 @@ body {
 }
 .menu {
   margin-top: 20px;
-  padding-left: 20px;
+  padding-left: 0;
   text-align: center;
+}
+@media (max-width: 767px) {
+  .menu {
+    padding-left: 10px;
+  }
 }
 .menu .menu-item {
   display: inline-block;
@@ -961,7 +965,7 @@ body {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #b1ac53;
+  background: #a8ff6b;
 }
 .sidebar-nav {
   margin: 0 0 20px;
