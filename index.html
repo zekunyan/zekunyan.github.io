@@ -231,6 +231,97 @@
             
               
                 
+                <a class="post-title-link" href="/2015/12/14/autolayout-example-with-masonry3/" itemprop="url">
+                  有趣的Autolayout示例3-Masonry实现
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-14T21:36:08+08:00" content="2015-12-14">
+              2015-12-14
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/12/14/autolayout-example-with-masonry3/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/12/14/autolayout-example-with-masonry3/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h2 id="前言">前言</h2><p>第三篇来了。<br>依然是3个小例子，主要部分用Masonry手写代码实现，其它的约束在storyboard里面直接拖拽搭建。<br>至于为啥不用VFL，主要是因为它的“描述性”的写法很容易出错，没有补全、不好调试，写起来没有“代码”的感觉=。=。当然，这个仁者见仁智者见智~<br>三个例子分别是：<strong>Parallax Header</strong>，<strong>动态变高度的UITableViewCell</strong>，以及<strong>两种方式实现等间距</strong>。原理其实都很简单，例子也都是平时积累起来的。</p>
+<p>前两篇：<br>第一篇：<a href="http://tutuge.me/2015/05/23/autolayout-example-with-masonry/">有趣的Autolayout示例-Masonry实现</a><br>第二篇：<a href="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/">有趣的Autolayout示例2-Masonry实现</a></p>
+<p>Github地址：<br><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
+<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry3_1.gif" alt="Gif示例"></p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/12/14/autolayout-example-with-masonry3/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2015/10/25/ttgemojirate-lib/" itemprop="url">
                   Swift开源项目: TTGEmojiRate的实现
                 </a>
@@ -1035,108 +1126,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/03/29/bind-data-to-gcd-queue/" itemprop="url">
-                  为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-03-29T19:27:40+08:00" content="2015-03-29">
-              2015-03-29
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/03/29/bind-data-to-gcd-queue/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/29/bind-data-to-gcd-queue/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h2 id="2015-5-28更新">2015-5-28更新</h2><p>下面评论的好友“@Jim”给了种新的思路，就是在清除context的函数里面，用“<strong>_bridge_transfer</strong>”转换context，把context的内存管理权限重新交给ARC，这样，就不用显式调用“<strong>CFRelease</strong>”了。如下：</p>
-<pre><code><span class="literal">void</span> cleanStaff(<span class="literal">void</span> *context) {
-    <span class="comment">//这里用_bridge_transfer转换，将内存管理权限交还给ARC</span>
-    <span class="built_in">Data</span> *<span class="built_in">data</span> = (_bridge_transfer <span class="built_in">Data</span> *)(context);
-    NSLog(@<span class="string">"In clean, context number: %d"</span>, <span class="built_in">data</span><span class="built_in">.</span>number);
-
-    <span class="comment">//不用显式释放context的内存！</span>
-}
-</code></pre><h2 id="前言">前言</h2><p>看过GCD（Grand Central Dispatch）的Apple<a href="https://developer.apple.com/library/prerelease/mac/documentation/Performance/Reference/GCD_libdispatch_Ref/index.html">官方文档</a>的朋友一定见过“<strong>dispatch_set_context</strong>”和“<strong>dispatch_get_context</strong>”这两个函数，那么这两个函数该怎么用呢？  </p>
-<p>我们都知道，GCD的接口参数都是“C语言类型“的，那么，我们如何将NSObject类型（Foundation框架）的数据，传入GCD的接口呢？（即：Core Foundation和Foundation对象的转换）</p>
-<h2 id="本文关键字">本文关键字</h2><ul>
-<li>GCD：dispatch_set_context，dispatch_get_context</li>
-<li>__bridge，__bridge_retained，__bridge_transfer</li>
-<li>Core Foundation, NSObject</li>
-</ul>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/03/29/bind-data-to-gcd-queue/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
@@ -1183,7 +1172,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">28</span>
+              <span class="site-state-item-count">29</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
