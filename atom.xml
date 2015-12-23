@@ -4,7 +4,7 @@
   <subtitle><![CDATA[iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://tutuge.me/"/>
-  <updated>2015-12-17T05:17:18.000Z</updated>
+  <updated>2015-12-23T06:26:40.000Z</updated>
   <id>http://tutuge.me/</id>
   
   <author>
@@ -19,8 +19,8 @@
     <link href="http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/"/>
     <id>http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/</id>
     <published>2015-12-14T13:36:08.000Z</published>
-    <updated>2015-12-17T05:17:18.000Z</updated>
-    <content type="html"><![CDATA[<h2 id="更新">更新</h2><p>2015-12-17：Case3的等间距，用UIStackView实现最优雅，但是无奈只有iOS9以上支持。兼容方案如OAStackView也可以，但是在UITableViewCell里面用，或者需要频繁的增减内部View的数量时，性能损耗有点厉害，会卡。所以，还是要看需求=。=</p>
+    <updated>2015-12-23T06:26:40.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="更新">更新</h2><p>2015-12-23: 感谢<a href="https://github.com/XVXVXXX" target="_blank" rel="external">XVXVXXX</a>的PR,Case 1不再需要Fake Header View，直接用contentInset就好~<br>2015-12-17：Case3的等间距，用UIStackView实现最优雅，但是无奈只有iOS9以上支持。兼容方案如OAStackView也可以，但是在UITableViewCell里面用，或者需要频繁的增减内部View的数量时，性能损耗有点厉害，会卡。所以，还是要看需求=。=</p>
 <h2 id="前言">前言</h2><p>第三篇来了。<br>依然是3个小例子，主要部分用Masonry手写代码实现，其它的约束在storyboard里面直接拖拽搭建。<br>至于为啥不用VFL，主要是因为它的“描述性”的写法很容易出错，没有补全、不好调试，写起来没有“代码”的感觉=。=。当然，这个仁者见仁智者见智~<br>三个例子分别是：<strong>Parallax Header</strong>，<strong>动态变高度的UITableViewCell</strong>，以及<strong>两种方式实现等间距</strong>。原理其实都很简单，例子也都是平时积累起来的。</p>
 <p>前两篇：<br>第一篇：<a href="http://tutuge.me/2015/05/23/autolayout-example-with-masonry/">有趣的Autolayout示例-Masonry实现</a><br>第二篇：<a href="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/">有趣的Autolayout示例2-Masonry实现</a></p>
 <p>Github地址：<br><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="external">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
@@ -32,11 +32,12 @@
 <ol>
 <li>设置UITableView背景透明。</li>
 <li>在UITableView正下方放置一个UIImageView，作为我们的Parallax Header，设置<code>contentMode</code>为<code>UIViewContentModeScaleAspectFill</code>，并加上<strong>上左右</strong>的固定约束，使其与UITableView对其，然后加上一个固定高度的约束，并在代码里面保存。</li>
-<li>给UITableView设置一个<strong>透明</strong>的，跟Parallax Header等高的UIView，使UITableView的头部“撑开”，让后面的Parallax Header露出来。</li>
+<li>设置UITableView的<code>contentInset</code>跟Parallax Header等高，使UITableView的头部“撑开”，让后面的Parallax Header露出来。</li>
 <li>在代码里面监听UITableView的<code>contentOffset</code>属性，当y小于0时，增加Parallax Header高度，使其产生联动效果。</li>
 </ol>
-<p>约束示意图如下：<br><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry3_2.png" alt="Parallax Header"></p>
+<p>约束示意图如下：<br><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry3_6.png" alt="Parallax Header"></p>
 <h3 id="代码">代码</h3><p>创建Parallax Header的代码如下：<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">_parallaxHeaderView = [<span class="built_in">UIImageView</span> new];</span><br><span class="line"><span class="comment">// 把Parallax Header放在UITableView的下面 </span></span><br><span class="line">[<span class="keyword">self</span><span class="variable">.view</span> insertSubview:_parallaxHeaderView belowSubview:_tableView];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置contentMode</span></span><br><span class="line">_parallaxHeaderView<span class="variable">.contentMode</span> = <span class="built_in">UIViewContentModeScaleAspectFill</span>;</span><br><span class="line">_parallaxHeaderView<span class="variable">.image</span> = [<span class="built_in">UIImage</span> imageNamed:<span class="string">@"parallax_header_back"</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 添加约束</span></span><br><span class="line">[_parallaxHeaderView mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">    make<span class="variable">.left</span><span class="variable">.and</span><span class="variable">.right</span><span class="variable">.equalTo</span>(<span class="keyword">self</span><span class="variable">.view</span>);</span><br><span class="line">    make<span class="variable">.top</span><span class="variable">.equalTo</span>(<span class="keyword">self</span><span class="variable">.mas_topLayoutGuideBottom</span>);</span><br><span class="line">    <span class="comment">// 保存高度约束</span></span><br><span class="line">    _parallaxHeaderHeightConstraint = make<span class="variable">.height</span><span class="variable">.equalTo</span>(@(ParallaxHeaderHeight));</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure></p>
+<p>设置UITableView的<code>contentInset</code><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">_tableView.contentInset = UIEdgeInsetsMake(ParallaxHeaderHeight, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br></pre></td></tr></table></figure></p>
 <h3 id="监听contentOffset属性的两种方法">监听<code>contentOffset</code>属性的两种方法</h3><h4 id="方法1：直接实现scrollViewDidScroll:">方法1：直接实现<code>scrollViewDidScroll:</code></h4><p>这种方法应该是最直接的：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)scrollViewDidScroll:(UIScrollView *)scrollView &#123;</span><br><span class="line">    <span class="keyword">if</span> (scrollView.contentOffset.y &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// 增加Parallax Header对应的高度，y是负数，所以减去</span></span><br><span class="line">        _parallaxHeaderHeightConstraint.equalTo(@(ParallaxHeaderHeight - scrollView.contentOffset.y));</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        _parallaxHeaderHeightConstraint.equalTo(@(ParallaxHeaderHeight));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h4 id="方法2：KVO监听contentOffset变化">方法2：KVO监听<code>contentOffset</code>变化</h4><p>用KVO的好处就是不用要求当前类实现UITableView的delegate，对于代码的拆分有好处。</p>
 <p>增加KVO：<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[_tableView <span class="string">addObserver:</span>self <span class="string">forKeyPath:</span>@<span class="string">"contentOffset"</span> <span class="string">options:</span>NSKeyValueObservingOptionNew <span class="string">context:</span>nil];</span><br></pre></td></tr></table></figure></p>
@@ -95,7 +96,7 @@
 <h2 id="总结">总结</h2><p>三个例子说完了，你有啥收获呢~？:-D</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<h2 id="更新">更新</h2><p>2015-12-17：Case3的等间距，用UIStackView实现最优雅，但是无奈只有iOS9以上支持。兼容方案如OAStackView也可以，但是在UITableViewCell里面用，或者需要频繁的增减内部View的数量时，性能损耗有点厉害，会卡。所以，还是要看需求=。=</p>
+    <![CDATA[<h2 id="更新">更新</h2><p>2015-12-23: 感谢<a href="https://github.com/XVXVXXX">XVXVXXX</a>的PR,Case 1不再需要Fake Header View，直接用contentInset就好~<br>2015-12-17：Case3的等间距，用UIStackView实现最优雅，但是无奈只有iOS9以上支持。兼容方案如OAStackView也可以，但是在UITableViewCell里面用，或者需要频繁的增减内部View的数量时，性能损耗有点厉害，会卡。所以，还是要看需求=。=</p>
 <h2 id="前言">前言</h2><p>第三篇来了。<br>依然是3个小例子，主要部分用Masonry手写代码实现，其它的约束在storyboard里面直接拖拽搭建。<br>至于为啥不用VFL，主要是因为它的“描述性”的写法很容易出错，没有补全、不好调试，写起来没有“代码”的感觉=。=。当然，这个仁者见仁智者见智~<br>三个例子分别是：<strong>Parallax Header</strong>，<strong>动态变高度的UITableViewCell</strong>，以及<strong>两种方式实现等间距</strong>。原理其实都很简单，例子也都是平时积累起来的。</p>
 <p>前两篇：<br>第一篇：<a href="http://tutuge.me/2015/05/23/autolayout-example-with-masonry/">有趣的Autolayout示例-Masonry实现</a><br>第二篇：<a href="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/">有趣的Autolayout示例2-Masonry实现</a></p>
 <p>Github地址：<br><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
