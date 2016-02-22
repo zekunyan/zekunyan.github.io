@@ -59,19 +59,19 @@
 
 
 
-<meta name="description" content="##前言Objective-C中的Blocks实在是太好用了，有了它，我们就可以将“代码块”封装起来，当成变量使用、传递，所以，在Objective-C中，iOS中，许多的回调是用Block来完成的。
-##问题我自己在之前的项目中，就遇到过一个问题。因为项目的需要，手机端所有的跟服务器的通信都需要“加密”，在经过一番调研后，我们使用的是类似OAuth机制（至于什么是OAuth，各位Google一下">
+<meta name="description" content="前言Objective-C中的Blocks实在是太好用了，有了它，我们就可以将“代码块”封装起来，当成变量使用、传递，所以，在Objective-C中，iOS中，许多的回调是用Block来完成的。
+问题我自己在之前的项目中，就遇到过一个问题。因为项目的需要，手机端所有的跟服务器的通信都需要“加密”，在经过一番调研后，我们使用的是类似OAuth机制（至于什么是OAuth，各位Google一下就明白了">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Block类型变量-缓存Http请求与回调">
 <meta property="og:url" content="http://tutuge.me/2015/02/19/Block类型变量-缓存Http请求与回调/index.html">
 <meta property="og:site_name" content="土土哥的技术Blog">
-<meta property="og:description" content="##前言Objective-C中的Blocks实在是太好用了，有了它，我们就可以将“代码块”封装起来，当成变量使用、传递，所以，在Objective-C中，iOS中，许多的回调是用Block来完成的。
-##问题我自己在之前的项目中，就遇到过一个问题。因为项目的需要，手机端所有的跟服务器的通信都需要“加密”，在经过一番调研后，我们使用的是类似OAuth机制（至于什么是OAuth，各位Google一下">
-<meta property="og:updated_time" content="2015-04-06T03:13:45.000Z">
+<meta property="og:description" content="前言Objective-C中的Blocks实在是太好用了，有了它，我们就可以将“代码块”封装起来，当成变量使用、传递，所以，在Objective-C中，iOS中，许多的回调是用Block来完成的。
+问题我自己在之前的项目中，就遇到过一个问题。因为项目的需要，手机端所有的跟服务器的通信都需要“加密”，在经过一番调研后，我们使用的是类似OAuth机制（至于什么是OAuth，各位Google一下就明白了">
+<meta property="og:updated_time" content="2016-02-22T08:51:38.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Block类型变量-缓存Http请求与回调">
-<meta name="twitter:description" content="##前言Objective-C中的Blocks实在是太好用了，有了它，我们就可以将“代码块”封装起来，当成变量使用、传递，所以，在Objective-C中，iOS中，许多的回调是用Block来完成的。
-##问题我自己在之前的项目中，就遇到过一个问题。因为项目的需要，手机端所有的跟服务器的通信都需要“加密”，在经过一番调研后，我们使用的是类似OAuth机制（至于什么是OAuth，各位Google一下">
+<meta name="twitter:description" content="前言Objective-C中的Blocks实在是太好用了，有了它，我们就可以将“代码块”封装起来，当成变量使用、传递，所以，在Objective-C中，iOS中，许多的回调是用Block来完成的。
+问题我自己在之前的项目中，就遇到过一个问题。因为项目的需要，手机端所有的跟服务器的通信都需要“加密”，在经过一番调研后，我们使用的是类似OAuth机制（至于什么是OAuth，各位Google一下就明白了">
 
 
 
@@ -116,6 +116,8 @@
       s.parentNode.insertBefore(hm, s);
     })();
   </script>
+
+
 
 
 
@@ -281,108 +283,38 @@
       
 
       
-        <p>##前言<br>Objective-C中的Blocks实在是太好用了，有了它，我们就可以将“代码块”封装起来，当成变量使用、传递，所以，在Objective-C中，iOS中，许多的回调是用Block来完成的。</p>
-<p>##问题<br>我自己在之前的项目中，就遇到过一个问题。因为项目的需要，手机端所有的跟服务器的通信都需要“加密”，在经过一番调研后，我们使用的是类似OAuth机制（至于什么是OAuth，各位Google一下就明白了，大部分的公共API都用到了这种机制）。</p>
+        <h2 id="前言">前言</h2><p>Objective-C中的Blocks实在是太好用了，有了它，我们就可以将“代码块”封装起来，当成变量使用、传递，所以，在Objective-C中，iOS中，许多的回调是用Block来完成的。</p>
+<h2 id="问题">问题</h2><p>我自己在之前的项目中，就遇到过一个问题。因为项目的需要，手机端所有的跟服务器的通信都需要“加密”，在经过一番调研后，我们使用的是类似OAuth机制（至于什么是OAuth，各位Google一下就明白了，大部分的公共API都用到了这种机制）。</p>
 <a id="more"></a>
-<p>###缓存Http请求后的回调代码块<br>既然是OAuth机制，就是说我们每次向服务器发起的请求，除了跟业务相关的参数，还需要带上AccessToken、UserToken这类的授权参数，而AccessToken在本次请求中是否会过期，在结果返回前是不知道的，所以，为了更好地用户体验，不至于让用户在某个时刻的操作，因为授权过期了而“没有响应”，我们的每次Http请求都必须缓存起来。</p>
+<h3 id="缓存Http请求后的回调代码块">缓存Http请求后的回调代码块</h3><p>既然是OAuth机制，就是说我们每次向服务器发起的请求，除了跟业务相关的参数，还需要带上AccessToken、UserToken这类的授权参数，而AccessToken在本次请求中是否会过期，在结果返回前是不知道的，所以，为了更好地用户体验，不至于让用户在某个时刻的操作，因为授权过期了而“没有响应”，我们的每次Http请求都必须缓存起来。</p>
 <p>这里的缓存可不是单单指缓存请求的参数、URL，更重要的是缓存Http请求成功或者失败时的“<strong>回调代码块</strong>”。</p>
-<p>##实现</p>
-<p>###AFNetworking的Get方法<br>在iOS的项目中，AFNetworking应该算是使用的最多的网络库了，它的Get请求的方法接口如下：</p>
-<pre><code><span class="pp">- <span class="params">(<span class="variable">AFHTTPRequestOperation</span> *)</span>GET:<span class="params">(<span class="variable">NSString</span> *)</span>URLString
-                     parameters:<span class="params">(id)</span>parameters
-                        success:<span class="params">(void (^)</span><span class="params">(<span class="variable">AFHTTPRequestOperation</span> *operation, id response<span class="variable">Object</span>)</span>)success
-                        failure:<span class="params">(void (^)</span><span class="params">(<span class="variable">AFHTTPRequestOperation</span> *operation, <span class="variable">NSError</span> *error)</span>)failure</span>
-</code></pre><p>只有四个参数，分别是Url、参数、成功的回调Block，失败的回调Block，看，这里，回调的代码块就被封装到了Block里面，并当成参数传入。</p>
-<p>###再次封装<br>介于AFNetworking只提供了最基本的Get、Post、Put这些方法，所以，我们往往根据业务的接口做了封装，如先定义了请求的类型枚举：</p>
-<pre><code>//Http type, for<span class="instruction"> execute
-</span>typedef<span class="function"> NS_ENUM(</span>NSUInteger, HTTP_REQUEST_TYPE<span class="function">)</span> {
-    ICG_GET = 0,
-    ICG_POST
-};
-</code></pre><p>然后定义了统一的请求入口与回调参数Block：</p>
-<pre><code><span class="comment">//请求成功后的回调</span>
-typedef <span class="typename">void</span> (^http_success)(id result);
-<span class="comment">//请求失败后的回调</span>
-typedef <span class="typename">void</span> (^http_fail)();
-
-<span class="comment">//统一的请求入口</span>
-+ (<span class="typename">void</span>)<span class="string">executeWithType:</span>(HTTP_REQUEST_TYPE)type <span class="string">api:</span>(NSString *)api
-<span class="label">            parameters:</span>(NSDictionary *)parameters <span class="string">success:</span>                (http_success)success <span class="string">fail:</span>(http_fail)fail {    
-
-    <span class="comment">//为每个请求增加AccessToken、UserToken等公共参数</span>
-    <span class="comment">//...</span>
-
-    <span class="comment">//缓存Http请求</span>
-    <span class="comment">//...</span>
-
-    <span class="comment">//根据type区分具体是哪一种Http请求。</span>
-    <span class="keyword">switch</span> (type) {
-        <span class="keyword">case</span> <span class="string">ICG_GET:</span>
-            [HttpUtil <span class="string">get:</span>url <span class="string">parameters:</span>paras <span class="string">success:</span>success <span class="string">fail:</span>fail];
-            <span class="keyword">break</span>;    
-        <span class="keyword">case</span> <span class="string">ICG_POST:</span>
-            [HttpUtil <span class="string">post:</span>url <span class="string">parameters:</span>paras <span class="string">success:</span>success <span class="string">fail:</span>fail];
-            <span class="keyword">break</span>;    
-<span class="label">        default:</span>
-            <span class="keyword">break</span>;
-    }
-}
-</code></pre><p>###再次封装的好处<br>为什么要再次做封装，将基本的Http请求统一入口？道理很简单，就是为了能方便的对每次请求增加额外的处理，并且对上层调用透明。如:</p>
+<h2 id="实现">实现</h2><h3 id="AFNetworking的Get方法">AFNetworking的Get方法</h3><p>在iOS的项目中，AFNetworking应该算是使用的最多的网络库了，它的Get请求的方法接口如下：</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="pp">- <span class="params">(<span class="variable">AFHTTPRequestOperation</span> *)</span>GET:<span class="params">(<span class="variable">NSString</span> *)</span>URLString</span><br><span class="line">                     parameters:<span class="params">(id)</span>parameters</span><br><span class="line">                        success:<span class="params">(void (^)</span><span class="params">(<span class="variable">AFHTTPRequestOperation</span> *operation, id response<span class="variable">Object</span>)</span>)success</span><br><span class="line">                        failure:<span class="params">(void (^)</span><span class="params">(<span class="variable">AFHTTPRequestOperation</span> *operation, <span class="variable">NSError</span> *error)</span>)failure</span></span><br></pre></td></tr></table></figure>
+<p>只有四个参数，分别是Url、参数、成功的回调Block，失败的回调Block，看，这里，回调的代码块就被封装到了Block里面，并当成参数传入。</p>
+<h3 id="再次封装">再次封装</h3><p>介于AFNetworking只提供了最基本的Get、Post、Put这些方法，所以，我们往往根据业务的接口做了封装，如先定义了请求的类型枚举：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="built_in">NS_ENUM</span>(<span class="built_in">NSUInteger</span>, HTTP_REQUEST_TYPE) &#123;</span><br><span class="line">	I<span class="built_in">CG_GET</span>,</span><br><span class="line">	I<span class="built_in">CG_POST</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>然后定义了统一的请求入口与回调参数Block：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//请求成功后的回调</span></span><br><span class="line">typedef <span class="typename">void</span> (^http_success)(id result);</span><br><span class="line"><span class="comment">//请求失败后的回调</span></span><br><span class="line">typedef <span class="typename">void</span> (^http_fail)();</span><br><span class="line"></span><br><span class="line"><span class="comment">//统一的请求入口</span></span><br><span class="line">+ (<span class="typename">void</span>)<span class="string">executeWithType:</span>(HTTP_REQUEST_TYPE)type <span class="string">api:</span>(NSString *)api</span><br><span class="line"><span class="label">             parameters:</span>(NSDictionary *)parameters <span class="string">success:</span>(http_success)success <span class="string">fail:</span>(http_fail)fail &#123;                  </span><br><span class="line">    <span class="comment">//为每个请求增加AccessToken、UserToken等公共参数</span></span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    <span class="comment">//缓存Http请求</span></span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">              </span><br><span class="line">    <span class="comment">//根据type区分具体是哪一种Http请求。</span></span><br><span class="line">    <span class="keyword">switch</span> (type) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">ICG_GET:</span></span><br><span class="line">            [HttpUtil <span class="string">get:</span>url <span class="string">parameters:</span>paras <span class="string">success:</span>success <span class="string">fail:</span>fail];</span><br><span class="line">            <span class="keyword">break</span>;    </span><br><span class="line">        <span class="keyword">case</span> <span class="string">ICG_POST:</span></span><br><span class="line">            [HttpUtil <span class="string">post:</span>url <span class="string">parameters:</span>paras <span class="string">success:</span>success <span class="string">fail:</span>fail];</span><br><span class="line">            <span class="keyword">break</span>;    </span><br><span class="line"><span class="label">        default:</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="再次封装的好处">再次封装的好处</h3><p>为什么要再次做封装，将基本的Http请求统一入口？道理很简单，就是为了能方便的对每次请求增加额外的处理，并且对上层调用透明。如:</p>
 <ul>
 <li>统一为每个请求增加Log。</li>
 <li>统一为每个请求增加如AccessToken这些额外的参数。</li>
 <li>方便对Http请求做缓存！</li>
 </ul>
-<p>###缓存Http请求的数据结构<br>既然我们已经有了统一的请求入口，为了缓存，所需要做的就是将能代表一次请求的所有参数缓存起来就行了，如URL、请求参数等，如下数据结构：</p>
-<pre><code><span class="variable">@interface</span> <span class="attribute">RequestHolder </span>: NSObject
-
-<span class="comment">//URL地址</span>
-<span class="variable">@property</span>(strong, nonatomic) NSString *url;
-<span class="comment">//请求参数</span>
-<span class="variable">@property</span>(strong, nonatomic) NSMutableDictionary *paras;
-<span class="comment">//请求类型，如Get、Post</span>
-<span class="variable">@property</span>(assign, nonatomic) HTTP_REQUEST_TYPE type;
-<span class="comment">//请求成功回调</span>
-<span class="variable">@property</span>(copy) http_success success;
-<span class="comment">//请求失败回调</span>
-<span class="variable">@property</span>(copy) http_fail fail;
-<span class="variable">@end</span>
-</code></pre><p>这几个参数，就可以完整的“代表、重现”一次具体的Http请求。</p>
-<p>###如何缓存<br>只要App开启，Http请求就会不停地产生，会有源源不断的请求，难道我们把每次请求都缓存起来？</p>
+<h3 id="缓存Http请求的数据结构">缓存Http请求的数据结构</h3><p>既然我们已经有了统一的请求入口，为了缓存，所需要做的就是将能代表一次请求的所有参数缓存起来就行了，如URL、请求参数等，如下数据结构：</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">@interface</span> <span class="attribute">RequestHolder </span>: NSObject</span><br><span class="line"><span class="comment">//URL地址</span></span><br><span class="line"><span class="variable">@property</span>(strong, nonatomic) NSString *url;</span><br><span class="line"><span class="comment">//请求参数</span></span><br><span class="line"><span class="variable">@property</span>(strong, nonatomic) NSMutableDictionary *paras;</span><br><span class="line"><span class="comment">//请求类型，如Get、Post</span></span><br><span class="line"><span class="variable">@property</span>(assign, nonatomic) HTTP_REQUEST_TYPE type;</span><br><span class="line"><span class="comment">//请求成功回调</span></span><br><span class="line"><span class="variable">@property</span>(copy) http_success success;</span><br><span class="line"><span class="comment">//请求失败回调</span></span><br><span class="line"><span class="variable">@property</span>(copy) http_fail fail;</span><br><span class="line"><span class="variable">@end</span></span><br></pre></td></tr></table></figure>
+<p>这几个参数，就可以完整的“代表、重现”一次具体的Http请求。</p>
+<h3 id="如何缓存">如何缓存</h3><p>只要App开启，Http请求就会不停地产生，会有源源不断的请求，难道我们把每次请求都缓存起来？</p>
 <p>全部都缓存肯定是不行的，所以我们需要一个缓存策略。</p>
 <p>一个App中，所有的Http请求的路径，也就是Url，不包括参数，应该是数量固定的，如“/user, /comment”，并且，一个请求往往对应的操作、功能也是唯一的，所以，完全可以以请求的<strong>Url</strong>为<strong>Key</strong>，以本次请求的“<strong>RequestHolder</strong>”为<strong>Value</strong>，用Objective-C中的NSDictionary来缓存Http请求。</p>
 <p>所以，缓存请求的方法大致如下：</p>
-<pre><code><span class="comment">//缓存Http请求</span>
-
-- (<span class="keyword">void</span>)cacheHttpRequest:(HTTP_REQUEST_TYPE)<span class="class"><span class="keyword">type</span> <span class="title">url</span>:</span>(NSString *)url
-                parameters:(NSMutableDictionary *)parameters success:(http_success)success fail:(http_fail)fail {
-
-    <span class="comment">//创建缓存数据结构，保存本次请求的参数、回调</span>
-    ICGRequestHolder *requestHolder = [ICGRequestHolder <span class="keyword">new</span>];
-    requestHolder.url = url;
-    requestHolder.paras = parameters;
-    requestHolder.success = [success copy];
-    requestHolder.fail = [fail copy];
-    requestHolder.<span class="keyword">type</span> = <span class="class"><span class="keyword">type</span>;</span>
-
-    <span class="comment">//保存本次请求</span>
-    [_operationQueue addOperationWithBlock:^{
-        _cachedRequests[url] = requestHolder;
-    }];
-}
-</code></pre><p>这样，就能完整的缓存Http请求了。</p>
-<p>###从缓存中恢复Http请求<br>恢复请求很简单，直接遍历所有缓存的请求，再次发起Http请求即可，就不再贴代码了。</p>
-<p>###删除成功的Http请求<br>缓存的目的是在请求失败时，如AccessToken超时时，我们可以在重新获取AccessToken后重现上次失败的请求，所以，一旦请求成功时，我们还需要将成功的请求删除，当然，也是利用Url，如下：</p>
-<pre><code>- (<span class="typename">void</span>)<span class="string">removeRequestForKey:</span>(NSString *)url {
-    <span class="comment">//放入队列执行</span>
-    [_operationQueue <span class="string">addOperationWithBlock:</span>^{
-        <span class="comment">//删除Url对应的请求</span>
-        [_cachedRequests <span class="string">removeObjectForKey:</span>url];
-    }];
-}
-</code></pre><p>##总结<br>本文只是简单地利用Objective-C中的Block特性，实现了Http请求的缓存。目的不是介绍Block，是为了分享我自己在项目中运用Block的例子，如果读者有更好的方法，欢迎留言啊~~</p>
-<p>##参考、推荐阅读</p>
-<ul>
+<figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//缓存Http请求</span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)cacheHttpRequest:(HTTP_REQUEST_TYPE)<span class="class"><span class="keyword">type</span> <span class="title">url</span>:</span>(NSString *)url</span><br><span class="line">            parameters:(NSMutableDictionary *)parameters success:(http_success)success fail:(http_fail)fail &#123;</span><br><span class="line">    <span class="comment">//创建缓存数据结构，保存本次请求的参数、回调</span></span><br><span class="line">    ICGRequestHolder *requestHolder = [ICGRequestHolder <span class="keyword">new</span>];</span><br><span class="line">    requestHolder.url = url;</span><br><span class="line">    requestHolder.paras = parameters;</span><br><span class="line">    requestHolder.success = [success copy];</span><br><span class="line">    requestHolder.fail = [fail copy];</span><br><span class="line">    requestHolder.<span class="keyword">type</span> = <span class="class"><span class="keyword">type</span>;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//保存本次请求</span></span><br><span class="line">    [_operationQueue addOperationWithBlock:^&#123;</span><br><span class="line">        _cachedRequests[url] = requestHolder;</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样，就能完整的缓存Http请求了。</p>
+<h3 id="从缓存中恢复Http请求">从缓存中恢复Http请求</h3><p>恢复请求很简单，直接遍历所有缓存的请求，再次发起Http请求即可，就不再贴代码了。</p>
+<h3 id="删除成功的Http请求">删除成功的Http请求</h3><p>缓存的目的是在请求失败时，如AccessToken超时时，我们可以在重新获取AccessToken后重现上次失败的请求，所以，一旦请求成功时，我们还需要将成功的请求删除，当然，也是利用Url，如下：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="typename">void</span>)<span class="string">removeRequestForKey:</span>(NSString *)url &#123;</span><br><span class="line">    <span class="comment">//放入队列执行</span></span><br><span class="line">    [_operationQueue <span class="string">addOperationWithBlock:</span>^&#123;</span><br><span class="line">        <span class="comment">//删除Url对应的请求</span></span><br><span class="line">        [_cachedRequests <span class="string">removeObjectForKey:</span>url];</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结">总结</h2><p>本文只是简单地利用Objective-C中的Block特性，实现了Http请求的缓存。目的不是介绍Block，是为了分享我自己在项目中运用Block的例子，如果读者有更好的方法，欢迎留言啊~~</p>
+<h2 id="参考、推荐阅读">参考、推荐阅读</h2><ul>
 <li><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/WorkingwithBlocks/WorkingwithBlocks.html" target="_blank" rel="external">Working with Blocks</a></li>
 </ul>
 
@@ -512,20 +444,17 @@ typedef <span class="typename">void</span> (^http_fail)();
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
+          
+          
 
-          <div class="site-state-item site-state-categories">
-            
-              <span class="site-state-item-count">0</span>
-              <span class="site-state-item-name">分类</span>
-              
-          </div>
-
-          <div class="site-state-item site-state-tags">
-            <a href="/tags">
-              <span class="site-state-item-count">17</span>
-              <span class="site-state-item-name">标签</span>
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">标签</span>
               </a>
-          </div>
+            </div>
+          
 
         </nav>
 
@@ -616,7 +545,7 @@ typedef <span class="typename">void</span> (^http_fail)();
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题"><span class="nav-number">2.</span> <span class="nav-text">问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存Http请求后的回调代码块"><span class="nav-number">2.1.</span> <span class="nav-text">缓存Http请求后的回调代码块</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现"><span class="nav-number">3.</span> <span class="nav-text">实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AFNetworking的Get方法"><span class="nav-number">3.1.</span> <span class="nav-text">AFNetworking的Get方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#再次封装"><span class="nav-number">3.2.</span> <span class="nav-text">再次封装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#再次封装的好处"><span class="nav-number">3.3.</span> <span class="nav-text">再次封装的好处</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存Http请求的数据结构"><span class="nav-number">3.4.</span> <span class="nav-text">缓存Http请求的数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何缓存"><span class="nav-number">3.5.</span> <span class="nav-text">如何缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从缓存中恢复Http请求"><span class="nav-number">3.6.</span> <span class="nav-text">从缓存中恢复Http请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除成功的Http请求"><span class="nav-number">3.7.</span> <span class="nav-text">删除成功的Http请求</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考、推荐阅读"><span class="nav-number">5.</span> <span class="nav-text">参考、推荐阅读</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">
@@ -640,7 +569,7 @@ typedef <span class="typename">void</span> (^http_fail)();
   &copy;  2014 - 
   <span itemprop="copyrightYear">2016</span>
   <span class="with-love">
-    <i class="icon-next-heart fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">燕泽堃</span>
 </div>

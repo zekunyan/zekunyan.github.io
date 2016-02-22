@@ -116,6 +116,8 @@
 
 
 
+
+
   
   
     
@@ -291,12 +293,8 @@
         
           <h2 id="前言">前言</h2><p>GCD(Grand Central Dispatch)可以说是Mac、iOS开发中的一大“利器”，本文就总结一些有关使用GCD的经验与技巧。</p>
 <h2 id="dispatch_once_t必须是全局或static变量">dispatch_once_t必须是全局或static变量</h2><p>这一条算是“老生常谈”了，但我认为还是有必要强调一次，毕竟非全局或非static的dispatch_once_t变量在使用时会导致非常不好排查的bug，正确的如下：</p>
-<pre><code><span class="comment">//静态变量，保证只有一份实例，才能确保只执行一次</span>
-<span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;
-<span class="built_in">dispatch_once</span>(&amp;onceToken, ^{
-   <span class="comment">//单例代码 </span>
-});
-</code></pre><p>其实就是保证<strong>dispatch_once_t</strong>只有一份实例。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//静态变量，保证只有一份实例，才能确保只执行一次</span></span><br><span class="line"><span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;</span><br><span class="line"><span class="built_in">dispatch_once</span>(&amp;onceToken, ^&#123;</span><br><span class="line">   <span class="comment">//单例代码 </span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>其实就是保证<strong>dispatch_once_t</strong>只有一份实例。</p>
           <div class="post-more-link text-center">
             <a class="btn" href="/2015/04/03/something-about-gcd/#more" rel="contents">
               阅读全文 &raquo;
@@ -390,14 +388,8 @@
       
         
           <h2 id="2015-5-28更新">2015-5-28更新</h2><p>下面评论的好友“@Jim”给了种新的思路，就是在清除context的函数里面，用“<strong>_bridge_transfer</strong>”转换context，把context的内存管理权限重新交给ARC，这样，就不用显式调用“<strong>CFRelease</strong>”了。如下：</p>
-<pre><code><span class="literal">void</span> cleanStaff(<span class="literal">void</span> *context) {
-    <span class="comment">//这里用_bridge_transfer转换，将内存管理权限交还给ARC</span>
-    <span class="built_in">Data</span> *<span class="built_in">data</span> = (_bridge_transfer <span class="built_in">Data</span> *)(context);
-    NSLog(@<span class="string">"In clean, context number: %d"</span>, <span class="built_in">data</span><span class="built_in">.</span>number);
-
-    <span class="comment">//不用显式释放context的内存！</span>
-}
-</code></pre><h2 id="前言">前言</h2><p>看过GCD（Grand Central Dispatch）的Apple<a href="https://developer.apple.com/library/prerelease/mac/documentation/Performance/Reference/GCD_libdispatch_Ref/index.html">官方文档</a>的朋友一定见过“<strong>dispatch_set_context</strong>”和“<strong>dispatch_get_context</strong>”这两个函数，那么这两个函数该怎么用呢？  </p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">void</span> cleanStaff(<span class="literal">void</span> *context) &#123;</span><br><span class="line">    <span class="comment">//这里用_bridge_transfer转换，将内存管理权限交还给ARC</span></span><br><span class="line">    <span class="built_in">Data</span> *<span class="built_in">data</span> = (_bridge_transfer <span class="built_in">Data</span> *)(context);</span><br><span class="line">    NSLog(@<span class="string">"In clean, context number: %d"</span>, <span class="built_in">data</span><span class="built_in">.</span>number);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//不用显式释放context的内存！</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="前言">前言</h2><p>看过GCD（Grand Central Dispatch）的Apple<a href="https://developer.apple.com/library/prerelease/mac/documentation/Performance/Reference/GCD_libdispatch_Ref/index.html">官方文档</a>的朋友一定见过“<strong>dispatch_set_context</strong>”和“<strong>dispatch_get_context</strong>”这两个函数，那么这两个函数该怎么用呢？  </p>
 <p>我们都知道，GCD的接口参数都是“C语言类型“的，那么，我们如何将NSObject类型（Foundation框架）的数据，传入GCD的接口呢？（即：Core Foundation和Foundation对象的转换）</p>
 <h2 id="本文关键字">本文关键字</h2><ul>
 <li>GCD：dispatch_set_context，dispatch_get_context</li>
@@ -594,21 +586,8 @@
       
         
           <h2 id="前言">前言</h2><p>开发过iOS、Mac的朋友应该对“<strong>@autoreleasepool</strong>”不陌生。只要在Xcode里创建一个工程，就能看到下面这样的代码：</p>
-<pre><code><span class="comment">//iOS program</span>
-<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> * argv[]) {
-    <span class="keyword">@autoreleasepool</span> {
-        <span class="keyword">return</span> <span class="built_in">UIApplicationMain</span>(argc, argv, <span class="literal">nil</span>, <span class="built_in">NSStringFromClass</span>([AppDelegate class]));
-    }
-}
-
-<span class="comment">//Command line program</span>
-<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> *argv[]) {
-    <span class="keyword">@autoreleasepool</span> {
-        <span class="comment">//...</span>
-    }
-    <span class="keyword">return</span> <span class="number">0</span>;
-}
-</code></pre><p>看，每个<strong>main</strong>函数的主体都被<strong>@autoreleasepool</strong>的Block块包在里面，也就是说，接下来所有的对象创建都在这个block里面。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//iOS program</span></span><br><span class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> * argv[]) &#123;</span><br><span class="line">    <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">UIApplicationMain</span>(argc, argv, <span class="literal">nil</span>, <span class="built_in">NSStringFromClass</span>([AppDelegate class]));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Command line program</span></span><br><span class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> *argv[]) &#123;</span><br><span class="line">    <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看，每个<strong>main</strong>函数的主体都被<strong>@autoreleasepool</strong>的Block块包在里面，也就是说，接下来所有的对象创建都在这个block里面。</p>
 <p>那么，<strong>@autoreleasepool</strong>的作用到底是什么呢？我们开发中可以用它来做什么呢？  </p>
 <p>可以在某些情况下，大幅度降低程序的内存占用，如下图:</p>
 <p><img src="https://camo.githubusercontent.com/2c1f07459d33c72de07d8a9305703b2ba40abfc4/687474703a2f2f7a6f72726f6368656e2e71696e6975646e2e636f6d2f626c6f675f776861745f69735f6175746f72656c65617365706f6f6c5f312e706e673f696d61676556696577322f302f682f343030" alt="autoreleasepool测试内存占用图"></p>
@@ -712,12 +691,8 @@
       
         
           <h2 id="前言">前言</h2><p>宏定义、#define啥的，我们经常遇到。<br>一般来说，最常用的可能就是定义一些常量、简单的“函数”，如下：</p>
-<pre><code><span class="comment">//定义常量PI</span>
-<span class="preprocessor">#<span class="keyword">define</span> PI <span class="number">3.1415926</span></span>
-
-<span class="comment">//定义“函数”MIN</span>
-<span class="preprocessor">#<span class="keyword">define</span> MIN(A,B) ((A) &lt; (B) ? (A) : (B))</span>
-</code></pre><p>但是，这样定义常量、函数，有一定的风险。（见：<a href="http://tutuge.me/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/">Effective-Objective-C-读书笔记-Item-4-如何正确定义常量</a>, <a href="http://onevcat.com/2014/01/black-magic-in-macro/">宏定义的黑魔法 - 宏菜鸟起飞手册</a>）</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//定义常量PI</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> PI <span class="number">3.1415926</span></span></span><br><span class="line">    </span><br><span class="line"><span class="comment">//定义“函数”MIN</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> MIN(A,B) ((A) &lt; (B) ? (A) : (B))</span></span><br></pre></td></tr></table></figure>
+<p>但是，这样定义常量、函数，有一定的风险。（见：<a href="http://tutuge.me/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/">Effective-Objective-C-读书笔记-Item-4-如何正确定义常量</a>, <a href="http://onevcat.com/2014/01/black-magic-in-macro/">宏定义的黑魔法 - 宏菜鸟起飞手册</a>）</p>
 <p>本文就列出几条我个人在iOS开发当中常用的经验与技巧。</p>
           <div class="post-more-link text-center">
             <a class="btn" href="/2015/03/15/有关宏定义的经验与技巧-简化代码-增强Log/#more" rel="contents">
@@ -1270,20 +1245,17 @@
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
+          
+          
 
-          <div class="site-state-item site-state-categories">
-            
-              <span class="site-state-item-count">0</span>
-              <span class="site-state-item-name">分类</span>
-              
-          </div>
-
-          <div class="site-state-item site-state-tags">
-            <a href="/tags">
-              <span class="site-state-item-count">17</span>
-              <span class="site-state-item-name">标签</span>
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">标签</span>
               </a>
-          </div>
+            </div>
+          
 
         </nav>
 
@@ -1381,7 +1353,7 @@
   &copy;  2014 - 
   <span itemprop="copyrightYear">2016</span>
   <span class="with-love">
-    <i class="icon-next-heart fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">燕泽堃</span>
 </div>

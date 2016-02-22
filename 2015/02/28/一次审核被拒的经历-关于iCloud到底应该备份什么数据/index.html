@@ -69,7 +69,7 @@
 <meta property="og:description" content="前言项目最近一次审核被拒了=。=仔细看了一下后，发现是没有遵守“iOS Data Storage Guidelines”。在此总结一下。
 被拒原因先看看被拒的反馈信息：
 123Apps must follow the iOS Data Storage Guidelines or they will be rejectedOn launch and content download, your ap">
-<meta property="og:updated_time" content="2015-04-06T03:13:15.000Z">
+<meta property="og:updated_time" content="2016-02-22T08:54:17.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="一次审核被拒的经历-关于iCloud到底应该备份什么数据">
 <meta name="twitter:description" content="前言项目最近一次审核被拒了=。=仔细看了一下后，发现是没有遵守“iOS Data Storage Guidelines”。在此总结一下。
@@ -119,6 +119,8 @@
       s.parentNode.insertBefore(hm, s);
     })();
   </script>
+
+
 
 
 
@@ -303,25 +305,14 @@
 <p>但是有个“陷阱”在这。</p>
 <h3 id="系统可能清空的目录">系统可能清空的目录</h3><p>根据官方文档“<a href="https://developer.apple.com/library/mac/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/FileSystemOverview/FileSystemOverview.html#//apple_ref/doc/uid/TP40010672-CH2-SW1" target="_blank" rel="external"><strong>File System Programming Guide</strong></a>”可以整理出一下两个系统可能会清除的目录：（在储存空间不够时）</p>
 <ol>
-<li><strong> Library/Caches/ </strong></li>
-<li><strong> tmp/ </strong></li>
+<li>Library/Caches/</li>
+<li>tmp/</li>
 </ol>
 <p>所以，像App下载的歌曲等资源文件是不能放在上面两个目录中的。</p>
 <h2 id="解决：">解决：</h2><p>所以，为了保险起见，最靠谱的还是放在<strong><application_home>/Documents</application_home></strong>中，并且通过设置，不让iCloud备份。</p>
 <p>Apple已经提供了相应的函数，如下（iOS 5.1及以后的版本）：</p>
-<pre><code>- (BOOL)addSkipBackupAttributeToItemAtURL:(NSURL *)URL
-{
-    <span class="built_in">assert</span>(<span class="string">[[NSFileManager defaultManager] fileExistsAtPath: [URL path]]</span>);
-
-    NSError *<span class="built_in">error</span> = <span class="keyword">nil</span>;
-    BOOL success = [URL setResourceValue: [NSNumber numberWithBool: YES]
-                                  forKey: NSURLIsExcludedFromBackupKey <span class="built_in">error</span>: &amp;<span class="built_in">error</span>];
-    <span class="keyword">if</span>(!success){
-        NSLog(@<span class="string">"Error excluding %@ from backup %@"</span>, [URL lastPathComponent], <span class="built_in">error</span>);
-    }
-    <span class="keyword">return</span> success;
-}
-</code></pre><h3 id="特性">特性</h3><ul>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL)addSkipBackupAttributeToItemAtURL:(NSURL *)URL &#123;</span><br><span class="line">    <span class="built_in">assert</span>(<span class="string">[[NSFileManager defaultManager] fileExistsAtPath: [URL path]]</span>);</span><br><span class="line"> </span><br><span class="line">    NSError *<span class="built_in">error</span> = <span class="keyword">nil</span>;</span><br><span class="line">    BOOL success = [URL setResourceValue: [NSNumber numberWithBool: YES]</span><br><span class="line">                                  forKey: NSURLIsExcludedFromBackupKey <span class="built_in">error</span>: &amp;<span class="built_in">error</span>];</span><br><span class="line">    <span class="keyword">if</span>(!success)&#123;</span><br><span class="line">        NSLog(@<span class="string">"Error excluding %@ from backup %@"</span>, [URL lastPathComponent], <span class="built_in">error</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> success;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="特性">特性</h3><ul>
 <li><strong><application_home>/Documents</application_home></strong>根目录也可以通过上面的函数设置成不备份。（如应用AVPlayer）</li>
 <li>设置是递归的，所以其所有子目录和文件都不用再设置一次，都会自动不被备份。（测试有效，但是不确定=。=，参考：<a href="http://stackoverflow.com/questions/14376883/is-nsurlisexcludedfrombackupkey-recursive" target="_blank" rel="external">is-nsurlisexcludedfrombackupkey-recursive</a>）</li>
 </ul>
@@ -460,20 +451,17 @@
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
+          
+          
 
-          <div class="site-state-item site-state-categories">
-            
-              <span class="site-state-item-count">0</span>
-              <span class="site-state-item-name">分类</span>
-              
-          </div>
-
-          <div class="site-state-item site-state-tags">
-            <a href="/tags">
-              <span class="site-state-item-count">17</span>
-              <span class="site-state-item-name">标签</span>
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">标签</span>
               </a>
-          </div>
+            </div>
+          
 
         </nav>
 
@@ -588,7 +576,7 @@
   &copy;  2014 - 
   <span itemprop="copyrightYear">2016</span>
   <span class="with-love">
-    <i class="icon-next-heart fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">燕泽堃</span>
 </div>

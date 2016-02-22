@@ -59,33 +59,30 @@
 
 
 
-<meta name="description" content="##前言
-随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。
+<meta name="description" content="前言随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。
 之前的做的项目，青桔音乐iOS客户端里面的首页就是一个类似微信朋友圈的“动态”页面，大致如下：
 
 如果是你，你会怎么实现这个页面呢？
-这还用问，当然是用UITableView+自定义的UITableViewC">
+这还用问，当然是用UITableView+自定义的UITableViewCell">
 <meta property="og:type" content="article">
 <meta property="og:title" content="提升UITableView性能-复杂页面的优化">
 <meta property="og:url" content="http://tutuge.me/2015/02/19/提升UITableView性能-复杂页面的优化/index.html">
 <meta property="og:site_name" content="土土哥的技术Blog">
-<meta property="og:description" content="##前言
-随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。
+<meta property="og:description" content="前言随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。
 之前的做的项目，青桔音乐iOS客户端里面的首页就是一个类似微信朋友圈的“动态”页面，大致如下：
 
 如果是你，你会怎么实现这个页面呢？
-这还用问，当然是用UITableView+自定义的UITableViewC">
+这还用问，当然是用UITableView+自定义的UITableViewCell">
 <meta property="og:image" content="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_1.png?imageView2/0/h/300">
 <meta property="og:image" content="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_2.jpg?imageView2/0/h/400">
-<meta property="og:updated_time" content="2016-01-01T07:46:05.000Z">
+<meta property="og:updated_time" content="2016-02-22T11:42:07.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="提升UITableView性能-复杂页面的优化">
-<meta name="twitter:description" content="##前言
-随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。
+<meta name="twitter:description" content="前言随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。
 之前的做的项目，青桔音乐iOS客户端里面的首页就是一个类似微信朋友圈的“动态”页面，大致如下：
 
 如果是你，你会怎么实现这个页面呢？
-这还用问，当然是用UITableView+自定义的UITableViewC">
+这还用问，当然是用UITableView+自定义的UITableViewCell">
 
 
 
@@ -130,6 +127,8 @@
       s.parentNode.insertBefore(hm, s);
     })();
   </script>
+
+
 
 
 
@@ -295,16 +294,14 @@
       
 
       
-        <p>##前言</p>
-<p>随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。</p>
+        <h2 id="前言">前言</h2><p>随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。</p>
 <p>之前的做的项目，<a href="https://itunes.apple.com/us/app/qing-ju-yin-le-quan-guo-zui/id913235479?l=zh&amp;ls=1&amp;mt=8" target="_blank" rel="external">青桔音乐iOS客户端</a>里面的首页就是一个类似微信朋友圈的“动态”页面，大致如下：</p>
 <p><img src="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_1.png?imageView2/0/h/300" alt="青桔动态页面"></p>
 <p>如果是你，你会怎么实现这个页面呢？</p>
 <p>这还用问，当然是用UITableView+自定义的UITableViewCell。</p>
 <p>UITableView是可以滑动的，为了不让用户在滑动中感到有卡顿，该如何优化？下面，我就写一下我自己在做项目时的“经验”~</p>
 <a id="more"></a>
-<p>##优化</p>
-<p>主要分为以下几点：</p>
+<h2 id="优化">优化</h2><p>主要分为以下几点：</p>
 <ul>
 <li>只定义一种Cell。</li>
 <li>提前计算并缓存每个Cell的高度。</li>
@@ -328,44 +325,13 @@
 <p>首先要确定的是，在iOS中，系统会先调用“<strong>tableView:heightForRowAtIndexPath:</strong>”获取每个Cell即将显示的高度，从而确定整个UITableView的布局。然后才调用“<strong>tableView:cellForRowAtIndexPath</strong>”获取每个Cell，我们也是在这里填充、设置Cell的。</p>
 <p><strong>所以，既然高度总会被用到，那就早早的在获取数据时就计算好吧！</strong></p>
 <h4 id="在Model（Entity）中计算并保存Cell的高度">在Model（Entity）中计算并保存Cell的高度</h4><p>其实，在Model（Entity）中保存UI的参数是很奇怪的=。=（最好放在ViewModel中，就是MVVM模式的），我们的Entity可能就是下面的样子：</p>
-<pre><code><span class="class"><span class="keyword">@interface</span> <span class="title">DataEntity</span> : <span class="title">NSObject</span></span>
-
-<span class="comment">//原始数据</span>
-<span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *content;
-<span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *title;
-
-<span class="comment">//Cell 高度</span>
-<span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> cellHeight;
-
-<span class="comment">//计算高度</span>
-- (<span class="keyword">void</span>)calculateCellHeight;
-
-<span class="keyword">@end</span>
-</code></pre><p>这样，就不用在“<strong>tableView:heightForRowAtIndexPath:</strong>”中每次都计算了。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">DataEntity</span> : <span class="title">NSObject</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//原始数据</span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *content;</span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *title;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Cell 高度</span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> cellHeight;</span><br><span class="line"></span><br><span class="line"><span class="comment">//计算高度</span></span><br><span class="line">- (<span class="keyword">void</span>)calculateCellHeight;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<p>这样，就不用在“<strong>tableView:heightForRowAtIndexPath:</strong>”中每次都计算了。</p>
 <h3 id="提前创建真正显示的、需要加工的数据并缓存">提前创建真正显示的、需要加工的数据并缓存</h3><p>Cell中显示的内容，很多时候可能并不是直接从服务器拿到的数据，而是经过“加工”的数据。如本文中的“动态”也，每个Cell的标题、正文都有可点击的连接Link、表情图片等富文本内容，而我们一般用NSAttributeString类来显示。</p>
 <p>既然每次都会用到，倒不如在获取到数据的时候就创建、加工好这些内容，等到需要现实的时候，直接拿来用不就行了。</p>
 <p>所以，我们的Entity类可能变成下面这个样子: </p>
-<pre><code><span class="class"><span class="keyword">@interface</span> <span class="title">DataEntity</span> : <span class="title">NSObject</span></span>
-
-<span class="comment">//原始数据</span>
-<span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *content;
-<span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *title;
-
-<span class="comment">//Cell 高度</span>
-<span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> cellHeight;
-
-<span class="comment">//真正显示的内容</span>
-<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSAttributedString</span> *showTitle;
-<span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSAttributedString</span> *showContent;
-
-<span class="comment">//计算高度</span>
-- (<span class="keyword">void</span>)calculateCellHeight;
-
-<span class="comment">//创建、加工真正显示的内容</span>
-- (<span class="keyword">void</span>)setupShowTitileAndContent;
-
-<span class="keyword">@end</span>
-</code></pre><p>这样，在“<strong>tableView:cellForRowAtIndexPath</strong>”中，我们直接拿showTitle、showContent来显示就好，不用再创建。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">DataEntity</span> : <span class="title">NSObject</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//原始数据</span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *content;</span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *title;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Cell 高度</span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> cellHeight;</span><br><span class="line"></span><br><span class="line"><span class="comment">//真正显示的内容</span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSAttributedString</span> *showTitle;</span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSAttributedString</span> *showContent;</span><br><span class="line"></span><br><span class="line"><span class="comment">//计算高度</span></span><br><span class="line">- (<span class="keyword">void</span>)calculateCellHeight;</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建、加工真正显示的内容</span></span><br><span class="line">- (<span class="keyword">void</span>)setupShowTitileAndContent;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<p>这样，在“<strong>tableView:cellForRowAtIndexPath</strong>”中，我们直接拿showTitle、showContent来显示就好，不用再创建。</p>
 <h3 id="缓存View!">缓存View!</h3><p>什么？缓存View？！</p>
 <p>是的，当Cell中的部分View是非常独立的，并且不便于重用的，而且“体积”非常小，在内存可控的前提下，我们完全可以将这些view缓存起来！</p>
 <p>方法当然也是将缓存的view放在Entity中~。</p>
@@ -515,20 +481,17 @@
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
+          
+          
 
-          <div class="site-state-item site-state-categories">
-            
-              <span class="site-state-item-count">0</span>
-              <span class="site-state-item-name">分类</span>
-              
-          </div>
-
-          <div class="site-state-item site-state-tags">
-            <a href="/tags">
-              <span class="site-state-item-count">17</span>
-              <span class="site-state-item-name">标签</span>
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">标签</span>
               </a>
-          </div>
+            </div>
+          
 
         </nav>
 
@@ -619,7 +582,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#只定义一种Cell"><span class="nav-number">1.</span> <span class="nav-text">只定义一种Cell</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#分析结构"><span class="nav-number">1.1.</span> <span class="nav-text">分析结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#重用=大致固定数量的Cell"><span class="nav-number">1.2.</span> <span class="nav-text">重用=大致固定数量的Cell</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#只定义一种Cell的好处"><span class="nav-number">1.2.1.</span> <span class="nav-text">只定义一种Cell的好处</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#善用hidden隐藏（显示）Subview"><span class="nav-number">1.3.</span> <span class="nav-text">善用hidden隐藏（显示）Subview</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提前计算并缓存每个Cell的高度"><span class="nav-number">2.</span> <span class="nav-text">提前计算并缓存每个Cell的高度</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#在Model（Entity）中计算并保存Cell的高度"><span class="nav-number">2.1.</span> <span class="nav-text">在Model（Entity）中计算并保存Cell的高度</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提前创建真正显示的、需要加工的数据并缓存"><span class="nav-number">3.</span> <span class="nav-text">提前创建真正显示的、需要加工的数据并缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存View!"><span class="nav-number">4.</span> <span class="nav-text">缓存View!</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其它"><span class="nav-number">5.</span> <span class="nav-text">其它</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number"></span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考，推荐阅读"><span class="nav-number"></span> <span class="nav-text">参考，推荐阅读</span></a></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化"><span class="nav-number">2.</span> <span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#只定义一种Cell"><span class="nav-number">2.1.</span> <span class="nav-text">只定义一种Cell</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#分析结构"><span class="nav-number">2.1.1.</span> <span class="nav-text">分析结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#重用=大致固定数量的Cell"><span class="nav-number">2.1.2.</span> <span class="nav-text">重用=大致固定数量的Cell</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#只定义一种Cell的好处"><span class="nav-number">2.1.2.1.</span> <span class="nav-text">只定义一种Cell的好处</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#善用hidden隐藏（显示）Subview"><span class="nav-number">2.1.3.</span> <span class="nav-text">善用hidden隐藏（显示）Subview</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提前计算并缓存每个Cell的高度"><span class="nav-number">2.2.</span> <span class="nav-text">提前计算并缓存每个Cell的高度</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#在Model（Entity）中计算并保存Cell的高度"><span class="nav-number">2.2.1.</span> <span class="nav-text">在Model（Entity）中计算并保存Cell的高度</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提前创建真正显示的、需要加工的数据并缓存"><span class="nav-number">2.3.</span> <span class="nav-text">提前创建真正显示的、需要加工的数据并缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存View!"><span class="nav-number">2.4.</span> <span class="nav-text">缓存View!</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其它"><span class="nav-number">2.5.</span> <span class="nav-text">其它</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考，推荐阅读"><span class="nav-number">4.</span> <span class="nav-text">参考，推荐阅读</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">
@@ -643,7 +606,7 @@
   &copy;  2014 - 
   <span itemprop="copyrightYear">2016</span>
   <span class="with-love">
-    <i class="icon-next-heart fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">燕泽堃</span>
 </div>

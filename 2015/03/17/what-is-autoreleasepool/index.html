@@ -60,28 +60,19 @@
 
 
 <meta name="description" content="前言开发过iOS、Mac的朋友应该对“@autoreleasepool”不陌生。只要在Xcode里创建一个工程，就能看到下面这样的代码：
-//iOS program
-int main(int argc, char * argv[]) {
-    @autoreleasepool {
-        return UIApplicationMain(argc, argv, nil, NSString">
+1234567891011121314//iOS programint main(int argc, char * argv[]) &amp;#123;    @autoreleasepool &amp;#123;        return UIApplicationMain">
 <meta property="og:type" content="article">
 <meta property="og:title" content="@autoreleasepool-内存的分配与释放">
 <meta property="og:url" content="http://tutuge.me/2015/03/17/what-is-autoreleasepool/index.html">
 <meta property="og:site_name" content="土土哥的技术Blog">
 <meta property="og:description" content="前言开发过iOS、Mac的朋友应该对“@autoreleasepool”不陌生。只要在Xcode里创建一个工程，就能看到下面这样的代码：
-//iOS program
-int main(int argc, char * argv[]) {
-    @autoreleasepool {
-        return UIApplicationMain(argc, argv, nil, NSString">
+1234567891011121314//iOS programint main(int argc, char * argv[]) &amp;#123;    @autoreleasepool &amp;#123;        return UIApplicationMain">
 <meta property="og:image" content="https://camo.githubusercontent.com/2c1f07459d33c72de07d8a9305703b2ba40abfc4/687474703a2f2f7a6f72726f6368656e2e71696e6975646e2e636f6d2f626c6f675f776861745f69735f6175746f72656c65617365706f6f6c5f312e706e673f696d61676556696577322f302f682f343030">
-<meta property="og:updated_time" content="2015-09-24T10:58:23.000Z">
+<meta property="og:updated_time" content="2016-02-22T09:26:27.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="@autoreleasepool-内存的分配与释放">
 <meta name="twitter:description" content="前言开发过iOS、Mac的朋友应该对“@autoreleasepool”不陌生。只要在Xcode里创建一个工程，就能看到下面这样的代码：
-//iOS program
-int main(int argc, char * argv[]) {
-    @autoreleasepool {
-        return UIApplicationMain(argc, argv, nil, NSString">
+1234567891011121314//iOS programint main(int argc, char * argv[]) &amp;#123;    @autoreleasepool &amp;#123;        return UIApplicationMain">
 
 
 
@@ -126,6 +117,8 @@ int main(int argc, char * argv[]) {
       s.parentNode.insertBefore(hm, s);
     })();
   </script>
+
+
 
 
 
@@ -292,21 +285,8 @@ int main(int argc, char * argv[]) {
 
       
         <h2 id="前言">前言</h2><p>开发过iOS、Mac的朋友应该对“<strong>@autoreleasepool</strong>”不陌生。只要在Xcode里创建一个工程，就能看到下面这样的代码：</p>
-<pre><code><span class="comment">//iOS program</span>
-<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> * argv[]) {
-    <span class="keyword">@autoreleasepool</span> {
-        <span class="keyword">return</span> <span class="built_in">UIApplicationMain</span>(argc, argv, <span class="literal">nil</span>, <span class="built_in">NSStringFromClass</span>([AppDelegate class]));
-    }
-}
-
-<span class="comment">//Command line program</span>
-<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> *argv[]) {
-    <span class="keyword">@autoreleasepool</span> {
-        <span class="comment">//...</span>
-    }
-    <span class="keyword">return</span> <span class="number">0</span>;
-}
-</code></pre><p>看，每个<strong>main</strong>函数的主体都被<strong>@autoreleasepool</strong>的Block块包在里面，也就是说，接下来所有的对象创建都在这个block里面。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//iOS program</span></span><br><span class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> * argv[]) &#123;</span><br><span class="line">    <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">UIApplicationMain</span>(argc, argv, <span class="literal">nil</span>, <span class="built_in">NSStringFromClass</span>([AppDelegate class]));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Command line program</span></span><br><span class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> *argv[]) &#123;</span><br><span class="line">    <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看，每个<strong>main</strong>函数的主体都被<strong>@autoreleasepool</strong>的Block块包在里面，也就是说，接下来所有的对象创建都在这个block里面。</p>
 <p>那么，<strong>@autoreleasepool</strong>的作用到底是什么呢？我们开发中可以用它来做什么呢？  </p>
 <p>可以在某些情况下，大幅度降低程序的内存占用，如下图:</p>
 <p><img src="https://camo.githubusercontent.com/2c1f07459d33c72de07d8a9305703b2ba40abfc4/687474703a2f2f7a6f72726f6368656e2e71696e6975646e2e636f6d2f626c6f675f776861745f69735f6175746f72656c65617365706f6f6c5f312e706e673f696d61676556696577322f302f682f343030" alt="autoreleasepool测试内存占用图"></p>
@@ -322,14 +302,8 @@ int main(int argc, char * argv[]) {
 <p>对！是计数，不是“<strong>GC、垃圾回收</strong>”什么的，就是说，在Objective-C的开发中，ARC不代表像Java那样有GC做垃圾回收，所以本质上还是要“手动”管理内存的。也就是说，我们在ARC环境下写的代码，不用自己手动插入“<strong>retain、release这些消息</strong>”，ARC会在编译时为我们在合适的位置插入，释放不必要的内存。</p>
 <p>而<strong>@autoreleasepool</strong>就跟对象的<strong>release</strong>密切相关。</p>
 <h2 id="@autoreleasepool_干了啥">@autoreleasepool 干了啥</h2><p>在MRC时代，如果我们想先retain一个对象，但是并不知道在什么时候可以release它，我们可以像下面这么做：</p>
-<pre><code><span class="name">NSAutoreleasePool</span> *<span class="atom">pool</span> = [[<span class="name">NSAutoreleasePool</span> <span class="atom">alloc</span>] <span class="atom">init</span>];
-
-<span class="name">NSString</span>* <span class="atom">str</span> = [[[<span class="name">NSString</span> <span class="atom">alloc</span>] <span class="atom">initWithString</span>:@<span class="string">"tutuge"</span>] <span class="atom">autorelease</span>];
-//<span class="atom">use</span> <span class="atom">str</span>...
-
-[<span class="atom">pool</span> <span class="atom">release</span>];
-//<span class="atom">str</span> <span class="atom">is</span> <span class="atom">released</span>
-</code></pre><p>就是说，我们可以在创建对象的时候给对象发送“<strong>autorelease</strong>”消息，然后当<strong>NSAutoreleasePool</strong>结束的时候，“标记过”autorelease的对象都会被“<strong>release</strong>”掉，也就是会被释放掉。</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="name">NSAutoreleasePool</span> *<span class="atom">pool</span> = [[<span class="name">NSAutoreleasePool</span> <span class="atom">alloc</span>] <span class="atom">init</span>];</span><br><span class="line"></span><br><span class="line"><span class="name">NSString</span>* <span class="atom">str</span> = [[[<span class="name">NSString</span> <span class="atom">alloc</span>] <span class="atom">initWithString</span>:@<span class="string">"tutuge"</span>] <span class="atom">autorelease</span>];</span><br><span class="line">//<span class="atom">use</span> <span class="atom">str</span>...</span><br><span class="line"></span><br><span class="line">[<span class="atom">pool</span> <span class="atom">release</span>];</span><br><span class="line">//<span class="atom">str</span> <span class="atom">is</span> <span class="atom">released</span></span><br></pre></td></tr></table></figure>
+<p>就是说，我们可以在创建对象的时候给对象发送“<strong>autorelease</strong>”消息，然后当<strong>NSAutoreleasePool</strong>结束的时候，“标记过”autorelease的对象都会被“<strong>release</strong>”掉，也就是会被释放掉。</p>
 <p>但是在ARC时代，我们不用手动发送<strong>autorelease</strong>消息，ARC会自动帮我们加。而这个时候，<strong>@autoreleasepool</strong>做的事情，跟<strong>NSAutoreleasePool</strong>就一模一样了。</p>
 <h2 id="什么时候用@autoreleasepool">什么时候用@autoreleasepool</h2><p>根据<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/mmAutoreleasePools.html" target="_blank" rel="external">Apple的文档</a>，使用场景如下：</p>
 <ul>
@@ -339,18 +313,8 @@ int main(int argc, char * argv[]) {
 <li>长时间在后台运行的任务。</li>
 </ul>
 <h2 id="利用@autoreleasepool优化循环">利用@autoreleasepool优化循环</h2><p>利用@autoreleasepool优化循环的内存占用，我觉得最有用的一点，下面就说说这个点。<br>如下面的循环，次数非常多，而且循环体里面的对象都是临时创建使用的，就可以用<strong>@autoreleasepool</strong>包起来，让每次循环结束时，可以及时的释放临时对象的内存。</p>
-<pre><code><span class="comment">//来自Apple文档，见参考</span>
-<span class="built_in">NSArray</span> *urls = &lt;<span class="preprocessor"># An array of file URLs #&gt;;</span>
-<span class="keyword">for</span> (<span class="built_in">NSURL</span> *url <span class="keyword">in</span> urls) {
-
-    <span class="keyword">@autoreleasepool</span> {
-        <span class="built_in">NSError</span> *error;
-        <span class="built_in">NSString</span> *fileContents = [<span class="built_in">NSString</span> stringWithContentsOfURL:url
-                                         encoding:<span class="built_in">NSUTF8StringEncoding</span> error:&amp;error];
-        <span class="comment">/* Process the string, creating and autoreleasing more objects. */</span>
-    }
-}
-</code></pre><p>这么做的效果是极其显著地，就如本文最开始的图一样，可以自己把示例工程下回来运行下试试~</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//来自Apple文档，见参考</span></span><br><span class="line"><span class="built_in">NSArray</span> *urls = &lt;<span class="preprocessor"># An array of file URLs #&gt;;</span></span><br><span class="line"><span class="keyword">for</span> (<span class="built_in">NSURL</span> *url <span class="keyword">in</span> urls) &#123;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">        <span class="built_in">NSError</span> *error;</span><br><span class="line">        <span class="built_in">NSString</span> *fileContents = [<span class="built_in">NSString</span> stringWithContentsOfURL:url</span><br><span class="line">                                        encoding:<span class="built_in">NSUTF8StringEncoding</span> error:&amp;error];</span><br><span class="line">        <span class="comment">/* Process the string, creating and autoreleasing more objects. */</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这么做的效果是极其显著地，就如本文最开始的图一样，可以自己把示例工程下回来运行下试试~</p>
 <h2 id="总结">总结</h2><p><strong>@autoreleasepool</strong>看起来很不“起眼”，平常开发很容易就忽略它了，但是仔细一看，确如此有用~</p>
 <h2 id="参考">参考</h2><ul>
 <li><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/mmAutoreleasePools.html" target="_blank" rel="external">Using Autorelease Pool Blocks</a></li>
@@ -488,20 +452,17 @@ int main(int argc, char * argv[]) {
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
+          
+          
 
-          <div class="site-state-item site-state-categories">
-            
-              <span class="site-state-item-count">0</span>
-              <span class="site-state-item-name">分类</span>
-              
-          </div>
-
-          <div class="site-state-item site-state-tags">
-            <a href="/tags">
-              <span class="site-state-item-count">17</span>
-              <span class="site-state-item-name">标签</span>
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">标签</span>
               </a>
-          </div>
+            </div>
+          
 
         </nav>
 
@@ -616,7 +577,7 @@ int main(int argc, char * argv[]) {
   &copy;  2014 - 
   <span itemprop="copyrightYear">2016</span>
   <span class="with-love">
-    <i class="icon-next-heart fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">燕泽堃</span>
 </div>

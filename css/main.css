@@ -385,21 +385,6 @@ dd {
   color: #222 !important;
   text-decoration: none !important;
 }
-.video-container {
-  position: relative;
-  padding-top: 60%;
-  height: 0;
-  overflow: hidden;
-}
-.video-container iframe,
-.video-container object,
-.video-container embed {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
 .affix.affix.affix {
   position: fixed;
 }
@@ -456,7 +441,7 @@ body {
 .header-inner {
   margin: 0 auto;
   padding: 100px 0 70px;
-  width: 700px;
+  max-width: 700px;
 }
 @media (min-width: 1600px) {
   .container .header-inner {
@@ -485,7 +470,7 @@ body {
 .footer-inner {
   box-sizing: border-box;
   margin: 20px auto;
-  width: 700px;
+  max-width: 700px;
 }
 @media (min-width: 1600px) {
   .container .footer-inner {
@@ -1066,8 +1051,7 @@ pre .javascript .function {
   }
   .post-body pre,
   .post-body .highlight {
-    margin: 0 -20px;
-    padding: 10px 20px;
+    padding: 10px;
   }
   .post-body pre .gutter pre,
   .post-body .highlight .gutter pre {
@@ -1545,7 +1529,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #ff8;
+  background: #3dd43b;
 }
 .sidebar-nav {
   margin: 0 0 20px;
@@ -1935,6 +1919,7 @@ pre .javascript .function {
 }
 .page-archive .posts-collapse {
   position: relative;
+  z-index: 1010;
 }
 .page-archive .posts-collapse::after {
   top: 20px;
@@ -2327,7 +2312,7 @@ body {
   box-sizing: border-box;
   display: block;
   margin-right: 0;
-  padding: 0 15px;
+  padding: 0 5px;
   text-decoration: none;
 }
 .links-of-author-item a:hover {

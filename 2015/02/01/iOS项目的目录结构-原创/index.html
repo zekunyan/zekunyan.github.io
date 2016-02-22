@@ -65,7 +65,7 @@
 <meta property="og:url" content="http://tutuge.me/2015/02/01/iOS项目的目录结构-原创/index.html">
 <meta property="og:site_name" content="土土哥的技术Blog">
 <meta property="og:description" content="前言这段时间一直在做iOS的项目（青桔音乐App），随着代码量的上升，逐渐意识到项目的整体目录结构划分是多么重要，清晰的目录结构，能够更好的应对新的需求，更容易重构。虽然一直都是一个人在做=。=，但是还是深深地体会到目录结构的重要性。">
-<meta property="og:updated_time" content="2015-04-06T03:14:44.000Z">
+<meta property="og:updated_time" content="2016-02-22T09:12:17.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS项目的目录结构-原创">
 <meta name="twitter:description" content="前言这段时间一直在做iOS的项目（青桔音乐App），随着代码量的上升，逐渐意识到项目的整体目录结构划分是多么重要，清晰的目录结构，能够更好的应对新的需求，更容易重构。虽然一直都是一个人在做=。=，但是还是深深地体会到目录结构的重要性。">
@@ -113,6 +113,8 @@
       s.parentNode.insertBefore(hm, s);
     })();
   </script>
+
+
 
 
 
@@ -281,52 +283,8 @@
         <h2 id="前言">前言</h2><p>这段时间一直在做iOS的项目（<a href="https://itunes.apple.com/cn/app/qing-ju-yin-le-quan-guo-zui/id913235479?mt=8" target="_blank" rel="external">青桔音乐App</a>），随着代码量的上升，逐渐意识到项目的整体目录结构划分是多么重要，清晰的目录结构，能够更好的应对新的需求，更容易重构。虽然一直都是一个人在做=。=，但是还是深深地体会到目录结构的重要性。</p>
 <a id="more"></a>
 <h2 id="例子">例子</h2><p>说再多都不如来个例子实在，如下：(VC指的是viewController)</p>
-<pre><code><span class="string">|---General</span>
-    <span class="string">|---AppDelegate</span>
-    <span class="string">|---Application</span>
-    <span class="string">|---Constant</span>
-    <span class="string">|---UI</span>
-        <span class="string">|---View</span>
-        <span class="string">|---VC</span>
-        <span class="string">|---Common</span>
-    ...
-<span class="string">|---Entity</span>
-    <span class="string">|---BaseEntity</span>
-    ...
-<span class="string">|---Http</span>
-    <span class="string">|---Api</span>
-    <span class="string">|---Util</span>
-    <span class="string">|---CodeHandler</span>
-    <span class="string">|---ErrorHandler</span>
-    <span class="string">|---RequestHandler</span>
-    ...
-<span class="string">|---DB</span>
-    <span class="string">|---DBHelper</span>
-    <span class="string">|---DBService</span>
-    ...
-<span class="string">|---Util</span>
-    <span class="string">|---StringUtil</span>
-    <span class="string">|---NumberUtil</span>
-    <span class="string">|---TimeUtil</span>
-    ...
-<span class="string">|---Service</span>
-    <span class="string">|---AccountService</span>
-    <span class="string">|---ShareService</span>
-    ...
-<span class="string">|---Lib</span>
-    <span class="string">|---Umeng</span>
-    <span class="string">|---QQSDK</span>
-    <span class="string">|---SVProgressHUD</span>
-    ...
-<span class="string">|---Module</span>
-    <span class="string">|---Login</span>
-        <span class="string">|---View</span>
-        <span class="string">|---VC</span>
-        ...
-    <span class="string">|---Comment</span>
-    <span class="string">|---Feeds</span>
-    ...
-</code></pre><p>乍一看好多，别被吓到=。=，容我细细讲解。</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">|---General</span></span><br><span class="line">    <span class="string">|---AppDelegate</span></span><br><span class="line">    <span class="string">|---Application</span></span><br><span class="line">    <span class="string">|---Constant</span></span><br><span class="line">    <span class="string">|---UI</span></span><br><span class="line">        <span class="string">|---View</span></span><br><span class="line">        <span class="string">|---VC</span></span><br><span class="line">        <span class="string">|---Common</span></span><br><span class="line">    ...</span><br><span class="line"><span class="string">|---Entity</span></span><br><span class="line">    <span class="string">|---BaseEntity</span></span><br><span class="line">    ...</span><br><span class="line"><span class="string">|---Http</span></span><br><span class="line">    <span class="string">|---Api</span></span><br><span class="line">    <span class="string">|---Util</span></span><br><span class="line">    <span class="string">|---CodeHandler</span></span><br><span class="line">    <span class="string">|---ErrorHandler</span></span><br><span class="line">    <span class="string">|---RequestHandler</span></span><br><span class="line">    ...</span><br><span class="line"><span class="string">|---DB</span></span><br><span class="line">    <span class="string">|---DBHelper</span></span><br><span class="line">    <span class="string">|---DBService</span></span><br><span class="line">    ...</span><br><span class="line"><span class="string">|---Util</span></span><br><span class="line">    <span class="string">|---StringUtil</span></span><br><span class="line">    <span class="string">|---NumberUtil</span></span><br><span class="line">    <span class="string">|---TimeUtil</span></span><br><span class="line">    ...</span><br><span class="line"><span class="string">|---Service</span></span><br><span class="line">    <span class="string">|---AccountService</span></span><br><span class="line">    <span class="string">|---ShareService</span></span><br><span class="line">    ...</span><br><span class="line"><span class="string">|---Lib</span></span><br><span class="line">    <span class="string">|---Umeng</span></span><br><span class="line">    <span class="string">|---QQSDK</span></span><br><span class="line">    <span class="string">|---SVProgressHUD</span></span><br><span class="line">    ...</span><br><span class="line"><span class="string">|---Module</span></span><br><span class="line">    <span class="string">|---Login</span></span><br><span class="line">        <span class="string">|---View</span></span><br><span class="line">        <span class="string">|---VC</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="string">|---Comment</span></span><br><span class="line">    <span class="string">|---Feeds</span></span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+<p>乍一看好多，别被吓到=。=，容我细细讲解。</p>
 <h2 id="详细讲解">详细讲解</h2><h3 id="General">General</h3><p>General好理解，放的就是如AppDelegate之类的、项目中最普通的、最常用的组件。</p>
 <p><strong>AppDelegate</strong>:<br>App的Delegate类实现，这个必须有，就不用说了吧。  </p>
 <p><strong>Application</strong>:<br>如果自定义实现了Application类，就放在这里。  </p>
@@ -492,20 +450,17 @@
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
+          
+          
 
-          <div class="site-state-item site-state-categories">
-            
-              <span class="site-state-item-count">0</span>
-              <span class="site-state-item-name">分类</span>
-              
-          </div>
-
-          <div class="site-state-item site-state-tags">
-            <a href="/tags">
-              <span class="site-state-item-count">17</span>
-              <span class="site-state-item-name">标签</span>
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">标签</span>
               </a>
-          </div>
+            </div>
+          
 
         </nav>
 
@@ -620,7 +575,7 @@
   &copy;  2014 - 
   <span itemprop="copyrightYear">2016</span>
   <span class="with-love">
-    <i class="icon-next-heart fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">燕泽堃</span>
 </div>

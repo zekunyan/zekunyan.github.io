@@ -59,38 +59,44 @@
 
 
 
-<meta name="description" content="前言前段时间用了一下Facebook的开源RPC框架Thrift，做PHP客户端调用C++后端程序，真心觉得Thrift不错！
+<meta name="description" content="更新
+2016-02-22: Response对象不用主动创建。
+
+前言前段时间用了一下Facebook的开源RPC框架Thrift，做PHP客户端调用C++后端程序，真心觉得Thrift不错！
 本文项目地址：https://github.com/zekunyan/ThriftDemo_PHP_CPP
 先看看本文的例子示意图：
 
 流程
 
-PHP客户端发起请求，请求参数是“Request”类型，里面有studentID参数。
-CPP服务端收到请求返回数据，返回类型为">
+PHP客户端发起请求，请求参数是“Request”类型，里面">
 <meta property="og:type" content="article">
 <meta property="og:title" content="RPC框架Thrift例子-PHP调用C++后端程序">
 <meta property="og:url" content="http://tutuge.me/2015/04/19/thrift-example-cpp-and-php/index.html">
 <meta property="og:site_name" content="土土哥的技术Blog">
-<meta property="og:description" content="前言前段时间用了一下Facebook的开源RPC框架Thrift，做PHP客户端调用C++后端程序，真心觉得Thrift不错！
+<meta property="og:description" content="更新
+2016-02-22: Response对象不用主动创建。
+
+前言前段时间用了一下Facebook的开源RPC框架Thrift，做PHP客户端调用C++后端程序，真心觉得Thrift不错！
 本文项目地址：https://github.com/zekunyan/ThriftDemo_PHP_CPP
 先看看本文的例子示意图：
 
 流程
 
-PHP客户端发起请求，请求参数是“Request”类型，里面有studentID参数。
-CPP服务端收到请求返回数据，返回类型为">
+PHP客户端发起请求，请求参数是“Request”类型，里面">
 <meta property="og:image" content="http://zorrochen.qiniudn.com/blog_thrift_example_cpp_and_php_1.jpg">
-<meta property="og:updated_time" content="2016-01-01T07:46:31.000Z">
+<meta property="og:updated_time" content="2016-02-22T11:47:16.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RPC框架Thrift例子-PHP调用C++后端程序">
-<meta name="twitter:description" content="前言前段时间用了一下Facebook的开源RPC框架Thrift，做PHP客户端调用C++后端程序，真心觉得Thrift不错！
+<meta name="twitter:description" content="更新
+2016-02-22: Response对象不用主动创建。
+
+前言前段时间用了一下Facebook的开源RPC框架Thrift，做PHP客户端调用C++后端程序，真心觉得Thrift不错！
 本文项目地址：https://github.com/zekunyan/ThriftDemo_PHP_CPP
 先看看本文的例子示意图：
 
 流程
 
-PHP客户端发起请求，请求参数是“Request”类型，里面有studentID参数。
-CPP服务端收到请求返回数据，返回类型为">
+PHP客户端发起请求，请求参数是“Request”类型，里面">
 
 
 
@@ -135,6 +141,8 @@ CPP服务端收到请求返回数据，返回类型为">
       s.parentNode.insertBefore(hm, s);
     })();
   </script>
+
+
 
 
 
@@ -300,7 +308,10 @@ CPP服务端收到请求返回数据，返回类型为">
       
 
       
-        <h2 id="前言">前言</h2><p>前段时间用了一下Facebook的开源RPC框架Thrift，做PHP客户端调用C++后端程序，真心觉得Thrift不错！</p>
+        <h2 id="更新">更新</h2><ul>
+<li>2016-02-22: Response对象不用主动创建。</li>
+</ul>
+<h2 id="前言">前言</h2><p>前段时间用了一下Facebook的开源RPC框架Thrift，做PHP客户端调用C++后端程序，真心觉得Thrift不错！</p>
 <p>本文项目地址：<a href="https://github.com/zekunyan/ThriftDemo_PHP_CPP" target="_blank" rel="external">https://github.com/zekunyan/ThriftDemo_PHP_CPP</a></p>
 <p>先看看本文的例子示意图：</p>
 <p><img src="http://zorrochen.qiniudn.com/blog_thrift_example_cpp_and_php_1.jpg" alt="通信示意图"></p>
@@ -338,51 +349,15 @@ CPP服务端收到请求返回数据，返回类型为">
 </ol>
 <h2 id="生成对应语言的代码！">生成对应语言的代码！</h2><p>是的，生成代码！这是我觉得Thrift框架最“神奇”的地方。我们只需要执行几条命令，就可以根据接口定义文件“生成”对应语言的代码。然后我们只需要将对应的业务逻辑加入到生成的代码中即可。</p>
 <p>如生成CPP服务端的代码：</p>
-<pre><code>thrift <span class="comment">--gen cpp TTG.thrift</span>
-</code></pre><p>然后就会生成如下代码。    </p>
-<pre><code>TTGService<span class="class">.cpp</span>
-TTGService<span class="class">.h</span>
-TTGService_server<span class="class">.skeleton</span><span class="class">.cpp</span>
-TTG_constants<span class="class">.cpp</span>
-TTG_constants<span class="class">.h</span>
-TTG_types<span class="class">.cpp</span>
-TTG_types.h
-</code></pre><h2 id="根据需要修改生成的代码">根据需要修改生成的代码</h2><p>生成CPP、PHP端的代码以后，我们就可以根据需要修改、添加业务代码。</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">thrift <span class="comment">--gen cpp TTG.thrift</span></span><br></pre></td></tr></table></figure>
+<p>然后就会生成如下代码。    </p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">TTGService<span class="class">.cpp</span></span><br><span class="line">TTGService<span class="class">.h</span></span><br><span class="line">TTGService_server<span class="class">.skeleton</span><span class="class">.cpp</span></span><br><span class="line">TTG_constants<span class="class">.cpp</span></span><br><span class="line">TTG_constants<span class="class">.h</span></span><br><span class="line">TTG_types<span class="class">.cpp</span></span><br><span class="line">TTG_types.h</span><br></pre></td></tr></table></figure>
+<h2 id="根据需要修改生成的代码">根据需要修改生成的代码</h2><p>生成CPP、PHP端的代码以后，我们就可以根据需要修改、添加业务代码。</p>
 <h3 id="CPP服务端">CPP服务端</h3><p>在生成CPP的代码时，会生成一个“TTGService_server.skeleton.cpp”文件，这个就是我们的CPP服务端的代码“架子”。其中重点如下：</p>
-<pre><code><span class="comment">//实现调用的接口</span>
-<span class="keyword">class</span> TTGServiceHandler : <span class="keyword">virtual</span> <span class="keyword">public</span> TTGServiceIf {
- <span class="keyword">public</span>:
-  TTGServiceHandler() {
-    <span class="comment">// Your initialization goes here</span>
-  }
-
-  <span class="comment">//接口实现部分，实现getStudentInfo这个接口的具体细节，如根据request创建、返回对应的response</span>
-  <span class="function"><span class="keyword">void</span> <span class="title">getStudentInfo</span><span class="params">(Response&amp; _return, <span class="keyword">const</span> Request&amp; request)</span> </span>{
-    <span class="comment">// Your implementation goes here</span>
-    <span class="built_in">printf</span>(<span class="string">"getStudentInfo\n"</span>);
-  }
-
-};
-<span class="comment">//...</span>
-</code></pre><p>我们将其改成：</p>
-<pre><code>void getStudentInfo(Response &amp;_<span class="keyword">return</span>, <span class="keyword">const</span> Request &amp;request) {
-    <span class="comment">// 输出请求参数</span>
-    cout&lt;&lt;<span class="string">"Request: "</span>&lt;&lt;request.studentID&lt;&lt;endl;
-
-    <span class="comment">// 创建返回数据</span>
-    Response *response = new Response();
-
-    <span class="comment">//填充数据</span>
-    response-&gt;studentID = request.studentID;
-    response-&gt;name = <span class="string">"tutuge"</span>;
-    response-&gt;infos.push_back(<span class="string">"Info 1"</span>);
-    response-&gt;infos.push_back(<span class="string">"Info 2"</span>);
-    response-&gt;state = ResponseState::StateOk;
-
-    <span class="comment">//返回</span>
-    _<span class="keyword">return</span> = *response;
-}
-</code></pre><p>至此，CPP服务端的编写就完成了，接下来我们只需要编译、链接，执行最终生成的可执行文件即可。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//实现调用的接口</span></span><br><span class="line"><span class="keyword">class</span> TTGServiceHandler : <span class="keyword">virtual</span> <span class="keyword">public</span> TTGServiceIf &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">TTGServiceHandler() &#123;</span><br><span class="line">    <span class="comment">// Your initialization goes here</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//接口实现部分，实现getStudentInfo这个接口的具体细节，如根据request创建、返回对应的response</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getStudentInfo</span><span class="params">(Response&amp; _return, <span class="keyword">const</span> Request&amp; request)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Your implementation goes here</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"getStudentInfo\n"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//...</span></span><br></pre></td></tr></table></figure>
+<p>我们将其改成：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> getStudentInfo(Response &amp;_<span class="keyword">return</span>, <span class="keyword">const</span> Request &amp;request) &#123;</span><br><span class="line">    <span class="comment">// 输出请求参数</span></span><br><span class="line">    cout&lt;&lt;<span class="string">"Request: "</span>&lt;&lt;request<span class="variable">.studentID</span>&lt;&lt;endl;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//填充数据，Response对象不用主动创建，进入函数时已经创建好了</span></span><br><span class="line">    _<span class="keyword">return</span><span class="variable">.studentID</span> = request<span class="variable">.studentID</span>;</span><br><span class="line">    _<span class="keyword">return</span><span class="variable">.name</span> = <span class="string">"tutuge"</span>;</span><br><span class="line">    _<span class="keyword">return</span><span class="variable">.infos</span><span class="variable">.push_back</span>(<span class="string">"Info 1"</span>);</span><br><span class="line">    _<span class="keyword">return</span><span class="variable">.infos</span><span class="variable">.push_back</span>(<span class="string">"Info 2"</span>);</span><br><span class="line">    _<span class="keyword">return</span><span class="variable">.state</span> = ResponseState::StateOk;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>至此，CPP服务端的编写就完成了，接下来我们只需要编译、链接，执行最终生成的可执行文件即可。</p>
 <h3 id="PHP客户端">PHP客户端</h3><p>PHP客户端的编写比较简单，直接参考代码吧：<a href="https://github.com/zekunyan/ThriftDemo_PHP_CPP/blob/master/PHP/client.php" target="_blank" rel="external">https://github.com/zekunyan/ThriftDemo_PHP_CPP/blob/master/PHP/client.php</a></p>
 <h2 id="编译、链接，运行">编译、链接，运行</h2><p>用CMake，或者直接编写makefile均可，保证Thrift装好就行了。</p>
 <p>直接运行最后生成的可执行文件TTG.run即可。</p>
@@ -527,20 +502,17 @@ TTG_types.h
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
+          
+          
 
-          <div class="site-state-item site-state-categories">
-            
-              <span class="site-state-item-count">0</span>
-              <span class="site-state-item-name">分类</span>
-              
-          </div>
-
-          <div class="site-state-item site-state-tags">
-            <a href="/tags">
-              <span class="site-state-item-count">17</span>
-              <span class="site-state-item-name">标签</span>
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">标签</span>
               </a>
-          </div>
+            </div>
+          
 
         </nav>
 
@@ -631,7 +603,7 @@ TTG_types.h
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定义"><span class="nav-number">2.</span> <span class="nav-text">定义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是RPC"><span class="nav-number">2.1.</span> <span class="nav-text">什么是RPC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是Thrift"><span class="nav-number">2.2.</span> <span class="nav-text">什么是Thrift</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开发流程"><span class="nav-number">3.</span> <span class="nav-text">开发流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Thrift的接口定义文件"><span class="nav-number">4.</span> <span class="nav-text">Thrift的接口定义文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成对应语言的代码！"><span class="nav-number">5.</span> <span class="nav-text">生成对应语言的代码！</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#根据需要修改生成的代码"><span class="nav-number">6.</span> <span class="nav-text">根据需要修改生成的代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CPP服务端"><span class="nav-number">6.1.</span> <span class="nav-text">CPP服务端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PHP客户端"><span class="nav-number">6.2.</span> <span class="nav-text">PHP客户端</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编译、链接，运行"><span class="nav-number">7.</span> <span class="nav-text">编译、链接，运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">9.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#更新"><span class="nav-number">1.</span> <span class="nav-text">更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">2.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定义"><span class="nav-number">3.</span> <span class="nav-text">定义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是RPC"><span class="nav-number">3.1.</span> <span class="nav-text">什么是RPC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是Thrift"><span class="nav-number">3.2.</span> <span class="nav-text">什么是Thrift</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开发流程"><span class="nav-number">4.</span> <span class="nav-text">开发流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Thrift的接口定义文件"><span class="nav-number">5.</span> <span class="nav-text">Thrift的接口定义文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成对应语言的代码！"><span class="nav-number">6.</span> <span class="nav-text">生成对应语言的代码！</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#根据需要修改生成的代码"><span class="nav-number">7.</span> <span class="nav-text">根据需要修改生成的代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CPP服务端"><span class="nav-number">7.1.</span> <span class="nav-text">CPP服务端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PHP客户端"><span class="nav-number">7.2.</span> <span class="nav-text">PHP客户端</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编译、链接，运行"><span class="nav-number">8.</span> <span class="nav-text">编译、链接，运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">9.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">10.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">
@@ -655,7 +627,7 @@ TTG_types.h
   &copy;  2014 - 
   <span itemprop="copyrightYear">2016</span>
   <span class="with-love">
-    <i class="icon-next-heart fa fa-heart"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">燕泽堃</span>
 </div>
