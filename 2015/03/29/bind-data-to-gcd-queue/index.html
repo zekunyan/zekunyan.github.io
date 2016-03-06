@@ -200,6 +200,8 @@
       
 
       
+
+
       
       
     </ul>
@@ -272,6 +274,7 @@
 
           
           
+
         </div>
       </header>
     
@@ -334,6 +337,12 @@
 <li><a href="http://blog.csdn.net/diyagoanyhacker/article/details/7573801" target="_blank" rel="external">Core Foundation 框架</a></li>
 </ul>
 
+      
+    </div>
+
+    <div>
+      
+        
       
     </div>
 
@@ -608,7 +617,9 @@
       </div>
     </footer>
 
-    <div class="back-to-top"></div>
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
   </div>
 
   
@@ -616,6 +627,14 @@
 
   
 
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
 
 
   <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
@@ -802,7 +821,7 @@
     NexT.motion.middleWares.sidebar = function () {
       var $tocContent = $('.post-toc-content');
 
-      if (CONFIG.sidebar === 'post') {
+      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
         if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
           NexT.utils.displaySidebar();
         }
@@ -849,8 +868,8 @@
 
   
   
-
   
+
   
 
 

@@ -202,6 +202,8 @@
       
 
       
+
+
       
       
     </ul>
@@ -274,6 +276,7 @@
 
           
           
+
         </div>
       </header>
     
@@ -360,6 +363,12 @@
 <h3 id="小节-2">小节</h3><p>很多时候，灵活的使用multiplier能大大简化开发~</p>
 <h2 id="总结">总结</h2><p>三个例子说完了，你有啥收获呢~？:-D</p>
 
+      
+    </div>
+
+    <div>
+      
+        
       
     </div>
 
@@ -638,7 +647,9 @@
       </div>
     </footer>
 
-    <div class="back-to-top"></div>
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
   </div>
 
   
@@ -646,6 +657,14 @@
 
   
 
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
 
 
   <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
@@ -832,7 +851,7 @@
     NexT.motion.middleWares.sidebar = function () {
       var $tocContent = $('.post-toc-content');
 
-      if (CONFIG.sidebar === 'post') {
+      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
         if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
           NexT.utils.displaySidebar();
         }
@@ -879,8 +898,8 @@
 
   
   
-
   
+
   
 
 

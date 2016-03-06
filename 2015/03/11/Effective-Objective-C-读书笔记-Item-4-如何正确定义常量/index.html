@@ -203,6 +203,8 @@ Item 4 - Prefer Typed Constants to Preprocessor #define本节着重对比了常�
       
 
       
+
+
       
       
     </ul>
@@ -275,6 +277,7 @@ Item 4 - Prefer Typed Constants to Preprocessor #define本节着重对比了常�
 
           
           
+
         </div>
       </header>
     
@@ -328,6 +331,12 @@ Item 4 - Prefer Typed Constants to Preprocessor #define本节着重对比了常�
 <h2 id="总结">总结</h2><p>良好的代码，总是少不了定义各种常量，以避免“魔鬼数字、魔鬼字符串”。所以我们应该尽量避免少用#define定义常量，而是用带有类型的、const的常量，并且尽可能的缩小常量的作用域。  </p>
 <p>暴露的细节越少，出错的机会也就越小（忘了从哪里看到的=。=）</p>
 
+      
+    </div>
+
+    <div>
+      
+        
       
     </div>
 
@@ -606,7 +615,9 @@ Item 4 - Prefer Typed Constants to Preprocessor #define本节着重对比了常�
       </div>
     </footer>
 
-    <div class="back-to-top"></div>
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
   </div>
 
   
@@ -614,6 +625,14 @@ Item 4 - Prefer Typed Constants to Preprocessor #define本节着重对比了常�
 
   
 
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
 
 
   <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
@@ -800,7 +819,7 @@ Item 4 - Prefer Typed Constants to Preprocessor #define本节着重对比了常�
     NexT.motion.middleWares.sidebar = function () {
       var $tocContent = $('.post-toc-content');
 
-      if (CONFIG.sidebar === 'post') {
+      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
         if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
           NexT.utils.displaySidebar();
         }
@@ -847,8 +866,8 @@ Item 4 - Prefer Typed Constants to Preprocessor #define本节着重对比了常�
 
   
   
-
   
+
   
 
 

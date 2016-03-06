@@ -225,6 +225,8 @@ PHP客户端发起请求，请求参数是“Request”类型，里面">
       
 
       
+
+
       
       
     </ul>
@@ -297,6 +299,7 @@ PHP客户端发起请求，请求参数是“Request”类型，里面">
 
           
           
+
         </div>
       </header>
     
@@ -372,6 +375,12 @@ PHP客户端发起请求，请求参数是“Request”类型，里面">
 <li><a href="https://www.ibm.com/developerworks/cn/java/j-lo-apachethrift/" target="_blank" rel="external">Apache Thrift - 可伸缩的跨语言服务开发框架</a></li>
 </ul>
 
+      
+    </div>
+
+    <div>
+      
+        
       
     </div>
 
@@ -650,7 +659,9 @@ PHP客户端发起请求，请求参数是“Request”类型，里面">
       </div>
     </footer>
 
-    <div class="back-to-top"></div>
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
   </div>
 
   
@@ -658,6 +669,14 @@ PHP客户端发起请求，请求参数是“Request”类型，里面">
 
   
 
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
 
 
   <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
@@ -844,7 +863,7 @@ PHP客户端发起请求，请求参数是“Request”类型，里面">
     NexT.motion.middleWares.sidebar = function () {
       var $tocContent = $('.post-toc-content');
 
-      if (CONFIG.sidebar === 'post') {
+      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
         if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
           NexT.utils.displaySidebar();
         }
@@ -891,8 +910,8 @@ PHP客户端发起请求，请求参数是“Request”类型，里面">
 
   
   
-
   
+
   
 
 

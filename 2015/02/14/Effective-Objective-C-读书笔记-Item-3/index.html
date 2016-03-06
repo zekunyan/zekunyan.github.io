@@ -200,6 +200,8 @@ Item 3 - Prefer Literal Syntax over the Equivalent Methods本节讲了Objective-
       
 
       
+
+
       
       
     </ul>
@@ -272,6 +274,7 @@ Item 3 - Prefer Literal Syntax over the Equivalent Methods本节讲了Objective-
 
           
           
+
         </div>
       </header>
     
@@ -316,6 +319,12 @@ Item 3 - Prefer Literal Syntax over the Equivalent Methods本节讲了Objective-
 <h3 id="注意">注意</h3><p>需要注意的地方，跟创建数组一样，NSDictionary的value不能为nil值，否则会抛出异常。</p>
 <h2 id="总结">总结</h2><p>总的来说，使用字面量语法可以让代码更加清晰、简单，毕竟，更少的代码，有时候意味着更少的错误。      </p>
 
+      
+    </div>
+
+    <div>
+      
+        
       
     </div>
 
@@ -594,7 +603,9 @@ Item 3 - Prefer Literal Syntax over the Equivalent Methods本节讲了Objective-
       </div>
     </footer>
 
-    <div class="back-to-top"></div>
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
   </div>
 
   
@@ -602,6 +613,14 @@ Item 3 - Prefer Literal Syntax over the Equivalent Methods本节讲了Objective-
 
   
 
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
 
 
   <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
@@ -788,7 +807,7 @@ Item 3 - Prefer Literal Syntax over the Equivalent Methods本节讲了Objective-
     NexT.motion.middleWares.sidebar = function () {
       var $tocContent = $('.post-toc-content');
 
-      if (CONFIG.sidebar === 'post') {
+      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
         if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
           NexT.utils.displaySidebar();
         }
@@ -835,8 +854,8 @@ Item 3 - Prefer Literal Syntax over the Equivalent Methods本节讲了Objective-
 
   
   
-
   
+
   
 
 

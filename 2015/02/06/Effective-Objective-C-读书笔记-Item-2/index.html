@@ -200,6 +200,8 @@ Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个�
       
 
       
+
+
       
       
     </ul>
@@ -272,6 +274,7 @@ Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个�
 
           
           
+
         </div>
       </header>
     
@@ -310,6 +313,12 @@ Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个�
 <p>最终的目的就是<strong>只暴露最少的细节</strong>。</p>
 <p>写代码有段时间了，一直都在琢磨这句话，希望读者也能好好体会~</p>
 
+      
+    </div>
+
+    <div>
+      
+        
       
     </div>
 
@@ -588,7 +597,9 @@ Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个�
       </div>
     </footer>
 
-    <div class="back-to-top"></div>
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
   </div>
 
   
@@ -596,6 +607,14 @@ Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个�
 
   
 
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
 
 
   <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
@@ -782,7 +801,7 @@ Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个�
     NexT.motion.middleWares.sidebar = function () {
       var $tocContent = $('.post-toc-content');
 
-      if (CONFIG.sidebar === 'post') {
+      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
         if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
           NexT.utils.displaySidebar();
         }
@@ -829,8 +848,8 @@ Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个�
 
   
   
-
   
+
   
 
 

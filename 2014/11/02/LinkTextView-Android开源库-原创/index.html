@@ -207,6 +207,8 @@ Example">
       
 
       
+
+
       
       
     </ul>
@@ -279,6 +281,7 @@ Example">
 
           
           
+
         </div>
       </header>
     
@@ -326,6 +329,12 @@ Example">
 <li>StackOverFlow的：<a href="http://stackoverflow.com/questions/20856105/change-the-text-color-of-a-clickablespan-when-pressed" target="_blank" rel="external">Change the text color of a ClickableSpan when pressed。</a></li>
 </ol>
 
+      
+    </div>
+
+    <div>
+      
+        
       
     </div>
 
@@ -602,7 +611,9 @@ Example">
       </div>
     </footer>
 
-    <div class="back-to-top"></div>
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
   </div>
 
   
@@ -610,6 +621,14 @@ Example">
 
   
 
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
 
 
   <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
@@ -796,7 +815,7 @@ Example">
     NexT.motion.middleWares.sidebar = function () {
       var $tocContent = $('.post-toc-content');
 
-      if (CONFIG.sidebar === 'post') {
+      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
         if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
           NexT.utils.displaySidebar();
         }
@@ -843,8 +862,8 @@ Example">
 
   
   
-
   
+
   
 
 

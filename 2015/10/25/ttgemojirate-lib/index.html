@@ -207,6 +207,8 @@ Github: https://github.com/zekunyan/TTGEmojiRate">
       
 
       
+
+
       
       
     </ul>
@@ -279,6 +281,7 @@ Github: https://github.com/zekunyan/TTGEmojiRate">
 
           
           
+
         </div>
       </header>
     
@@ -366,6 +369,12 @@ Github: https://github.com/zekunyan/TTGEmojiRate">
 <li><a href="http://nshipster.cn/ibinspectable-ibdesignable/" target="_blank" rel="external">IBInspectable / IBDesignable</a></li>
 </ul>
 
+      
+    </div>
+
+    <div>
+      
+        
       
     </div>
 
@@ -644,7 +653,9 @@ Github: https://github.com/zekunyan/TTGEmojiRate">
       </div>
     </footer>
 
-    <div class="back-to-top"></div>
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
   </div>
 
   
@@ -652,6 +663,14 @@ Github: https://github.com/zekunyan/TTGEmojiRate">
 
   
 
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
 
 
   <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
@@ -838,7 +857,7 @@ Github: https://github.com/zekunyan/TTGEmojiRate">
     NexT.motion.middleWares.sidebar = function () {
       var $tocContent = $('.post-toc-content');
 
-      if (CONFIG.sidebar === 'post') {
+      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
         if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
           NexT.utils.displaySidebar();
         }
@@ -885,8 +904,8 @@ Github: https://github.com/zekunyan/TTGEmojiRate">
 
   
   
-
   
+
   
 
 

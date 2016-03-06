@@ -201,6 +201,8 @@ Item 1 - Familiarize Yourself with Objective-C’s Roots第一章的目的，就
       
 
       
+
+
       
       
     </ul>
@@ -273,6 +275,7 @@ Item 1 - Familiarize Yourself with Objective-C’s Roots第一章的目的，就
 
           
           
+
         </div>
       </header>
     
@@ -314,6 +317,12 @@ Item 1 - Familiarize Yourself with Objective-C’s Roots第一章的目的，就
 <p>这的CGPoint、CGRect都是结构体，但是都是直接在栈上分配内存的，以减少过度使用Objective-C类型的类（减少运行时的压力），各位读者使用的时候要注意。</p>
 <h2 id="总结">总结</h2><p>零散的说了一些Objective-C的特点，远远不足以讲明白Objective-C，我这只是根据Effective Objective-C这本书给个引子，还是推荐Apple的官方教程、文档，要想掌握扎实，还是要一步一步来~</p>
 
+      
+    </div>
+
+    <div>
+      
+        
       
     </div>
 
@@ -592,7 +601,9 @@ Item 1 - Familiarize Yourself with Objective-C’s Roots第一章的目的，就
       </div>
     </footer>
 
-    <div class="back-to-top"></div>
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
   </div>
 
   
@@ -600,6 +611,14 @@ Item 1 - Familiarize Yourself with Objective-C’s Roots第一章的目的，就
 
   
 
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
 
 
   <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
@@ -786,7 +805,7 @@ Item 1 - Familiarize Yourself with Objective-C’s Roots第一章的目的，就
     NexT.motion.middleWares.sidebar = function () {
       var $tocContent = $('.post-toc-content');
 
-      if (CONFIG.sidebar === 'post') {
+      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
         if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
           NexT.utils.displaySidebar();
         }
@@ -833,8 +852,8 @@ Item 1 - Familiarize Yourself with Objective-C’s Roots第一章的目的，就
 
   
   
-
   
+
   
 
 

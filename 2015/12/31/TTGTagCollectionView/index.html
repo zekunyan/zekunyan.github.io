@@ -207,6 +207,8 @@
       
 
       
+
+
       
       
     </ul>
@@ -279,6 +281,7 @@
 
           
           
+
         </div>
       </header>
     
@@ -314,6 +317,12 @@
 <h3 id="重新加载_-_Reload-1">重新加载 - Reload</h3><p>用<code>- (void)reload</code>方法重新加载所有标签。</p>
 <h2 id="End">End</h2><p>2015最后一天~<br>新年快乐~</p>
 
+      
+    </div>
+
+    <div>
+      
+        
       
     </div>
 
@@ -586,7 +595,9 @@
       </div>
     </footer>
 
-    <div class="back-to-top"></div>
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
   </div>
 
   
@@ -594,6 +605,14 @@
 
   
 
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
 
 
   <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
@@ -780,7 +799,7 @@
     NexT.motion.middleWares.sidebar = function () {
       var $tocContent = $('.post-toc-content');
 
-      if (CONFIG.sidebar === 'post') {
+      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
         if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
           NexT.utils.displaySidebar();
         }
@@ -827,8 +846,8 @@
 
   
   
-
   
+
   
 
 

@@ -197,6 +197,8 @@
       
 
       
+
+
       
       
     </ul>
@@ -269,6 +271,7 @@
 
           
           
+
         </div>
       </header>
     
@@ -282,6 +285,12 @@
       
         <p>前天升级了一次Hexo，原来的主题说啥也用不了了=。=（前端知识不足，正在补~）导致只能换主题，多说的评论就这样不见了。。。原来有留言的各位筒子，没看到，不好意思啊=。=</p>
 
+      
+    </div>
+
+    <div>
+      
+        
       
     </div>
 
@@ -554,7 +563,9 @@
       </div>
     </footer>
 
-    <div class="back-to-top"></div>
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
   </div>
 
   
@@ -562,6 +573,14 @@
 
   
 
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
 
 
   <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
@@ -748,7 +767,7 @@
     NexT.motion.middleWares.sidebar = function () {
       var $tocContent = $('.post-toc-content');
 
-      if (CONFIG.sidebar === 'post') {
+      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
         if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
           NexT.utils.displaySidebar();
         }
@@ -795,8 +814,8 @@
 
   
   
-
   
+
   
 
 

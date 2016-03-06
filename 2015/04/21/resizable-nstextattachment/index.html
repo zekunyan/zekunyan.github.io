@@ -213,6 +213,8 @@ Gif">
       
 
       
+
+
       
       
     </ul>
@@ -285,6 +287,7 @@ Gif">
 
           
           
+
         </div>
       </header>
     
@@ -324,6 +327,12 @@ Gif">
 <li><a href="https://developer.apple.com/library/prerelease/ios/documentation/UIKit/Reference/NSTextAttachmentContainer_Protocol/index.html#//apple_ref/occ/intfm/NSTextAttachmentContainer/attachmentBoundsForTextContainer:proposedLineFragment:glyphPosition:characterIndex:" target="_blank" rel="external">NSTextAttachmentContainer</a></li>
 </ul>
 
+      
+    </div>
+
+    <div>
+      
+        
       
     </div>
 
@@ -598,7 +607,9 @@ Gif">
       </div>
     </footer>
 
-    <div class="back-to-top"></div>
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
   </div>
 
   
@@ -606,6 +617,14 @@ Gif">
 
   
 
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
 
 
   <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
@@ -792,7 +811,7 @@ Gif">
     NexT.motion.middleWares.sidebar = function () {
       var $tocContent = $('.post-toc-content');
 
-      if (CONFIG.sidebar === 'post') {
+      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
         if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
           NexT.utils.displaySidebar();
         }
@@ -839,8 +858,8 @@ Gif">
 
   
   
-
   
+
   
 
 
