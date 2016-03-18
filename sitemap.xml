@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://tutuge.me/about/index.html</loc>
+    <lastmod>2016-03-18T16:42:43.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://tutuge.me/2014/11/01/%E7%AC%AC%E4%B8%80%E7%AF%87Blog/</loc>
     <lastmod>2016-03-18T15:54:41.000Z</lastmod>
   </url>
@@ -149,11 +154,6 @@
   <url>
     <loc>http://tutuge.me/2015/02/01/iOS%E9%A1%B9%E7%9B%AE%E7%9A%84%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84-%E5%8E%9F%E5%88%9B/</loc>
     <lastmod>2016-03-18T15:51:48.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://tutuge.me/about/index.html</loc>
-    <lastmod>2016-02-18T11:58:39.000Z</lastmod>
   </url>
   
   <url>
