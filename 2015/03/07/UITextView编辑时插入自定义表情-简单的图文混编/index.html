@@ -79,7 +79,7 @@
 示例本文代码工程地址：https://github.com/z">
 <meta property="og:image" content="http://zorrochen.qiniudn.com/inputEmoji_Sample.gif">
 <meta property="og:image" content="http://zorrochen.qiniudn.com/blog_uitextview_input_emoji_emoji_1.png">
-<meta property="og:updated_time" content="2016-02-22T09:29:04.000Z">
+<meta property="og:updated_time" content="2016-03-18T15:54:10.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="UITextView编辑时插入自定义表情-简单的图文混编">
 <meta name="twitter:description" content="前言在iOS开发中，经常需要用UITextView作为编辑文本的输入控件。但是如何在编辑时插入自定义表情呢？就是像发微博时那样？  
@@ -279,6 +279,25 @@
           </span>
 
           
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
 
           
             
@@ -294,15 +313,6 @@
           
 
           
-          
-             <span id="/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/" class="leancloud_visitors" data-flag-title="UITextView编辑时插入自定义表情-简单的图文混编">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
           
 
         </div>
@@ -356,7 +366,7 @@
 <figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">EmojiTextAttachment *emojiTextAttachment = [EmojiTextAttachment <span class="keyword">new</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//保存表情标志</span></span><br><span class="line">emojiTextAttachment.emojiTag = emojiTag;</span><br><span class="line"></span><br><span class="line"><span class="comment">//设置表情图片</span></span><br><span class="line">emojiTextAttachment.image = emojiImage;</span><br><span class="line"></span><br><span class="line"><span class="comment">//插入表情</span></span><br><span class="line">[textView.textStorage <span class="string">insertAttributedString:</span>[NSAttributedString <span class="string">attributedStringWithAttachment:</span>emojiTextAttachment]</span><br><span class="line"><span class="label">                                      atIndex:</span>textView.selectedRange.location];</span><br></pre></td></tr></table></figure>
 <h3 id="创建NSAttributedString的Category">创建NSAttributedString的Category</h3><p>最后，就是将这个遍历表情、拼接最终文本字符串的方法设置成NSAttributedString的自定义Category方法，以方便直接调用。<br>当然，这里面有些细节的处理，如替换表情标志时的字符串偏移量计算等，看代码吧。  </p>
 <p>如下：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//NSAttributedString+EmojiExtension.h</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">NSAttributedString</span> (<span class="title">EmojiExtension</span>)</span></span><br><span class="line">- (<span class="built_in">NSString</span> *)getPlainString;</span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//NSAttributedString+EmojiExtension.m</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">NSAttributedString</span> (<span class="title">EmojiExtension</span>)</span></span><br><span class="line"></span><br><span class="line">- (<span class="built_in">NSString</span> *)getPlainString &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//最终纯文本</span></span><br><span class="line">    <span class="built_in">NSMutableString</span> *plainString = [<span class="built_in">NSMutableString</span> stringWithString:<span class="keyword">self</span><span class="variable">.string</span>];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//替换下标的偏移量</span></span><br><span class="line">    __block <span class="built_in">NSUInteger</span> base = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//遍历</span></span><br><span class="line">    [<span class="keyword">self</span> enumerateAttribute:<span class="built_in">NSAttachmentAttributeName</span> inRange:<span class="built_in">NSMakeRange</span>(<span class="number">0</span>, <span class="keyword">self</span><span class="variable">.length</span>)</span><br><span class="line">                    options:<span class="number">0</span></span><br><span class="line">                 usingBlock:^(<span class="keyword">id</span> value, <span class="built_in">NSRange</span> range, <span class="built_in">BOOL</span> *stop) &#123;</span><br><span class="line">                </span><br><span class="line">                    <span class="comment">//检查类型是否是自定义NSTextAttachment类</span></span><br><span class="line">                    <span class="keyword">if</span> (value &amp;&amp; [value isKindOfClass:[EmojiTextAttachment class]]) &#123;</span><br><span class="line">                        <span class="comment">//替换</span></span><br><span class="line">                        [plainString replaceCharactersInRange:<span class="built_in">NSMakeRange</span>(range<span class="variable">.location</span> + base, range<span class="variable">.length</span>)</span><br><span class="line">                                                    withString:((EmojiTextAttachment *) value)<span class="variable">.emojiTag</span>];</span><br><span class="line">                                                    </span><br><span class="line">                       <span class="comment">//增加偏移量                          </span></span><br><span class="line">                        base += ((EmojiTextAttachment *) value)<span class="variable">.emojiTag</span><span class="variable">.length</span> - <span class="number">1</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> plainString;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//NSAttributedString+EmojiExtension.h</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">NSAttributedString</span> (<span class="title">EmojiExtension</span>)</span></span><br><span class="line">- (<span class="built_in">NSString</span> *)getPlainString;</span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//NSAttributedString+EmojiExtension.m</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">NSAttributedString</span> (<span class="title">EmojiExtension</span>)</span></span><br><span class="line"></span><br><span class="line">- (<span class="built_in">NSString</span> *)getPlainString &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//最终纯文本</span></span><br><span class="line">    <span class="built_in">NSMutableString</span> *plainString = [<span class="built_in">NSMutableString</span> stringWithString:<span class="keyword">self</span><span class="variable">.string</span>];</span><br><span class="line"></span><br><span class="line">    <span class="comment">//替换下标的偏移量</span></span><br><span class="line">    __block <span class="built_in">NSUInteger</span> base = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//遍历</span></span><br><span class="line">    [<span class="keyword">self</span> enumerateAttribute:<span class="built_in">NSAttachmentAttributeName</span> inRange:<span class="built_in">NSMakeRange</span>(<span class="number">0</span>, <span class="keyword">self</span><span class="variable">.length</span>)</span><br><span class="line">                    options:<span class="number">0</span></span><br><span class="line">                 usingBlock:^(<span class="keyword">id</span> value, <span class="built_in">NSRange</span> range, <span class="built_in">BOOL</span> *stop) &#123;</span><br><span class="line"></span><br><span class="line">                    <span class="comment">//检查类型是否是自定义NSTextAttachment类</span></span><br><span class="line">                    <span class="keyword">if</span> (value &amp;&amp; [value isKindOfClass:[EmojiTextAttachment class]]) &#123;</span><br><span class="line">                        <span class="comment">//替换</span></span><br><span class="line">                        [plainString replaceCharactersInRange:<span class="built_in">NSMakeRange</span>(range<span class="variable">.location</span> + base, range<span class="variable">.length</span>)</span><br><span class="line">                                                    withString:((EmojiTextAttachment *) value)<span class="variable">.emojiTag</span>];</span><br><span class="line"></span><br><span class="line">                       <span class="comment">//增加偏移量                          </span></span><br><span class="line">                        base += ((EmojiTextAttachment *) value)<span class="variable">.emojiTag</span><span class="variable">.length</span> - <span class="number">1</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> plainString;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
 <h3 id="使用">使用</h3><p>直接调用getPlainString方法即可。</p>
 <h2 id="总结">总结</h2><p>其实本文也是来源于最近的项目需求，在网上一直找不到比较好的解决方案，就自己摸索出来一个。至于复杂的图文混合编辑，当然还是Core Text来的强大（自己也在学习中）~</p>
 <p>如果有更好地办法，一定要告诉我啊~~~</p>
@@ -497,7 +507,14 @@
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
+
           
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
           
 
           
@@ -559,30 +576,33 @@
           </div>
         
 
-        <div class="links-of-author motion-element">
+        
+        <div class="links-of-blogroll motion-element">
           
-            <p class="site-author-name">友情链接</p>
-            
-              <span class="links-of-author-item">
-                <a href="http://chenrudan.github.io" target="_blank">女朋友的博客：陈汝丹</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://suta.name" target="_blank">很赞的设计师：苏塔</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://neoyeelf.github.io" target="_blank">好友的博客：NeOye's blog</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://raytaylorlin.com" target="_blank">好友的博客：Ray Taylor Lin's world</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://bingyan.farbox.com" target="_blank">好友的博客：Howl写东西的地方</a>
-              </span>
-            
+            <div class="links-of-blogroll-title">友情链接</div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://chenrudan.github.io" target="_blank">女朋友的博客：陈汝丹</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://suta.name" target="_blank">很赞的设计师：苏塔</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://neoyeelf.github.io" target="_blank">好友的博客：NeOye's blog</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://raytaylorlin.com" target="_blank">好友的博客：Ray Taylor Lin's world</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://bingyan.farbox.com" target="_blank">好友的博客：Howl写东西的地方</a>
+                </li>
+              
+            </ul>
           
         </div>
 
@@ -847,7 +867,7 @@
     NexT.motion.middleWares.sidebar = function () {
       var $tocContent = $('.post-toc-content');
 
-      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
+      if (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always') {
         if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
           NexT.utils.displaySidebar();
         }
@@ -897,99 +917,6 @@
   
 
   
-
-  
-  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
-  <script>AV.initialize("b2VgzHApAFt8HR9GRSQ5QMDP-gzGzoHsz", "CmMccmM8YWwq0N8wPLe8bID7");</script>
-  <script>
-    function showTime(Counter) {
-      var query = new AV.Query(Counter);
-      var entries = [];
-      var $visitors = $(".leancloud_visitors");
-
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
-      });
-
-      query.containedIn('url', entries);
-      query.find()
-        .done(function (results) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
-          if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
-            return;
-          }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.get('url');
-            var time = item.get('time');
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
-          }
-        })
-        .fail(function (object, error) {
-          console.log("Error: " + error.code + " " + error.message);
-        });
-    }
-
-    function addCount(Counter) {
-      var $visitors = $(".leancloud_visitors");
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
-      var query = new AV.Query(Counter);
-
-      query.equalTo("url", url);
-      query.find({
-        success: function(results) {
-          if (results.length > 0) {
-            var counter = results[0];
-            counter.fetchWhenSave(true);
-            counter.increment("time");
-            counter.save(null, {
-              success: function(counter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(counter.get('time'));
-              },
-              error: function(counter, error) {
-                console.log('Failed to save Visitor num, with error message: ' + error.message);
-              }
-            });
-          } else {
-            var newcounter = new Counter();
-            newcounter.set("title", title);
-            newcounter.set("url", url);
-            newcounter.set("time", 1);
-            newcounter.save(null, {
-              success: function(newcounter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
-              },
-              error: function(newcounter, error) {
-                console.log('Failed to create');
-              }
-            });
-          }
-        },
-        error: function(error) {
-          console.log('Error:' + error.code + " " + error.message);
-        }
-      });
-    }
-
-    $(function() {
-      var Counter = AV.Object.extend("Counter");
-      if ($('.leancloud_visitors').length == 1) {
-        addCount(Counter);
-      } else if ($('.post-title-link').length > 1) {
-        showTime(Counter);
-      }
-    });
-  </script>
-
-
 
 
 </body>

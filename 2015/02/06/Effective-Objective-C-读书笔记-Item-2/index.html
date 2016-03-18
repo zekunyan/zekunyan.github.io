@@ -67,7 +67,7 @@ Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个�
 <meta property="og:site_name" content="土土哥的技术Blog">
 <meta property="og:description" content="前言第二弹来了。
 Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个头文件中减少其它头文件的引入。">
-<meta property="og:updated_time" content="2016-02-22T09:04:39.000Z">
+<meta property="og:updated_time" content="2016-03-18T15:53:09.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Effective-Objective-C-读书笔记-Item-2">
 <meta name="twitter:description" content="前言第二弹来了。
@@ -262,6 +262,25 @@ Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个�
           </span>
 
           
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
 
           
             
@@ -277,15 +296,6 @@ Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个�
           
 
           
-          
-             <span id="/2015/02/06/Effective-Objective-C-读书笔记-Item-2/" class="leancloud_visitors" data-flag-title="Effective-Objective-C-读书笔记-Item-2">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
           
 
         </div>
@@ -304,7 +314,7 @@ Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个�
 <a id="more"></a>
 <h2 id="头文件">头文件</h2><p>Objective-C和C语言、C++很像，都将类的实现与声明分开，用.h后缀名文件表示声明文件，用.m文件实现类。当要用到这个类的时候，只需要引入头文件即可，至于编译器、运行时是如何知道头文件里面的类对应的实现在哪里，在这了不做说明。一下用例子说明，先看看下面的类：</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Wheel.h</span></span><br><span class="line"><span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//车轮类</span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Wheel</span> : <span class="title">NSObject</span></span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *manufacturer;</span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSUInteger</span> radius;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
-<p>第二个类 </p>
+<p>第二个类</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Engine.h</span></span><br><span class="line"><span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//发动机类</span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Engine</span> : <span class="title">NSObject</span></span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *manufacturer;</span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSUInteger</span> power;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
 <p>然后就是车类Car：</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Car.h</span></span><br><span class="line"><span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//汽车类，只有一个轮子，不要奇怪=。=</span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Car</span> : <span class="title">NSObject</span></span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Wheel *wheel;</span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Engine *engine;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
@@ -315,7 +325,7 @@ Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个�
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Car.h</span></span><br><span class="line"><span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//前置声明</span></span><br><span class="line"><span class="class"><span class="keyword">@class</span> <span class="title">Wheel</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">@class</span> <span class="title">Engine</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Car</span> : <span class="title">NSObject</span></span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Wheel *wheel;</span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Engine *engine;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
 <p>@class就是类的前置声明（forward declaration），就是告诉编译器“嗨，不用找了，Wheel类和Engine类是肯定存在的，用到的时候再找”。有了前置声明，我们就不用显式的引入Wheel类和Engine类了。</p>
 <p>当然，在Car类的实现文件.m文件中，我们还是要显式的引入Wheel和Engine类的，因为在这里我们要具体用到这两个类了，当然要知道类的细节。</p>
-<h3 id="为何不要import？">为何不要import？</h3><p>为什么不直接import呢？因为如果直接用import引入Wheel和Engine的声明，那么任何import引入了Car类的文件，也同时会引入Wheel、Engine类的声明，而且最终我们可能并不一定会直接跟Wheel、Engine类打交道，这样不就引入了“没有用”的类了吗？而且这样做很可能造成文件引入成“环”。 </p>
+<h3 id="为何不要import？">为何不要import？</h3><p>为什么不直接import呢？因为如果直接用import引入Wheel和Engine的声明，那么任何import引入了Car类的文件，也同时会引入Wheel、Engine类的声明，而且最终我们可能并不一定会直接跟Wheel、Engine类打交道，这样不就引入了“没有用”的类了吗？而且这样做很可能造成文件引入成“环”。</p>
 <p>虽然import可以避免重复声明造成编译出错，传统的C语言、C++在声明的时候也可以通过如下方式避免重复声明：</p>
 <figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="id">#ifndef</span> _WHEEL_H_</span><br><span class="line"><span class="hexcolor">#def</span>ine _WHEEL_H_</span><br><span class="line"></span><br><span class="line"><span class="comment">//声明内容...</span></span><br><span class="line"></span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
 <p>但是既然Objective-C有@class这种前置声明的办法，为何不用呢。</p>
@@ -462,7 +472,14 @@ Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个�
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
+
           
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
           
 
           
@@ -524,30 +541,33 @@ Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个�
           </div>
         
 
-        <div class="links-of-author motion-element">
+        
+        <div class="links-of-blogroll motion-element">
           
-            <p class="site-author-name">友情链接</p>
-            
-              <span class="links-of-author-item">
-                <a href="http://chenrudan.github.io" target="_blank">女朋友的博客：陈汝丹</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://suta.name" target="_blank">很赞的设计师：苏塔</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://neoyeelf.github.io" target="_blank">好友的博客：NeOye's blog</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://raytaylorlin.com" target="_blank">好友的博客：Ray Taylor Lin's world</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://bingyan.farbox.com" target="_blank">好友的博客：Howl写东西的地方</a>
-              </span>
-            
+            <div class="links-of-blogroll-title">友情链接</div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://chenrudan.github.io" target="_blank">女朋友的博客：陈汝丹</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://suta.name" target="_blank">很赞的设计师：苏塔</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://neoyeelf.github.io" target="_blank">好友的博客：NeOye's blog</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://raytaylorlin.com" target="_blank">好友的博客：Ray Taylor Lin's world</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://bingyan.farbox.com" target="_blank">好友的博客：Howl写东西的地方</a>
+                </li>
+              
+            </ul>
           
         </div>
 
@@ -812,7 +832,7 @@ Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个�
     NexT.motion.middleWares.sidebar = function () {
       var $tocContent = $('.post-toc-content');
 
-      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
+      if (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always') {
         if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
           NexT.utils.displaySidebar();
         }
@@ -862,99 +882,6 @@ Item 2 - Minimize Importing Headers in Headers这一节讲的是尽量在一个�
   
 
   
-
-  
-  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
-  <script>AV.initialize("b2VgzHApAFt8HR9GRSQ5QMDP-gzGzoHsz", "CmMccmM8YWwq0N8wPLe8bID7");</script>
-  <script>
-    function showTime(Counter) {
-      var query = new AV.Query(Counter);
-      var entries = [];
-      var $visitors = $(".leancloud_visitors");
-
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
-      });
-
-      query.containedIn('url', entries);
-      query.find()
-        .done(function (results) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
-          if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
-            return;
-          }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.get('url');
-            var time = item.get('time');
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
-          }
-        })
-        .fail(function (object, error) {
-          console.log("Error: " + error.code + " " + error.message);
-        });
-    }
-
-    function addCount(Counter) {
-      var $visitors = $(".leancloud_visitors");
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
-      var query = new AV.Query(Counter);
-
-      query.equalTo("url", url);
-      query.find({
-        success: function(results) {
-          if (results.length > 0) {
-            var counter = results[0];
-            counter.fetchWhenSave(true);
-            counter.increment("time");
-            counter.save(null, {
-              success: function(counter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(counter.get('time'));
-              },
-              error: function(counter, error) {
-                console.log('Failed to save Visitor num, with error message: ' + error.message);
-              }
-            });
-          } else {
-            var newcounter = new Counter();
-            newcounter.set("title", title);
-            newcounter.set("url", url);
-            newcounter.set("time", 1);
-            newcounter.save(null, {
-              success: function(newcounter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
-              },
-              error: function(newcounter, error) {
-                console.log('Failed to create');
-              }
-            });
-          }
-        },
-        error: function(error) {
-          console.log('Error:' + error.code + " " + error.message);
-        }
-      });
-    }
-
-    $(function() {
-      var Counter = AV.Object.extend("Counter");
-      if ($('.leancloud_visitors').length == 1) {
-        addCount(Counter);
-      } else if ($('.post-title-link').length > 1) {
-        showTime(Counter);
-      }
-    });
-  </script>
-
-
 
 
 </body>

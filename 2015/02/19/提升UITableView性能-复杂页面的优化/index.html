@@ -75,7 +75,7 @@
 这还用问，当然是用UITableView+自定义的UITableViewCell">
 <meta property="og:image" content="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_1.png?imageView2/0/h/300">
 <meta property="og:image" content="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_2.jpg?imageView2/0/h/400">
-<meta property="og:updated_time" content="2016-02-22T11:42:07.000Z">
+<meta property="og:updated_time" content="2016-03-18T15:54:31.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="提升UITableView性能-复杂页面的优化">
 <meta name="twitter:description" content="前言随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。
@@ -273,6 +273,25 @@
           </span>
 
           
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
 
           
             
@@ -288,15 +307,6 @@
           
 
           
-          
-             <span id="/2015/02/19/提升UITableView性能-复杂页面的优化/" class="leancloud_visitors" data-flag-title="提升UITableView性能-复杂页面的优化">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
           
 
         </div>
@@ -337,7 +347,7 @@
 <p><img src="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_2.jpg?imageView2/0/h/400" alt="Cell示意图"></p>
 <p>图中的Subview1、Subview2、Subview3就是不同类型Cell的不同之处，所以我们在“<strong>cellForRowAtIndexPath</strong>”函数中，设置Cell的样式、内容时，就可以通过显示、隐藏这三个子view来显示。</p>
 <p>毕竟，在用户快速滑动中，只是单纯的显示、隐藏subview比实时创建要快得多。</p>
-<h3 id="提前计算并缓存每个Cell的高度">提前计算并缓存每个Cell的高度</h3><p>开发过Android，用过Android的ListView以后，对UITableView需要提前计算Cell的高度很不适应。=。= </p>
+<h3 id="提前计算并缓存每个Cell的高度">提前计算并缓存每个Cell的高度</h3><p>开发过Android，用过Android的ListView以后，对UITableView需要提前计算Cell的高度很不适应。=。=</p>
 <p>首先要确定的是，在iOS中，系统会先调用“<strong>tableView:heightForRowAtIndexPath:</strong>”获取每个Cell即将显示的高度，从而确定整个UITableView的布局。然后才调用“<strong>tableView:cellForRowAtIndexPath</strong>”获取每个Cell，我们也是在这里填充、设置Cell的。</p>
 <p><strong>所以，既然高度总会被用到，那就早早的在获取数据时就计算好吧！</strong></p>
 <h4 id="在Model（Entity）中计算并保存Cell的高度">在Model（Entity）中计算并保存Cell的高度</h4><p>其实，在Model（Entity）中保存UI的参数是很奇怪的=。=（最好放在ViewModel中，就是MVVM模式的），我们的Entity可能就是下面的样子：</p>
@@ -345,7 +355,7 @@
 <p>这样，就不用在“<strong>tableView:heightForRowAtIndexPath:</strong>”中每次都计算了。</p>
 <h3 id="提前创建真正显示的、需要加工的数据并缓存">提前创建真正显示的、需要加工的数据并缓存</h3><p>Cell中显示的内容，很多时候可能并不是直接从服务器拿到的数据，而是经过“加工”的数据。如本文中的“动态”也，每个Cell的标题、正文都有可点击的连接Link、表情图片等富文本内容，而我们一般用NSAttributeString类来显示。</p>
 <p>既然每次都会用到，倒不如在获取到数据的时候就创建、加工好这些内容，等到需要现实的时候，直接拿来用不就行了。</p>
-<p>所以，我们的Entity类可能变成下面这个样子: </p>
+<p>所以，我们的Entity类可能变成下面这个样子:</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">DataEntity</span> : <span class="title">NSObject</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//原始数据</span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *content;</span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *title;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Cell 高度</span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> cellHeight;</span><br><span class="line"></span><br><span class="line"><span class="comment">//真正显示的内容</span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSAttributedString</span> *showTitle;</span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSAttributedString</span> *showContent;</span><br><span class="line"></span><br><span class="line"><span class="comment">//计算高度</span></span><br><span class="line">- (<span class="keyword">void</span>)calculateCellHeight;</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建、加工真正显示的内容</span></span><br><span class="line">- (<span class="keyword">void</span>)setupShowTitileAndContent;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
 <p>这样，在“<strong>tableView:cellForRowAtIndexPath</strong>”中，我们直接拿showTitle、showContent来显示就好，不用再创建。</p>
 <h3 id="缓存View!">缓存View!</h3><p>什么？缓存View？！</p>
@@ -503,7 +513,14 @@
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
+
           
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
           
 
           
@@ -565,30 +582,33 @@
           </div>
         
 
-        <div class="links-of-author motion-element">
+        
+        <div class="links-of-blogroll motion-element">
           
-            <p class="site-author-name">友情链接</p>
-            
-              <span class="links-of-author-item">
-                <a href="http://chenrudan.github.io" target="_blank">女朋友的博客：陈汝丹</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://suta.name" target="_blank">很赞的设计师：苏塔</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://neoyeelf.github.io" target="_blank">好友的博客：NeOye's blog</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://raytaylorlin.com" target="_blank">好友的博客：Ray Taylor Lin's world</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://bingyan.farbox.com" target="_blank">好友的博客：Howl写东西的地方</a>
-              </span>
-            
+            <div class="links-of-blogroll-title">友情链接</div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://chenrudan.github.io" target="_blank">女朋友的博客：陈汝丹</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://suta.name" target="_blank">很赞的设计师：苏塔</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://neoyeelf.github.io" target="_blank">好友的博客：NeOye's blog</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://raytaylorlin.com" target="_blank">好友的博客：Ray Taylor Lin's world</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://bingyan.farbox.com" target="_blank">好友的博客：Howl写东西的地方</a>
+                </li>
+              
+            </ul>
           
         </div>
 
@@ -853,7 +873,7 @@
     NexT.motion.middleWares.sidebar = function () {
       var $tocContent = $('.post-toc-content');
 
-      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
+      if (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always') {
         if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
           NexT.utils.displaySidebar();
         }
@@ -903,99 +923,6 @@
   
 
   
-
-  
-  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
-  <script>AV.initialize("b2VgzHApAFt8HR9GRSQ5QMDP-gzGzoHsz", "CmMccmM8YWwq0N8wPLe8bID7");</script>
-  <script>
-    function showTime(Counter) {
-      var query = new AV.Query(Counter);
-      var entries = [];
-      var $visitors = $(".leancloud_visitors");
-
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
-      });
-
-      query.containedIn('url', entries);
-      query.find()
-        .done(function (results) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
-          if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
-            return;
-          }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.get('url');
-            var time = item.get('time');
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
-          }
-        })
-        .fail(function (object, error) {
-          console.log("Error: " + error.code + " " + error.message);
-        });
-    }
-
-    function addCount(Counter) {
-      var $visitors = $(".leancloud_visitors");
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
-      var query = new AV.Query(Counter);
-
-      query.equalTo("url", url);
-      query.find({
-        success: function(results) {
-          if (results.length > 0) {
-            var counter = results[0];
-            counter.fetchWhenSave(true);
-            counter.increment("time");
-            counter.save(null, {
-              success: function(counter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(counter.get('time'));
-              },
-              error: function(counter, error) {
-                console.log('Failed to save Visitor num, with error message: ' + error.message);
-              }
-            });
-          } else {
-            var newcounter = new Counter();
-            newcounter.set("title", title);
-            newcounter.set("url", url);
-            newcounter.set("time", 1);
-            newcounter.save(null, {
-              success: function(newcounter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
-              },
-              error: function(newcounter, error) {
-                console.log('Failed to create');
-              }
-            });
-          }
-        },
-        error: function(error) {
-          console.log('Error:' + error.code + " " + error.message);
-        }
-      });
-    }
-
-    $(function() {
-      var Counter = AV.Object.extend("Counter");
-      if ($('.leancloud_visitors').length == 1) {
-        addCount(Counter);
-      } else if ($('.post-title-link').length > 1) {
-        showTime(Counter);
-      }
-    });
-  </script>
-
-
 
 
 </body>

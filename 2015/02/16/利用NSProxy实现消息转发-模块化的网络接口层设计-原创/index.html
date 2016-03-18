@@ -74,7 +74,7 @@
 <meta property="og:image" content="http://zorrochen.qiniudn.com/blog_ios_http_proxy_1_1.jpg">
 <meta property="og:image" content="http://zorrochen.qiniudn.com/blog_ios_http_proxy_1_2.jpg">
 <meta property="og:image" content="http://zorrochen.qiniudn.com/blog_ios_http_proxy_1_3.jpg">
-<meta property="og:updated_time" content="2016-02-22T12:07:09.000Z">
+<meta property="og:updated_time" content="2016-03-18T15:54:27.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="利用NSProxy实现消息转发-模块化的网络接口层设计-原创">
 <meta name="twitter:description" content="更新
@@ -271,6 +271,25 @@
           </span>
 
           
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
 
           
             
@@ -286,15 +305,6 @@
           
 
           
-          
-             <span id="/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/" class="leancloud_visitors" data-flag-title="利用NSProxy实现消息转发-模块化的网络接口层设计-原创">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
           
 
         </div>
@@ -363,7 +373,7 @@
 <p>注册方法实现如下：</p>
 <figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">void</span>)registerHttpProtocol:(<span class="type">Protocol</span> *)httpProtocol handler:(id)handler &#123;</span><br><span class="line">    unsigned <span class="type">int</span> numberOfMethods = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    //获取<span class="type">Protocol</span>的所有方法</span><br><span class="line">    struct objc_method_description *methods = protocol_copyMethodDescriptionList(</span><br><span class="line">            httpProtocol, <span class="type">YES</span>, <span class="type">YES</span>, &amp;numberOfMethods);</span><br><span class="line"></span><br><span class="line">    //为<span class="type">Protocol</span>的每个方法注册真正的实现类对象handler</span><br><span class="line">    <span class="keyword">for</span> (unsigned <span class="type">int</span> i = <span class="number">0</span>; i &lt; numberOfMethods; i++) &#123;</span><br><span class="line">        struct objc_method_description <span class="keyword">method</span> = methods[i];</span><br><span class="line">        [_selToHandlerMap setValue:handler forKey:<span class="type">NSStringFromSelector</span>(<span class="keyword">method</span>.name)];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="实现消息的转发">实现消息的转发</h3><p>我们已经可以注册接口、保存映射关系了，剩下的就是重写NSProxy的两个方法，以实现消息的转发，至于这两个方法具体作用是什么，读者可以自行查阅相关资料。如下：</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//HttpProxy.m</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//获取Method signature</span></span><br><span class="line">- (NSMethodSignature *)<span class="string">methodSignatureForSelector:</span>(SEL)sel &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//获取method的字符串表示</span></span><br><span class="line">    NSString *methodsName = NSStringFromSelector(sel);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//查找对应实现类对象</span></span><br><span class="line">    id handler = [_selToHandlerMap <span class="string">valueForKey:</span>methodsName];</span><br><span class="line"></span><br><span class="line">    <span class="comment">//再次检查handler是否可以相应此消息</span></span><br><span class="line">    <span class="keyword">if</span> (handler != nil &amp;&amp; [handler <span class="string">respondsToSelector:</span>sel]) &#123;</span><br><span class="line">        <span class="keyword">return</span> [handler <span class="string">methodSignatureForSelector:</span>sel];</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> [<span class="keyword">super</span> <span class="string">methodSignatureForSelector:</span>sel];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//转发方法消息</span></span><br><span class="line">- (<span class="typename">void</span>)<span class="string">forwardInvocation:</span>(NSInvocation *)invocation &#123;</span><br><span class="line">    NSString *methodsName = NSStringFromSelector(invocation.selector);</span><br><span class="line">    id handler = [_selToHandlerMap <span class="string">valueForKey:</span>methodsName];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (handler != nil &amp;&amp; [handler <span class="string">respondsToSelector:</span>invocation.selector]) &#123;</span><br><span class="line">        [invocation <span class="string">invokeWithTarget:</span>handler];</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        [<span class="keyword">super</span> <span class="string">forwardInvocation:</span>invocation];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//HttpProxy.m</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//获取Method signature</span></span><br><span class="line">- (NSMethodSignature *)<span class="string">methodSignatureForSelector:</span>(SEL)sel &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//获取method的字符串表示</span></span><br><span class="line">    NSString *methodsName = NSStringFromSelector(sel);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//查找对应实现类对象</span></span><br><span class="line">    id handler = [_selToHandlerMap <span class="string">valueForKey:</span>methodsName];</span><br><span class="line"></span><br><span class="line">    <span class="comment">//再次检查handler是否可以相应此消息</span></span><br><span class="line">    <span class="keyword">if</span> (handler != nil &amp;&amp; [handler <span class="string">respondsToSelector:</span>sel]) &#123;</span><br><span class="line">        <span class="keyword">return</span> [handler <span class="string">methodSignatureForSelector:</span>sel];</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> [<span class="keyword">super</span> <span class="string">methodSignatureForSelector:</span>sel];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//转发方法消息</span></span><br><span class="line">- (<span class="typename">void</span>)<span class="string">forwardInvocation:</span>(NSInvocation *)invocation &#123;</span><br><span class="line">    NSString *methodsName = NSStringFromSelector(invocation.selector);</span><br><span class="line">    id handler = [_selToHandlerMap <span class="string">valueForKey:</span>methodsName];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (handler != nil &amp;&amp; [handler <span class="string">respondsToSelector:</span>invocation.selector]) &#123;</span><br><span class="line">        [invocation <span class="string">invokeWithTarget:</span>handler];</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        [<span class="keyword">super</span> <span class="string">forwardInvocation:</span>invocation];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="Example">Example</h2><p>看看如何使用HttpProxy：</p>
 <figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//初始化，注册Protocol对应的实现类对象</span></span><br><span class="line"><span class="attr_selector">[[HttpProxy sharedInstance]</span> <span class="tag">registerHttpProtocol</span>:@<span class="tag">protocol</span>(UserHttpHandler) <span class="tag">handler</span>:<span class="attr_selector">[UserHttpHandlerImp new]</span>];</span><br><span class="line"><span class="attr_selector">[[HttpProxy sharedInstance]</span> <span class="tag">registerHttpProtocol</span>:@<span class="tag">protocol</span>(CommentHttpHandler) <span class="tag">handler</span>:<span class="attr_selector">[CommentHttpHandlerImp new]</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//调用</span></span><br><span class="line"><span class="attr_selector">[[HttpProxy sharedInstance]</span> <span class="tag">getUserWithID</span>:@<span class="tag">100</span>];</span><br><span class="line"><span class="attr_selector">[[HttpProxy sharedInstance]</span> <span class="tag">getCommentsWithDate</span>:<span class="attr_selector">[NSDate new]</span>];</span><br></pre></td></tr></table></figure>
 <h2 id="总结">总结</h2><p>所有的代码及示例都提交到Github了，<a href="https://github.com/zekunyan/HttpProxyExample" target="_blank" rel="external">HttpProxyExample</a>。</p>
@@ -510,7 +520,14 @@
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
+
           
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
           
 
           
@@ -572,30 +589,33 @@
           </div>
         
 
-        <div class="links-of-author motion-element">
+        
+        <div class="links-of-blogroll motion-element">
           
-            <p class="site-author-name">友情链接</p>
-            
-              <span class="links-of-author-item">
-                <a href="http://chenrudan.github.io" target="_blank">女朋友的博客：陈汝丹</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://suta.name" target="_blank">很赞的设计师：苏塔</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://neoyeelf.github.io" target="_blank">好友的博客：NeOye's blog</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://raytaylorlin.com" target="_blank">好友的博客：Ray Taylor Lin's world</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://bingyan.farbox.com" target="_blank">好友的博客：Howl写东西的地方</a>
-              </span>
-            
+            <div class="links-of-blogroll-title">友情链接</div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://chenrudan.github.io" target="_blank">女朋友的博客：陈汝丹</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://suta.name" target="_blank">很赞的设计师：苏塔</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://neoyeelf.github.io" target="_blank">好友的博客：NeOye's blog</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://raytaylorlin.com" target="_blank">好友的博客：Ray Taylor Lin's world</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://bingyan.farbox.com" target="_blank">好友的博客：Howl写东西的地方</a>
+                </li>
+              
+            </ul>
           
         </div>
 
@@ -860,7 +880,7 @@
     NexT.motion.middleWares.sidebar = function () {
       var $tocContent = $('.post-toc-content');
 
-      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
+      if (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always') {
         if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
           NexT.utils.displaySidebar();
         }
@@ -910,99 +930,6 @@
   
 
   
-
-  
-  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
-  <script>AV.initialize("b2VgzHApAFt8HR9GRSQ5QMDP-gzGzoHsz", "CmMccmM8YWwq0N8wPLe8bID7");</script>
-  <script>
-    function showTime(Counter) {
-      var query = new AV.Query(Counter);
-      var entries = [];
-      var $visitors = $(".leancloud_visitors");
-
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
-      });
-
-      query.containedIn('url', entries);
-      query.find()
-        .done(function (results) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
-          if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
-            return;
-          }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.get('url');
-            var time = item.get('time');
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
-          }
-        })
-        .fail(function (object, error) {
-          console.log("Error: " + error.code + " " + error.message);
-        });
-    }
-
-    function addCount(Counter) {
-      var $visitors = $(".leancloud_visitors");
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
-      var query = new AV.Query(Counter);
-
-      query.equalTo("url", url);
-      query.find({
-        success: function(results) {
-          if (results.length > 0) {
-            var counter = results[0];
-            counter.fetchWhenSave(true);
-            counter.increment("time");
-            counter.save(null, {
-              success: function(counter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(counter.get('time'));
-              },
-              error: function(counter, error) {
-                console.log('Failed to save Visitor num, with error message: ' + error.message);
-              }
-            });
-          } else {
-            var newcounter = new Counter();
-            newcounter.set("title", title);
-            newcounter.set("url", url);
-            newcounter.set("time", 1);
-            newcounter.save(null, {
-              success: function(newcounter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
-              },
-              error: function(newcounter, error) {
-                console.log('Failed to create');
-              }
-            });
-          }
-        },
-        error: function(error) {
-          console.log('Error:' + error.code + " " + error.message);
-        }
-      });
-    }
-
-    $(function() {
-      var Counter = AV.Object.extend("Counter");
-      if ($('.leancloud_visitors').length == 1) {
-        addCount(Counter);
-      } else if ($('.post-title-link').length > 1) {
-        showTime(Counter);
-      }
-    });
-  </script>
-
-
 
 
 </body>

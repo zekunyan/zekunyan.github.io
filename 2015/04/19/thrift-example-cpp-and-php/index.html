@@ -84,7 +84,7 @@ PHP客户端发起请求，请求参数是“Request”类型，里面">
 
 PHP客户端发起请求，请求参数是“Request”类型，里面">
 <meta property="og:image" content="http://zorrochen.qiniudn.com/blog_thrift_example_cpp_and_php_1.jpg">
-<meta property="og:updated_time" content="2016-02-22T11:47:16.000Z">
+<meta property="og:updated_time" content="2016-03-18T15:53:54.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RPC框架Thrift例子-PHP调用C++后端程序">
 <meta name="twitter:description" content="更新
@@ -287,6 +287,25 @@ PHP客户端发起请求，请求参数是“Request”类型，里面">
           </span>
 
           
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/服务端/" itemprop="url" rel="index">
+                    <span itemprop="name">服务端</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
 
           
             
@@ -302,15 +321,6 @@ PHP客户端发起请求，请求参数是“Request”类型，里面">
           
 
           
-          
-             <span id="/2015/04/19/thrift-example-cpp-and-php/" class="leancloud_visitors" data-flag-title="RPC框架Thrift例子-PHP调用C++后端程序">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
           
 
         </div>
@@ -372,13 +382,13 @@ PHP客户端发起请求，请求参数是“Request”类型，里面">
 <h3 id="CPP服务端">CPP服务端</h3><p>在生成CPP的代码时，会生成一个“TTGService_server.skeleton.cpp”文件，这个就是我们的CPP服务端的代码“架子”。其中重点如下：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//实现调用的接口</span></span><br><span class="line"><span class="keyword">class</span> TTGServiceHandler : <span class="keyword">virtual</span> <span class="keyword">public</span> TTGServiceIf &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">TTGServiceHandler() &#123;</span><br><span class="line">    <span class="comment">// Your initialization goes here</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//接口实现部分，实现getStudentInfo这个接口的具体细节，如根据request创建、返回对应的response</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getStudentInfo</span><span class="params">(Response&amp; _return, <span class="keyword">const</span> Request&amp; request)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Your implementation goes here</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"getStudentInfo\n"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//...</span></span><br></pre></td></tr></table></figure>
 <p>我们将其改成：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> getStudentInfo(Response &amp;_<span class="keyword">return</span>, <span class="keyword">const</span> Request &amp;request) &#123;</span><br><span class="line">    <span class="comment">// 输出请求参数</span></span><br><span class="line">    cout&lt;&lt;<span class="string">"Request: "</span>&lt;&lt;request<span class="variable">.studentID</span>&lt;&lt;endl;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//填充数据，Response对象不用主动创建，进入函数时已经创建好了</span></span><br><span class="line">    _<span class="keyword">return</span><span class="variable">.studentID</span> = request<span class="variable">.studentID</span>;</span><br><span class="line">    _<span class="keyword">return</span><span class="variable">.name</span> = <span class="string">"tutuge"</span>;</span><br><span class="line">    _<span class="keyword">return</span><span class="variable">.infos</span><span class="variable">.push_back</span>(<span class="string">"Info 1"</span>);</span><br><span class="line">    _<span class="keyword">return</span><span class="variable">.infos</span><span class="variable">.push_back</span>(<span class="string">"Info 2"</span>);</span><br><span class="line">    _<span class="keyword">return</span><span class="variable">.state</span> = ResponseState::StateOk;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> getStudentInfo(Response &amp;_<span class="keyword">return</span>, <span class="keyword">const</span> Request &amp;request) &#123;</span><br><span class="line">    <span class="comment">// 输出请求参数</span></span><br><span class="line">    cout&lt;&lt;<span class="string">"Request: "</span>&lt;&lt;request<span class="variable">.studentID</span>&lt;&lt;endl;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//填充数据，Response对象不用主动创建，进入函数时已经创建好了</span></span><br><span class="line">    _<span class="keyword">return</span><span class="variable">.studentID</span> = request<span class="variable">.studentID</span>;</span><br><span class="line">    _<span class="keyword">return</span><span class="variable">.name</span> = <span class="string">"tutuge"</span>;</span><br><span class="line">    _<span class="keyword">return</span><span class="variable">.infos</span><span class="variable">.push_back</span>(<span class="string">"Info 1"</span>);</span><br><span class="line">    _<span class="keyword">return</span><span class="variable">.infos</span><span class="variable">.push_back</span>(<span class="string">"Info 2"</span>);</span><br><span class="line">    _<span class="keyword">return</span><span class="variable">.state</span> = ResponseState::StateOk;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>至此，CPP服务端的编写就完成了，接下来我们只需要编译、链接，执行最终生成的可执行文件即可。</p>
 <h3 id="PHP客户端">PHP客户端</h3><p>PHP客户端的编写比较简单，直接参考代码吧：<a href="https://github.com/zekunyan/ThriftDemo_PHP_CPP/blob/master/PHP/client.php" target="_blank" rel="external">https://github.com/zekunyan/ThriftDemo_PHP_CPP/blob/master/PHP/client.php</a></p>
 <h2 id="编译、链接，运行">编译、链接，运行</h2><p>用CMake，或者直接编写makefile均可，保证Thrift装好就行了。</p>
 <p>直接运行最后生成的可执行文件TTG.run即可。</p>
 <p>从浏览器，或者直接运行client.php，即可看到如下输出：</p>
-<figure class="highlight zephir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">object(TTG\Response)[<span class="number">9</span>]</span><br><span class="line">  <span class="keyword">public</span> <span class="string">'studentID'</span> =&gt; <span class="keyword">int</span> <span class="number">100</span></span><br><span class="line">  <span class="keyword">public</span> <span class="string">'name'</span> =&gt; string <span class="string">'tutuge'</span> (length=<span class="number">6</span>)</span><br><span class="line">  <span class="keyword">public</span> <span class="string">'infos'</span> =&gt; </span><br><span class="line">    <span class="keyword">array</span> (size=<span class="number">2</span>)</span><br><span class="line">      <span class="number">0</span> =&gt; string <span class="string">'Info 1'</span> (length=<span class="number">6</span>)</span><br><span class="line">      <span class="number">1</span> =&gt; string <span class="string">'Info 2'</span> (length=<span class="number">6</span>)</span><br><span class="line">  <span class="keyword">public</span> <span class="string">'state'</span> =&gt; <span class="keyword">int</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight zephir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">object(TTG\Response)[<span class="number">9</span>]</span><br><span class="line">  <span class="keyword">public</span> <span class="string">'studentID'</span> =&gt; <span class="keyword">int</span> <span class="number">100</span></span><br><span class="line">  <span class="keyword">public</span> <span class="string">'name'</span> =&gt; string <span class="string">'tutuge'</span> (length=<span class="number">6</span>)</span><br><span class="line">  <span class="keyword">public</span> <span class="string">'infos'</span> =&gt;</span><br><span class="line">    <span class="keyword">array</span> (size=<span class="number">2</span>)</span><br><span class="line">      <span class="number">0</span> =&gt; string <span class="string">'Info 1'</span> (length=<span class="number">6</span>)</span><br><span class="line">      <span class="number">1</span> =&gt; string <span class="string">'Info 2'</span> (length=<span class="number">6</span>)</span><br><span class="line">  <span class="keyword">public</span> <span class="string">'state'</span> =&gt; <span class="keyword">int</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
 <h2 id="总结">总结</h2><p>Thrift是个好东西！就是文档好少=。=</p>
 <h2 id="参考">参考</h2><ul>
 <li><a href="http://thrift.apache.org/" target="_blank" rel="external">Apache Thrift</a></li>
@@ -524,7 +534,14 @@ PHP客户端发起请求，请求参数是“Request”类型，里面">
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
+
           
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
           
 
           
@@ -586,30 +603,33 @@ PHP客户端发起请求，请求参数是“Request”类型，里面">
           </div>
         
 
-        <div class="links-of-author motion-element">
+        
+        <div class="links-of-blogroll motion-element">
           
-            <p class="site-author-name">友情链接</p>
-            
-              <span class="links-of-author-item">
-                <a href="http://chenrudan.github.io" target="_blank">女朋友的博客：陈汝丹</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://suta.name" target="_blank">很赞的设计师：苏塔</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://neoyeelf.github.io" target="_blank">好友的博客：NeOye's blog</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://raytaylorlin.com" target="_blank">好友的博客：Ray Taylor Lin's world</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://bingyan.farbox.com" target="_blank">好友的博客：Howl写东西的地方</a>
-              </span>
-            
+            <div class="links-of-blogroll-title">友情链接</div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://chenrudan.github.io" target="_blank">女朋友的博客：陈汝丹</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://suta.name" target="_blank">很赞的设计师：苏塔</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://neoyeelf.github.io" target="_blank">好友的博客：NeOye's blog</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://raytaylorlin.com" target="_blank">好友的博客：Ray Taylor Lin's world</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://bingyan.farbox.com" target="_blank">好友的博客：Howl写东西的地方</a>
+                </li>
+              
+            </ul>
           
         </div>
 
@@ -874,7 +894,7 @@ PHP客户端发起请求，请求参数是“Request”类型，里面">
     NexT.motion.middleWares.sidebar = function () {
       var $tocContent = $('.post-toc-content');
 
-      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
+      if (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always') {
         if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
           NexT.utils.displaySidebar();
         }
@@ -924,99 +944,6 @@ PHP客户端发起请求，请求参数是“Request”类型，里面">
   
 
   
-
-  
-  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
-  <script>AV.initialize("b2VgzHApAFt8HR9GRSQ5QMDP-gzGzoHsz", "CmMccmM8YWwq0N8wPLe8bID7");</script>
-  <script>
-    function showTime(Counter) {
-      var query = new AV.Query(Counter);
-      var entries = [];
-      var $visitors = $(".leancloud_visitors");
-
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
-      });
-
-      query.containedIn('url', entries);
-      query.find()
-        .done(function (results) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
-          if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
-            return;
-          }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.get('url');
-            var time = item.get('time');
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
-          }
-        })
-        .fail(function (object, error) {
-          console.log("Error: " + error.code + " " + error.message);
-        });
-    }
-
-    function addCount(Counter) {
-      var $visitors = $(".leancloud_visitors");
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
-      var query = new AV.Query(Counter);
-
-      query.equalTo("url", url);
-      query.find({
-        success: function(results) {
-          if (results.length > 0) {
-            var counter = results[0];
-            counter.fetchWhenSave(true);
-            counter.increment("time");
-            counter.save(null, {
-              success: function(counter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(counter.get('time'));
-              },
-              error: function(counter, error) {
-                console.log('Failed to save Visitor num, with error message: ' + error.message);
-              }
-            });
-          } else {
-            var newcounter = new Counter();
-            newcounter.set("title", title);
-            newcounter.set("url", url);
-            newcounter.set("time", 1);
-            newcounter.save(null, {
-              success: function(newcounter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
-              },
-              error: function(newcounter, error) {
-                console.log('Failed to create');
-              }
-            });
-          }
-        },
-        error: function(error) {
-          console.log('Error:' + error.code + " " + error.message);
-        }
-      });
-    }
-
-    $(function() {
-      var Counter = AV.Object.extend("Counter");
-      if ($('.leancloud_visitors').length == 1) {
-        addCount(Counter);
-      } else if ($('.post-title-link').length > 1) {
-        showTime(Counter);
-      }
-    });
-  </script>
-
-
 
 
 </body>

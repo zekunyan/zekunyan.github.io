@@ -67,7 +67,7 @@
 <meta property="og:site_name" content="土土哥的技术Blog">
 <meta property="og:description" content="2015-5-28更新下面评论的好友“@Jim”给了种新的思路，就是在清除context的函数里面，用“_bridge_transfer”转换context，把context的内存管理权限重新交给ARC，这样，就不用显式调用“CFRelease”了。如下：
 1234567void cleanStaff(void *context) &amp;#123;    //这里用_bridge_transfer转换">
-<meta property="og:updated_time" content="2016-02-22T09:24:37.000Z">
+<meta property="og:updated_time" content="2016-03-18T15:52:45.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权">
 <meta name="twitter:description" content="2015-5-28更新下面评论的好友“@Jim”给了种新的思路，就是在清除context的函数里面，用“_bridge_transfer”转换context，把context的内存管理权限重新交给ARC，这样，就不用显式调用“CFRelease”了。如下：
@@ -262,6 +262,25 @@
           </span>
 
           
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
 
           
             
@@ -278,15 +297,6 @@
 
           
           
-             <span id="/2015/03/29/bind-data-to-gcd-queue/" class="leancloud_visitors" data-flag-title="为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
 
         </div>
       </header>
@@ -300,7 +310,7 @@
 
       
         <h2 id="2015-5-28更新">2015-5-28更新</h2><p>下面评论的好友“@Jim”给了种新的思路，就是在清除context的函数里面，用“<strong>_bridge_transfer</strong>”转换context，把context的内存管理权限重新交给ARC，这样，就不用显式调用“<strong>CFRelease</strong>”了。如下：</p>
-<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">void</span> cleanStaff(<span class="literal">void</span> *context) &#123;</span><br><span class="line">    <span class="comment">//这里用_bridge_transfer转换，将内存管理权限交还给ARC</span></span><br><span class="line">    <span class="built_in">Data</span> *<span class="built_in">data</span> = (_bridge_transfer <span class="built_in">Data</span> *)(context);</span><br><span class="line">    NSLog(@<span class="string">"In clean, context number: %d"</span>, <span class="built_in">data</span><span class="built_in">.</span>number);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//不用显式释放context的内存！</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">void</span> cleanStaff(<span class="literal">void</span> *context) &#123;</span><br><span class="line">    <span class="comment">//这里用_bridge_transfer转换，将内存管理权限交还给ARC</span></span><br><span class="line">    <span class="built_in">Data</span> *<span class="built_in">data</span> = (_bridge_transfer <span class="built_in">Data</span> *)(context);</span><br><span class="line">    NSLog(@<span class="string">"In clean, context number: %d"</span>, <span class="built_in">data</span><span class="built_in">.</span>number);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//不用显式释放context的内存！</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="前言">前言</h2><p>看过GCD（Grand Central Dispatch）的Apple<a href="https://developer.apple.com/library/prerelease/mac/documentation/Performance/Reference/GCD_libdispatch_Ref/index.html" target="_blank" rel="external">官方文档</a>的朋友一定见过“<strong>dispatch_set_context</strong>”和“<strong>dispatch_get_context</strong>”这两个函数，那么这两个函数该怎么用呢？  </p>
 <p>我们都知道，GCD的接口参数都是“C语言类型“的，那么，我们如何将NSObject类型（Foundation框架）的数据，传入GCD的接口呢？（即：Core Foundation和Foundation对象的转换）</p>
 <h2 id="本文关键字">本文关键字</h2><ul>
@@ -311,12 +321,12 @@
 <a id="more"></a>
 <h2 id="dispatch_set(get)_context">dispatch_set(get)_context</h2><p>先看看这两个函数的原型：</p>
 <figure class="highlight ceylon"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//设置context</span></span><br><span class="line"><span class="keyword">void</span> dispatch<span class="number">_</span>set<span class="number">_</span>context (dispatch<span class="number">_</span><span class="keyword">object</span><span class="number">_</span>t <span class="keyword">object</span>, <span class="keyword">void</span> *context);</span><br><span class="line"><span class="comment">//获取context</span></span><br><span class="line"><span class="keyword">void</span>* dispatch<span class="number">_</span>get<span class="number">_</span>context (dispatch<span class="number">_</span><span class="keyword">object</span><span class="number">_</span>t <span class="keyword">object</span>);</span><br></pre></td></tr></table></figure>
-<p>这里的object一般指的就是通过dispatch_queue_create创建的队列。 </p>
+<p>这里的object一般指的就是通过dispatch_queue_create创建的队列。</p>
 <p>所以，这两个函数分别完成了将context“绑定”到特定GCD队列和从GCD队列获取对应context的任务。</p>
 <h3 id="什么是context">什么是context</h3><p>在上述函数原型中，context是一个“<strong>void类型指针</strong>”，学过C语言的朋友应该都知道，void型指针可以指向任意类型，就是说，context在这里可以是任意类型的指针。</p>
 <p>从这里可以得知，我们可以为队列“<strong>set</strong>”任意类型的数据，并在合适的时候取出来用。</p>
 <h2 id="用malloc创建context并绑定到队列上">用malloc创建context并绑定到队列上</h2><p>参考<a href="https://developer.apple.com/library/ios/documentation/General/Conceptual/ConcurrencyProgrammingGuide/OperationQueues/OperationQueues.html#//apple_ref/doc/uid/TP40008091-CH102-SW13" target="_blank" rel="external">Apple官方的例子</a>，我们先用传统的<strong>malloc</strong>创建context，看看如下简短例子：</p>
-<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//定义context，即一个结构体</span></span><br><span class="line">typedef struct _Data &#123;</span><br><span class="line">    int number;</span><br><span class="line">&#125; <span class="built_in">Data</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//定义队列的finalizer函数，用于释放context内存</span></span><br><span class="line"><span class="literal">void</span> cleanStaff(<span class="literal">void</span> *context) &#123;</span><br><span class="line">    NSLog(@<span class="string">"In clean, context number: %d"</span>, ((<span class="built_in">Data</span> *)context)<span class="subst">-&gt;</span>number);</span><br><span class="line">    <span class="comment">//释放，如果是new出来的对象，就要用delete</span></span><br><span class="line">    free(context);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="literal">void</span>)runTest &#123;</span><br><span class="line">    <span class="comment">//创建队列</span></span><br><span class="line">    dispatch_queue_t <span class="built_in">queue</span> = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//创建Data类型context数据并初始化</span></span><br><span class="line">    <span class="built_in">Data</span> *myData = malloc(sizeof(<span class="built_in">Data</span>));</span><br><span class="line">    myData<span class="subst">-&gt;</span>number = <span class="number">10</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//绑定context</span></span><br><span class="line">    dispatch_set_context(<span class="built_in">queue</span>, myData);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//设置finalizer函数，用于在队列执行完成后释放对应context内存</span></span><br><span class="line">    dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);</span><br><span class="line">    </span><br><span class="line">    dispatch_async(<span class="built_in">queue</span>, ^&#123;</span><br><span class="line">        <span class="comment">//获取队列的context数据</span></span><br><span class="line">        <span class="built_in">Data</span> *<span class="built_in">data</span> = dispatch_get_context(<span class="built_in">queue</span>);</span><br><span class="line">        <span class="comment">//打印</span></span><br><span class="line">        NSLog(@<span class="string">"1: context number: %d"</span>, <span class="built_in">data</span><span class="subst">-&gt;</span>number);</span><br><span class="line">        <span class="comment">//修改context保存的数据</span></span><br><span class="line">        <span class="built_in">data</span><span class="subst">-&gt;</span>number = <span class="number">20</span>;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//定义context，即一个结构体</span></span><br><span class="line">typedef struct _Data &#123;</span><br><span class="line">    int number;</span><br><span class="line">&#125; <span class="built_in">Data</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//定义队列的finalizer函数，用于释放context内存</span></span><br><span class="line"><span class="literal">void</span> cleanStaff(<span class="literal">void</span> *context) &#123;</span><br><span class="line">    NSLog(@<span class="string">"In clean, context number: %d"</span>, ((<span class="built_in">Data</span> *)context)<span class="subst">-&gt;</span>number);</span><br><span class="line">    <span class="comment">//释放，如果是new出来的对象，就要用delete</span></span><br><span class="line">    free(context);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="literal">void</span>)runTest &#123;</span><br><span class="line">    <span class="comment">//创建队列</span></span><br><span class="line">    dispatch_queue_t <span class="built_in">queue</span> = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//创建Data类型context数据并初始化</span></span><br><span class="line">    <span class="built_in">Data</span> *myData = malloc(sizeof(<span class="built_in">Data</span>));</span><br><span class="line">    myData<span class="subst">-&gt;</span>number = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//绑定context</span></span><br><span class="line">    dispatch_set_context(<span class="built_in">queue</span>, myData);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//设置finalizer函数，用于在队列执行完成后释放对应context内存</span></span><br><span class="line">    dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);</span><br><span class="line"></span><br><span class="line">    dispatch_async(<span class="built_in">queue</span>, ^&#123;</span><br><span class="line">        <span class="comment">//获取队列的context数据</span></span><br><span class="line">        <span class="built_in">Data</span> *<span class="built_in">data</span> = dispatch_get_context(<span class="built_in">queue</span>);</span><br><span class="line">        <span class="comment">//打印</span></span><br><span class="line">        NSLog(@<span class="string">"1: context number: %d"</span>, <span class="built_in">data</span><span class="subst">-&gt;</span>number);</span><br><span class="line">        <span class="comment">//修改context保存的数据</span></span><br><span class="line">        <span class="built_in">data</span><span class="subst">-&gt;</span>number = <span class="number">20</span>;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>上面的代码运行后如下：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2015</span>-<span class="number">03</span>-<span class="number">29</span> <span class="number">20</span>:<span class="number">28</span>:<span class="number">16.854</span> GCDTest[<span class="number">37787</span>:<span class="number">1443423</span>] <span class="number">1</span>: context number: <span class="number">10</span></span><br><span class="line"><span class="number">2015</span>-<span class="number">03</span>-<span class="number">29</span> <span class="number">20</span>:<span class="number">28</span>:<span class="number">16.855</span> GCDTest[<span class="number">37787</span>:<span class="number">1443423</span>] In clean, context number: <span class="number">20</span></span><br></pre></td></tr></table></figure>
 <p>看，通过为队列设置context，我们就能为队列绑定自定义的数据，然后在合适的时候取出来用。</p>
@@ -334,7 +344,7 @@
 <h3 id="需要注意的点">需要注意的点</h3><p><strong>__bridge</strong>的转换是没有转移内存管理权的，这点要特别注意。  </p>
 <p>如果在传context对象时，用的是<strong>__bridge</strong>转换，那么context对象的内存管理权还在ARC手里，一旦当前作用域执行完，context就会被释放，而如果队列的任务用了context对象，就会造成“<strong>EXC_BAD_ACCESS</strong>”崩溃！</p>
 <h3 id="正确的用法">正确的用法</h3><p>重写上面的例子，如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//定义队列的finalizer函数，用于释放context内存</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">cleanStaff</span><span class="params">(<span class="keyword">void</span> *context)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//这里用__bridge转换，不改变内存管理权</span></span><br><span class="line">    Data *data = (__bridge Data *)(context);</span><br><span class="line">    NSLog(@<span class="string">"In clean, context number: %d"</span>, data.number);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//释放context的内存！</span></span><br><span class="line">    CFRelease(context);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)testBody &#123;</span><br><span class="line">    <span class="comment">//创建队列</span></span><br><span class="line">    <span class="keyword">dispatch_queue_t</span> <span class="built_in">queue</span> = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//创建Data类型context数据并初始化</span></span><br><span class="line">    Data *myData = [Data <span class="keyword">new</span>];</span><br><span class="line">    myData.number = <span class="number">10</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//绑定context</span></span><br><span class="line">    <span class="comment">//这里用__bridge_retained转换，将context的内存管理权从ARC移除，交由我们自己手动释放！</span></span><br><span class="line">    dispatch_set_context(<span class="built_in">queue</span>, (__bridge_retained <span class="keyword">void</span> *)(myData));</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//设置finalizer函数，用于在队列执行完成后释放对应context内存</span></span><br><span class="line">    dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);</span><br><span class="line">    </span><br><span class="line">    dispatch_async(<span class="built_in">queue</span>, ^&#123;</span><br><span class="line">        <span class="comment">//获取队列的context数据</span></span><br><span class="line">        <span class="comment">//这里用__bridge转换，不改变内存管理权</span></span><br><span class="line">        Data *data = (__bridge Data *)(dispatch_get_context(<span class="built_in">queue</span>));</span><br><span class="line">        <span class="comment">//打印</span></span><br><span class="line">        NSLog(@<span class="string">"1: context number: %d"</span>, data.number);</span><br><span class="line">        <span class="comment">//修改context保存的数据</span></span><br><span class="line">        data.number = <span class="number">20</span>;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//定义队列的finalizer函数，用于释放context内存</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">cleanStaff</span><span class="params">(<span class="keyword">void</span> *context)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//这里用__bridge转换，不改变内存管理权</span></span><br><span class="line">    Data *data = (__bridge Data *)(context);</span><br><span class="line">    NSLog(@<span class="string">"In clean, context number: %d"</span>, data.number);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//释放context的内存！</span></span><br><span class="line">    CFRelease(context);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)testBody &#123;</span><br><span class="line">    <span class="comment">//创建队列</span></span><br><span class="line">    <span class="keyword">dispatch_queue_t</span> <span class="built_in">queue</span> = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//创建Data类型context数据并初始化</span></span><br><span class="line">    Data *myData = [Data <span class="keyword">new</span>];</span><br><span class="line">    myData.number = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//绑定context</span></span><br><span class="line">    <span class="comment">//这里用__bridge_retained转换，将context的内存管理权从ARC移除，交由我们自己手动释放！</span></span><br><span class="line">    dispatch_set_context(<span class="built_in">queue</span>, (__bridge_retained <span class="keyword">void</span> *)(myData));</span><br><span class="line"></span><br><span class="line">    <span class="comment">//设置finalizer函数，用于在队列执行完成后释放对应context内存</span></span><br><span class="line">    dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);</span><br><span class="line"></span><br><span class="line">    dispatch_async(<span class="built_in">queue</span>, ^&#123;</span><br><span class="line">        <span class="comment">//获取队列的context数据</span></span><br><span class="line">        <span class="comment">//这里用__bridge转换，不改变内存管理权</span></span><br><span class="line">        Data *data = (__bridge Data *)(dispatch_get_context(<span class="built_in">queue</span>));</span><br><span class="line">        <span class="comment">//打印</span></span><br><span class="line">        NSLog(@<span class="string">"1: context number: %d"</span>, data.number);</span><br><span class="line">        <span class="comment">//修改context保存的数据</span></span><br><span class="line">        data.number = <span class="number">20</span>;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h4 id="解释">解释</h4><ul>
 <li>在dispatch_set_context的时候用<strong>__bridge_retained</strong>转换，将context的内存管理权从ARC移除，交给我们自己管理。</li>
 <li>在队列任务中，用dispatch_get_context获取context的时候，用<strong>__bridge</strong>转换，维持context的内存管理权不变，防止出了作用域context被释放。</li>
@@ -482,7 +492,14 @@
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
+
           
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
           
 
           
@@ -544,30 +561,33 @@
           </div>
         
 
-        <div class="links-of-author motion-element">
+        
+        <div class="links-of-blogroll motion-element">
           
-            <p class="site-author-name">友情链接</p>
-            
-              <span class="links-of-author-item">
-                <a href="http://chenrudan.github.io" target="_blank">女朋友的博客：陈汝丹</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://suta.name" target="_blank">很赞的设计师：苏塔</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://neoyeelf.github.io" target="_blank">好友的博客：NeOye's blog</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://raytaylorlin.com" target="_blank">好友的博客：Ray Taylor Lin's world</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://bingyan.farbox.com" target="_blank">好友的博客：Howl写东西的地方</a>
-              </span>
-            
+            <div class="links-of-blogroll-title">友情链接</div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://chenrudan.github.io" target="_blank">女朋友的博客：陈汝丹</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://suta.name" target="_blank">很赞的设计师：苏塔</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://neoyeelf.github.io" target="_blank">好友的博客：NeOye's blog</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://raytaylorlin.com" target="_blank">好友的博客：Ray Taylor Lin's world</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://bingyan.farbox.com" target="_blank">好友的博客：Howl写东西的地方</a>
+                </li>
+              
+            </ul>
           
         </div>
 
@@ -832,7 +852,7 @@
     NexT.motion.middleWares.sidebar = function () {
       var $tocContent = $('.post-toc-content');
 
-      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
+      if (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always') {
         if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
           NexT.utils.displaySidebar();
         }
@@ -882,99 +902,6 @@
   
 
   
-
-  
-  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
-  <script>AV.initialize("b2VgzHApAFt8HR9GRSQ5QMDP-gzGzoHsz", "CmMccmM8YWwq0N8wPLe8bID7");</script>
-  <script>
-    function showTime(Counter) {
-      var query = new AV.Query(Counter);
-      var entries = [];
-      var $visitors = $(".leancloud_visitors");
-
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
-      });
-
-      query.containedIn('url', entries);
-      query.find()
-        .done(function (results) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
-          if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
-            return;
-          }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.get('url');
-            var time = item.get('time');
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
-          }
-        })
-        .fail(function (object, error) {
-          console.log("Error: " + error.code + " " + error.message);
-        });
-    }
-
-    function addCount(Counter) {
-      var $visitors = $(".leancloud_visitors");
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
-      var query = new AV.Query(Counter);
-
-      query.equalTo("url", url);
-      query.find({
-        success: function(results) {
-          if (results.length > 0) {
-            var counter = results[0];
-            counter.fetchWhenSave(true);
-            counter.increment("time");
-            counter.save(null, {
-              success: function(counter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(counter.get('time'));
-              },
-              error: function(counter, error) {
-                console.log('Failed to save Visitor num, with error message: ' + error.message);
-              }
-            });
-          } else {
-            var newcounter = new Counter();
-            newcounter.set("title", title);
-            newcounter.set("url", url);
-            newcounter.set("time", 1);
-            newcounter.save(null, {
-              success: function(newcounter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
-              },
-              error: function(newcounter, error) {
-                console.log('Failed to create');
-              }
-            });
-          }
-        },
-        error: function(error) {
-          console.log('Error:' + error.code + " " + error.message);
-        }
-      });
-    }
-
-    $(function() {
-      var Counter = AV.Object.extend("Counter");
-      if ($('.leancloud_visitors').length == 1) {
-        addCount(Counter);
-      } else if ($('.post-title-link').length > 1) {
-        showTime(Counter);
-      }
-    });
-  </script>
-
-
 
 
 </body>

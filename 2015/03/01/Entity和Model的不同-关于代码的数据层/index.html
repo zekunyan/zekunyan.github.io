@@ -69,7 +69,7 @@
 <meta property="og:description" content="前言经常都能在一些博客、文档中看到“Model”、“Entity”的字样。如MVC模式中的“M就是Model”，“MVVM对应的Model-View-ViewModel”，数据库抽象层里面的“Model“等。  
 它们的区别到底是什么？  
 其实没有真正官方的对Entity和Model的定义，在此我只是说说我自己的理解。">
-<meta property="og:updated_time" content="2016-02-22T09:11:18.000Z">
+<meta property="og:updated_time" content="2016-03-18T15:53:20.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Entity和Model的不同-关于代码的数据层">
 <meta name="twitter:description" content="前言经常都能在一些博客、文档中看到“Model”、“Entity”的字样。如MVC模式中的“M就是Model”，“MVVM对应的Model-View-ViewModel”，数据库抽象层里面的“Model“等。  
@@ -265,6 +265,25 @@
           </span>
 
           
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
 
           
             
@@ -280,15 +299,6 @@
           
 
           
-          
-             <span id="/2015/03/01/Entity和Model的不同-关于代码的数据层/" class="leancloud_visitors" data-flag-title="Entity和Model的不同-关于代码的数据层">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
           
 
         </div>
@@ -309,7 +319,7 @@
 <h2 id="什么是Entity">什么是<strong>Entity</strong></h2><p>先看看这个单词是什么意思：<br><a href="http://www.iciba.com/entity" target="_blank" rel="external">爱词霸</a>：n: 实体，实际存在物，本质。</p>
 <p>在代码中，我们经常会遇到一些具有“<strong>现实</strong>”意义的“<strong>个体</strong>”，如一个用户，一首歌曲，一条评论等等，它们都是在逻辑上完整的一个整体，都具有相似的结构，但是却因为“<strong>属性</strong>”的不同而不同。</p>
 <p>看看一个典型的Entity类：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Java </span></span><br><span class="line"></span><br><span class="line"><span class="comment">//Entity类定义</span></span><br><span class="line"><span class="keyword">class</span> UserEntity &#123;</span><br><span class="line">    <span class="keyword">public</span> String name;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span> age;</span><br><span class="line">    <span class="keyword">public</span> String address;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Entity对象</span></span><br><span class="line">UserEntity john = <span class="keyword">new</span> UserEntity();</span><br><span class="line">john.name = <span class="string">"John"</span>;</span><br><span class="line">john.age = <span class="number">20</span>;</span><br><span class="line">john.address = <span class="string">"China Hubei Wuhan"</span>;</span><br><span class="line"></span><br><span class="line">UserEntity tom = <span class="keyword">new</span> UserEntity();</span><br><span class="line">tom.name = <span class="string">"Tom"</span>;</span><br><span class="line">tom.age = <span class="number">30</span>;</span><br><span class="line">tom.address = <span class="string">"USA Californian"</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Java</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//Entity类定义</span></span><br><span class="line"><span class="keyword">class</span> UserEntity &#123;</span><br><span class="line">    <span class="keyword">public</span> String name;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span> age;</span><br><span class="line">    <span class="keyword">public</span> String address;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Entity对象</span></span><br><span class="line">UserEntity john = <span class="keyword">new</span> UserEntity();</span><br><span class="line">john.name = <span class="string">"John"</span>;</span><br><span class="line">john.age = <span class="number">20</span>;</span><br><span class="line">john.address = <span class="string">"China Hubei Wuhan"</span>;</span><br><span class="line"></span><br><span class="line">UserEntity tom = <span class="keyword">new</span> UserEntity();</span><br><span class="line">tom.name = <span class="string">"Tom"</span>;</span><br><span class="line">tom.age = <span class="number">30</span>;</span><br><span class="line">tom.address = <span class="string">"USA Californian"</span>;</span><br></pre></td></tr></table></figure>
 <p>所以：</p>
 <ul>
 <li>Entity类，或者说<strong>实体类</strong>，代表了一种“个体”，类中的属性（就是各种变量）则是这个“个体”的具体体现。如UserEntity类，里面有name、age属性，就是说Entity类“<strong>描述</strong>”了某种个体。</li>
@@ -468,7 +478,14 @@
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
+
           
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
           
 
           
@@ -530,30 +547,33 @@
           </div>
         
 
-        <div class="links-of-author motion-element">
+        
+        <div class="links-of-blogroll motion-element">
           
-            <p class="site-author-name">友情链接</p>
-            
-              <span class="links-of-author-item">
-                <a href="http://chenrudan.github.io" target="_blank">女朋友的博客：陈汝丹</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://suta.name" target="_blank">很赞的设计师：苏塔</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://neoyeelf.github.io" target="_blank">好友的博客：NeOye's blog</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://raytaylorlin.com" target="_blank">好友的博客：Ray Taylor Lin's world</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://bingyan.farbox.com" target="_blank">好友的博客：Howl写东西的地方</a>
-              </span>
-            
+            <div class="links-of-blogroll-title">友情链接</div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://chenrudan.github.io" target="_blank">女朋友的博客：陈汝丹</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://suta.name" target="_blank">很赞的设计师：苏塔</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://neoyeelf.github.io" target="_blank">好友的博客：NeOye's blog</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://raytaylorlin.com" target="_blank">好友的博客：Ray Taylor Lin's world</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://bingyan.farbox.com" target="_blank">好友的博客：Howl写东西的地方</a>
+                </li>
+              
+            </ul>
           
         </div>
 
@@ -818,7 +838,7 @@
     NexT.motion.middleWares.sidebar = function () {
       var $tocContent = $('.post-toc-content');
 
-      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
+      if (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always') {
         if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
           NexT.utils.displaySidebar();
         }
@@ -868,99 +888,6 @@
   
 
   
-
-  
-  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
-  <script>AV.initialize("b2VgzHApAFt8HR9GRSQ5QMDP-gzGzoHsz", "CmMccmM8YWwq0N8wPLe8bID7");</script>
-  <script>
-    function showTime(Counter) {
-      var query = new AV.Query(Counter);
-      var entries = [];
-      var $visitors = $(".leancloud_visitors");
-
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
-      });
-
-      query.containedIn('url', entries);
-      query.find()
-        .done(function (results) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
-          if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
-            return;
-          }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.get('url');
-            var time = item.get('time');
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
-          }
-        })
-        .fail(function (object, error) {
-          console.log("Error: " + error.code + " " + error.message);
-        });
-    }
-
-    function addCount(Counter) {
-      var $visitors = $(".leancloud_visitors");
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
-      var query = new AV.Query(Counter);
-
-      query.equalTo("url", url);
-      query.find({
-        success: function(results) {
-          if (results.length > 0) {
-            var counter = results[0];
-            counter.fetchWhenSave(true);
-            counter.increment("time");
-            counter.save(null, {
-              success: function(counter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(counter.get('time'));
-              },
-              error: function(counter, error) {
-                console.log('Failed to save Visitor num, with error message: ' + error.message);
-              }
-            });
-          } else {
-            var newcounter = new Counter();
-            newcounter.set("title", title);
-            newcounter.set("url", url);
-            newcounter.set("time", 1);
-            newcounter.save(null, {
-              success: function(newcounter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
-              },
-              error: function(newcounter, error) {
-                console.log('Failed to create');
-              }
-            });
-          }
-        },
-        error: function(error) {
-          console.log('Error:' + error.code + " " + error.message);
-        }
-      });
-    }
-
-    $(function() {
-      var Counter = AV.Object.extend("Counter");
-      if ($('.leancloud_visitors').length == 1) {
-        addCount(Counter);
-      } else if ($('.post-title-link').length > 1) {
-        showTime(Counter);
-      }
-    });
-  </script>
-
-
 
 
 </body>

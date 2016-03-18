@@ -71,7 +71,7 @@
 <meta property="og:image" content="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_2.png">
 <meta property="og:image" content="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_3.png">
 <meta property="og:image" content="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_4.png">
-<meta property="og:updated_time" content="2016-02-22T11:31:02.000Z">
+<meta property="og:updated_time" content="2016-03-18T15:52:25.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="有趣的Autolayout示例-Masonry实现">
 <meta name="twitter:description" content="更新2015-12-23: 感谢XVXVXXX的PR，更新了Case22015-12-15: 第三篇：有趣的Autolayout示例3-Masonry实现2015-11-27: 感谢“谢小雷”指出打字错误~2015-9-10: 第二篇: 有趣的Autolayout示例2-Masonry实现2015-9-1: 感谢“王振宇C艹”指出打字错误，已经修改了哈~  
@@ -266,6 +266,25 @@
           </span>
 
           
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
 
           
             
@@ -281,15 +300,6 @@
           
 
           
-          
-             <span id="/2015/05/23/autolayout-example-with-masonry/" class="leancloud_visitors" data-flag-title="有趣的Autolayout示例-Masonry实现">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
           
 
         </div>
@@ -353,10 +363,10 @@
 <li>最右边的imageView还要单独设置跟容器View的右边约束，是为了不用设置容器View的width，保证容器View是刚好包含内部的View的，这样整体才是居中的。</li>
 </ol>
 <h3 id="关键代码-1">关键代码</h3><p>先看看最外层容器View的代码：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//containerView 就是 容器View</span></span><br><span class="line">    </span><br><span class="line">[_containerView mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) &#123;</span><br><span class="line">    <span class="comment">//只设置高度，宽度由子View决定</span></span><br><span class="line">    <span class="built_in">make</span>.height.equalTo(@(IMAGE_SIZE));</span><br><span class="line">    <span class="comment">//水平居中</span></span><br><span class="line">    <span class="built_in">make</span>.centerX.equalTo(self.view.mas_centerX);</span><br><span class="line">    <span class="comment">//距离父View顶部200点</span></span><br><span class="line">    <span class="built_in">make</span>.top.equalTo(self.view.mas_top).offset(<span class="number">200</span>);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//containerView 就是 容器View</span></span><br><span class="line"></span><br><span class="line">[_containerView mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) &#123;</span><br><span class="line">    <span class="comment">//只设置高度，宽度由子View决定</span></span><br><span class="line">    <span class="built_in">make</span>.height.equalTo(@(IMAGE_SIZE));</span><br><span class="line">    <span class="comment">//水平居中</span></span><br><span class="line">    <span class="built_in">make</span>.centerX.equalTo(self.view.mas_centerX);</span><br><span class="line">    <span class="comment">//距离父View顶部200点</span></span><br><span class="line">    <span class="built_in">make</span>.top.equalTo(self.view.mas_top).offset(<span class="number">200</span>);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
 <p>循环创建每个内部的imageView</p>
 <figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//循环创建、添加imageView</span></span><br><span class="line"><span class="keyword">for</span> (NSUInteger i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">    UIImageView *imageView = [[UIImageView alloc] <span class="string">initWithImage:</span>[UIImage <span class="string">imageNamed:</span>_imageNames[i]]];</span><br><span class="line">    [_imageViews <span class="string">addObject:</span>imageView];</span><br><span class="line">    [_containerView <span class="string">addSubview:</span>imageView];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>最后是循环对imageView加上约束： 感谢<a href="https://github.com/XVXVXXX" target="_blank" rel="external">XVXVXXX</a>的PR:-D<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//设定大小</span></span><br><span class="line"><span class="built_in">CGSize</span> imageViewSize = <span class="built_in">CGSizeMake</span>(IMAGE_SIZE, IMAGE_SIZE);</span><br><span class="line"></span><br><span class="line"><span class="comment">//分别设置每个imageView的宽高、左边、垂直中心约束，注意约束的对象</span></span><br><span class="line"><span class="comment">//每个View的左边约束和左边的View的右边相等=。=，有点绕口...</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 保存循环中的临时结果</span></span><br><span class="line">__block <span class="built_in">UIView</span> *lastView = <span class="literal">nil</span>;</span><br><span class="line">__block MASConstraint *widthConstraint = <span class="literal">nil</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSUInteger</span> arrayCount = _imageViews<span class="variable">.count</span>;</span><br><span class="line">[_imageViews enumerateObjectsUsingBlock:^(<span class="built_in">UIView</span> *view, <span class="built_in">NSUInteger</span> idx, <span class="built_in">BOOL</span> *stop) &#123;</span><br><span class="line">    [view mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">        <span class="comment">//宽高固定</span></span><br><span class="line">        widthConstraint = make<span class="variable">.width</span><span class="variable">.equalTo</span>(@(imageViewSize<span class="variable">.width</span>));</span><br><span class="line">        make<span class="variable">.height</span><span class="variable">.equalTo</span>(@(imageViewSize<span class="variable">.height</span>));</span><br><span class="line">        <span class="comment">//左边约束</span></span><br><span class="line">        make<span class="variable">.left</span><span class="variable">.equalTo</span>(lastView ? lastView<span class="variable">.mas_right</span> : view<span class="variable">.superview</span><span class="variable">.mas_left</span>);</span><br><span class="line">        <span class="comment">//垂直中心对齐</span></span><br><span class="line">        make<span class="variable">.centerY</span><span class="variable">.equalTo</span>(view<span class="variable">.superview</span><span class="variable">.mas_centerY</span>);</span><br><span class="line">        <span class="comment">//设置最右边的imageView的右边与父view的最右对齐</span></span><br><span class="line">        <span class="keyword">if</span> (idx == arrayCount - <span class="number">1</span>) &#123;</span><br><span class="line">            make<span class="variable">.right</span><span class="variable">.equalTo</span>(view<span class="variable">.superview</span><span class="variable">.mas_right</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        [_widthConstraints addObject:widthConstraint];</span><br><span class="line">        lastView = view;</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure></p>
+<p>最后是循环对imageView加上约束： 感谢<a href="https://github.com/XVXVXXX" target="_blank" rel="external">XVXVXXX</a>的PR:-D<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//设定大小</span></span><br><span class="line"><span class="built_in">CGSize</span> imageViewSize = <span class="built_in">CGSizeMake</span>(IMAGE_SIZE, IMAGE_SIZE);</span><br><span class="line"></span><br><span class="line"><span class="comment">//分别设置每个imageView的宽高、左边、垂直中心约束，注意约束的对象</span></span><br><span class="line"><span class="comment">//每个View的左边约束和左边的View的右边相等=。=，有点绕口...</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 保存循环中的临时结果</span></span><br><span class="line">__block <span class="built_in">UIView</span> *lastView = <span class="literal">nil</span>;</span><br><span class="line">__block MASConstraint *widthConstraint = <span class="literal">nil</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSUInteger</span> arrayCount = _imageViews<span class="variable">.count</span>;</span><br><span class="line">[_imageViews enumerateObjectsUsingBlock:^(<span class="built_in">UIView</span> *view, <span class="built_in">NSUInteger</span> idx, <span class="built_in">BOOL</span> *stop) &#123;</span><br><span class="line">    [view mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">        <span class="comment">//宽高固定</span></span><br><span class="line">        widthConstraint = make<span class="variable">.width</span><span class="variable">.equalTo</span>(@(imageViewSize<span class="variable">.width</span>));</span><br><span class="line">        make<span class="variable">.height</span><span class="variable">.equalTo</span>(@(imageViewSize<span class="variable">.height</span>));</span><br><span class="line">        <span class="comment">//左边约束</span></span><br><span class="line">        make<span class="variable">.left</span><span class="variable">.equalTo</span>(lastView ? lastView<span class="variable">.mas_right</span> : view<span class="variable">.superview</span><span class="variable">.mas_left</span>);</span><br><span class="line">        <span class="comment">//垂直中心对齐</span></span><br><span class="line">        make<span class="variable">.centerY</span><span class="variable">.equalTo</span>(view<span class="variable">.superview</span><span class="variable">.mas_centerY</span>);</span><br><span class="line">        <span class="comment">//设置最右边的imageView的右边与父view的最右对齐</span></span><br><span class="line">        <span class="keyword">if</span> (idx == arrayCount - <span class="number">1</span>) &#123;</span><br><span class="line">            make<span class="variable">.right</span><span class="variable">.equalTo</span>(view<span class="variable">.superview</span><span class="variable">.mas_right</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        [_widthConstraints addObject:widthConstraint];</span><br><span class="line">        lastView = view;</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure></p>
 <p>控制ImageView显示、隐藏的时候，直接让其宽度等于0就行：<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">IBAction</span>)showOrHideImage:(<span class="built_in">UISwitch</span> *)sender &#123;</span><br><span class="line">    <span class="built_in">NSUInteger</span> index = (<span class="built_in">NSUInteger</span>) sender<span class="variable">.tag</span>;</span><br><span class="line">    MASConstraint *width = _widthConstraints[index];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (sender<span class="variable">.on</span>) &#123;</span><br><span class="line">        width<span class="variable">.equalTo</span>(@(IMAGE_SIZE));</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        width<span class="variable">.equalTo</span>(@<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h3 id="小节-1">小节</h3><p>有时候用个“容器View”管理内部的View，往往会起到事半功倍的效果。而且在组织约束的时候，尽量的将约束统一起来，这样可以用一个函数去设置，减少代码量。</p>
 <h2 id="Case_3:_子View的宽度始终是父级View的一半（或者任意百分比）">Case 3: 子View的宽度始终是父级View的一半（或者任意百分比）</h2><p>其实这个很简单=。= 再看看这个公式：</p>
@@ -364,7 +374,7 @@
 <p>这个是Autolayout里面一个约束的不同属性的基本组合关系，替换成宽度的话，就是下面这样：</p>
 <figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">子<span class="keyword">View</span>的宽度 = 父级<span class="keyword">View</span>宽度 * 系数 + 常数；</span><br></pre></td></tr></table></figure>
 <p>在Masonry里面，其实有个函数“<strong>multipliedBy</strong>”，就是用来设置multipler属性的（跟原本的NSLayoutConstraint的对应）。</p>
-<h3 id="关键代码-2">关键代码</h3><p>如下：<br><figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="collection">[subView mas_makeConstraints:^<span class="list">(<span class="keyword">MASConstraintMaker</span> *make)</span> <span class="collection">&#123;</span><br><span class="line">    //上下左贴边</span><br><span class="line">    make.left.equalTo<span class="list">(<span class="keyword">_containerView.mas_left</span>)</span><span class="comment">;</span></span><br><span class="line">    make.top.equalTo<span class="list">(<span class="keyword">_containerView.mas_top</span>)</span><span class="comment">;</span></span><br><span class="line">    make.bottom.equalTo<span class="list">(<span class="keyword">_containerView.mas_bottom</span>)</span><span class="comment">;</span></span><br><span class="line">    </span><br><span class="line">    //宽度为父view的宽度的一半</span><br><span class="line">    make.width.equalTo<span class="list">(<span class="keyword">_containerView.mas_width</span>)</span>.multipliedBy<span class="list">(<span class="number">0.5</span>)</span><span class="comment">;</span></span><br><span class="line">&#125;</span>]</span><span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="关键代码-2">关键代码</h3><p>如下：<br><figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="collection">[subView mas_makeConstraints:^<span class="list">(<span class="keyword">MASConstraintMaker</span> *make)</span> <span class="collection">&#123;</span><br><span class="line">    //上下左贴边</span><br><span class="line">    make.left.equalTo<span class="list">(<span class="keyword">_containerView.mas_left</span>)</span><span class="comment">;</span></span><br><span class="line">    make.top.equalTo<span class="list">(<span class="keyword">_containerView.mas_top</span>)</span><span class="comment">;</span></span><br><span class="line">    make.bottom.equalTo<span class="list">(<span class="keyword">_containerView.mas_bottom</span>)</span><span class="comment">;</span></span><br><span class="line"></span><br><span class="line">    //宽度为父view的宽度的一半</span><br><span class="line">    make.width.equalTo<span class="list">(<span class="keyword">_containerView.mas_width</span>)</span>.multipliedBy<span class="list">(<span class="number">0.5</span>)</span><span class="comment">;</span></span><br><span class="line">&#125;</span>]</span><span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
 <p>接着，只要控制父级View的宽度，子View的宽度就会随着变化了。</p>
 <h3 id="小节-2">小节</h3><p>multipliedBy在Masonry的Github主页里面没有=。=<br>所以要养成读头文件的习惯~</p>
 <h2 id="总结">总结</h2><p>有关Autolayout的东西还有好多没有写，什么动画啊、动态修改约束之类的，本文也算是个引子吧，任重而道远~  </p>
@@ -514,7 +524,14 @@
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
+
           
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
           
 
           
@@ -576,30 +593,33 @@
           </div>
         
 
-        <div class="links-of-author motion-element">
+        
+        <div class="links-of-blogroll motion-element">
           
-            <p class="site-author-name">友情链接</p>
-            
-              <span class="links-of-author-item">
-                <a href="http://chenrudan.github.io" target="_blank">女朋友的博客：陈汝丹</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://suta.name" target="_blank">很赞的设计师：苏塔</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://neoyeelf.github.io" target="_blank">好友的博客：NeOye's blog</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://raytaylorlin.com" target="_blank">好友的博客：Ray Taylor Lin's world</a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://bingyan.farbox.com" target="_blank">好友的博客：Howl写东西的地方</a>
-              </span>
-            
+            <div class="links-of-blogroll-title">友情链接</div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://chenrudan.github.io" target="_blank">女朋友的博客：陈汝丹</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://suta.name" target="_blank">很赞的设计师：苏塔</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://neoyeelf.github.io" target="_blank">好友的博客：NeOye's blog</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://raytaylorlin.com" target="_blank">好友的博客：Ray Taylor Lin's world</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://bingyan.farbox.com" target="_blank">好友的博客：Howl写东西的地方</a>
+                </li>
+              
+            </ul>
           
         </div>
 
@@ -864,7 +884,7 @@
     NexT.motion.middleWares.sidebar = function () {
       var $tocContent = $('.post-toc-content');
 
-      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
+      if (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always') {
         if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
           NexT.utils.displaySidebar();
         }
@@ -914,99 +934,6 @@
   
 
   
-
-  
-  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
-  <script>AV.initialize("b2VgzHApAFt8HR9GRSQ5QMDP-gzGzoHsz", "CmMccmM8YWwq0N8wPLe8bID7");</script>
-  <script>
-    function showTime(Counter) {
-      var query = new AV.Query(Counter);
-      var entries = [];
-      var $visitors = $(".leancloud_visitors");
-
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
-      });
-
-      query.containedIn('url', entries);
-      query.find()
-        .done(function (results) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
-          if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
-            return;
-          }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.get('url');
-            var time = item.get('time');
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
-          }
-        })
-        .fail(function (object, error) {
-          console.log("Error: " + error.code + " " + error.message);
-        });
-    }
-
-    function addCount(Counter) {
-      var $visitors = $(".leancloud_visitors");
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
-      var query = new AV.Query(Counter);
-
-      query.equalTo("url", url);
-      query.find({
-        success: function(results) {
-          if (results.length > 0) {
-            var counter = results[0];
-            counter.fetchWhenSave(true);
-            counter.increment("time");
-            counter.save(null, {
-              success: function(counter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(counter.get('time'));
-              },
-              error: function(counter, error) {
-                console.log('Failed to save Visitor num, with error message: ' + error.message);
-              }
-            });
-          } else {
-            var newcounter = new Counter();
-            newcounter.set("title", title);
-            newcounter.set("url", url);
-            newcounter.set("time", 1);
-            newcounter.save(null, {
-              success: function(newcounter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
-              },
-              error: function(newcounter, error) {
-                console.log('Failed to create');
-              }
-            });
-          }
-        },
-        error: function(error) {
-          console.log('Error:' + error.code + " " + error.message);
-        }
-      });
-    }
-
-    $(function() {
-      var Counter = AV.Object.extend("Counter");
-      if ($('.leancloud_visitors').length == 1) {
-        addCount(Counter);
-      } else if ($('.post-title-link').length > 1) {
-        showTime(Counter);
-      }
-    });
-  </script>
-
-
 
 
 </body>
