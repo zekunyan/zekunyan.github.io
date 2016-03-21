@@ -1,899 +1,466 @@
-<!doctype html>
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion">
+<!DOCTYPE HTML>
+<html>
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
+    
 
+    <title>Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5 | iOS，Android程序猿，喜欢Mac、Linux、各种开源技术，各种语言</title>
+    <meta name="author" content="燕泽堃">
+    
+    <meta name="description" content="程序猿">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta property="og:title" content="Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5"/>
+    <meta property="og:site_name" content="土土哥的技术Blog"/>
 
+    
+    <meta property="og:image" content="undefined"/>
+    
 
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="土土哥的技术Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
 
-
-
-
-
-
-
-
-
-
-  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
-
-
-
-
-  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-
-
-
-<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="iOS,原创," />
-
-
-
-
-
-  <link rel="alternate" href="/atom.xml" title="土土哥的技术Blog" type="application/atom+xml" />
-
-
-
-
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
-
-
-
-
-
-
-<meta name="description" content="前言Enum，也就是枚举，从C语言开始就有了，C++、Java、Objective-C、Swift这些语言，当然都有对应的枚举类型，功能可能有多有少，但是最核心的还是一个—规范的定义代码中的状态、选项等“常量”。
-Item 5 - Use Enumerations for States, Options, and Status Codes本节的内容就是如何正确的使用枚举。
-状态与选项的区别（sta">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5">
-<meta property="og:url" content="http://tutuge.me/2015/03/21/effective-objective-c-5-enum/index.html">
-<meta property="og:site_name" content="土土哥的技术Blog">
-<meta property="og:description" content="前言Enum，也就是枚举，从C语言开始就有了，C++、Java、Objective-C、Swift这些语言，当然都有对应的枚举类型，功能可能有多有少，但是最核心的还是一个—规范的定义代码中的状态、选项等“常量”。
-Item 5 - Use Enumerations for States, Options, and Status Codes本节的内容就是如何正确的使用枚举。
-状态与选项的区别（sta">
-<meta property="og:image" content="http://zorrochen.qiniudn.com/blog_effective_objective_c_5_enum_2.jpg">
-<meta property="og:updated_time" content="2016-03-18T15:53:02.000Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5">
-<meta name="twitter:description" content="前言Enum，也就是枚举，从C语言开始就有了，C++、Java、Objective-C、Swift这些语言，当然都有对应的枚举类型，功能可能有多有少，但是最核心的还是一个—规范的定义代码中的状态、选项等“常量”。
-Item 5 - Use Enumerations for States, Options, and Status Codes本节的内容就是如何正确的使用枚举。
-状态与选项的区别（sta">
-
-
-
-<script type="text/javascript" id="hexo.configuration">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    scheme: 'Pisces',
-    sidebar: {"position":"left","display":"post"},
-    fancybox: true,
-    motion: true,
-    duoshuo: {
-      userId: 9509393,
-      author: '土土哥'
-    }
-  };
-</script>
-
-  <title> Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5 | 土土哥的技术Blog </title>
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
-  
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
 
-
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-68058110-1', 'auto');
-  ga('send', 'pageview');
-</script>
-
-
-  <script type="text/javascript">
-    var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "//hm.baidu.com/hm.js?c674423748672d339369a33103ded1e2";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
-  </script>
-
-
-
-  <script type="text/javascript">
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "//tajs.qq.com/stats?sId=55079830";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
-  </script>
-
-
-
-
-  <div style="display: none;">
-    <script src="http://s6.cnzz.com/stat.php?id=1253507635&web_id=1253507635" type="text/javascript"></script>
-  </div>
-
-
-
-
-
-  
-  
-    
-  
-
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-meta ">
-  
-
-  <div class="custom-logo-site-title">
-    <a href="/"  class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <span class="site-title">土土哥的技术Blog</span>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-  </div>
-  <p class="site-subtitle">iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言</p>
-</div>
-
-<div class="site-nav-toggle">
-  <button>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-  </button>
-</div>
-
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
-        
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
-            
-            首页
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-about">
-          <a href="/about" rel="section">
-            
-              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
-            
-            关于
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-archives">
-          <a href="/archives" rel="section">
-            
-              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
-            
-            归档
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/tags" rel="section">
-            
-              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
-            
-            标签
-          </a>
-        </li>
-      
-
-      
-    </ul>
-  
-
-  
-</nav>
-
- </div>
-    </header>
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-03-21T20:52:57+08:00" content="2015-03-21">
-              2015-03-21
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
-
+    <nav class="blue-grey">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">土土哥的技术Blog</a>
+            <ul class="right hide-on-med-and-down">
                 
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            首页
+                        </a>
+                    </li>
                 
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            关于
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav blue-grey darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="http://7nj2iz.com1.z0.glb.clouddn.com/avatar_comic_big.png" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">土土哥</p>
+                        <p class="desc">iOS/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
 
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/03/21/effective-objective-c-5-enum/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/21/effective-objective-c-5-enum/" itemprop="commentsCount"></span>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    首页
                 </a>
-              </span>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    关于
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav blue-grey darken-1" id="category-menu">
+        <!--<li class="">
+            <h5 class="black-text">分类目录</h5>
+        </li>-->
+
+    
+
             
-          
 
-          
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/iOS/">
+                    iOS <span class="right">26 篇</span></a>
+                </a>
+            </li>
 
-          
-          
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/Android/">
+                    Android <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/服务端/">
+                    服务端 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/其它/">
+                    其它 <span class="right">2 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
 
         </div>
-      </header>
+    </div>
+</nav>
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper blue-grey">
+        <span class="breadcrumb">当前位置（目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/iOS/">iOS</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5</h1>
     
 
 
-    <div class="post-body" itemprop="articleBody">
+            </div>
+            <time class="teal-link-context" datetime="2015-03-21T12:52:57.000Z"><a href="/2015/03/21/effective-objective-c-5-enum/">2015-03-21</a></time>
 
-      
-      
+            
+    <div class="tags-row">
+        
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
+        
+            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
+        
+    </div>
 
-      
-        <h2 id="前言">前言</h2><p>Enum，也就是枚举，从C语言开始就有了，C++、Java、Objective-C、Swift这些语言，当然都有对应的枚举类型，功能可能有多有少，但是最核心的还是一个—规范的定义代码中的状态、选项等“常量”。</p>
-<h2 id="Item_5_-_Use_Enumerations_for_States,_Options,_and_Status_Codes">Item 5 - Use Enumerations for States, Options, and Status Codes</h2><p>本节的内容就是如何正确的使用枚举。</p>
-<h2 id="状态与选项的区别（states_and_options）">状态与选项的区别（states and options）</h2><p>在用<strong>enum</strong>之前，我个人觉得，区分一下状态和选项的概念还是很必要的。</p>
+
+            <div class="toc teal-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#前言"><span class="section table-of-contents-text">前言</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Item-5-Use-Enumerations-for-States-Options-and-Status-Codes"><span class="section table-of-contents-text">Item 5 - Use Enumerations for States, Options, and Status Codes</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#状态与选项的区别（states-and-options）"><span class="section table-of-contents-text">状态与选项的区别（states and options）</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#enum与状态（states）"><span class="section table-of-contents-text">enum与状态（states）</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#不好的做法"><span class="section table-of-contents-text">不好的做法</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#正确的做法"><span class="section table-of-contents-text">正确的做法</span></a></li></ol></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#enum与选项-options"><span class="section table-of-contents-text">enum与选项 (options)</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#enum在Objective-C中的“升级版”"><span class="section table-of-contents-text">enum在Objective-C中的“升级版”</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#总结"><span class="section table-of-contents-text">总结</span></a></li></ol>
+</div>
+
+
+            <div class="entry teal-link-context">
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Enum，也就是枚举，从C语言开始就有了，C++、Java、Objective-C、Swift这些语言，当然都有对应的枚举类型，功能可能有多有少，但是最核心的还是一个—规范的定义代码中的状态、选项等“常量”。</p>
+<h2 id="Item-5-Use-Enumerations-for-States-Options-and-Status-Codes"><a href="#Item-5-Use-Enumerations-for-States-Options-and-Status-Codes" class="headerlink" title="Item 5 - Use Enumerations for States, Options, and Status Codes"></a>Item 5 - Use Enumerations for States, Options, and Status Codes</h2><p>本节的内容就是如何正确的使用枚举。</p>
+<h2 id="状态与选项的区别（states-and-options）"><a href="#状态与选项的区别（states-and-options）" class="headerlink" title="状态与选项的区别（states and options）"></a>状态与选项的区别（states and options）</h2><p>在用<strong>enum</strong>之前，我个人觉得，区分一下状态和选项的概念还是很必要的。</p>
 <p><strong>状态</strong>，同时只能有一种，如“<strong>OK</strong>”，“<strong>Error</strong>”，不可能同时是OK和Error。<br><strong>选项</strong>，同时可以有一种或一种以上，如App可以<strong>同时</strong>支持横屏和竖屏，横屏竖屏在这个时候就是“屏幕方向”的两种不同的选项。</p>
 <p>接下来，我们看看如何用枚举定义状态和选项。</p>
 <a id="more"></a>
-<h2 id="enum与状态（states）">enum与状态（states）</h2><h4 id="不好的做法">不好的做法</h4><p>经常看到这样的写法：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">define</span> STATE_OK <span class="number">0</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> STATE_ERROR <span class="number">1</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> STATE_UNKNOW <span class="number">2</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//直接用int型变量接收</span></span><br><span class="line"><span class="keyword">int</span> STATE = STATE_UNKNOW;</span><br></pre></td></tr></table></figure>
+<h2 id="enum与状态（states）"><a href="#enum与状态（states）" class="headerlink" title="enum与状态（states）"></a>enum与状态（states）</h2><h4 id="不好的做法"><a href="#不好的做法" class="headerlink" title="不好的做法"></a>不好的做法</h4><p>经常看到这样的写法：</p>
+<figure class="highlight hsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> STATE_OK <span class="number">0</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> STATE_ERROR <span class="number">1</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> STATE_UNKNOW <span class="number">2</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//直接用int型变量接收</span></span><br><span class="line"><span class="keyword">int</span> STATE = STATE_UNKNOW<span class="comment">;</span></span><br></pre></td></tr></table></figure>
 <p>这样做有如下“不恰当”：</p>
 <ul>
 <li>宏定义没有类型约束，只是单纯的替换。</li>
 <li>无法限制状态的所有情况，如，认为的将STATE赋值成3，程序可能就会出错，找不到匹配的状态，因为编译器不会对“<strong>STATE = 3;</strong>”提出警告。</li>
 </ul>
-<h4 id="正确的做法">正确的做法</h4><figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">typedef <span class="class"><span class="keyword">enum</span> <span class="title">_TTGState</span> &#123;</span></span><br><span class="line">    <span class="constant">TTGStateOK</span>  = <span class="number">0</span>,</span><br><span class="line">    <span class="constant">TTGStateError</span>,</span><br><span class="line">    <span class="constant">TTGStateUnknow</span></span><br><span class="line">&#125; <span class="constant">TTGState</span>;</span><br><span class="line"></span><br><span class="line"><span class="regexp">//</span>指明枚举类型</span><br><span class="line"><span class="constant">TTGState</span> state = <span class="constant">TTGStateOK</span>;</span><br></pre></td></tr></table></figure>
+<h4 id="正确的做法"><a href="#正确的做法" class="headerlink" title="正确的做法"></a>正确的做法</h4><figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">typedef <span class="class"><span class="keyword">enum</span> <span class="title">_TTGState</span> &#123;</span></span><br><span class="line">    TTGStateOK  = <span class="number">0</span>,</span><br><span class="line">    TTGStateError,</span><br><span class="line">    TTGStateUnknow</span><br><span class="line">&#125; TTGState;</span><br><span class="line"></span><br><span class="line"><span class="regexp">//</span>指明枚举类型</span><br><span class="line">TTGState state = TTGStateOK;</span><br></pre></td></tr></table></figure>
 <p>用的时候就如下：</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="typename">void</span>)<span class="string">dealWithState:</span>(TTGState)state &#123;</span><br><span class="line">    <span class="keyword">switch</span> (state) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">TTGStateOK:</span></span><br><span class="line">            <span class="comment">//...</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">TTGStateError:</span></span><br><span class="line">            <span class="comment">//...</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">TTGStateUnknow:</span></span><br><span class="line">            <span class="comment">//...</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="enum与选项_(options)">enum与选项 (options)</h2><p>选项，就是说一个“选项变量”的类型要能够同时表示一个或多个组合的选择，如下例子：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//方向，可同时支持一个或多个方向</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">enum</span> _TTGDirection &#123;</span><br><span class="line">    TTGDirectionNone = <span class="number">0</span>,</span><br><span class="line">    TTGDirectionTop = <span class="number">1</span> &lt;&lt; <span class="number">0</span>,</span><br><span class="line">    TTGDirectionLeft = <span class="number">1</span> &lt;&lt; <span class="number">1</span>,</span><br><span class="line">    TTGDirectionRight = <span class="number">1</span> &lt;&lt; <span class="number">2</span>,</span><br><span class="line">    TTGDirectionBottom = <span class="number">1</span> &lt;&lt; <span class="number">3</span></span><br><span class="line">&#125; TTGDirection;</span><br></pre></td></tr></table></figure>
+<figure class="highlight qml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)<span class="attribute">dealWithState</span>:(TTGState)<span class="decorator">state</span> &#123;</span><br><span class="line">    <span class="keyword">switch</span> (state) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="attribute">TTGStateOK</span>:</span><br><span class="line">            <span class="comment">//...</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="attribute">TTGStateError</span>:</span><br><span class="line">            <span class="comment">//...</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="attribute">TTGStateUnknow</span>:</span><br><span class="line">            <span class="comment">//...</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="enum与选项-options"><a href="#enum与选项-options" class="headerlink" title="enum与选项 (options)"></a>enum与选项 (options)</h2><p>选项，就是说一个“选项变量”的类型要能够同时表示一个或多个组合的选择，如下例子：</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//方向，可同时支持一个或多个方向</span></span><br><span class="line">typedef <span class="class"><span class="keyword">enum</span> _<span class="title">TTGDirection</span> </span>&#123;</span><br><span class="line">    TTGDirectionNone = <span class="number">0</span>,</span><br><span class="line">    TTGDirectionTop = <span class="number">1</span> &lt;&lt; <span class="number">0</span>,</span><br><span class="line">    TTGDirectionLeft = <span class="number">1</span> &lt;&lt; <span class="number">1</span>,</span><br><span class="line">    TTGDirectionRight = <span class="number">1</span> &lt;&lt; <span class="number">2</span>,</span><br><span class="line">    TTGDirectionBottom = <span class="number">1</span> &lt;&lt; <span class="number">3</span></span><br><span class="line">&#125; TTGDirection;</span><br></pre></td></tr></table></figure>
 <p>看，这里的选项是用<strong>位运算</strong>的方式定义的，这样的好处就是，我们的选项变量可以如下表示：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//用“或”运算同时赋值多个选项</span></span><br><span class="line">TTGDirection direction = TTGDirectionTop | TTGDirectionLeft | TTGDirectionBottom;</span><br><span class="line"></span><br><span class="line"><span class="comment">//用“与”运算取出对应位</span></span><br><span class="line"><span class="keyword">if</span> (direction &amp; TTGDirectionTop) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"top"</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (direction &amp; TTGDirectionLeft) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"left"</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (direction &amp; TTGDirectionRight) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"right"</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (direction &amp; TTGDirectionBottom) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"bottom"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight hsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//用“或”运算同时赋值多个选项</span></span><br><span class="line">TTGDirection direction = TTGDirectionTop | TTGDirectionLeft | TTGDirectionBottom<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//用“与”运算取出对应位</span></span><br><span class="line"><span class="keyword">if</span> (direction &amp; TTGDirectionTop) &#123;</span><br><span class="line">    NSLog(@<span class="string">"top"</span>)<span class="comment">;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (direction &amp; TTGDirectionLeft) &#123;</span><br><span class="line">    NSLog(@<span class="string">"left"</span>)<span class="comment">;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (direction &amp; TTGDirectionRight) &#123;</span><br><span class="line">    NSLog(@<span class="string">"right"</span>)<span class="comment">;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (direction &amp; TTGDirectionBottom) &#123;</span><br><span class="line">    NSLog(@<span class="string">"bottom"</span>)<span class="comment">;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><strong>direction</strong>变量的实际内存如下：</p>
 <p><img src="http://zorrochen.qiniudn.com/blog_effective_objective_c_5_enum_2.jpg" alt="内存示意图"></p>
 <p>这样，用位运算，就可以同时支持多个值。</p>
-<h2 id="enum在Objective-C中的“升级版”">enum在Objective-C中的“升级版”</h2><p>一般来说，我们不能指定枚举变量的实际类型是什么，就是说，我们不知道枚举最后是int型，还是其他的什么类型。但是从C++ 11开始，我们可以为枚举指定其实际的存储类型，如下语法：</p>
+<h2 id="enum在Objective-C中的“升级版”"><a href="#enum在Objective-C中的“升级版”" class="headerlink" title="enum在Objective-C中的“升级版”"></a>enum在Objective-C中的“升级版”</h2><p>一般来说，我们不能指定枚举变量的实际类型是什么，就是说，我们不知道枚举最后是int型，还是其他的什么类型。但是从C++ 11开始，我们可以为枚举指定其实际的存储类型，如下语法：</p>
 <figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">TTGState</span> : <span class="title">NSInteger</span> &#123;/*...*/&#125;;</span></span><br></pre></td></tr></table></figure>
 <p>但是，我们在定义枚举的时候如何保证兼容性呢？Foundation框架已经为我们提供了更加“统一、便捷”的枚举定义方法，我们重新定义上面的例子：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//NS_ENUM，定义状态等普通枚举</span></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">NS_ENUM</span><span class="params">(NSUInteger, TTGState)</span> </span>&#123;</span><br><span class="line">    TTGStateOK = <span class="number">0</span>,</span><br><span class="line">    TTGStateError,</span><br><span class="line">    TTGStateUnknow</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//NS_OPTIONS，定义选项</span></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">NS_OPTIONS</span><span class="params">(NSUInteger, TTGDirection)</span> </span>&#123;</span><br><span class="line">    TTGDirectionNone = <span class="number">0</span>,</span><br><span class="line">    TTGDirectionTop = <span class="number">1</span> &lt;&lt; <span class="number">0</span>,</span><br><span class="line">    TTGDirectionLeft = <span class="number">1</span> &lt;&lt; <span class="number">1</span>,</span><br><span class="line">    TTGDirectionRight = <span class="number">1</span> &lt;&lt; <span class="number">2</span>,</span><br><span class="line">    TTGDirectionBottom = <span class="number">1</span> &lt;&lt; <span class="number">3</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">//<span class="type">NS_ENUM</span>，定义状态等普通枚举</span><br><span class="line">typedef <span class="type">NS_ENUM</span>(<span class="type">NSUInteger</span>, <span class="type">TTGState</span>) &#123;</span><br><span class="line">    <span class="type">TTGStateOK</span> = 0,</span><br><span class="line">    <span class="type">TTGStateError</span>,</span><br><span class="line">    <span class="type">TTGStateUnknow</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">//<span class="type">NS_OPTIONS</span>，定义选项</span><br><span class="line">typedef <span class="type">NS_OPTIONS</span>(<span class="type">NSUInteger</span>, <span class="type">TTGDirection</span>) &#123;</span><br><span class="line">    <span class="type">TTGDirectionNone</span> = 0,</span><br><span class="line">    <span class="type">TTGDirectionTop</span> = 1 &lt;&lt; 0,</span><br><span class="line">    <span class="type">TTGDirectionLeft</span> = 1 &lt;&lt; 1,</span><br><span class="line">    <span class="type">TTGDirectionRight</span> = 1 &lt;&lt; 2,</span><br><span class="line">    <span class="type">TTGDirectionBottom</span> = 1 &lt;&lt; 3</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <p>所以，在开发Mac、iOS程序中，最好所有的枚举都用“<strong>NS_ENUM</strong>”和“<strong>NS_OPTIONS</strong>”定义，保证统一。</p>
-<h2 id="总结">总结</h2><p>充分的用好枚举，可以增强代码的可读性，减少各种“错误”，让代码更加的规范。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>充分的用好枚举，可以增强代码的可读性，减少各种“错误”，让代码更加的规范。</p>
 
-      
-    </div>
-
-    <div>
-      
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/iOS/" rel="tag">#iOS</a>
-          
-            <a href="/tags/原创/" rel="tag">#原创</a>
-          
+            </div>
         </div>
-      
+    </div>
+</article>
 
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2015/03/17/what-is-autoreleasepool/" rel="next" title="@autoreleasepool-内存的分配与释放">
-                <i class="fa fa-chevron-left"></i> @autoreleasepool-内存的分配与释放
-              </a>
-            
-          </div>
 
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/03/29/bind-data-to-gcd-queue/" rel="prev" title="为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权">
-                为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
+
+
+    <section id="comment">
+        <div class="card">
+            <div class="card-content">
+                <!-- Duoshuo Comment BEGIN -->
+                <div class="ds-thread" data-thread-key="2015/03/21/effective-objective-c-5-enum/" data-title="Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5" data-url="http://tutuge.me/2015/03/21/effective-objective-c-5-enum/"></div>
+
+                <script type="text/javascript">
+                    console.log(document.querySelector('.ds-thread'));
+                    var duoshuoQuery = {
+                        short_name: 'tutuge'
+                    };
+                    (function() {
+                        var ds = document.createElement('script');
+                        ds.type = 'text/javascript';
+                        ds.async = true;
+                        ds.src = (document.location.protocol == 'https:'
+                            ? 'https:'
+                            : 'http:') + '//static.duoshuo.com/embed.js';
+                        ds.charset = 'UTF-8';
+                        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+                    })();
+                </script>
+                <!-- Duoshuo Comment END -->
+            </div>
         </div>
-      
-
-      
-      
-    </footer>
-  </article>
+    </section>
 
 
 
-    <div class="post-spread">
-      
-        <div class="ds-share flat" data-thread-key="2015/03/21/effective-objective-c-5-enum/"
-     data-title="Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5"
-     data-content=""
-     data-url="http://tutuge.me/2015/03/21/effective-objective-c-5-enum/">
-  <div class="ds-share-inline">
-    <ul  class="ds-share-icons-16">
+</div>
 
-      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
-      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
-      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
-      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
-      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
-
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large teal">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect teal accent-4" title="Return to top"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="Menu"><i class="fa fa-navicon"></i></a></li>
     </ul>
-    <div class="ds-share-icons-more">
-    </div>
-  </div>
-</div>
-      
-    </div>
   </div>
 
-
-          </div>
-          
-
-  <p>热评文章</p>
-  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
-
-
-          
-  <div class="comments" id="comments">
-    
-      <div class="ds-thread" data-thread-key="2015/03/21/effective-objective-c-5-enum/"
-           data-title="Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5" data-url="http://tutuge.me/2015/03/21/effective-objective-c-5-enum/">
-      </div>
-    
-  </div>
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <section class="site-overview sidebar-panel ">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/uploads/avatar_comic_240.png"
-               alt="土土哥" />
-          <p class="site-author-name" itemprop="name">土土哥</p>
-          <p class="site-description motion-element" itemprop="description">程序猿</p>
-        </div>
-        <nav class="site-state motion-element">
-          <div class="site-state-item site-state-posts">
-            <a href="/archives">
-              <span class="site-state-item-count">30</span>
-              <span class="site-state-item-name">日志</span>
-            </a>
-          </div>
-
-          
-            <div class="site-state-item site-state-categories">
-              
-                <span class="site-state-item-count">4</span>
-                <span class="site-state-item-name">分类</span>
-              
-            </div>
-          
-
-          
-            <div class="site-state-item site-state-tags">
-              <a href="/tags">
-                <span class="site-state-item-count">17</span>
-                <span class="site-state-item-name">标签</span>
-              </a>
-            </div>
-          
-
-        </nav>
-
-        
-          <div class="feed-link motion-element">
-            <a href="/atom.xml" rel="alternate">
-              <i class="fa fa-rss"></i>
-              RSS
-            </a>
-          </div>
-        
-
-        <div class="links-of-author motion-element">
-          
-            
-              <span class="links-of-author-item">
-                <a href="https://github.com/zekunyan" target="_blank">
-                  
-                    <i class="fa fa-github"></i> GitHub
-                  
-                </a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="https://twitter.com/zorro_tutuge" target="_blank">
-                  
-                    <i class="fa fa-twitter"></i> Twitter
-                  
-                </a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://weibo.com/zekunyan" target="_blank">
-                  
-                    <i class="fa fa-weibo"></i> Weibo
-                  
-                </a>
-              </span>
-            
-          
-        </div>
-
-        
-        
-          <div class="cc-license motion-element" itemprop="license">
-            <a href="http://creativecommons.org/licenses/by-nc-nd/4.0" class="cc-opacity" target="_blank">
-              <img src="/images/cc-by-nc-nd.svg" alt="Creative Commons" />
-            </a>
-          </div>
-        
-
-        
-        <div class="links-of-blogroll motion-element">
-          
-            <div class="links-of-blogroll-title">友情链接</div>
-            <ul class="links-of-blogroll-list">
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://chenrudan.github.io" target="_blank">女朋友的博客😊</a>
-                </li>
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://suta.name" target="_blank">很赞的设计师：苏塔</a>
-                </li>
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://neoyeelf.github.io" target="_blank">NeOye's blog</a>
-                </li>
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://raytaylorlin.com" target="_blank">Ray Taylor Lin's world</a>
-                </li>
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://bingyan.farbox.com" target="_blank">Howl写东西的地方</a>
-                </li>
-              
-            </ul>
-          
-        </div>
-
-      </section>
-
-      
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc-indicator-top post-toc-indicator">
-            <i class="fa fa-angle-double-up"></i>
-          </div>
-          <div class="post-toc">
-            
-              
-            
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Item_5_-_Use_Enumerations_for_States,_Options,_and_Status_Codes"><span class="nav-number">2.</span> <span class="nav-text">Item 5 - Use Enumerations for States, Options, and Status Codes</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#状态与选项的区别（states_and_options）"><span class="nav-number">3.</span> <span class="nav-text">状态与选项的区别（states and options）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#enum与状态（states）"><span class="nav-number">4.</span> <span class="nav-text">enum与状态（states）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#不好的做法"><span class="nav-number">4.0.1.</span> <span class="nav-text">不好的做法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#正确的做法"><span class="nav-number">4.0.2.</span> <span class="nav-text">正确的做法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#enum与选项_(options)"><span class="nav-number">5.</span> <span class="nav-text">enum与选项 (options)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#enum在Objective-C中的“升级版”"><span class="nav-number">6.</span> <span class="nav-text">enum在Objective-C中的“升级版”</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
-            
-          </div>
-          <div class="post-toc-indicator-bottom post-toc-indicator">
-            <i class="fa fa-angle-double-down"></i>
-          </div>
-        </section>
-      
-
-    </div>
-  </aside>
-
-
-        
-      </div>
     </main>
+    <footer class="page-footer blue-grey darken-1">
+    
+    <div class="container">
+        <div class="row">
+            
+            <div class="social-group col m3 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/zekunyan" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+            </div>
+            
 
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright" >
-  
-  &copy;  2014 - 
-  <span itemprop="copyrightYear">2016</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">燕泽堃</span>
-</div>
-
-<div class="powered-by">
-  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
-</div>
-
-<div class="theme-info">
-  主题 -
-  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
-    NexT.Pisces
-  </a>
-</div>
-
-
-
-      </div>
-    </footer>
-
-    <div class="back-to-top">
-      <i class="fa fa-arrow-up"></i>
+            
+            <div class="col m9 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
+                
+                    <a class="social-link" href="http://raytaylorlin.com/" target="_blank">raytaylorism主题作者的技术博客</a>
+                
+                    <a class="social-link" href="http://suta.name/" target="_blank">很赞的设计师</a>
+                
+                    <a class="social-link" href="http://neoyeelf.github.io/" target="_blank">NeOye&#39;s blog</a>
+                
+                    <a class="social-link" href="http://bingyan.farbox.com/" target="_blank">Howl写东西的地方</a>
+                
+            </div>
+            
+        </div>
     </div>
-  </div>
+    
 
-  
-
-
-  
-
-
-
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
+    <div class="footer-copyright teal-link-context">
+        <div class="container">
+            © 2016 tutuge.me, All rights reserved.
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
+        </div>
+    </div>
+</footer>
 
 
-  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
-
-  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-
-  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-
-  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
-
-  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
-
-  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前浏览器不支持博客完整功能。如果要获得最佳体验，请点击右上角···，复制链接，并在其它浏览器打开</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前浏览器不支持博客完整功能。如果要获得最佳体验，请点击右上角···，复制链接，并在其它浏览器打开</p>
+</div>
 
 
-  
+<script src="/js/jquery-2.1.1.min.js"></script>
+<script src="/js/materialize.min.js"></script>
 
+<script>
+(function($) {
+    $(document).ready(function() {
+        // 隐藏禁用javascript（针对微信内置浏览器）的提示
+        $('.noscript').hide();
 
-  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+        // 图片缩放效果
+        var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
 
-  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+        // 给图片加上点击放大效果（materialbox插件）
+        $imgs.addClass('materialboxed')
+            .each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
 
-
-
-  
-  
-
-
-  <script type="text/javascript" src="/js/src/affix.js?v=0.5.0"></script>
-
-  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=0.5.0"></script>
-
-
-
-  
-  
-<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
-
-<script type="text/javascript" id="sidebar.toc.highlight">
-  $(document).ready(function () {
-    var tocSelector = '.post-toc';
-    var $tocSelector = $(tocSelector);
-    var activeCurrentSelector = '.active-current';
-
-    $tocSelector
-      .on('activate.bs.scrollspy', function () {
-        var $currentActiveElement = $(tocSelector + ' .active').last();
-
-        removeCurrentActiveClass();
-        $currentActiveElement.addClass('active-current');
-
-        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
-      })
-      .on('clear.bs.scrollspy', function () {
-        removeCurrentActiveClass();
-      });
-
-    function removeCurrentActiveClass () {
-      $(tocSelector + ' ' + activeCurrentSelector)
-        .removeClass(activeCurrentSelector.substring(1));
-    }
-
-    function processTOC () {
-      getTOCMaxHeight();
-      toggleTOCOverflowIndicators();
-    }
-
-    function getTOCMaxHeight () {
-      var height = $('.sidebar').height() -
-                   $tocSelector.position().top -
-                   $('.post-toc-indicator-bottom').height();
-
-      $tocSelector.css('height', height);
-
-      return height;
-    }
-
-    function toggleTOCOverflowIndicators () {
-      tocOverflowIndicator(
-        '.post-toc-indicator-top',
-        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
-      );
-
-      tocOverflowIndicator(
-        '.post-toc-indicator-bottom',
-        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
-      )
-    }
-
-    $(document).on('sidebar.motion.complete', function () {
-      processTOC();
-    });
-
-    $('body').scrollspy({ target: tocSelector });
-    $(window).on('resize', function () {
-      if ( $('.sidebar').hasClass('sidebar-active') ) {
-        processTOC();
-      }
-    });
-
-    onScroll($tocSelector);
-
-    function onScroll (element) {
-      element.on('mousewheel DOMMouseScroll', function (event) {
-          var oe = event.originalEvent;
-          var delta = oe.wheelDelta || -oe.detail;
-
-          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
-          event.preventDefault();
-
-          toggleTOCOverflowIndicators();
-      });
-    }
-
-    function tocOverflowIndicator (indicator, action) {
-      var $indicator = $(indicator);
-      var opacity = action === 'show' ? 1 : 0;
-      $indicator.velocity ?
-        $indicator.velocity('stop').velocity({
-          opacity: opacity
-        }, { duration: 100 }) :
-        $indicator.stop().animate({
-          opacity: opacity
-        }, 100);
-    }
-
-  });
-</script>
-
-<script type="text/javascript" id="sidebar.nav">
-  $(document).ready(function () {
-    var html = $('html');
-    var TAB_ANIMATE_DURATION = 200;
-    var hasVelocity = $.isFunction(html.velocity);
-
-    $('.sidebar-nav li').on('click', function () {
-      var item = $(this);
-      var activeTabClassName = 'sidebar-nav-active';
-      var activePanelClassName = 'sidebar-panel-active';
-      if (item.hasClass(activeTabClassName)) {
-        return;
-      }
-
-      var currentTarget = $('.' + activePanelClassName);
-      var target = $('.' + item.data('target'));
-
-      hasVelocity ?
-        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
-          target
-            .velocity('stop')
-            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
-            .addClass(activePanelClassName);
-        }) :
-        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
-          currentTarget.hide();
-          target
-            .stop()
-            .css({'opacity': 0, 'display': 'block'})
-            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
-              currentTarget.removeClass(activePanelClassName);
-              target.addClass(activePanelClassName);
-            });
+        // 首页幻灯片
+        $('.slider').slider({
+            indicators: true,
+            full_width: true,
+            interval: 8000
         });
 
-      item.siblings().removeClass(activeTabClassName);
-      item.addClass(activeTabClassName);
-    });
+        $(".button-collapse").sideNav();
+        $(".category-menu").sideNav();
 
-    $('.post-toc a').on('click', function (e) {
-      e.preventDefault();
-      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
-      var offset = $(targetSelector).offset().top;
-      hasVelocity ?
-        html.velocity('stop').velocity('scroll', {
-          offset: offset  + 'px',
-          mobileHA: false
-        }) :
-        $('html, body').stop().animate({
-          scrollTop: offset
-        }, 500);
-    });
+        // 针对gallery post
+        $('.carousel').carousel({
+            full_width: true
+        });
+        $('.carousel-control.prev').click(function() {
+            $('.carousel').carousel('prev');
+        });
+        $('.carousel-control.next').click(function() {
+            $('.carousel').carousel('next');
+        });
 
-    // Expand sidebar on post detail page by default, when post has a toc.
-    NexT.motion.middleWares.sidebar = function () {
-      var $tocContent = $('.post-toc-content');
+        // 文章目录
+        $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+        // 修正文章目录的left-border颜色
+        var color = $('.table-of-contents-text').css('color');
+        $('.table-of-contents-link').css('border-left-color', color);
 
-      if (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always') {
-        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
-          NexT.utils.displaySidebar();
+        // 针对移动端做的优化：FAB按钮点击一下收回
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            $('.fixed-action-btn').addClass('click-to-toggle');
         }
-      }
-    };
-  });
+        // 回到顶部
+        $('.btn-return-top').click(function() {
+            $('body, html').animate({
+                scrollTop: 0
+            }, 500);
+        });
+
+        // 重置读书页面的Tab标签页的颜色
+        $('li.tab a').hover(function() {
+            $(this).toggleClass('text-lighten-4');
+        });
+        $('.indicator').addClass('teal lighten-2');
+
+        
+        // 添加new标签
+        $('.menu-reading,.menu-about').append('<span class="new badge teal accent-4"></span>');
+        
+    });
+})(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-68058110-1', 'auto');
+    ga('send', 'pageview');
+
 </script>
 
 
 
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=55079830" charset="UTF-8"></script>
 
 
 
-  
-
-  
-    
-  
-
-  <script type="text/javascript">
-    var duoshuoQuery = {short_name:"tutuge"};
-    (function() {
-      var ds = document.createElement('script');
-      ds.type = 'text/javascript';ds.async = true;
-      ds.id = 'duoshuo-script';
-      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-      ds.charset = 'UTF-8';
-      (document.getElementsByTagName('head')[0]
-      || document.getElementsByTagName('body')[0]).appendChild(ds);
-    })();
-  </script>
-
-  
-    
-  
-
-
-
-
-
-  
-  
-  
-
-  
 
 
 </body>

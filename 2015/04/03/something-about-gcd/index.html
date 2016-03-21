@@ -1,351 +1,252 @@
-<!doctype html>
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion">
+<!DOCTYPE HTML>
+<html>
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
+    
 
+    <title>GCD使用经验与技巧浅谈 | iOS，Android程序猿，喜欢Mac、Linux、各种开源技术，各种语言</title>
+    <meta name="author" content="燕泽堃">
+    
+    <meta name="description" content="程序猿">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta property="og:title" content="GCD使用经验与技巧浅谈"/>
+    <meta property="og:site_name" content="土土哥的技术Blog"/>
 
+    
+    <meta property="og:image" content="undefined"/>
+    
 
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="土土哥的技术Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
 
-
-
-
-
-
-
-
-
-
-  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
-
-
-
-
-  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-
-
-
-<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="iOS,原创," />
-
-
-
-
-
-  <link rel="alternate" href="/atom.xml" title="土土哥的技术Blog" type="application/atom+xml" />
-
-
-
-
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
-
-
-
-
-
-
-<meta name="description" content="前言GCD(Grand Central Dispatch)可以说是Mac、iOS开发中的一大“利器”，本文就总结一些有关使用GCD的经验与技巧。
-dispatch_once_t必须是全局或static变量这一条算是“老生常谈”了，但我认为还是有必要强调一次，毕竟非全局或非static的dispatch_once_t变量在使用时会导致非常不好排查的bug，正确的如下：
-12345//静态变量，保证只">
-<meta property="og:type" content="article">
-<meta property="og:title" content="GCD使用经验与技巧浅谈">
-<meta property="og:url" content="http://tutuge.me/2015/04/03/something-about-gcd/index.html">
-<meta property="og:site_name" content="土土哥的技术Blog">
-<meta property="og:description" content="前言GCD(Grand Central Dispatch)可以说是Mac、iOS开发中的一大“利器”，本文就总结一些有关使用GCD的经验与技巧。
-dispatch_once_t必须是全局或static变量这一条算是“老生常谈”了，但我认为还是有必要强调一次，毕竟非全局或非static的dispatch_once_t变量在使用时会导致非常不好排查的bug，正确的如下：
-12345//静态变量，保证只">
-<meta property="og:updated_time" content="2016-03-18T15:53:40.000Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="GCD使用经验与技巧浅谈">
-<meta name="twitter:description" content="前言GCD(Grand Central Dispatch)可以说是Mac、iOS开发中的一大“利器”，本文就总结一些有关使用GCD的经验与技巧。
-dispatch_once_t必须是全局或static变量这一条算是“老生常谈”了，但我认为还是有必要强调一次，毕竟非全局或非static的dispatch_once_t变量在使用时会导致非常不好排查的bug，正确的如下：
-12345//静态变量，保证只">
-
-
-
-<script type="text/javascript" id="hexo.configuration">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    scheme: 'Pisces',
-    sidebar: {"position":"left","display":"post"},
-    fancybox: true,
-    motion: true,
-    duoshuo: {
-      userId: 9509393,
-      author: '土土哥'
-    }
-  };
-</script>
-
-  <title> GCD使用经验与技巧浅谈 | 土土哥的技术Blog </title>
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
-  
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
 
-
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-68058110-1', 'auto');
-  ga('send', 'pageview');
-</script>
-
-
-  <script type="text/javascript">
-    var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "//hm.baidu.com/hm.js?c674423748672d339369a33103ded1e2";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
-  </script>
-
-
-
-  <script type="text/javascript">
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "//tajs.qq.com/stats?sId=55079830";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
-  </script>
-
-
-
-
-  <div style="display: none;">
-    <script src="http://s6.cnzz.com/stat.php?id=1253507635&web_id=1253507635" type="text/javascript"></script>
-  </div>
-
-
-
-
-
-  
-  
-    
-  
-
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-meta ">
-  
-
-  <div class="custom-logo-site-title">
-    <a href="/"  class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <span class="site-title">土土哥的技术Blog</span>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-  </div>
-  <p class="site-subtitle">iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言</p>
-</div>
-
-<div class="site-nav-toggle">
-  <button>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-  </button>
-</div>
-
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
-        
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
-            
-            首页
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-about">
-          <a href="/about" rel="section">
-            
-              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
-            
-            关于
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-archives">
-          <a href="/archives" rel="section">
-            
-              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
-            
-            归档
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/tags" rel="section">
-            
-              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
-            
-            标签
-          </a>
-        </li>
-      
-
-      
-    </ul>
-  
-
-  
-</nav>
-
- </div>
-    </header>
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                GCD使用经验与技巧浅谈
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-04-03T21:59:56+08:00" content="2015-04-03">
-              2015-04-03
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
-
+    <nav class="blue-grey">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">土土哥的技术Blog</a>
+            <ul class="right hide-on-med-and-down">
                 
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            首页
+                        </a>
+                    </li>
                 
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            关于
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav blue-grey darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="http://7nj2iz.com1.z0.glb.clouddn.com/avatar_comic_big.png" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">土土哥</p>
+                        <p class="desc">iOS/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
 
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/04/03/something-about-gcd/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/04/03/something-about-gcd/" itemprop="commentsCount"></span>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    首页
                 </a>
-              </span>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    关于
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav blue-grey darken-1" id="category-menu">
+        <!--<li class="">
+            <h5 class="black-text">分类目录</h5>
+        </li>-->
+
+    
+
             
-          
 
-          
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/iOS/">
+                    iOS <span class="right">26 篇</span></a>
+                </a>
+            </li>
 
-          
-          
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/Android/">
+                    Android <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/服务端/">
+                    服务端 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/其它/">
+                    其它 <span class="right">2 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
 
         </div>
-      </header>
+    </div>
+</nav>
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper blue-grey">
+        <span class="breadcrumb">当前位置（目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/iOS/">iOS</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>GCD使用经验与技巧浅谈</h1>
     
 
 
-    <div class="post-body" itemprop="articleBody">
+            </div>
+            <time class="teal-link-context" datetime="2015-04-03T13:59:56.000Z"><a href="/2015/04/03/something-about-gcd/">2015-04-03</a></time>
 
-      
-      
+            
+    <div class="tags-row">
+        
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
+        
+            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
+        
+    </div>
 
-      
-        <h2 id="前言">前言</h2><p>GCD(Grand Central Dispatch)可以说是Mac、iOS开发中的一大“利器”，本文就总结一些有关使用GCD的经验与技巧。</p>
-<h2 id="dispatch_once_t必须是全局或static变量">dispatch_once_t必须是全局或static变量</h2><p>这一条算是“老生常谈”了，但我认为还是有必要强调一次，毕竟非全局或非static的dispatch_once_t变量在使用时会导致非常不好排查的bug，正确的如下：</p>
+
+            <div class="toc teal-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#前言"><span class="section table-of-contents-text">前言</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#dispatch-once-t必须是全局或static变量"><span class="section table-of-contents-text">dispatch_once_t必须是全局或static变量</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#dispatch-queue-create的第二个参数"><span class="section table-of-contents-text">dispatch_queue_create的第二个参数</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#dispatch-after是延迟提交，不是延迟运行"><span class="section table-of-contents-text">dispatch_after是延迟提交，不是延迟运行</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#正确创建dispatch-time-t"><span class="section table-of-contents-text">正确创建dispatch_time_t</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#dispatch-suspend-立即停止队列的运行"><span class="section table-of-contents-text">dispatch_suspend != 立即停止队列的运行</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#“同步”的dispatch-apply"><span class="section table-of-contents-text">“同步”的dispatch_apply</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#避免死锁！"><span class="section table-of-contents-text">避免死锁！</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#dispatch-sync导致的死锁"><span class="section table-of-contents-text">dispatch_sync导致的死锁</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#dispatch-apply导致的死锁！"><span class="section table-of-contents-text">dispatch_apply导致的死锁！</span></a></li></ol></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#灵活使用dispatch-group"><span class="section table-of-contents-text">灵活使用dispatch_group</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#添加任务"><span class="section table-of-contents-text">添加任务</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#添加结束任务"><span class="section table-of-contents-text">添加结束任务</span></a></li></ol></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#使用dispatch-barrier-async-dispatch-barrier-sync的注意事项"><span class="section table-of-contents-text">使用dispatch_barrier_async,dispatch_barrier_sync的注意事项</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#dispatch-set-context与dispatch-set-finalizer-f的配合使用"><span class="section table-of-contents-text">dispatch_set_context与dispatch_set_finalizer_f的配合使用</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#总结"><span class="section table-of-contents-text">总结</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#参考"><span class="section table-of-contents-text">参考</span></a></li></ol>
+</div>
+
+
+            <div class="entry teal-link-context">
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>GCD(Grand Central Dispatch)可以说是Mac、iOS开发中的一大“利器”，本文就总结一些有关使用GCD的经验与技巧。</p>
+<h2 id="dispatch-once-t必须是全局或static变量"><a href="#dispatch-once-t必须是全局或static变量" class="headerlink" title="dispatch_once_t必须是全局或static变量"></a>dispatch_once_t必须是全局或static变量</h2><p>这一条算是“老生常谈”了，但我认为还是有必要强调一次，毕竟非全局或非static的dispatch_once_t变量在使用时会导致非常不好排查的bug，正确的如下：</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//静态变量，保证只有一份实例，才能确保只执行一次</span></span><br><span class="line"><span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;</span><br><span class="line"><span class="built_in">dispatch_once</span>(&amp;onceToken, ^&#123;</span><br><span class="line">   <span class="comment">//单例代码</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 <p>其实就是保证<strong>dispatch_once_t</strong>只有一份实例。</p>
 <a id="more"></a>
-<h2 id="dispatch_queue_create的第二个参数">dispatch_queue_create的第二个参数</h2><p><strong>dispatch_queue_create</strong>，创建队列用的，它的参数只有两个，原型如下：</p>
+<h2 id="dispatch-queue-create的第二个参数"><a href="#dispatch-queue-create的第二个参数" class="headerlink" title="dispatch_queue_create的第二个参数"></a>dispatch_queue_create的第二个参数</h2><p><strong>dispatch_queue_create</strong>，创建队列用的，它的参数只有两个，原型如下：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">dispatch_queue_t</span> dispatch_queue_create ( <span class="keyword">const</span> <span class="keyword">char</span> *label, <span class="keyword">dispatch_queue_attr_t</span> attr );</span><br></pre></td></tr></table></figure>
 <p>在网上的大部分教程里（甚至Apple自己的文档里），都是这么创建串行队列的：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">dispatch_queue_t</span> <span class="built_in">queue</span> = dispatch_queue_create(<span class="string">"com.example.MyQueue"</span>, <span class="literal">NULL</span>);</span><br></pre></td></tr></table></figure>
 <p>看，第二个参数传的是“<strong>NULL</strong>”。  但是dispatch_queue_attr_t类型是有已经定义好的常量的，所以我认为，为了更加的清晰、严谨，最好如下创建队列：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//串行队列</span></span><br><span class="line"><span class="keyword">dispatch_queue_t</span> <span class="built_in">queue</span> = dispatch_queue_create(<span class="string">"com.example.MyQueue"</span>, DISPATCH_QUEUE_SERIAL);</span><br><span class="line"></span><br><span class="line"><span class="comment">//并行队列</span></span><br><span class="line"><span class="keyword">dispatch_queue_t</span> <span class="built_in">queue</span> = dispatch_queue_create(<span class="string">"com.example.MyQueue"</span>, DISPATCH_QUEUE_CONCURRENT);</span><br></pre></td></tr></table></figure>
 <p>常量就是为了使代码更加“易懂”，更加清晰，既然有，为啥不用呢~</p>
-<h2 id="dispatch_after是延迟提交，不是延迟运行">dispatch_after是<strong>延迟提交</strong>，不是<strong>延迟运行</strong></h2><p>先看看官方文档的说明：</p>
-<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Enqueue <span class="operator">a</span> block <span class="keyword">for</span> execution <span class="keyword">at</span> <span class="operator">the</span> specified <span class="built_in">time</span>.</span><br></pre></td></tr></table></figure>
+<h2 id="dispatch-after是延迟提交，不是延迟运行"><a href="#dispatch-after是延迟提交，不是延迟运行" class="headerlink" title="dispatch_after是延迟提交，不是延迟运行"></a>dispatch_after是<strong>延迟提交</strong>，不是<strong>延迟运行</strong></h2><p>先看看官方文档的说明：</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Enqueue <span class="keyword">a</span> block <span class="keyword">for</span> execution <span class="keyword">at</span> <span class="keyword">the</span> specified <span class="built_in">time</span>.</span><br></pre></td></tr></table></figure>
 <p><strong>Enqueue</strong>，就是入队，指的就是将一个Block在特定的延时以后，加入到指定的队列中，<strong>不是在特定的时间后立即运行！</strong>。</p>
 <p>看看如下代码示例：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建串行队列</span></span><br><span class="line"><span class="keyword">dispatch_queue_t</span> <span class="built_in">queue</span> = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL);</span><br><span class="line"></span><br><span class="line"><span class="comment">//立即打印一条信息        </span></span><br><span class="line">NSLog(@<span class="string">"Begin add block..."</span>);        </span><br><span class="line"></span><br><span class="line"><span class="comment">//提交一个block</span></span><br><span class="line">dispatch_async(<span class="built_in">queue</span>, ^&#123;</span><br><span class="line">    <span class="comment">//Sleep 10秒</span></span><br><span class="line">    [NSThread sleepForTimeInterval:<span class="number">10</span>];</span><br><span class="line">    NSLog(@<span class="string">"First block done..."</span>);</span><br><span class="line">&#125;);        </span><br><span class="line"></span><br><span class="line"><span class="comment">//5 秒以后提交block</span></span><br><span class="line">dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (<span class="keyword">int64_t</span>)(<span class="number">5</span> * NSEC_PER_SEC)), <span class="built_in">queue</span>, ^&#123;</span><br><span class="line">    NSLog(@<span class="string">"After..."</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight hsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建串行队列</span></span><br><span class="line">dispatch_queue_t queue = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//立即打印一条信息</span></span><br><span class="line">NSLog(@<span class="string">"Begin add block..."</span>)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//提交一个block</span></span><br><span class="line">dispatch_async(queue, ^&#123;</span><br><span class="line">    <span class="comment">//Sleep 10秒</span></span><br><span class="line">    [NSThread sleepForTimeInterval:<span class="number">10</span>]<span class="comment">;</span></span><br><span class="line">    NSLog(@<span class="string">"First block done..."</span>)<span class="comment">;</span></span><br><span class="line">&#125;)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//5 秒以后提交block</span></span><br><span class="line">dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(<span class="number">5</span> * NSEC_PER_SEC)), queue, ^&#123;</span><br><span class="line">    NSLog(@<span class="string">"After..."</span>)<span class="comment">;</span></span><br><span class="line">&#125;)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
 <p>结果如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2015</span>-<span class="number">03</span>-<span class="number">31</span> <span class="number">20</span>:<span class="number">57</span>:<span class="number">27.122</span> GCDTest[<span class="number">45633</span>:<span class="number">1812016</span>] Begin add block...</span><br><span class="line"><span class="number">2015</span>-<span class="number">03</span>-<span class="number">31</span> <span class="number">20</span>:<span class="number">57</span>:<span class="number">37.127</span> GCDTest[<span class="number">45633</span>:<span class="number">1812041</span>] First block done...</span><br><span class="line"><span class="number">2015</span>-<span class="number">03</span>-<span class="number">31</span> <span class="number">20</span>:<span class="number">57</span>:<span class="number">37.127</span> GCDTest[<span class="number">45633</span>:<span class="number">1812041</span>] After...</span><br></pre></td></tr></table></figure>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">2015<span class="selector-tag">-03-31</span> 20<span class="selector-pseudo">:57</span><span class="selector-pseudo">:27.122</span> <span class="selector-tag">GCDTest</span><span class="selector-attr">[45633:1812016]</span> <span class="selector-tag">Begin</span> <span class="selector-tag">add</span> <span class="selector-tag">block</span>...</span><br><span class="line">2015<span class="selector-tag">-03-31</span> 20<span class="selector-pseudo">:57</span><span class="selector-pseudo">:37.127</span> <span class="selector-tag">GCDTest</span><span class="selector-attr">[45633:1812041]</span> <span class="selector-tag">First</span> <span class="selector-tag">block</span> <span class="selector-tag">done</span>...</span><br><span class="line">2015<span class="selector-tag">-03-31</span> 20<span class="selector-pseudo">:57</span><span class="selector-pseudo">:37.127</span> <span class="selector-tag">GCDTest</span><span class="selector-attr">[45633:1812041]</span> <span class="selector-tag">After</span>...</span><br></pre></td></tr></table></figure>
 <p>从结果也验证了，dispatch_after只是延时提交block，并不是延时后立即执行。所以想用dispatch_after精确控制运行状态的朋友可要注意了~</p>
-<h2 id="正确创建dispatch_time_t">正确创建dispatch_time_t</h2><p>用dispatch_after的时候就会用到dispatch_time_t变量，但是如何创建合适的时间呢？答案就是用<strong>dispatch_time</strong>函数，其原型如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">dispatch_time_t</span> dispatch_time ( <span class="keyword">dispatch_time_t</span> when, <span class="keyword">int64_t</span> delta );</span><br></pre></td></tr></table></figure>
+<h2 id="正确创建dispatch-time-t"><a href="#正确创建dispatch-time-t" class="headerlink" title="正确创建dispatch_time_t"></a>正确创建dispatch_time_t</h2><p>用dispatch_after的时候就会用到dispatch_time_t变量，但是如何创建合适的时间呢？答案就是用<strong>dispatch_time</strong>函数，其原型如下：</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">dispatch_time_t </span><span class="keyword">dispatch_time </span>( <span class="keyword">dispatch_time_t </span>when, int64_t delta )<span class="comment">;</span></span><br></pre></td></tr></table></figure>
 <p>第一个参数一般是<strong>DISPATCH_TIME_NOW</strong>，表示从现在开始。<br>那么第二个参数就是真正的延时的具体时间。</p>
 <p>这里要特别注意的是，<strong>delta</strong>参数是“<strong>纳秒！</strong>”，就是说，延时1秒的话，delta应该是“1000000000”=。=，太长了，所以理所当然系统提供了常量，如下：</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hexcolor">#def</span>ine NSEC_PER_SEC <span class="number">1000000000</span>ull</span><br><span class="line"><span class="hexcolor">#def</span>ine USEC_PER_SEC <span class="number">1000000</span>ull</span><br><span class="line"><span class="hexcolor">#def</span>ine NSEC_PER_USEC <span class="number">1000</span>ull</span><br></pre></td></tr></table></figure>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> NSEC_PER_SEC 1000000000ull</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> USEC_PER_SEC 1000000ull</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> NSEC_PER_USEC 1000ull</span></span><br></pre></td></tr></table></figure>
 <p>关键词解释：</p>
 <ul>
 <li>NSEC：纳秒。</li>
@@ -360,37 +261,37 @@ dispatch_once_t必须是全局或static变量这一条算是“老生常谈”�
 <li>NSEC_PER_USEC，每毫秒有多少纳秒。</li>
 </ol>
 <p>所以，延时<strong>1秒</strong>可以写成如下几种：</p>
-<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dispatch_time<span class="list">(<span class="keyword">DISPATCH_TIME_NOW</span>, <span class="number">1</span> <span class="variable">* NSEC_PER_SEC);</span><br><span class="line">dispatch_time(DISPATCH_TIME_NOW, 1000 *</span> USEC_PER_SEC)</span><span class="comment">;</span></span><br><span class="line">dispatch_time<span class="list">(<span class="keyword">DISPATCH_TIME_NOW</span>, USEC_PER_SEC <span class="variable">* NSEC_PER_USEC);</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">dispatch_time(DISPATCH_TIME_NOW, </span><span class="number">1</span> * NSEC_PER_SEC)<span class="comment">;</span></span><br><span class="line"><span class="keyword">dispatch_time(DISPATCH_TIME_NOW, </span><span class="number">1000</span> * USEC_PER_SEC)<span class="comment">;</span></span><br><span class="line"><span class="keyword">dispatch_time(DISPATCH_TIME_NOW, </span>USEC_PER_SEC * NSEC_PER_USEC)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
 <p>最后一个“<strong>USEC_PER_SEC * NSEC_PER_USEC</strong>”，翻译过来就是“<strong>每秒的毫秒数乘以每毫秒的纳秒数</strong>”，也就是“<strong>每秒的纳秒数</strong>”，所以，延时500毫秒之类的，也就不难了吧~</p>
-<h2 id="dispatch_suspend_!=_立即停止队列的运行">dispatch_suspend != 立即停止队列的运行</h2><p><strong>dispatch_suspend</strong>，<strong>dispatch_resume</strong>提供了“挂起、恢复”队列的功能，简单来说，就是可以暂停、恢复队列上的任务。但是这里的“<strong>挂起</strong>”，并不能保证可以<strong>立即</strong>停止队列上正在运行的block，看如下例子：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL);</span><br><span class="line"></span><br><span class="line"><span class="comment">//提交第一个block，延时5秒打印。</span></span><br><span class="line"><span class="built_in">dispatch_async</span>(queue, ^&#123;</span><br><span class="line">    [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">5</span>];</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"After 5 seconds..."</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//提交第二个block，也是延时5秒打印</span></span><br><span class="line"><span class="built_in">dispatch_async</span>(queue, ^&#123;</span><br><span class="line">    [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">5</span>];</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"After 5 seconds again..."</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//延时一秒</span></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"sleep 1 second..."</span>);</span><br><span class="line">[<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">1</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//挂起队列                        </span></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"suspend..."</span>);</span><br><span class="line">dispatch_suspend(queue);</span><br><span class="line"></span><br><span class="line"><span class="comment">//延时10秒                </span></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"sleep 10 second..."</span>);</span><br><span class="line">[<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">10</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//恢复队列            </span></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"resume..."</span>);</span><br><span class="line">dispatch_resume(queue);</span><br></pre></td></tr></table></figure>
+<h2 id="dispatch-suspend-立即停止队列的运行"><a href="#dispatch-suspend-立即停止队列的运行" class="headerlink" title="dispatch_suspend != 立即停止队列的运行"></a>dispatch_suspend != 立即停止队列的运行</h2><p><strong>dispatch_suspend</strong>，<strong>dispatch_resume</strong>提供了“挂起、恢复”队列的功能，简单来说，就是可以暂停、恢复队列上的任务。但是这里的“<strong>挂起</strong>”，并不能保证可以<strong>立即</strong>停止队列上正在运行的block，看如下例子：</p>
+<figure class="highlight hsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">dispatch_queue_t queue = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//提交第一个block，延时5秒打印。</span></span><br><span class="line">dispatch_async(queue, ^&#123;</span><br><span class="line">    [NSThread sleepForTimeInterval:<span class="number">5</span>]<span class="comment">;</span></span><br><span class="line">    NSLog(@<span class="string">"After 5 seconds..."</span>)<span class="comment">;</span></span><br><span class="line">&#125;)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//提交第二个block，也是延时5秒打印</span></span><br><span class="line">dispatch_async(queue, ^&#123;</span><br><span class="line">    [NSThread sleepForTimeInterval:<span class="number">5</span>]<span class="comment">;</span></span><br><span class="line">    NSLog(@<span class="string">"After 5 seconds again..."</span>)<span class="comment">;</span></span><br><span class="line">&#125;)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//延时一秒</span></span><br><span class="line">NSLog(@<span class="string">"sleep 1 second..."</span>)<span class="comment">;</span></span><br><span class="line">[NSThread sleepForTimeInterval:<span class="number">1</span>]<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//挂起队列</span></span><br><span class="line">NSLog(@<span class="string">"suspend..."</span>)<span class="comment">;</span></span><br><span class="line">dispatch_suspend(queue)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//延时10秒</span></span><br><span class="line">NSLog(@<span class="string">"sleep 10 second..."</span>)<span class="comment">;</span></span><br><span class="line">[NSThread sleepForTimeInterval:<span class="number">10</span>]<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//恢复队列</span></span><br><span class="line">NSLog(@<span class="string">"resume..."</span>)<span class="comment">;</span></span><br><span class="line">dispatch_resume(queue)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
 <p>运行结果如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2015</span>-<span class="number">04</span>-<span class="number">01</span> <span class="number">00</span>:<span class="number">32</span>:<span class="number">09.903</span> GCDTest[<span class="number">47201</span>:<span class="number">1883834</span>] sleep <span class="number">1</span> second...</span><br><span class="line"><span class="number">2015</span>-<span class="number">04</span>-<span class="number">01</span> <span class="number">00</span>:<span class="number">32</span>:<span class="number">10.910</span> GCDTest[<span class="number">47201</span>:<span class="number">1883834</span>] suspend...</span><br><span class="line"><span class="number">2015</span>-<span class="number">04</span>-<span class="number">01</span> <span class="number">00</span>:<span class="number">32</span>:<span class="number">10.910</span> GCDTest[<span class="number">47201</span>:<span class="number">1883834</span>] sleep <span class="number">10</span> second...</span><br><span class="line"><span class="number">2015</span>-<span class="number">04</span>-<span class="number">01</span> <span class="number">00</span>:<span class="number">32</span>:<span class="number">14.908</span> GCDTest[<span class="number">47201</span>:<span class="number">1883856</span>] After <span class="number">5</span> seconds...</span><br><span class="line"><span class="number">2015</span>-<span class="number">04</span>-<span class="number">01</span> <span class="number">00</span>:<span class="number">32</span>:<span class="number">20.911</span> GCDTest[<span class="number">47201</span>:<span class="number">1883834</span>] resume...</span><br><span class="line"><span class="number">2015</span>-<span class="number">04</span>-<span class="number">01</span> <span class="number">00</span>:<span class="number">32</span>:<span class="number">25.912</span> GCDTest[<span class="number">47201</span>:<span class="number">1883856</span>] After <span class="number">5</span> seconds again...</span><br></pre></td></tr></table></figure>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">2015<span class="selector-tag">-04-01</span> 00<span class="selector-pseudo">:32</span><span class="selector-pseudo">:09.903</span> <span class="selector-tag">GCDTest</span><span class="selector-attr">[47201:1883834]</span> <span class="selector-tag">sleep</span> 1 <span class="selector-tag">second</span>...</span><br><span class="line">2015<span class="selector-tag">-04-01</span> 00<span class="selector-pseudo">:32</span><span class="selector-pseudo">:10.910</span> <span class="selector-tag">GCDTest</span><span class="selector-attr">[47201:1883834]</span> <span class="selector-tag">suspend</span>...</span><br><span class="line">2015<span class="selector-tag">-04-01</span> 00<span class="selector-pseudo">:32</span><span class="selector-pseudo">:10.910</span> <span class="selector-tag">GCDTest</span><span class="selector-attr">[47201:1883834]</span> <span class="selector-tag">sleep</span> 10 <span class="selector-tag">second</span>...</span><br><span class="line">2015<span class="selector-tag">-04-01</span> 00<span class="selector-pseudo">:32</span><span class="selector-pseudo">:14.908</span> <span class="selector-tag">GCDTest</span><span class="selector-attr">[47201:1883856]</span> <span class="selector-tag">After</span> 5 <span class="selector-tag">seconds</span>...</span><br><span class="line">2015<span class="selector-tag">-04-01</span> 00<span class="selector-pseudo">:32</span><span class="selector-pseudo">:20.911</span> <span class="selector-tag">GCDTest</span><span class="selector-attr">[47201:1883834]</span> <span class="selector-tag">resume</span>...</span><br><span class="line">2015<span class="selector-tag">-04-01</span> 00<span class="selector-pseudo">:32</span><span class="selector-pseudo">:25.912</span> <span class="selector-tag">GCDTest</span><span class="selector-attr">[47201:1883856]</span> <span class="selector-tag">After</span> 5 <span class="selector-tag">seconds</span> <span class="selector-tag">again</span>...</span><br></pre></td></tr></table></figure>
 <p>可知，在dispatch_suspend挂起队列后，第一个block<strong>还是在运行</strong>，并且正常输出。<br>结合文档，我们可以得知，dispatch_suspend并不会立即暂停正在运行的block，而是在当前block执行完成后，暂停后续的block执行。</p>
 <p>所以下次想暂停正在队列上运行的block时，还是不要用dispatch_suspend了吧~</p>
-<h2 id="“同步”的dispatch_apply">“同步”的dispatch_apply</h2><p>dispatch_apply的作用是在一个队列（串行或并行）上“运行”多次block，其实就是简化了用循环去向队列依次添加block任务。但是我个人觉得这个函数就是个“坑”，先看看如下代码运行结果：</p>
+<h2 id="“同步”的dispatch-apply"><a href="#“同步”的dispatch-apply" class="headerlink" title="“同步”的dispatch_apply"></a>“同步”的dispatch_apply</h2><p>dispatch_apply的作用是在一个队列（串行或并行）上“运行”多次block，其实就是简化了用循环去向队列依次添加block任务。但是我个人觉得这个函数就是个“坑”，先看看如下代码运行结果：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建异步串行队列</span></span><br><span class="line"><span class="keyword">dispatch_queue_t</span> <span class="built_in">queue</span> = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL);</span><br><span class="line"></span><br><span class="line"><span class="comment">//运行block3次</span></span><br><span class="line">dispatch_apply(<span class="number">3</span>, <span class="built_in">queue</span>, ^(<span class="keyword">size_t</span> i) &#123;</span><br><span class="line">    NSLog(@<span class="string">"apply loop: %zu"</span>, i);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//打印信息</span></span><br><span class="line">NSLog(@<span class="string">"After apply"</span>);</span><br></pre></td></tr></table></figure>
 <p>运行的结果是：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2015</span>-<span class="number">04</span>-<span class="number">01</span> <span class="number">00</span>:<span class="number">55</span>:<span class="number">40.854</span> GCDTest[<span class="number">47402</span>:<span class="number">1893289</span>] apply loop: <span class="number">0</span></span><br><span class="line"><span class="number">2015</span>-<span class="number">04</span>-<span class="number">01</span> <span class="number">00</span>:<span class="number">55</span>:<span class="number">40.856</span> GCDTest[<span class="number">47402</span>:<span class="number">1893289</span>] apply loop: <span class="number">1</span></span><br><span class="line"><span class="number">2015</span>-<span class="number">04</span>-<span class="number">01</span> <span class="number">00</span>:<span class="number">55</span>:<span class="number">40.856</span> GCDTest[<span class="number">47402</span>:<span class="number">1893289</span>] apply loop: <span class="number">2</span></span><br><span class="line"><span class="number">2015</span>-<span class="number">04</span>-<span class="number">01</span> <span class="number">00</span>:<span class="number">55</span>:<span class="number">40.856</span> GCDTest[<span class="number">47402</span>:<span class="number">1893289</span>] After apply</span><br></pre></td></tr></table></figure>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">2015<span class="selector-tag">-04-01</span> 00<span class="selector-pseudo">:55</span><span class="selector-pseudo">:40.854</span> <span class="selector-tag">GCDTest</span><span class="selector-attr">[47402:1893289]</span> <span class="selector-tag">apply</span> <span class="selector-tag">loop</span>: 0</span><br><span class="line">2015<span class="selector-tag">-04-01</span> 00<span class="selector-pseudo">:55</span><span class="selector-pseudo">:40.856</span> <span class="selector-tag">GCDTest</span><span class="selector-attr">[47402:1893289]</span> <span class="selector-tag">apply</span> <span class="selector-tag">loop</span>: 1</span><br><span class="line">2015<span class="selector-tag">-04-01</span> 00<span class="selector-pseudo">:55</span><span class="selector-pseudo">:40.856</span> <span class="selector-tag">GCDTest</span><span class="selector-attr">[47402:1893289]</span> <span class="selector-tag">apply</span> <span class="selector-tag">loop</span>: 2</span><br><span class="line">2015<span class="selector-tag">-04-01</span> 00<span class="selector-pseudo">:55</span><span class="selector-pseudo">:40.856</span> <span class="selector-tag">GCDTest</span><span class="selector-attr">[47402:1893289]</span> <span class="selector-tag">After</span> <span class="selector-tag">apply</span></span><br></pre></td></tr></table></figure>
 <p>看，明明是提交到异步的队列去运行，但是“After apply”居然在apply后打印，也就是说，dispatch_apply将外面的线程（main线程）<strong>“阻塞”</strong>了！</p>
 <p>查看官方文档，dispatch_apply确实会“等待”其所有的循环运行完毕才往下执行=。=，看来要小心使用了。</p>
-<h2 id="避免死锁！">避免死锁！</h2><h4 id="dispatch_sync导致的死锁">dispatch_sync导致的死锁</h4><p>涉及到多线程的时候，不可避免的就会有“死锁”这个问题，在使用GCD时，往往一不小心，就可能造成死锁，看看下面的“<strong>死锁</strong>”例子：</p>
-<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//在main线程使用“同步”方法提交Block，必定会死锁。</span></span><br><span class="line"><span class="function">dispatch_sync</span>(<span class="function">dispatch_get_main_queue</span>(), ^&#123;</span><br><span class="line">    <span class="function">NSLog</span>(<span class="at_rule">@<span class="string">"I am block..."</span>);</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="避免死锁！"><a href="#避免死锁！" class="headerlink" title="避免死锁！"></a>避免死锁！</h2><h4 id="dispatch-sync导致的死锁"><a href="#dispatch-sync导致的死锁" class="headerlink" title="dispatch_sync导致的死锁"></a>dispatch_sync导致的死锁</h4><p>涉及到多线程的时候，不可避免的就会有“死锁”这个问题，在使用GCD时，往往一不小心，就可能造成死锁，看看下面的“<strong>死锁</strong>”例子：</p>
+<figure class="highlight hsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//在main线程使用“同步”方法提交Block，必定会死锁。</span></span><br><span class="line">dispatch_sync(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">    NSLog(@<span class="string">"I am block..."</span>)<span class="comment">;</span></span><br><span class="line">&#125;)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
 <p>你可能会说，这么低级的错误，我怎么会犯，那么，看看下面的：</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)update<span class="built_in">UI1</span> &#123;</span><br><span class="line">    <span class="built_in">dispatch_sync</span>(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"Update ui 1"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//死锁！</span></span><br><span class="line">        [<span class="keyword">self</span> update<span class="built_in">UI2</span>];</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)update<span class="built_in">UI2</span> &#123;</span><br><span class="line">    <span class="built_in">dispatch_sync</span>(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"Update ui 2"</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>在你不注意的时候，嵌套调用可能就会造成死锁！所以为了“世界和平”=。=，我们还是少用<strong>dispatch_sync</strong>吧。</p>
-<h4 id="dispatch_apply导致的死锁！">dispatch_apply导致的死锁！</h4><p>啥，dispatch_apply导致的死锁？。。。是的，前一节讲到，dispatch_apply会<strong>等</strong>循环执行完成，这不就差不多是<strong>阻塞</strong>了吗。看如下例子：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">dispatch_queue_t</span> <span class="built_in">queue</span> = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL);</span><br><span class="line"></span><br><span class="line">dispatch_apply(<span class="number">3</span>, <span class="built_in">queue</span>, ^(<span class="keyword">size_t</span> i) &#123;</span><br><span class="line">	NSLog(@<span class="string">"apply loop: %zu"</span>, i);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//再来一个dispatch_apply！死锁！      </span></span><br><span class="line">	dispatch_apply(<span class="number">3</span>, <span class="built_in">queue</span>, ^(<span class="keyword">size_t</span> j) &#123;</span><br><span class="line">		NSLog(@<span class="string">"apply loop inside %zu"</span>, j);</span><br><span class="line">	&#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h4 id="dispatch-apply导致的死锁！"><a href="#dispatch-apply导致的死锁！" class="headerlink" title="dispatch_apply导致的死锁！"></a>dispatch_apply导致的死锁！</h4><p>啥，dispatch_apply导致的死锁？。。。是的，前一节讲到，dispatch_apply会<strong>等</strong>循环执行完成，这不就差不多是<strong>阻塞</strong>了吗。看如下例子：</p>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">dispatch_queue_t queue = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">dispatch_apply(<span class="number">3</span>, queue, ^(<span class="name">size_t</span> i) &#123;</span><br><span class="line">	NSLog(@<span class="string">"apply loop: %zu"</span>, i)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">    //再来一个dispatch_apply！死锁！</span><br><span class="line">	dispatch_apply(<span class="number">3</span>, queue, ^(<span class="name">size_t</span> j) &#123;</span><br><span class="line">		NSLog(@<span class="string">"apply loop inside %zu"</span>, j)<span class="comment">;</span></span><br><span class="line">	&#125;)<span class="comment">;</span></span><br><span class="line">&#125;)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
 <p>这端代码只会输出“apply loop: 1”。。。就没有然后了=。=</p>
 <p>所以，一定要避免dispatch_apply的<strong>嵌套调用</strong>。</p>
-<h2 id="灵活使用dispatch_group">灵活使用dispatch_group</h2><p>很多时候我们需要等待一系列任务（block）执行完成，然后再做一些收尾的工作。如果是有序的任务，可以分步骤完成的，直接使用串行队列就行。但是如果是一系列<strong>并行</strong>执行的任务呢？这个时候，就需要dispatch_group帮忙了~总的来说，dispatch_group的使用分如下几步：</p>
+<h2 id="灵活使用dispatch-group"><a href="#灵活使用dispatch-group" class="headerlink" title="灵活使用dispatch_group"></a>灵活使用dispatch_group</h2><p>很多时候我们需要等待一系列任务（block）执行完成，然后再做一些收尾的工作。如果是有序的任务，可以分步骤完成的，直接使用串行队列就行。但是如果是一系列<strong>并行</strong>执行的任务呢？这个时候，就需要dispatch_group帮忙了~总的来说，dispatch_group的使用分如下几步：</p>
 <ol>
 <li>创建dispatch_group_t</li>
 <li>添加任务（block）</li>
 <li>添加结束任务（如清理操作、通知UI等）</li>
 </ol>
 <p>下面着重讲讲在后面两步。</p>
-<h4 id="添加任务">添加任务</h4><p>添加任务可以分为以下两种情况：</p>
+<h4 id="添加任务"><a href="#添加任务" class="headerlink" title="添加任务"></a>添加任务</h4><p>添加任务可以分为以下两种情况：</p>
 <ol>
 <li>自己创建队列：使用<strong>dispatch_group_async</strong>。</li>
 <li>无法直接使用队列变量（如使用AFNetworking添加异步任务）：使用<strong>dispatch_group_enter</strong>，<strong>dispatch_group_leave</strong>。</li>
@@ -400,19 +301,19 @@ dispatch_once_t必须是全局或static变量这一条算是“老生常谈”�
 <p>当你无法直接使用队列变量时，就无法使用dispatch_group_async了，下面以使用AFNetworking时的情况：</p>
 <figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">AFHTTPRequestOperationManager</span> *manager = [<span class="type">AFHTTPRequestOperationManager</span> manager];</span><br><span class="line"></span><br><span class="line">//<span class="type">Enter</span> group</span><br><span class="line">dispatch_group_enter(group);</span><br><span class="line">[manager <span class="type">GET</span>:@<span class="string">"http://www.baidu.com"</span> parameters:<span class="keyword">nil</span> success:^(<span class="type">AFHTTPRequestOperation</span> *operation, id responseObject) &#123;</span><br><span class="line">    //<span class="type">Deal</span> <span class="keyword">with</span> <span class="literal">result</span>...</span><br><span class="line"></span><br><span class="line">    //<span class="type">Leave</span> group</span><br><span class="line">    dispatch_group_leave(group);</span><br><span class="line">&#125;    failure:^(<span class="type">AFHTTPRequestOperation</span> *operation, <span class="type">NSError</span> *error) &#123;</span><br><span class="line">    //<span class="type">Deal</span> <span class="keyword">with</span> error...</span><br><span class="line"></span><br><span class="line">    //<span class="type">Leave</span> group</span><br><span class="line">    dispatch_group_leave(group);</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">//<span class="type">More</span> request...</span><br></pre></td></tr></table></figure>
 <p>使用<strong>dispatch_group_enter</strong>，<strong>dispatch_group_leave</strong>就可以方便的将一系列网络请求“<strong>打包</strong>”起来~</p>
-<h4 id="添加结束任务">添加结束任务</h4><p>添加结束任务也可以分为两种情况，如下：</p>
+<h4 id="添加结束任务"><a href="#添加结束任务" class="headerlink" title="添加结束任务"></a>添加结束任务</h4><p>添加结束任务也可以分为两种情况，如下：</p>
 <ol>
 <li>在当前线程<strong>阻塞的同步等待</strong>：dispatch_group_wait。</li>
 <li>添加一个异步执行的任务作为结束任务：dispatch_group_notify</li>
 </ol>
 <p>这两个比较简单，就不再贴代码了=。=</p>
-<h2 id="使用dispatch_barrier_async,dispatch_barrier_sync的注意事项">使用dispatch_barrier_async,dispatch_barrier_sync的注意事项</h2><p>dispatch_barrier_async的作用就是向某个队列插入一个block，当目前正在执行的block运行完成后，阻塞这个block后面添加的block，只运行这个block直到完成，然后再继续后续的任务，有点“唯我独尊”的感觉=。=</p>
+<h2 id="使用dispatch-barrier-async-dispatch-barrier-sync的注意事项"><a href="#使用dispatch-barrier-async-dispatch-barrier-sync的注意事项" class="headerlink" title="使用dispatch_barrier_async,dispatch_barrier_sync的注意事项"></a>使用dispatch_barrier_async,dispatch_barrier_sync的注意事项</h2><p>dispatch_barrier_async的作用就是向某个队列插入一个block，当目前正在执行的block运行完成后，阻塞这个block后面添加的block，只运行这个block直到完成，然后再继续后续的任务，有点“唯我独尊”的感觉=。=</p>
 <p>值得注意的是：</p>
 <ol>
 <li>dispatch<em>barrier\</em>(a)sync只在自己创建的并发队列上有效，在全局(Global)并发队列、串行队列上，效果跟<strong>dispatch_(a)sync</strong>效果一样。</li>
 <li>既然在串行队列上跟<strong>dispatch_(a)sync</strong>效果一样，那就要小心别死锁！</li>
 </ol>
-<h2 id="dispatch_set_context与dispatch_set_finalizer_f的配合使用">dispatch_set_context与dispatch_set_finalizer_f的配合使用</h2><p>dispatch_set_context可以为队列添加<strong>上下文数据</strong>，但是因为GCD是C语言接口形式的，所以其context参数类型是“<strong>void *</strong>”。也就是说，我们创建context时有如下几种选择：</p>
+<h2 id="dispatch-set-context与dispatch-set-finalizer-f的配合使用"><a href="#dispatch-set-context与dispatch-set-finalizer-f的配合使用" class="headerlink" title="dispatch_set_context与dispatch_set_finalizer_f的配合使用"></a>dispatch_set_context与dispatch_set_finalizer_f的配合使用</h2><p>dispatch_set_context可以为队列添加<strong>上下文数据</strong>，但是因为GCD是C语言接口形式的，所以其context参数类型是“<strong>void *</strong>”。也就是说，我们创建context时有如下几种选择：</p>
 <ol>
 <li>用C语言的malloc创建context数据。</li>
 <li>用C++的new创建类对象。</li>
@@ -422,556 +323,223 @@ dispatch_once_t必须是全局或static变量这一条算是“老生常谈”�
 <p>所以，使用dispatch_set_context的时候，最好结合dispatch_set_finalizer_f使用，为队列设置“析构函数”，在这个函数里面释放内存，大致如下：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">cleanStaff</span><span class="params">(<span class="keyword">void</span> *context)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//释放context的内存！</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//CFRelease(context);</span></span><br><span class="line">    <span class="comment">//free(context);</span></span><br><span class="line">    <span class="comment">//delete context;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="comment">//在队列创建后，设置其“析构函数”</span></span><br><span class="line">dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);</span><br></pre></td></tr></table></figure>
 <p>详细用法，请看我之前写的Blog<a href="http://tutuge.me/2015/03/29/bind-data-to-gcd-queue/">为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权</a></p>
-<h2 id="总结">总结</h2><p>其实本文更像是总结了GCD中的“坑”=。=</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>其实本文更像是总结了GCD中的“坑”=。=</p>
 <p>至于经验，总结一条，就是使用任何技术，都要研究透彻，否则后患无穷啊~</p>
-<h2 id="参考">参考</h2><ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a href="https://developer.apple.com/library/prerelease/mac/documentation/Performance/Reference/GCD_libdispatch_Ref/index.html" target="_blank" rel="external">Grand Central Dispatch (GCD) Reference</a></li>
 <li><a href="https://developer.apple.com/library/prerelease/mac/documentation/General/Conceptual/ConcurrencyProgrammingGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008091" target="_blank" rel="external">Concurrency Programming Guide</a></li>
 <li><a href="http://commandshift.co.uk/blog/2014/03/19/using-dispatch-groups-to-wait-for-multiple-web-services" target="_blank" rel="external">Using Dispatch Groups to Wait for Multiple Web Services</a></li>
 </ul>
 
-      
-    </div>
-
-    <div>
-      
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/iOS/" rel="tag">#iOS</a>
-          
-            <a href="/tags/原创/" rel="tag">#原创</a>
-          
+            </div>
         </div>
-      
+    </div>
+</article>
 
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2015/03/29/bind-data-to-gcd-queue/" rel="next" title="为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权">
-                <i class="fa fa-chevron-left"></i> 为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权
-              </a>
-            
-          </div>
 
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/04/19/thrift-example-cpp-and-php/" rel="prev" title="RPC框架Thrift例子-PHP调用C++后端程序">
-                RPC框架Thrift例子-PHP调用C++后端程序 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
+
+
+    <section id="comment">
+        <div class="card">
+            <div class="card-content">
+                <!-- Duoshuo Comment BEGIN -->
+                <div class="ds-thread" data-thread-key="2015/04/03/something-about-gcd/" data-title="GCD使用经验与技巧浅谈" data-url="http://tutuge.me/2015/04/03/something-about-gcd/"></div>
+
+                <script type="text/javascript">
+                    console.log(document.querySelector('.ds-thread'));
+                    var duoshuoQuery = {
+                        short_name: 'tutuge'
+                    };
+                    (function() {
+                        var ds = document.createElement('script');
+                        ds.type = 'text/javascript';
+                        ds.async = true;
+                        ds.src = (document.location.protocol == 'https:'
+                            ? 'https:'
+                            : 'http:') + '//static.duoshuo.com/embed.js';
+                        ds.charset = 'UTF-8';
+                        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+                    })();
+                </script>
+                <!-- Duoshuo Comment END -->
+            </div>
         </div>
-      
-
-      
-      
-    </footer>
-  </article>
+    </section>
 
 
 
-    <div class="post-spread">
-      
-        <div class="ds-share flat" data-thread-key="2015/04/03/something-about-gcd/"
-     data-title="GCD使用经验与技巧浅谈"
-     data-content=""
-     data-url="http://tutuge.me/2015/04/03/something-about-gcd/">
-  <div class="ds-share-inline">
-    <ul  class="ds-share-icons-16">
+</div>
 
-      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
-      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
-      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
-      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
-      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
-
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large teal">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect teal accent-4" title="Return to top"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="Menu"><i class="fa fa-navicon"></i></a></li>
     </ul>
-    <div class="ds-share-icons-more">
-    </div>
-  </div>
-</div>
-      
-    </div>
   </div>
 
-
-          </div>
-          
-
-  <p>热评文章</p>
-  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
-
-
-          
-  <div class="comments" id="comments">
-    
-      <div class="ds-thread" data-thread-key="2015/04/03/something-about-gcd/"
-           data-title="GCD使用经验与技巧浅谈" data-url="http://tutuge.me/2015/04/03/something-about-gcd/">
-      </div>
-    
-  </div>
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <section class="site-overview sidebar-panel ">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/uploads/avatar_comic_240.png"
-               alt="土土哥" />
-          <p class="site-author-name" itemprop="name">土土哥</p>
-          <p class="site-description motion-element" itemprop="description">程序猿</p>
-        </div>
-        <nav class="site-state motion-element">
-          <div class="site-state-item site-state-posts">
-            <a href="/archives">
-              <span class="site-state-item-count">30</span>
-              <span class="site-state-item-name">日志</span>
-            </a>
-          </div>
-
-          
-            <div class="site-state-item site-state-categories">
-              
-                <span class="site-state-item-count">4</span>
-                <span class="site-state-item-name">分类</span>
-              
-            </div>
-          
-
-          
-            <div class="site-state-item site-state-tags">
-              <a href="/tags">
-                <span class="site-state-item-count">17</span>
-                <span class="site-state-item-name">标签</span>
-              </a>
-            </div>
-          
-
-        </nav>
-
-        
-          <div class="feed-link motion-element">
-            <a href="/atom.xml" rel="alternate">
-              <i class="fa fa-rss"></i>
-              RSS
-            </a>
-          </div>
-        
-
-        <div class="links-of-author motion-element">
-          
-            
-              <span class="links-of-author-item">
-                <a href="https://github.com/zekunyan" target="_blank">
-                  
-                    <i class="fa fa-github"></i> GitHub
-                  
-                </a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="https://twitter.com/zorro_tutuge" target="_blank">
-                  
-                    <i class="fa fa-twitter"></i> Twitter
-                  
-                </a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://weibo.com/zekunyan" target="_blank">
-                  
-                    <i class="fa fa-weibo"></i> Weibo
-                  
-                </a>
-              </span>
-            
-          
-        </div>
-
-        
-        
-          <div class="cc-license motion-element" itemprop="license">
-            <a href="http://creativecommons.org/licenses/by-nc-nd/4.0" class="cc-opacity" target="_blank">
-              <img src="/images/cc-by-nc-nd.svg" alt="Creative Commons" />
-            </a>
-          </div>
-        
-
-        
-        <div class="links-of-blogroll motion-element">
-          
-            <div class="links-of-blogroll-title">友情链接</div>
-            <ul class="links-of-blogroll-list">
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://chenrudan.github.io" target="_blank">女朋友的博客😊</a>
-                </li>
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://suta.name" target="_blank">很赞的设计师：苏塔</a>
-                </li>
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://neoyeelf.github.io" target="_blank">NeOye's blog</a>
-                </li>
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://raytaylorlin.com" target="_blank">Ray Taylor Lin's world</a>
-                </li>
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://bingyan.farbox.com" target="_blank">Howl写东西的地方</a>
-                </li>
-              
-            </ul>
-          
-        </div>
-
-      </section>
-
-      
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc-indicator-top post-toc-indicator">
-            <i class="fa fa-angle-double-up"></i>
-          </div>
-          <div class="post-toc">
-            
-              
-            
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dispatch_once_t必须是全局或static变量"><span class="nav-number">2.</span> <span class="nav-text">dispatch_once_t必须是全局或static变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dispatch_queue_create的第二个参数"><span class="nav-number">3.</span> <span class="nav-text">dispatch_queue_create的第二个参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dispatch_after是延迟提交，不是延迟运行"><span class="nav-number">4.</span> <span class="nav-text">dispatch_after是延迟提交，不是延迟运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正确创建dispatch_time_t"><span class="nav-number">5.</span> <span class="nav-text">正确创建dispatch_time_t</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dispatch_suspend_!=_立即停止队列的运行"><span class="nav-number">6.</span> <span class="nav-text">dispatch_suspend != 立即停止队列的运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#“同步”的dispatch_apply"><span class="nav-number">7.</span> <span class="nav-text">“同步”的dispatch_apply</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#避免死锁！"><span class="nav-number">8.</span> <span class="nav-text">避免死锁！</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#dispatch_sync导致的死锁"><span class="nav-number">8.0.1.</span> <span class="nav-text">dispatch_sync导致的死锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#dispatch_apply导致的死锁！"><span class="nav-number">8.0.2.</span> <span class="nav-text">dispatch_apply导致的死锁！</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#灵活使用dispatch_group"><span class="nav-number">9.</span> <span class="nav-text">灵活使用dispatch_group</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#添加任务"><span class="nav-number">9.0.1.</span> <span class="nav-text">添加任务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#添加结束任务"><span class="nav-number">9.0.2.</span> <span class="nav-text">添加结束任务</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用dispatch_barrier_async,dispatch_barrier_sync的注意事项"><span class="nav-number">10.</span> <span class="nav-text">使用dispatch_barrier_async,dispatch_barrier_sync的注意事项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dispatch_set_context与dispatch_set_finalizer_f的配合使用"><span class="nav-number">11.</span> <span class="nav-text">dispatch_set_context与dispatch_set_finalizer_f的配合使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">12.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">13.</span> <span class="nav-text">参考</span></a></li></ol></div>
-            
-          </div>
-          <div class="post-toc-indicator-bottom post-toc-indicator">
-            <i class="fa fa-angle-double-down"></i>
-          </div>
-        </section>
-      
-
-    </div>
-  </aside>
-
-
-        
-      </div>
     </main>
+    <footer class="page-footer blue-grey darken-1">
+    
+    <div class="container">
+        <div class="row">
+            
+            <div class="social-group col m3 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/zekunyan" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+            </div>
+            
 
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright" >
-  
-  &copy;  2014 - 
-  <span itemprop="copyrightYear">2016</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">燕泽堃</span>
-</div>
-
-<div class="powered-by">
-  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
-</div>
-
-<div class="theme-info">
-  主题 -
-  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
-    NexT.Pisces
-  </a>
-</div>
-
-
-
-      </div>
-    </footer>
-
-    <div class="back-to-top">
-      <i class="fa fa-arrow-up"></i>
+            
+            <div class="col m9 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
+                
+                    <a class="social-link" href="http://raytaylorlin.com/" target="_blank">raytaylorism主题作者的技术博客</a>
+                
+                    <a class="social-link" href="http://suta.name/" target="_blank">很赞的设计师</a>
+                
+                    <a class="social-link" href="http://neoyeelf.github.io/" target="_blank">NeOye&#39;s blog</a>
+                
+                    <a class="social-link" href="http://bingyan.farbox.com/" target="_blank">Howl写东西的地方</a>
+                
+            </div>
+            
+        </div>
     </div>
-  </div>
+    
 
-  
-
-
-  
-
-
-
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
+    <div class="footer-copyright teal-link-context">
+        <div class="container">
+            © 2016 tutuge.me, All rights reserved.
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
+        </div>
+    </div>
+</footer>
 
 
-  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
-
-  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-
-  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-
-  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
-
-  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
-
-  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前浏览器不支持博客完整功能。如果要获得最佳体验，请点击右上角···，复制链接，并在其它浏览器打开</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前浏览器不支持博客完整功能。如果要获得最佳体验，请点击右上角···，复制链接，并在其它浏览器打开</p>
+</div>
 
 
-  
+<script src="/js/jquery-2.1.1.min.js"></script>
+<script src="/js/materialize.min.js"></script>
 
+<script>
+(function($) {
+    $(document).ready(function() {
+        // 隐藏禁用javascript（针对微信内置浏览器）的提示
+        $('.noscript').hide();
 
-  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+        // 图片缩放效果
+        var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
 
-  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+        // 给图片加上点击放大效果（materialbox插件）
+        $imgs.addClass('materialboxed')
+            .each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
 
-
-
-  
-  
-
-
-  <script type="text/javascript" src="/js/src/affix.js?v=0.5.0"></script>
-
-  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=0.5.0"></script>
-
-
-
-  
-  
-<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
-
-<script type="text/javascript" id="sidebar.toc.highlight">
-  $(document).ready(function () {
-    var tocSelector = '.post-toc';
-    var $tocSelector = $(tocSelector);
-    var activeCurrentSelector = '.active-current';
-
-    $tocSelector
-      .on('activate.bs.scrollspy', function () {
-        var $currentActiveElement = $(tocSelector + ' .active').last();
-
-        removeCurrentActiveClass();
-        $currentActiveElement.addClass('active-current');
-
-        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
-      })
-      .on('clear.bs.scrollspy', function () {
-        removeCurrentActiveClass();
-      });
-
-    function removeCurrentActiveClass () {
-      $(tocSelector + ' ' + activeCurrentSelector)
-        .removeClass(activeCurrentSelector.substring(1));
-    }
-
-    function processTOC () {
-      getTOCMaxHeight();
-      toggleTOCOverflowIndicators();
-    }
-
-    function getTOCMaxHeight () {
-      var height = $('.sidebar').height() -
-                   $tocSelector.position().top -
-                   $('.post-toc-indicator-bottom').height();
-
-      $tocSelector.css('height', height);
-
-      return height;
-    }
-
-    function toggleTOCOverflowIndicators () {
-      tocOverflowIndicator(
-        '.post-toc-indicator-top',
-        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
-      );
-
-      tocOverflowIndicator(
-        '.post-toc-indicator-bottom',
-        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
-      )
-    }
-
-    $(document).on('sidebar.motion.complete', function () {
-      processTOC();
-    });
-
-    $('body').scrollspy({ target: tocSelector });
-    $(window).on('resize', function () {
-      if ( $('.sidebar').hasClass('sidebar-active') ) {
-        processTOC();
-      }
-    });
-
-    onScroll($tocSelector);
-
-    function onScroll (element) {
-      element.on('mousewheel DOMMouseScroll', function (event) {
-          var oe = event.originalEvent;
-          var delta = oe.wheelDelta || -oe.detail;
-
-          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
-          event.preventDefault();
-
-          toggleTOCOverflowIndicators();
-      });
-    }
-
-    function tocOverflowIndicator (indicator, action) {
-      var $indicator = $(indicator);
-      var opacity = action === 'show' ? 1 : 0;
-      $indicator.velocity ?
-        $indicator.velocity('stop').velocity({
-          opacity: opacity
-        }, { duration: 100 }) :
-        $indicator.stop().animate({
-          opacity: opacity
-        }, 100);
-    }
-
-  });
-</script>
-
-<script type="text/javascript" id="sidebar.nav">
-  $(document).ready(function () {
-    var html = $('html');
-    var TAB_ANIMATE_DURATION = 200;
-    var hasVelocity = $.isFunction(html.velocity);
-
-    $('.sidebar-nav li').on('click', function () {
-      var item = $(this);
-      var activeTabClassName = 'sidebar-nav-active';
-      var activePanelClassName = 'sidebar-panel-active';
-      if (item.hasClass(activeTabClassName)) {
-        return;
-      }
-
-      var currentTarget = $('.' + activePanelClassName);
-      var target = $('.' + item.data('target'));
-
-      hasVelocity ?
-        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
-          target
-            .velocity('stop')
-            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
-            .addClass(activePanelClassName);
-        }) :
-        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
-          currentTarget.hide();
-          target
-            .stop()
-            .css({'opacity': 0, 'display': 'block'})
-            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
-              currentTarget.removeClass(activePanelClassName);
-              target.addClass(activePanelClassName);
-            });
+        // 首页幻灯片
+        $('.slider').slider({
+            indicators: true,
+            full_width: true,
+            interval: 8000
         });
 
-      item.siblings().removeClass(activeTabClassName);
-      item.addClass(activeTabClassName);
-    });
+        $(".button-collapse").sideNav();
+        $(".category-menu").sideNav();
 
-    $('.post-toc a').on('click', function (e) {
-      e.preventDefault();
-      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
-      var offset = $(targetSelector).offset().top;
-      hasVelocity ?
-        html.velocity('stop').velocity('scroll', {
-          offset: offset  + 'px',
-          mobileHA: false
-        }) :
-        $('html, body').stop().animate({
-          scrollTop: offset
-        }, 500);
-    });
+        // 针对gallery post
+        $('.carousel').carousel({
+            full_width: true
+        });
+        $('.carousel-control.prev').click(function() {
+            $('.carousel').carousel('prev');
+        });
+        $('.carousel-control.next').click(function() {
+            $('.carousel').carousel('next');
+        });
 
-    // Expand sidebar on post detail page by default, when post has a toc.
-    NexT.motion.middleWares.sidebar = function () {
-      var $tocContent = $('.post-toc-content');
+        // 文章目录
+        $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+        // 修正文章目录的left-border颜色
+        var color = $('.table-of-contents-text').css('color');
+        $('.table-of-contents-link').css('border-left-color', color);
 
-      if (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always') {
-        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
-          NexT.utils.displaySidebar();
+        // 针对移动端做的优化：FAB按钮点击一下收回
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            $('.fixed-action-btn').addClass('click-to-toggle');
         }
-      }
-    };
-  });
+        // 回到顶部
+        $('.btn-return-top').click(function() {
+            $('body, html').animate({
+                scrollTop: 0
+            }, 500);
+        });
+
+        // 重置读书页面的Tab标签页的颜色
+        $('li.tab a').hover(function() {
+            $(this).toggleClass('text-lighten-4');
+        });
+        $('.indicator').addClass('teal lighten-2');
+
+        
+        // 添加new标签
+        $('.menu-reading,.menu-about').append('<span class="new badge teal accent-4"></span>');
+        
+    });
+})(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-68058110-1', 'auto');
+    ga('send', 'pageview');
+
 </script>
 
 
 
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=55079830" charset="UTF-8"></script>
 
 
 
-  
-
-  
-    
-  
-
-  <script type="text/javascript">
-    var duoshuoQuery = {short_name:"tutuge"};
-    (function() {
-      var ds = document.createElement('script');
-      ds.type = 'text/javascript';ds.async = true;
-      ds.id = 'duoshuo-script';
-      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-      ds.charset = 'UTF-8';
-      (document.getElementsByTagName('head')[0]
-      || document.getElementsByTagName('body')[0]).appendChild(ds);
-    })();
-  </script>
-
-  
-    
-  
-
-
-
-
-
-  
-  
-  
-
-  
 
 
 </body>

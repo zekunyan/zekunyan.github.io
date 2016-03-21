@@ -1,803 +1,522 @@
-<!doctype html>
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion">
+<!DOCTYPE HTML>
+<html>
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
+    
 
+    <title>iOS | iOS，Android程序猿，喜欢Mac、Linux、各种开源技术，各种语言</title>
+    <meta name="author" content="燕泽堃">
+    
+    <meta name="description" content="程序猿">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+    
+    <meta property="og:site_name" content="土土哥的技术Blog"/>
 
+    
+    <meta property="og:image" content="undefined"/>
+    
 
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="土土哥的技术Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
 
-
-
-
-
-
-
-
-
-
-  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
-
-
-
-
-  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-
-
-
-<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="tutuge,土土哥,iOS,Android,Linux,程序员,燕泽堃,iOS程序员,iOS开发" />
-
-
-
-
-
-  <link rel="alternate" href="/atom.xml" title="土土哥的技术Blog" type="application/atom+xml" />
-
-
-
-
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
-
-
-
-
-
-
-<meta name="description" content="程序猿">
-<meta property="og:type" content="website">
-<meta property="og:title" content="土土哥的技术Blog">
-<meta property="og:url" content="http://tutuge.me/tags/iOS/index.html">
-<meta property="og:site_name" content="土土哥的技术Blog">
-<meta property="og:description" content="程序猿">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="土土哥的技术Blog">
-<meta name="twitter:description" content="程序猿">
-
-
-
-<script type="text/javascript" id="hexo.configuration">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    scheme: 'Pisces',
-    sidebar: {"position":"left","display":"post"},
-    fancybox: true,
-    motion: true,
-    duoshuo: {
-      userId: 9509393,
-      author: '土土哥'
-    }
-  };
-</script>
-
-  <title> 标签: iOS | 土土哥的技术Blog </title>
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
-  
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="blue-grey">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">土土哥的技术Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            关于
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav blue-grey darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="http://7nj2iz.com1.z0.glb.clouddn.com/avatar_comic_big.png" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">土土哥</p>
+                        <p class="desc">iOS/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    关于
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav blue-grey darken-1" id="category-menu">
+        <!--<li class="">
+            <h5 class="black-text">分类目录</h5>
+        </li>-->
+
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/iOS/">
+                    iOS <span class="right">26 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/Android/">
+                    Android <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/服务端/">
+                    服务端 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/其它/">
+                    其它 <span class="right">2 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+    <main>
+        <div class="container main-container">
+    
+
+<nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper blue-grey">
+        <span class="breadcrumb">当前位置（标签）</span>
+        
+
+        
+            <a class="breadcrumb" href="tags/iOS/">iOS</a>
+        
+    </div>
+</nav>
+
+
+
+    <div class="collection mt-0">
+        
+            <a href="/2015/12/31/TTGTagCollectionView/" class="collection-item grey-text text-darken-1">
+                <time datetime="2015-12-31T13:56:04.000Z">2015-12-31</time>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                开源项目-TTGTagCollectionView
+            </a>
+        
+            <a href="/2015/12/14/autolayout-example-with-masonry3/" class="collection-item grey-text text-darken-1">
+                <time datetime="2015-12-14T13:36:08.000Z">2015-12-14</time>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                有趣的Autolayout示例3-Masonry实现
+            </a>
+        
+            <a href="/2015/10/25/ttgemojirate-lib/" class="collection-item grey-text text-darken-1">
+                <time datetime="2015-10-25T11:32:42.000Z">2015-10-25</time>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                Swift开源项目: TTGEmojiRate的实现
+            </a>
+        
+            <a href="/2015/10/09/ttgsnackbar-lib/" class="collection-item grey-text text-darken-1">
+                <time datetime="2015-10-09T11:49:09.000Z">2015-10-09</time>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                Swift写的库-TTGSnackbar
+            </a>
+        
+            <a href="/2015/08/08/autolayout-example-with-masonry2/" class="collection-item grey-text text-darken-1">
+                <time datetime="2015-08-07T16:55:52.000Z">2015-08-08</time>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                有趣的Autolayout示例2-Masonry实现
+            </a>
+        
+            <a href="/2015/07/25/compatibility-with-macro-category-and-runtime/" class="collection-item grey-text text-darken-1">
+                <time datetime="2015-07-24T16:39:03.000Z">2015-07-25</time>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                解决iOS项目的版本兼容问题-结合宏、Category和Runtime
+            </a>
+        
+            <a href="/2015/07/08/fill-nil-property-of-object/" class="collection-item grey-text text-darken-1">
+                <time datetime="2015-07-08T15:23:23.000Z">2015-07-08</time>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                用Runtime的手段填充任意NSObject对象的nil属性
+            </a>
+        
+            <a href="/2015/05/23/autolayout-example-with-masonry/" class="collection-item grey-text text-darken-1">
+                <time datetime="2015-05-23T11:59:22.000Z">2015-05-23</time>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                有趣的Autolayout示例-Masonry实现
+            </a>
+        
+            <a href="/2015/04/21/resizable-nstextattachment/" class="collection-item grey-text text-darken-1">
+                <time datetime="2015-04-21T12:26:17.000Z">2015-04-21</time>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                UITextView编辑时插入自定义表情-续-自定义表情图片的大小
+            </a>
+        
+            <a href="/2015/04/03/something-about-gcd/" class="collection-item grey-text text-darken-1">
+                <time datetime="2015-04-03T13:59:56.000Z">2015-04-03</time>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                GCD使用经验与技巧浅谈
+            </a>
+        
+            <a href="/2015/03/29/bind-data-to-gcd-queue/" class="collection-item grey-text text-darken-1">
+                <time datetime="2015-03-29T11:27:40.000Z">2015-03-29</time>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权
+            </a>
+        
+            <a href="/2015/03/21/effective-objective-c-5-enum/" class="collection-item grey-text text-darken-1">
+                <time datetime="2015-03-21T12:52:57.000Z">2015-03-21</time>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5
+            </a>
+        
+            <a href="/2015/03/17/what-is-autoreleasepool/" class="collection-item grey-text text-darken-1">
+                <time datetime="2015-03-17T12:21:56.000Z">2015-03-17</time>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                @autoreleasepool-内存的分配与释放
+            </a>
+        
+            <a href="/2015/03/15/有关宏定义的经验与技巧-简化代码-增强Log/" class="collection-item grey-text text-darken-1">
+                <time datetime="2015-03-15T07:34:28.000Z">2015-03-15</time>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                有关宏定义的经验与技巧-简化代码-增强Log
+            </a>
+        
+            <a href="/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/" class="collection-item grey-text text-darken-1">
+                <time datetime="2015-03-10T16:07:23.000Z">2015-03-11</time>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                Effective-Objective-C-读书笔记-Item-4-如何正确定义常量
+            </a>
+        
+            <a href="/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/" class="collection-item grey-text text-darken-1">
+                <time datetime="2015-03-07T03:04:38.000Z">2015-03-07</time>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                UITextView编辑时插入自定义表情-简单的图文混编
+            </a>
+        
+            <a href="/2015/02/28/一次审核被拒的经历-关于iCloud到底应该备份什么数据/" class="collection-item grey-text text-darken-1">
+                <time datetime="2015-02-28T10:18:11.000Z">2015-02-28</time>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                一次审核被拒的经历-关于iCloud到底应该备份什么数据
+            </a>
+        
+            <a href="/2015/02/19/Block类型变量-缓存Http请求与回调/" class="collection-item grey-text text-darken-1">
+                <time datetime="2015-02-18T19:18:36.000Z">2015-02-19</time>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                Block类型变量-缓存Http请求与回调
+            </a>
+        
+            <a href="/2015/02/19/提升UITableView性能-复杂页面的优化/" class="collection-item grey-text text-darken-1">
+                <time datetime="2015-02-18T17:28:41.000Z">2015-02-19</time>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                提升UITableView性能-复杂页面的优化
+            </a>
+        
+            <a href="/2015/02/18/NSString的Copy与内存分配/" class="collection-item grey-text text-darken-1">
+                <time datetime="2015-02-18T09:00:47.000Z">2015-02-18</time>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                NSString的Copy与内存分配
+            </a>
+        
+            <a href="/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/" class="collection-item grey-text text-darken-1">
+                <time datetime="2015-02-16T10:52:08.000Z">2015-02-16</time>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                利用NSProxy实现消息转发-模块化的网络接口层设计-原创
+            </a>
+        
+            <a href="/2015/02/14/Effective-Objective-C-读书笔记-Item-3/" class="collection-item grey-text text-darken-1">
+                <time datetime="2015-02-14T08:51:51.000Z">2015-02-14</time>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                Effective-Objective-C-读书笔记-Item-3
+            </a>
+        
+            <a href="/2015/02/06/Effective-Objective-C-读书笔记-Item-2/" class="collection-item grey-text text-darken-1">
+                <time datetime="2015-02-06T08:43:46.000Z">2015-02-06</time>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                Effective-Objective-C-读书笔记-Item-2
+            </a>
+        
+            <a href="/2015/02/05/Effective-Objective-C-读书笔记-Item-1/" class="collection-item grey-text text-darken-1">
+                <time datetime="2015-02-04T17:17:08.000Z">2015-02-05</time>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                Effective-Objective-C-读书笔记-Item-1
+            </a>
+        
+            <a href="/2015/02/01/iOS项目的目录结构-原创/" class="collection-item grey-text text-darken-1">
+                <time datetime="2015-01-31T18:27:21.000Z">2015-02-01</time>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                iOS项目的目录结构-原创
+            </a>
+        
+    </div>
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large teal">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect teal accent-4" title="Return to top"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="Menu"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer blue-grey darken-1">
+    
+    <div class="container">
+        <div class="row">
+            
+            <div class="social-group col m3 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/zekunyan" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+            </div>
+            
+
+            
+            <div class="col m9 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
+                
+                    <a class="social-link" href="http://raytaylorlin.com/" target="_blank">raytaylorism主题作者的技术博客</a>
+                
+                    <a class="social-link" href="http://suta.name/" target="_blank">很赞的设计师</a>
+                
+                    <a class="social-link" href="http://neoyeelf.github.io/" target="_blank">NeOye&#39;s blog</a>
+                
+                    <a class="social-link" href="http://bingyan.farbox.com/" target="_blank">Howl写东西的地方</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright teal-link-context">
+        <div class="container">
+            © 2016 tutuge.me, All rights reserved.
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前浏览器不支持博客完整功能。如果要获得最佳体验，请点击右上角···，复制链接，并在其它浏览器打开</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前浏览器不支持博客完整功能。如果要获得最佳体验，请点击右上角···，复制链接，并在其它浏览器打开</p>
+</div>
+
+
+<script src="/js/jquery-2.1.1.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+(function($) {
+    $(document).ready(function() {
+        // 隐藏禁用javascript（针对微信内置浏览器）的提示
+        $('.noscript').hide();
+
+        // 图片缩放效果
+        var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+        // 给图片加上点击放大效果（materialbox插件）
+        $imgs.addClass('materialboxed')
+            .each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+        // 首页幻灯片
+        $('.slider').slider({
+            indicators: true,
+            full_width: true,
+            interval: 8000
+        });
+
+        $(".button-collapse").sideNav();
+        $(".category-menu").sideNav();
+
+        // 针对gallery post
+        $('.carousel').carousel({
+            full_width: true
+        });
+        $('.carousel-control.prev').click(function() {
+            $('.carousel').carousel('prev');
+        });
+        $('.carousel-control.next').click(function() {
+            $('.carousel').carousel('next');
+        });
+
+        // 文章目录
+        $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+        // 修正文章目录的left-border颜色
+        var color = $('.table-of-contents-text').css('color');
+        $('.table-of-contents-link').css('border-left-color', color);
+
+        // 针对移动端做的优化：FAB按钮点击一下收回
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            $('.fixed-action-btn').addClass('click-to-toggle');
+        }
+        // 回到顶部
+        $('.btn-return-top').click(function() {
+            $('body, html').animate({
+                scrollTop: 0
+            }, 500);
+        });
+
+        // 重置读书页面的Tab标签页的颜色
+        $('li.tab a').hover(function() {
+            $(this).toggleClass('text-lighten-4');
+        });
+        $('.indicator').addClass('teal lighten-2');
+
+        
+        // 添加new标签
+        $('.menu-reading,.menu-about').append('<span class="new badge teal accent-4"></span>');
+        
+    });
+})(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
 
 
 <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-68058110-1', 'auto');
-  ga('send', 'pageview');
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-68058110-1', 'auto');
+    ga('send', 'pageview');
+
 </script>
 
 
-  <script type="text/javascript">
-    var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "//hm.baidu.com/hm.js?c674423748672d339369a33103ded1e2";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
-  </script>
 
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=55079830" charset="UTF-8"></script>
 
 
-  <script type="text/javascript">
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "//tajs.qq.com/stats?sId=55079830";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
-  </script>
 
-
-
-
-  <div style="display: none;">
-    <script src="http://s6.cnzz.com/stat.php?id=1253507635&web_id=1253507635" type="text/javascript"></script>
-  </div>
-
-
-
-
-
-  
-  
-    
-  
-
-  <div class="container one-collumn sidebar-position-left  ">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-meta ">
-  
-
-  <div class="custom-logo-site-title">
-    <a href="/"  class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <span class="site-title">土土哥的技术Blog</span>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-  </div>
-  <p class="site-subtitle">iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言</p>
-</div>
-
-<div class="site-nav-toggle">
-  <button>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-  </button>
-</div>
-
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
-        
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
-            
-            首页
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-about">
-          <a href="/about" rel="section">
-            
-              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
-            
-            关于
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-archives">
-          <a href="/archives" rel="section">
-            
-              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
-            
-            归档
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/tags" rel="section">
-            
-              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
-            
-            标签
-          </a>
-        </li>
-      
-
-      
-    </ul>
-  
-
-  
-</nav>
-
- </div>
-    </header>
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-collapse">
-    <div class="collection-title">
-      <h2 >
-        iOS
-        <small>标签</small>
-      </h2>
-    </div>
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2015/12/31/TTGTagCollectionView/" itemprop="url">
-              
-                <span itemprop="name">开源项目-TTGTagCollectionView</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2015-12-31T21:56:04+08:00"
-              content="2015-12-31" >
-          12-31
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2015/12/14/autolayout-example-with-masonry3/" itemprop="url">
-              
-                <span itemprop="name">有趣的Autolayout示例3-Masonry实现</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2015-12-14T21:36:08+08:00"
-              content="2015-12-14" >
-          12-14
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2015/10/25/ttgemojirate-lib/" itemprop="url">
-              
-                <span itemprop="name">Swift开源项目: TTGEmojiRate的实现</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2015-10-25T19:32:42+08:00"
-              content="2015-10-25" >
-          10-25
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2015/10/09/ttgsnackbar-lib/" itemprop="url">
-              
-                <span itemprop="name">Swift写的库-TTGSnackbar</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2015-10-09T19:49:09+08:00"
-              content="2015-10-09" >
-          10-09
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2015/08/08/autolayout-example-with-masonry2/" itemprop="url">
-              
-                <span itemprop="name">有趣的Autolayout示例2-Masonry实现</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2015-08-08T00:55:52+08:00"
-              content="2015-08-08" >
-          08-08
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2015/07/25/compatibility-with-macro-category-and-runtime/" itemprop="url">
-              
-                <span itemprop="name">解决iOS项目的版本兼容问题-结合宏、Category和Runtime</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2015-07-25T00:39:03+08:00"
-              content="2015-07-25" >
-          07-25
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2015/07/08/fill-nil-property-of-object/" itemprop="url">
-              
-                <span itemprop="name">用Runtime的手段填充任意NSObject对象的nil属性</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2015-07-08T23:23:23+08:00"
-              content="2015-07-08" >
-          07-08
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2015/05/23/autolayout-example-with-masonry/" itemprop="url">
-              
-                <span itemprop="name">有趣的Autolayout示例-Masonry实现</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2015-05-23T19:59:22+08:00"
-              content="2015-05-23" >
-          05-23
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2015/04/21/resizable-nstextattachment/" itemprop="url">
-              
-                <span itemprop="name">UITextView编辑时插入自定义表情-续-自定义表情图片的大小</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2015-04-21T20:26:17+08:00"
-              content="2015-04-21" >
-          04-21
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2015/04/03/something-about-gcd/" itemprop="url">
-              
-                <span itemprop="name">GCD使用经验与技巧浅谈</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2015-04-03T21:59:56+08:00"
-              content="2015-04-03" >
-          04-03
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-  </div>
-
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/tags/iOS/page/2/">2</a><a class="page-number" href="/tags/iOS/page/3/">3</a><a class="extend next" rel="next" href="/tags/iOS/page/2/"><i class="fa fa-angle-right"></i></a>
-  </nav>
-
-
-
-          </div>
-          
-
-
-          
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
-      
-
-      
-
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/uploads/avatar_comic_240.png"
-               alt="土土哥" />
-          <p class="site-author-name" itemprop="name">土土哥</p>
-          <p class="site-description motion-element" itemprop="description">程序猿</p>
-        </div>
-        <nav class="site-state motion-element">
-          <div class="site-state-item site-state-posts">
-            <a href="/archives">
-              <span class="site-state-item-count">30</span>
-              <span class="site-state-item-name">日志</span>
-            </a>
-          </div>
-
-          
-            <div class="site-state-item site-state-categories">
-              
-                <span class="site-state-item-count">4</span>
-                <span class="site-state-item-name">分类</span>
-              
-            </div>
-          
-
-          
-            <div class="site-state-item site-state-tags">
-              <a href="/tags">
-                <span class="site-state-item-count">17</span>
-                <span class="site-state-item-name">标签</span>
-              </a>
-            </div>
-          
-
-        </nav>
-
-        
-          <div class="feed-link motion-element">
-            <a href="/atom.xml" rel="alternate">
-              <i class="fa fa-rss"></i>
-              RSS
-            </a>
-          </div>
-        
-
-        <div class="links-of-author motion-element">
-          
-            
-              <span class="links-of-author-item">
-                <a href="https://github.com/zekunyan" target="_blank">
-                  
-                    <i class="fa fa-github"></i> GitHub
-                  
-                </a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="https://twitter.com/zorro_tutuge" target="_blank">
-                  
-                    <i class="fa fa-twitter"></i> Twitter
-                  
-                </a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://weibo.com/zekunyan" target="_blank">
-                  
-                    <i class="fa fa-weibo"></i> Weibo
-                  
-                </a>
-              </span>
-            
-          
-        </div>
-
-        
-        
-          <div class="cc-license motion-element" itemprop="license">
-            <a href="http://creativecommons.org/licenses/by-nc-nd/4.0" class="cc-opacity" target="_blank">
-              <img src="/images/cc-by-nc-nd.svg" alt="Creative Commons" />
-            </a>
-          </div>
-        
-
-        
-        <div class="links-of-blogroll motion-element">
-          
-            <div class="links-of-blogroll-title">友情链接</div>
-            <ul class="links-of-blogroll-list">
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://chenrudan.github.io" target="_blank">女朋友的博客😊</a>
-                </li>
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://suta.name" target="_blank">很赞的设计师：苏塔</a>
-                </li>
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://neoyeelf.github.io" target="_blank">NeOye's blog</a>
-                </li>
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://raytaylorlin.com" target="_blank">Ray Taylor Lin's world</a>
-                </li>
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://bingyan.farbox.com" target="_blank">Howl写东西的地方</a>
-                </li>
-              
-            </ul>
-          
-        </div>
-
-      </section>
-
-      
-
-    </div>
-  </aside>
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright" >
-  
-  &copy;  2014 - 
-  <span itemprop="copyrightYear">2016</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">燕泽堃</span>
-</div>
-
-<div class="powered-by">
-  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
-</div>
-
-<div class="theme-info">
-  主题 -
-  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
-    NexT.Pisces
-  </a>
-</div>
-
-
-
-      </div>
-    </footer>
-
-    <div class="back-to-top">
-      <i class="fa fa-arrow-up"></i>
-    </div>
-  </div>
-
-  
-
-
-  
-
-
-
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
-  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
-
-  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-
-  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-
-  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
-
-  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
-
-  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
-
-
-
-  
-  
-
-
-  <script type="text/javascript" src="/js/src/affix.js?v=0.5.0"></script>
-
-  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=0.5.0"></script>
-
-
-
-  
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
-
-
-
-  
-
-  
-    
-  
-
-  <script type="text/javascript">
-    var duoshuoQuery = {short_name:"tutuge"};
-    (function() {
-      var ds = document.createElement('script');
-      ds.type = 'text/javascript';ds.async = true;
-      ds.id = 'duoshuo-script';
-      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-      ds.charset = 'UTF-8';
-      (document.getElementsByTagName('head')[0]
-      || document.getElementsByTagName('body')[0]).appendChild(ds);
-    })();
-  </script>
-
-  
-    
-  
-
-
-
-
-
-  
-  
-  
-
-  
 
 
 </body>

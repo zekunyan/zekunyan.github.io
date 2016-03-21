@@ -1,352 +1,235 @@
-<!doctype html>
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion">
+<!DOCTYPE HTML>
+<html>
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
+    
 
+    <title>RPC框架Thrift例子-PHP调用C++后端程序 | iOS，Android程序猿，喜欢Mac、Linux、各种开源技术，各种语言</title>
+    <meta name="author" content="燕泽堃">
+    
+    <meta name="description" content="程序猿">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta property="og:title" content="RPC框架Thrift例子-PHP调用C++后端程序"/>
+    <meta property="og:site_name" content="土土哥的技术Blog"/>
 
+    
+    <meta property="og:image" content="undefined"/>
+    
 
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="土土哥的技术Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
 
-
-
-
-
-
-
-
-
-
-  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
-
-
-
-
-  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-
-
-
-<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="C++,PHP,原创,后端," />
-
-
-
-
-
-  <link rel="alternate" href="/atom.xml" title="土土哥的技术Blog" type="application/atom+xml" />
-
-
-
-
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
-
-
-
-
-
-
-<meta name="description" content="更新
-2016-02-22: Response对象不用主动创建。
-
-前言前段时间用了一下Facebook的开源RPC框架Thrift，做PHP客户端调用C++后端程序，真心觉得Thrift不错！
-本文项目地址：https://github.com/zekunyan/ThriftDemo_PHP_CPP
-先看看本文的例子示意图：
-
-流程
-
-PHP客户端发起请求，请求参数是“Request”类型，里面">
-<meta property="og:type" content="article">
-<meta property="og:title" content="RPC框架Thrift例子-PHP调用C++后端程序">
-<meta property="og:url" content="http://tutuge.me/2015/04/19/thrift-example-cpp-and-php/index.html">
-<meta property="og:site_name" content="土土哥的技术Blog">
-<meta property="og:description" content="更新
-2016-02-22: Response对象不用主动创建。
-
-前言前段时间用了一下Facebook的开源RPC框架Thrift，做PHP客户端调用C++后端程序，真心觉得Thrift不错！
-本文项目地址：https://github.com/zekunyan/ThriftDemo_PHP_CPP
-先看看本文的例子示意图：
-
-流程
-
-PHP客户端发起请求，请求参数是“Request”类型，里面">
-<meta property="og:image" content="http://zorrochen.qiniudn.com/blog_thrift_example_cpp_and_php_1.jpg">
-<meta property="og:updated_time" content="2016-03-18T15:53:54.000Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="RPC框架Thrift例子-PHP调用C++后端程序">
-<meta name="twitter:description" content="更新
-2016-02-22: Response对象不用主动创建。
-
-前言前段时间用了一下Facebook的开源RPC框架Thrift，做PHP客户端调用C++后端程序，真心觉得Thrift不错！
-本文项目地址：https://github.com/zekunyan/ThriftDemo_PHP_CPP
-先看看本文的例子示意图：
-
-流程
-
-PHP客户端发起请求，请求参数是“Request”类型，里面">
-
-
-
-<script type="text/javascript" id="hexo.configuration">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    scheme: 'Pisces',
-    sidebar: {"position":"left","display":"post"},
-    fancybox: true,
-    motion: true,
-    duoshuo: {
-      userId: 9509393,
-      author: '土土哥'
-    }
-  };
-</script>
-
-  <title> RPC框架Thrift例子-PHP调用C++后端程序 | 土土哥的技术Blog </title>
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
-  
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
 
-
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-68058110-1', 'auto');
-  ga('send', 'pageview');
-</script>
-
-
-  <script type="text/javascript">
-    var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "//hm.baidu.com/hm.js?c674423748672d339369a33103ded1e2";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
-  </script>
-
-
-
-  <script type="text/javascript">
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "//tajs.qq.com/stats?sId=55079830";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
-  </script>
-
-
-
-
-  <div style="display: none;">
-    <script src="http://s6.cnzz.com/stat.php?id=1253507635&web_id=1253507635" type="text/javascript"></script>
-  </div>
-
-
-
-
-
-  
-  
-    
-  
-
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-meta ">
-  
-
-  <div class="custom-logo-site-title">
-    <a href="/"  class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <span class="site-title">土土哥的技术Blog</span>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-  </div>
-  <p class="site-subtitle">iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言</p>
-</div>
-
-<div class="site-nav-toggle">
-  <button>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-  </button>
-</div>
-
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
-        
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
-            
-            首页
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-about">
-          <a href="/about" rel="section">
-            
-              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
-            
-            关于
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-archives">
-          <a href="/archives" rel="section">
-            
-              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
-            
-            归档
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/tags" rel="section">
-            
-              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
-            
-            标签
-          </a>
-        </li>
-      
-
-      
-    </ul>
-  
-
-  
-</nav>
-
- </div>
-    </header>
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                RPC框架Thrift例子-PHP调用C++后端程序
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-04-19T17:04:56+08:00" content="2015-04-19">
-              2015-04-19
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/服务端/" itemprop="url" rel="index">
-                    <span itemprop="name">服务端</span>
-                  </a>
-                </span>
-
+    <nav class="blue-grey">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">土土哥的技术Blog</a>
+            <ul class="right hide-on-med-and-down">
                 
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            首页
+                        </a>
+                    </li>
                 
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            关于
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav blue-grey darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="http://7nj2iz.com1.z0.glb.clouddn.com/avatar_comic_big.png" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">土土哥</p>
+                        <p class="desc">iOS/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
 
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/04/19/thrift-example-cpp-and-php/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/04/19/thrift-example-cpp-and-php/" itemprop="commentsCount"></span>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    首页
                 </a>
-              </span>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    关于
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav blue-grey darken-1" id="category-menu">
+        <!--<li class="">
+            <h5 class="black-text">分类目录</h5>
+        </li>-->
+
+    
+
             
-          
 
-          
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/iOS/">
+                    iOS <span class="right">26 篇</span></a>
+                </a>
+            </li>
 
-          
-          
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/Android/">
+                    Android <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/服务端/">
+                    服务端 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/其它/">
+                    其它 <span class="right">2 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
 
         </div>
-      </header>
+    </div>
+</nav>
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper blue-grey">
+        <span class="breadcrumb">当前位置（目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/服务端/">服务端</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>RPC框架Thrift例子-PHP调用C++后端程序</h1>
     
 
 
-    <div class="post-body" itemprop="articleBody">
+            </div>
+            <time class="teal-link-context" datetime="2015-04-19T09:04:56.000Z"><a href="/2015/04/19/thrift-example-cpp-and-php/">2015-04-19</a></time>
 
-      
-      
+            
+    <div class="tags-row">
+        
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
+        
+            <a href="/tags/C/" class="chip teal accent-4">C++</a>
+        
+            <a href="/tags/PHP/" class="chip teal accent-4">PHP</a>
+        
+            <a href="/tags/后端/" class="chip teal accent-4">后端</a>
+        
+    </div>
 
-      
-        <h2 id="更新">更新</h2><ul>
+
+            <div class="toc teal-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#更新"><span class="section table-of-contents-text">更新</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#前言"><span class="section table-of-contents-text">前言</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#定义"><span class="section table-of-contents-text">定义</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#什么是RPC"><span class="section table-of-contents-text">什么是RPC</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#什么是Thrift"><span class="section table-of-contents-text">什么是Thrift</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#开发流程"><span class="section table-of-contents-text">开发流程</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Thrift的接口定义文件"><span class="section table-of-contents-text">Thrift的接口定义文件</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#生成对应语言的代码！"><span class="section table-of-contents-text">生成对应语言的代码！</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#根据需要修改生成的代码"><span class="section table-of-contents-text">根据需要修改生成的代码</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#CPP服务端"><span class="section table-of-contents-text">CPP服务端</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#PHP客户端"><span class="section table-of-contents-text">PHP客户端</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#编译、链接，运行"><span class="section table-of-contents-text">编译、链接，运行</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#总结"><span class="section table-of-contents-text">总结</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#参考"><span class="section table-of-contents-text">参考</span></a></li></ol>
+</div>
+
+
+            <div class="entry teal-link-context">
+                <h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><ul>
 <li>2016-02-22: Response对象不用主动创建。</li>
 </ul>
-<h2 id="前言">前言</h2><p>前段时间用了一下Facebook的开源RPC框架Thrift，做PHP客户端调用C++后端程序，真心觉得Thrift不错！</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前段时间用了一下Facebook的开源RPC框架Thrift，做PHP客户端调用C++后端程序，真心觉得Thrift不错！</p>
 <p>本文项目地址：<a href="https://github.com/zekunyan/ThriftDemo_PHP_CPP" target="_blank" rel="external">https://github.com/zekunyan/ThriftDemo_PHP_CPP</a></p>
 <p>先看看本文的例子示意图：</p>
 <p><img src="http://zorrochen.qiniudn.com/blog_thrift_example_cpp_and_php_1.jpg" alt="通信示意图"></p>
@@ -356,17 +239,17 @@ PHP客户端发起请求，请求参数是“Request”类型，里面">
 <li>CPP服务端收到请求返回数据，返回类型为“Response”，里面包含了student的信息，此处只是简单的示例。</li>
 </ol>
 <a id="more"></a>
-<h2 id="定义">定义</h2><h3 id="什么是RPC">什么是RPC</h3><p>远程过程调用（英语：Remote Procedure Call，缩写为 RPC）是一个计算机通信协议。该协议允许运行于一台计算机的程序调用另一台计算机的子程序，而程序员无需额外地为这个交互作用编程。 – 维基百科 - <a href="http://zh.wikipedia.org/wiki/%E9%81%A0%E7%A8%8B%E9%81%8E%E7%A8%8B%E8%AA%BF%E7%94%A8" target="_blank" rel="external">远程过程调用</a></p>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><h3 id="什么是RPC"><a href="#什么是RPC" class="headerlink" title="什么是RPC"></a>什么是RPC</h3><p>远程过程调用（英语：Remote Procedure Call，缩写为 RPC）是一个计算机通信协议。该协议允许运行于一台计算机的程序调用另一台计算机的子程序，而程序员无需额外地为这个交互作用编程。 – 维基百科 - <a href="http://zh.wikipedia.org/wiki/%E9%81%A0%E7%A8%8B%E9%81%8E%E7%A8%8B%E8%AA%BF%E7%94%A8" target="_blank" rel="external">远程过程调用</a></p>
 <p>通俗点讲，就是跨计算机、跨网络调用。</p>
-<h3 id="什么是Thrift">什么是Thrift</h3><p>Apache Thrift 是Facebook实现的一种高效的、支持多种编程语言的远程服务调用(RPC)的框架。它采用接口描述语言定义并创建服务，支持可扩展的跨语言服务开发，所包含的代码生成引擎可以在多种语言中，如 C++, Java, Python, PHP, Ruby, Erlang, Perl, Haskell, C#, Cocoa, Smalltalk 等创建高效的、无缝的服务，其传输数据采用二进制格式，相对 XML 和 JSON 体积更小，对于高并发、大数据量和多语言的环境更有优势。 – <a href="https://www.ibm.com/developerworks/cn/java/j-lo-apachethrift/" target="_blank" rel="external">Apache Thrift - 可伸缩的跨语言服务开发框架</a></p>
-<h2 id="开发流程">开发流程</h2><ol>
+<h3 id="什么是Thrift"><a href="#什么是Thrift" class="headerlink" title="什么是Thrift"></a>什么是Thrift</h3><p>Apache Thrift 是Facebook实现的一种高效的、支持多种编程语言的远程服务调用(RPC)的框架。它采用接口描述语言定义并创建服务，支持可扩展的跨语言服务开发，所包含的代码生成引擎可以在多种语言中，如 C++, Java, Python, PHP, Ruby, Erlang, Perl, Haskell, C#, Cocoa, Smalltalk 等创建高效的、无缝的服务，其传输数据采用二进制格式，相对 XML 和 JSON 体积更小，对于高并发、大数据量和多语言的环境更有优势。 – <a href="https://www.ibm.com/developerworks/cn/java/j-lo-apachethrift/" target="_blank" rel="external">Apache Thrift - 可伸缩的跨语言服务开发框架</a></p>
+<h2 id="开发流程"><a href="#开发流程" class="headerlink" title="开发流程"></a>开发流程</h2><ol>
 <li>配置环境。C++的如CMake、make、g++；PHP的如php、php-fpm、Apache（Nginx）。</li>
 <li>根据需求，编写thrift接口定义文件（IDL定义文件）。</li>
 <li>使用thrift程序，为不同的语言生成代码。</li>
 <li>根据需求，修改生成的代码（主要是Server端），编写实际的业务逻辑。</li>
 <li>编译、部署。</li>
 </ol>
-<h2 id="Thrift的接口定义文件">Thrift的接口定义文件</h2><p>在利用Thrift开发的过程中，重点就是编写接口定义文件。<br>一般来说，接口定义文件决定了RPC过程中的通信数据结构、通信接口定义等。</p>
+<h2 id="Thrift的接口定义文件"><a href="#Thrift的接口定义文件" class="headerlink" title="Thrift的接口定义文件"></a>Thrift的接口定义文件</h2><p>在利用Thrift开发的过程中，重点就是编写接口定义文件。<br>一般来说，接口定义文件决定了RPC过程中的通信数据结构、通信接口定义等。</p>
 <p>总的来说，thrift的接口定义语法类似于C语言，包含了struct、enum、map、list等基础数据结构，同时支持大部分基本数据类型，如32位整型“i32”等。</p>
 <p>详细的接口定义请参考：</p>
 <ul>
@@ -374,7 +257,7 @@ PHP客户端发起请求，请求参数是“Request”类型，里面">
 <li><a href="https://git-wip-us.apache.org/repos/asf?p=thrift.git;a=blob_plain;f=tutorial/tutorial.thrift" target="_blank" rel="external">example.thrift</a></li>
 </ul>
 <p>看看本例子中的定义文件“TTG.thrift”：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> cpp TTG</span><br><span class="line"><span class="keyword">namespace</span> php TTG</span><br><span class="line"></span><br><span class="line"><span class="keyword">enum</span> ResponseState &#123;</span><br><span class="line">    StateOk = <span class="number">0</span>,</span><br><span class="line">    StateError = <span class="number">1</span>,</span><br><span class="line">    StateEmpty = <span class="number">2</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> Request &#123;</span><br><span class="line">    <span class="number">1</span>: i32 studentID = <span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> Response &#123;</span><br><span class="line">    <span class="number">1</span>: i32 studentID = <span class="number">0</span>,</span><br><span class="line">    <span class="number">2</span>: <span class="built_in">string</span> name,</span><br><span class="line">    <span class="number">3</span>: <span class="built_in">list</span>&lt;<span class="built_in">string</span>&gt; infos,</span><br><span class="line">    <span class="number">4</span>: ResponseState state</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">service TTGService &#123;</span><br><span class="line">    <span class="function">Response <span class="title">getStudentInfo</span><span class="params">(<span class="number">1</span>: Request request)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight thrift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> cpp TTG</span><br><span class="line"><span class="keyword">namespace</span> php TTG</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">ResponseState</span> </span>&#123;</span><br><span class="line">    StateOk = <span class="number">0</span>,</span><br><span class="line">    StateError = <span class="number">1</span>,</span><br><span class="line">    StateEmpty = <span class="number">2</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Request</span> </span>&#123;</span><br><span class="line">    <span class="number">1</span>: <span class="built_in">i32</span> studentID = <span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Response</span> </span>&#123;</span><br><span class="line">    <span class="number">1</span>: <span class="built_in">i32</span> studentID = <span class="number">0</span>,</span><br><span class="line">    <span class="number">2</span>: <span class="built_in">string</span> name,</span><br><span class="line">    <span class="number">3</span>: list&lt;<span class="keyword">string</span>&gt; infos,</span><br><span class="line">    <span class="number">4</span>: ResponseState state</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">service</span> <span class="title">TTGService</span> </span>&#123;</span><br><span class="line">    Response getStudentInfo(<span class="number">1</span>: Request request);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ol>
 <li>先定义命名空间，尽量减少命名冲突。</li>
 <li>Request类型：PHP客户端请求的数据类型。</li>
@@ -382,24 +265,24 @@ PHP客户端发起请求，请求参数是“Request”类型，里面">
 <li>ResponseState枚举：定义返回的状态。</li>
 <li>TTGService：服务接口定义。</li>
 </ol>
-<h2 id="生成对应语言的代码！">生成对应语言的代码！</h2><p>是的，生成代码！这是我觉得Thrift框架最“神奇”的地方。我们只需要执行几条命令，就可以根据接口定义文件“生成”对应语言的代码。然后我们只需要将对应的业务逻辑加入到生成的代码中即可。</p>
+<h2 id="生成对应语言的代码！"><a href="#生成对应语言的代码！" class="headerlink" title="生成对应语言的代码！"></a>生成对应语言的代码！</h2><p>是的，生成代码！这是我觉得Thrift框架最“神奇”的地方。我们只需要执行几条命令，就可以根据接口定义文件“生成”对应语言的代码。然后我们只需要将对应的业务逻辑加入到生成的代码中即可。</p>
 <p>如生成CPP服务端的代码：</p>
 <figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">thrift <span class="comment">--gen cpp TTG.thrift</span></span><br></pre></td></tr></table></figure>
-<p>然后就会生成如下代码。    </p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">TTGService<span class="class">.cpp</span></span><br><span class="line">TTGService<span class="class">.h</span></span><br><span class="line">TTGService_server<span class="class">.skeleton</span><span class="class">.cpp</span></span><br><span class="line">TTG_constants<span class="class">.cpp</span></span><br><span class="line">TTG_constants<span class="class">.h</span></span><br><span class="line">TTG_types<span class="class">.cpp</span></span><br><span class="line">TTG_types.h</span><br></pre></td></tr></table></figure>
-<h2 id="根据需要修改生成的代码">根据需要修改生成的代码</h2><p>生成CPP、PHP端的代码以后，我们就可以根据需要修改、添加业务代码。</p>
-<h3 id="CPP服务端">CPP服务端</h3><p>在生成CPP的代码时，会生成一个“TTGService_server.skeleton.cpp”文件，这个就是我们的CPP服务端的代码“架子”。其中重点如下：</p>
+<p>然后就会生成如下代码。</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">TTGService<span class="selector-class">.cpp</span></span><br><span class="line">TTGService<span class="selector-class">.h</span></span><br><span class="line">TTGService_server<span class="selector-class">.skeleton</span><span class="selector-class">.cpp</span></span><br><span class="line">TTG_constants<span class="selector-class">.cpp</span></span><br><span class="line">TTG_constants<span class="selector-class">.h</span></span><br><span class="line">TTG_types<span class="selector-class">.cpp</span></span><br><span class="line">TTG_types.h</span><br></pre></td></tr></table></figure>
+<h2 id="根据需要修改生成的代码"><a href="#根据需要修改生成的代码" class="headerlink" title="根据需要修改生成的代码"></a>根据需要修改生成的代码</h2><p>生成CPP、PHP端的代码以后，我们就可以根据需要修改、添加业务代码。</p>
+<h3 id="CPP服务端"><a href="#CPP服务端" class="headerlink" title="CPP服务端"></a>CPP服务端</h3><p>在生成CPP的代码时，会生成一个“TTGService_server.skeleton.cpp”文件，这个就是我们的CPP服务端的代码“架子”。其中重点如下：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//实现调用的接口</span></span><br><span class="line"><span class="keyword">class</span> TTGServiceHandler : <span class="keyword">virtual</span> <span class="keyword">public</span> TTGServiceIf &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">TTGServiceHandler() &#123;</span><br><span class="line">    <span class="comment">// Your initialization goes here</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//接口实现部分，实现getStudentInfo这个接口的具体细节，如根据request创建、返回对应的response</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getStudentInfo</span><span class="params">(Response&amp; _return, <span class="keyword">const</span> Request&amp; request)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Your implementation goes here</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"getStudentInfo\n"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//...</span></span><br></pre></td></tr></table></figure>
 <p>我们将其改成：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> getStudentInfo(Response &amp;_<span class="keyword">return</span>, <span class="keyword">const</span> Request &amp;request) &#123;</span><br><span class="line">    <span class="comment">// 输出请求参数</span></span><br><span class="line">    cout&lt;&lt;<span class="string">"Request: "</span>&lt;&lt;request<span class="variable">.studentID</span>&lt;&lt;endl;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//填充数据，Response对象不用主动创建，进入函数时已经创建好了</span></span><br><span class="line">    _<span class="keyword">return</span><span class="variable">.studentID</span> = request<span class="variable">.studentID</span>;</span><br><span class="line">    _<span class="keyword">return</span><span class="variable">.name</span> = <span class="string">"tutuge"</span>;</span><br><span class="line">    _<span class="keyword">return</span><span class="variable">.infos</span><span class="variable">.push_back</span>(<span class="string">"Info 1"</span>);</span><br><span class="line">    _<span class="keyword">return</span><span class="variable">.infos</span><span class="variable">.push_back</span>(<span class="string">"Info 2"</span>);</span><br><span class="line">    _<span class="keyword">return</span><span class="variable">.state</span> = ResponseState::StateOk;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> getStudentInfo(Response &amp;_<span class="keyword">return</span>, <span class="keyword">const</span> Request &amp;request) &#123;</span><br><span class="line">    <span class="comment">// 输出请求参数</span></span><br><span class="line">    cout&lt;&lt;<span class="string">"Request: "</span>&lt;&lt;request.studentID&lt;&lt;endl;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//填充数据，Response对象不用主动创建，进入函数时已经创建好了</span></span><br><span class="line">    _<span class="keyword">return</span>.studentID = request.studentID;</span><br><span class="line">    _<span class="keyword">return</span>.name = <span class="string">"tutuge"</span>;</span><br><span class="line">    _<span class="keyword">return</span>.infos.push_back(<span class="string">"Info 1"</span>);</span><br><span class="line">    _<span class="keyword">return</span>.infos.push_back(<span class="string">"Info 2"</span>);</span><br><span class="line">    _<span class="keyword">return</span>.state = ResponseState::StateOk;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>至此，CPP服务端的编写就完成了，接下来我们只需要编译、链接，执行最终生成的可执行文件即可。</p>
-<h3 id="PHP客户端">PHP客户端</h3><p>PHP客户端的编写比较简单，直接参考代码吧：<a href="https://github.com/zekunyan/ThriftDemo_PHP_CPP/blob/master/PHP/client.php" target="_blank" rel="external">https://github.com/zekunyan/ThriftDemo_PHP_CPP/blob/master/PHP/client.php</a></p>
-<h2 id="编译、链接，运行">编译、链接，运行</h2><p>用CMake，或者直接编写makefile均可，保证Thrift装好就行了。</p>
+<h3 id="PHP客户端"><a href="#PHP客户端" class="headerlink" title="PHP客户端"></a>PHP客户端</h3><p>PHP客户端的编写比较简单，直接参考代码吧：<a href="https://github.com/zekunyan/ThriftDemo_PHP_CPP/blob/master/PHP/client.php" target="_blank" rel="external">https://github.com/zekunyan/ThriftDemo_PHP_CPP/blob/master/PHP/client.php</a></p>
+<h2 id="编译、链接，运行"><a href="#编译、链接，运行" class="headerlink" title="编译、链接，运行"></a>编译、链接，运行</h2><p>用CMake，或者直接编写makefile均可，保证Thrift装好就行了。</p>
 <p>直接运行最后生成的可执行文件TTG.run即可。</p>
 <p>从浏览器，或者直接运行client.php，即可看到如下输出：</p>
 <figure class="highlight zephir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">object(TTG\Response)[<span class="number">9</span>]</span><br><span class="line">  <span class="keyword">public</span> <span class="string">'studentID'</span> =&gt; <span class="keyword">int</span> <span class="number">100</span></span><br><span class="line">  <span class="keyword">public</span> <span class="string">'name'</span> =&gt; string <span class="string">'tutuge'</span> (length=<span class="number">6</span>)</span><br><span class="line">  <span class="keyword">public</span> <span class="string">'infos'</span> =&gt;</span><br><span class="line">    <span class="keyword">array</span> (size=<span class="number">2</span>)</span><br><span class="line">      <span class="number">0</span> =&gt; string <span class="string">'Info 1'</span> (length=<span class="number">6</span>)</span><br><span class="line">      <span class="number">1</span> =&gt; string <span class="string">'Info 2'</span> (length=<span class="number">6</span>)</span><br><span class="line">  <span class="keyword">public</span> <span class="string">'state'</span> =&gt; <span class="keyword">int</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
-<h2 id="总结">总结</h2><p>Thrift是个好东西！就是文档好少=。=</p>
-<h2 id="参考">参考</h2><ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Thrift是个好东西！就是文档好少=。=</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a href="http://thrift.apache.org/" target="_blank" rel="external">Apache Thrift</a></li>
 <li><a href="http://thrift.apache.org/tutorial/php" target="_blank" rel="external">Thrift PHP Tutorial</a></li>
 <li><a href="http://thrift.apache.org/tutorial/cpp" target="_blank" rel="external">Thrift C++ Tutorial</a></li>
@@ -407,552 +290,215 @@ PHP客户端发起请求，请求参数是“Request”类型，里面">
 <li><a href="https://www.ibm.com/developerworks/cn/java/j-lo-apachethrift/" target="_blank" rel="external">Apache Thrift - 可伸缩的跨语言服务开发框架</a></li>
 </ul>
 
-      
-    </div>
-
-    <div>
-      
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/C/" rel="tag">#C++</a>
-          
-            <a href="/tags/PHP/" rel="tag">#PHP</a>
-          
-            <a href="/tags/原创/" rel="tag">#原创</a>
-          
-            <a href="/tags/后端/" rel="tag">#后端</a>
-          
+            </div>
         </div>
-      
+    </div>
+</article>
 
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2015/04/03/something-about-gcd/" rel="next" title="GCD使用经验与技巧浅谈">
-                <i class="fa fa-chevron-left"></i> GCD使用经验与技巧浅谈
-              </a>
-            
-          </div>
 
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/04/21/resizable-nstextattachment/" rel="prev" title="UITextView编辑时插入自定义表情-续-自定义表情图片的大小">
-                UITextView编辑时插入自定义表情-续-自定义表情图片的大小 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
+
+
+    <section id="comment">
+        <div class="card">
+            <div class="card-content">
+                <!-- Duoshuo Comment BEGIN -->
+                <div class="ds-thread" data-thread-key="2015/04/19/thrift-example-cpp-and-php/" data-title="RPC框架Thrift例子-PHP调用C++后端程序" data-url="http://tutuge.me/2015/04/19/thrift-example-cpp-and-php/"></div>
+
+                <script type="text/javascript">
+                    console.log(document.querySelector('.ds-thread'));
+                    var duoshuoQuery = {
+                        short_name: 'tutuge'
+                    };
+                    (function() {
+                        var ds = document.createElement('script');
+                        ds.type = 'text/javascript';
+                        ds.async = true;
+                        ds.src = (document.location.protocol == 'https:'
+                            ? 'https:'
+                            : 'http:') + '//static.duoshuo.com/embed.js';
+                        ds.charset = 'UTF-8';
+                        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+                    })();
+                </script>
+                <!-- Duoshuo Comment END -->
+            </div>
         </div>
-      
-
-      
-      
-    </footer>
-  </article>
+    </section>
 
 
 
-    <div class="post-spread">
-      
-        <div class="ds-share flat" data-thread-key="2015/04/19/thrift-example-cpp-and-php/"
-     data-title="RPC框架Thrift例子-PHP调用C++后端程序"
-     data-content=""
-     data-url="http://tutuge.me/2015/04/19/thrift-example-cpp-and-php/">
-  <div class="ds-share-inline">
-    <ul  class="ds-share-icons-16">
+</div>
 
-      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
-      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
-      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
-      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
-      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
-
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large teal">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect teal accent-4" title="Return to top"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="Menu"><i class="fa fa-navicon"></i></a></li>
     </ul>
-    <div class="ds-share-icons-more">
-    </div>
-  </div>
-</div>
-      
-    </div>
   </div>
 
-
-          </div>
-          
-
-  <p>热评文章</p>
-  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
-
-
-          
-  <div class="comments" id="comments">
-    
-      <div class="ds-thread" data-thread-key="2015/04/19/thrift-example-cpp-and-php/"
-           data-title="RPC框架Thrift例子-PHP调用C++后端程序" data-url="http://tutuge.me/2015/04/19/thrift-example-cpp-and-php/">
-      </div>
-    
-  </div>
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <section class="site-overview sidebar-panel ">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/uploads/avatar_comic_240.png"
-               alt="土土哥" />
-          <p class="site-author-name" itemprop="name">土土哥</p>
-          <p class="site-description motion-element" itemprop="description">程序猿</p>
-        </div>
-        <nav class="site-state motion-element">
-          <div class="site-state-item site-state-posts">
-            <a href="/archives">
-              <span class="site-state-item-count">30</span>
-              <span class="site-state-item-name">日志</span>
-            </a>
-          </div>
-
-          
-            <div class="site-state-item site-state-categories">
-              
-                <span class="site-state-item-count">4</span>
-                <span class="site-state-item-name">分类</span>
-              
-            </div>
-          
-
-          
-            <div class="site-state-item site-state-tags">
-              <a href="/tags">
-                <span class="site-state-item-count">17</span>
-                <span class="site-state-item-name">标签</span>
-              </a>
-            </div>
-          
-
-        </nav>
-
-        
-          <div class="feed-link motion-element">
-            <a href="/atom.xml" rel="alternate">
-              <i class="fa fa-rss"></i>
-              RSS
-            </a>
-          </div>
-        
-
-        <div class="links-of-author motion-element">
-          
-            
-              <span class="links-of-author-item">
-                <a href="https://github.com/zekunyan" target="_blank">
-                  
-                    <i class="fa fa-github"></i> GitHub
-                  
-                </a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="https://twitter.com/zorro_tutuge" target="_blank">
-                  
-                    <i class="fa fa-twitter"></i> Twitter
-                  
-                </a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://weibo.com/zekunyan" target="_blank">
-                  
-                    <i class="fa fa-weibo"></i> Weibo
-                  
-                </a>
-              </span>
-            
-          
-        </div>
-
-        
-        
-          <div class="cc-license motion-element" itemprop="license">
-            <a href="http://creativecommons.org/licenses/by-nc-nd/4.0" class="cc-opacity" target="_blank">
-              <img src="/images/cc-by-nc-nd.svg" alt="Creative Commons" />
-            </a>
-          </div>
-        
-
-        
-        <div class="links-of-blogroll motion-element">
-          
-            <div class="links-of-blogroll-title">友情链接</div>
-            <ul class="links-of-blogroll-list">
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://chenrudan.github.io" target="_blank">女朋友的博客😊</a>
-                </li>
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://suta.name" target="_blank">很赞的设计师：苏塔</a>
-                </li>
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://neoyeelf.github.io" target="_blank">NeOye's blog</a>
-                </li>
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://raytaylorlin.com" target="_blank">Ray Taylor Lin's world</a>
-                </li>
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://bingyan.farbox.com" target="_blank">Howl写东西的地方</a>
-                </li>
-              
-            </ul>
-          
-        </div>
-
-      </section>
-
-      
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc-indicator-top post-toc-indicator">
-            <i class="fa fa-angle-double-up"></i>
-          </div>
-          <div class="post-toc">
-            
-              
-            
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#更新"><span class="nav-number">1.</span> <span class="nav-text">更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">2.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定义"><span class="nav-number">3.</span> <span class="nav-text">定义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是RPC"><span class="nav-number">3.1.</span> <span class="nav-text">什么是RPC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是Thrift"><span class="nav-number">3.2.</span> <span class="nav-text">什么是Thrift</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开发流程"><span class="nav-number">4.</span> <span class="nav-text">开发流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Thrift的接口定义文件"><span class="nav-number">5.</span> <span class="nav-text">Thrift的接口定义文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成对应语言的代码！"><span class="nav-number">6.</span> <span class="nav-text">生成对应语言的代码！</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#根据需要修改生成的代码"><span class="nav-number">7.</span> <span class="nav-text">根据需要修改生成的代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CPP服务端"><span class="nav-number">7.1.</span> <span class="nav-text">CPP服务端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PHP客户端"><span class="nav-number">7.2.</span> <span class="nav-text">PHP客户端</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编译、链接，运行"><span class="nav-number">8.</span> <span class="nav-text">编译、链接，运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">9.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">10.</span> <span class="nav-text">参考</span></a></li></ol></div>
-            
-          </div>
-          <div class="post-toc-indicator-bottom post-toc-indicator">
-            <i class="fa fa-angle-double-down"></i>
-          </div>
-        </section>
-      
-
-    </div>
-  </aside>
-
-
-        
-      </div>
     </main>
+    <footer class="page-footer blue-grey darken-1">
+    
+    <div class="container">
+        <div class="row">
+            
+            <div class="social-group col m3 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/zekunyan" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+            </div>
+            
 
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright" >
-  
-  &copy;  2014 - 
-  <span itemprop="copyrightYear">2016</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">燕泽堃</span>
-</div>
-
-<div class="powered-by">
-  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
-</div>
-
-<div class="theme-info">
-  主题 -
-  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
-    NexT.Pisces
-  </a>
-</div>
-
-
-
-      </div>
-    </footer>
-
-    <div class="back-to-top">
-      <i class="fa fa-arrow-up"></i>
+            
+            <div class="col m9 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
+                
+                    <a class="social-link" href="http://raytaylorlin.com/" target="_blank">raytaylorism主题作者的技术博客</a>
+                
+                    <a class="social-link" href="http://suta.name/" target="_blank">很赞的设计师</a>
+                
+                    <a class="social-link" href="http://neoyeelf.github.io/" target="_blank">NeOye&#39;s blog</a>
+                
+                    <a class="social-link" href="http://bingyan.farbox.com/" target="_blank">Howl写东西的地方</a>
+                
+            </div>
+            
+        </div>
     </div>
-  </div>
+    
 
-  
-
-
-  
-
-
-
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
+    <div class="footer-copyright teal-link-context">
+        <div class="container">
+            © 2016 tutuge.me, All rights reserved.
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
+        </div>
+    </div>
+</footer>
 
 
-  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
-
-  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-
-  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-
-  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
-
-  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
-
-  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前浏览器不支持博客完整功能。如果要获得最佳体验，请点击右上角···，复制链接，并在其它浏览器打开</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前浏览器不支持博客完整功能。如果要获得最佳体验，请点击右上角···，复制链接，并在其它浏览器打开</p>
+</div>
 
 
-  
+<script src="/js/jquery-2.1.1.min.js"></script>
+<script src="/js/materialize.min.js"></script>
 
+<script>
+(function($) {
+    $(document).ready(function() {
+        // 隐藏禁用javascript（针对微信内置浏览器）的提示
+        $('.noscript').hide();
 
-  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+        // 图片缩放效果
+        var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
 
-  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+        // 给图片加上点击放大效果（materialbox插件）
+        $imgs.addClass('materialboxed')
+            .each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
 
-
-
-  
-  
-
-
-  <script type="text/javascript" src="/js/src/affix.js?v=0.5.0"></script>
-
-  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=0.5.0"></script>
-
-
-
-  
-  
-<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
-
-<script type="text/javascript" id="sidebar.toc.highlight">
-  $(document).ready(function () {
-    var tocSelector = '.post-toc';
-    var $tocSelector = $(tocSelector);
-    var activeCurrentSelector = '.active-current';
-
-    $tocSelector
-      .on('activate.bs.scrollspy', function () {
-        var $currentActiveElement = $(tocSelector + ' .active').last();
-
-        removeCurrentActiveClass();
-        $currentActiveElement.addClass('active-current');
-
-        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
-      })
-      .on('clear.bs.scrollspy', function () {
-        removeCurrentActiveClass();
-      });
-
-    function removeCurrentActiveClass () {
-      $(tocSelector + ' ' + activeCurrentSelector)
-        .removeClass(activeCurrentSelector.substring(1));
-    }
-
-    function processTOC () {
-      getTOCMaxHeight();
-      toggleTOCOverflowIndicators();
-    }
-
-    function getTOCMaxHeight () {
-      var height = $('.sidebar').height() -
-                   $tocSelector.position().top -
-                   $('.post-toc-indicator-bottom').height();
-
-      $tocSelector.css('height', height);
-
-      return height;
-    }
-
-    function toggleTOCOverflowIndicators () {
-      tocOverflowIndicator(
-        '.post-toc-indicator-top',
-        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
-      );
-
-      tocOverflowIndicator(
-        '.post-toc-indicator-bottom',
-        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
-      )
-    }
-
-    $(document).on('sidebar.motion.complete', function () {
-      processTOC();
-    });
-
-    $('body').scrollspy({ target: tocSelector });
-    $(window).on('resize', function () {
-      if ( $('.sidebar').hasClass('sidebar-active') ) {
-        processTOC();
-      }
-    });
-
-    onScroll($tocSelector);
-
-    function onScroll (element) {
-      element.on('mousewheel DOMMouseScroll', function (event) {
-          var oe = event.originalEvent;
-          var delta = oe.wheelDelta || -oe.detail;
-
-          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
-          event.preventDefault();
-
-          toggleTOCOverflowIndicators();
-      });
-    }
-
-    function tocOverflowIndicator (indicator, action) {
-      var $indicator = $(indicator);
-      var opacity = action === 'show' ? 1 : 0;
-      $indicator.velocity ?
-        $indicator.velocity('stop').velocity({
-          opacity: opacity
-        }, { duration: 100 }) :
-        $indicator.stop().animate({
-          opacity: opacity
-        }, 100);
-    }
-
-  });
-</script>
-
-<script type="text/javascript" id="sidebar.nav">
-  $(document).ready(function () {
-    var html = $('html');
-    var TAB_ANIMATE_DURATION = 200;
-    var hasVelocity = $.isFunction(html.velocity);
-
-    $('.sidebar-nav li').on('click', function () {
-      var item = $(this);
-      var activeTabClassName = 'sidebar-nav-active';
-      var activePanelClassName = 'sidebar-panel-active';
-      if (item.hasClass(activeTabClassName)) {
-        return;
-      }
-
-      var currentTarget = $('.' + activePanelClassName);
-      var target = $('.' + item.data('target'));
-
-      hasVelocity ?
-        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
-          target
-            .velocity('stop')
-            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
-            .addClass(activePanelClassName);
-        }) :
-        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
-          currentTarget.hide();
-          target
-            .stop()
-            .css({'opacity': 0, 'display': 'block'})
-            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
-              currentTarget.removeClass(activePanelClassName);
-              target.addClass(activePanelClassName);
-            });
+        // 首页幻灯片
+        $('.slider').slider({
+            indicators: true,
+            full_width: true,
+            interval: 8000
         });
 
-      item.siblings().removeClass(activeTabClassName);
-      item.addClass(activeTabClassName);
-    });
+        $(".button-collapse").sideNav();
+        $(".category-menu").sideNav();
 
-    $('.post-toc a').on('click', function (e) {
-      e.preventDefault();
-      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
-      var offset = $(targetSelector).offset().top;
-      hasVelocity ?
-        html.velocity('stop').velocity('scroll', {
-          offset: offset  + 'px',
-          mobileHA: false
-        }) :
-        $('html, body').stop().animate({
-          scrollTop: offset
-        }, 500);
-    });
+        // 针对gallery post
+        $('.carousel').carousel({
+            full_width: true
+        });
+        $('.carousel-control.prev').click(function() {
+            $('.carousel').carousel('prev');
+        });
+        $('.carousel-control.next').click(function() {
+            $('.carousel').carousel('next');
+        });
 
-    // Expand sidebar on post detail page by default, when post has a toc.
-    NexT.motion.middleWares.sidebar = function () {
-      var $tocContent = $('.post-toc-content');
+        // 文章目录
+        $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+        // 修正文章目录的left-border颜色
+        var color = $('.table-of-contents-text').css('color');
+        $('.table-of-contents-link').css('border-left-color', color);
 
-      if (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always') {
-        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
-          NexT.utils.displaySidebar();
+        // 针对移动端做的优化：FAB按钮点击一下收回
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            $('.fixed-action-btn').addClass('click-to-toggle');
         }
-      }
-    };
-  });
+        // 回到顶部
+        $('.btn-return-top').click(function() {
+            $('body, html').animate({
+                scrollTop: 0
+            }, 500);
+        });
+
+        // 重置读书页面的Tab标签页的颜色
+        $('li.tab a').hover(function() {
+            $(this).toggleClass('text-lighten-4');
+        });
+        $('.indicator').addClass('teal lighten-2');
+
+        
+        // 添加new标签
+        $('.menu-reading,.menu-about').append('<span class="new badge teal accent-4"></span>');
+        
+    });
+})(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-68058110-1', 'auto');
+    ga('send', 'pageview');
+
 </script>
 
 
 
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=55079830" charset="UTF-8"></script>
 
 
 
-  
-
-  
-    
-  
-
-  <script type="text/javascript">
-    var duoshuoQuery = {short_name:"tutuge"};
-    (function() {
-      var ds = document.createElement('script');
-      ds.type = 'text/javascript';ds.async = true;
-      ds.id = 'duoshuo-script';
-      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-      ds.charset = 'UTF-8';
-      (document.getElementsByTagName('head')[0]
-      || document.getElementsByTagName('body')[0]).appendChild(ds);
-    })();
-  </script>
-
-  
-    
-  
-
-
-
-
-
-  
-  
-  
-
-  
 
 
 </body>

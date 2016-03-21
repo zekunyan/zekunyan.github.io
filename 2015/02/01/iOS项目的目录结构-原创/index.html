@@ -1,338 +1,245 @@
-<!doctype html>
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion">
+<!DOCTYPE HTML>
+<html>
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
+    
 
+    <title>iOS项目的目录结构-原创 | iOS，Android程序猿，喜欢Mac、Linux、各种开源技术，各种语言</title>
+    <meta name="author" content="燕泽堃">
+    
+    <meta name="description" content="程序猿">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta property="og:title" content="iOS项目的目录结构-原创"/>
+    <meta property="og:site_name" content="土土哥的技术Blog"/>
 
+    
+    <meta property="og:image" content="undefined"/>
+    
 
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="土土哥的技术Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
 
-
-
-
-
-
-
-
-
-
-  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
-
-
-
-
-  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-
-
-
-<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="iOS,原创," />
-
-
-
-
-
-  <link rel="alternate" href="/atom.xml" title="土土哥的技术Blog" type="application/atom+xml" />
-
-
-
-
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
-
-
-
-
-
-
-<meta name="description" content="前言这段时间一直在做iOS的项目（青桔音乐App），随着代码量的上升，逐渐意识到项目的整体目录结构划分是多么重要，清晰的目录结构，能够更好的应对新的需求，更容易重构。虽然一直都是一个人在做=。=，但是还是深深地体会到目录结构的重要性。">
-<meta property="og:type" content="article">
-<meta property="og:title" content="iOS项目的目录结构-原创">
-<meta property="og:url" content="http://tutuge.me/2015/02/01/iOS项目的目录结构-原创/index.html">
-<meta property="og:site_name" content="土土哥的技术Blog">
-<meta property="og:description" content="前言这段时间一直在做iOS的项目（青桔音乐App），随着代码量的上升，逐渐意识到项目的整体目录结构划分是多么重要，清晰的目录结构，能够更好的应对新的需求，更容易重构。虽然一直都是一个人在做=。=，但是还是深深地体会到目录结构的重要性。">
-<meta property="og:updated_time" content="2016-03-18T15:51:48.000Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="iOS项目的目录结构-原创">
-<meta name="twitter:description" content="前言这段时间一直在做iOS的项目（青桔音乐App），随着代码量的上升，逐渐意识到项目的整体目录结构划分是多么重要，清晰的目录结构，能够更好的应对新的需求，更容易重构。虽然一直都是一个人在做=。=，但是还是深深地体会到目录结构的重要性。">
-
-
-
-<script type="text/javascript" id="hexo.configuration">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    scheme: 'Pisces',
-    sidebar: {"position":"left","display":"post"},
-    fancybox: true,
-    motion: true,
-    duoshuo: {
-      userId: 9509393,
-      author: '土土哥'
-    }
-  };
-</script>
-
-  <title> iOS项目的目录结构-原创 | 土土哥的技术Blog </title>
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
-  
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
 
-
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-68058110-1', 'auto');
-  ga('send', 'pageview');
-</script>
-
-
-  <script type="text/javascript">
-    var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "//hm.baidu.com/hm.js?c674423748672d339369a33103ded1e2";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
-  </script>
-
-
-
-  <script type="text/javascript">
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "//tajs.qq.com/stats?sId=55079830";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
-  </script>
-
-
-
-
-  <div style="display: none;">
-    <script src="http://s6.cnzz.com/stat.php?id=1253507635&web_id=1253507635" type="text/javascript"></script>
-  </div>
-
-
-
-
-
-  
-  
-    
-  
-
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-meta ">
-  
-
-  <div class="custom-logo-site-title">
-    <a href="/"  class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <span class="site-title">土土哥的技术Blog</span>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-  </div>
-  <p class="site-subtitle">iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言</p>
-</div>
-
-<div class="site-nav-toggle">
-  <button>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-  </button>
-</div>
-
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
-        
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
-            
-            首页
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-about">
-          <a href="/about" rel="section">
-            
-              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
-            
-            关于
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-archives">
-          <a href="/archives" rel="section">
-            
-              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
-            
-            归档
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/tags" rel="section">
-            
-              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
-            
-            标签
-          </a>
-        </li>
-      
-
-      
-    </ul>
-  
-
-  
-</nav>
-
- </div>
-    </header>
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                iOS项目的目录结构-原创
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-02-01T02:27:21+08:00" content="2015-02-01">
-              2015-02-01
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
-
+    <nav class="blue-grey">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">土土哥的技术Blog</a>
+            <ul class="right hide-on-med-and-down">
                 
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            首页
+                        </a>
+                    </li>
                 
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            关于
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav blue-grey darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="http://7nj2iz.com1.z0.glb.clouddn.com/avatar_comic_big.png" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">土土哥</p>
+                        <p class="desc">iOS/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
 
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/02/01/iOS项目的目录结构-原创/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/02/01/iOS项目的目录结构-原创/" itemprop="commentsCount"></span>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    首页
                 </a>
-              </span>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    关于
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav blue-grey darken-1" id="category-menu">
+        <!--<li class="">
+            <h5 class="black-text">分类目录</h5>
+        </li>-->
+
+    
+
             
-          
 
-          
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/iOS/">
+                    iOS <span class="right">26 篇</span></a>
+                </a>
+            </li>
 
-          
-          
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/Android/">
+                    Android <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/服务端/">
+                    服务端 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/其它/">
+                    其它 <span class="right">2 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
 
         </div>
-      </header>
+    </div>
+</nav>
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper blue-grey">
+        <span class="breadcrumb">当前位置（目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/iOS/">iOS</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>iOS项目的目录结构-原创</h1>
     
 
 
-    <div class="post-body" itemprop="articleBody">
+            </div>
+            <time class="teal-link-context" datetime="2015-01-31T18:27:21.000Z"><a href="/2015/02/01/iOS项目的目录结构-原创/">2015-02-01</a></time>
 
-      
-      
+            
+    <div class="tags-row">
+        
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
+        
+            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
+        
+    </div>
 
-      
-        <h2 id="前言">前言</h2><p>这段时间一直在做iOS的项目（<a href="https://itunes.apple.com/cn/app/qing-ju-yin-le-quan-guo-zui/id913235479?mt=8" target="_blank" rel="external">青桔音乐App</a>），随着代码量的上升，逐渐意识到项目的整体目录结构划分是多么重要，清晰的目录结构，能够更好的应对新的需求，更容易重构。虽然一直都是一个人在做=。=，但是还是深深地体会到目录结构的重要性。</p>
+
+            <div class="toc teal-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#前言"><span class="section table-of-contents-text">前言</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#例子"><span class="section table-of-contents-text">例子</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#详细讲解"><span class="section table-of-contents-text">详细讲解</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#General"><span class="section table-of-contents-text">General</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#Entity"><span class="section table-of-contents-text">Entity</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#Http"><span class="section table-of-contents-text">Http</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#DB"><span class="section table-of-contents-text">DB</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#Util"><span class="section table-of-contents-text">Util</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#Service"><span class="section table-of-contents-text">Service</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#Lib"><span class="section table-of-contents-text">Lib</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#Module"><span class="section table-of-contents-text">Module</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#总结"><span class="section table-of-contents-text">总结</span></a></li></ol>
+</div>
+
+
+            <div class="entry teal-link-context">
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这段时间一直在做iOS的项目（<a href="https://itunes.apple.com/cn/app/qing-ju-yin-le-quan-guo-zui/id913235479?mt=8" target="_blank" rel="external">青桔音乐App</a>），随着代码量的上升，逐渐意识到项目的整体目录结构划分是多么重要，清晰的目录结构，能够更好的应对新的需求，更容易重构。虽然一直都是一个人在做=。=，但是还是深深地体会到目录结构的重要性。</p>
 <a id="more"></a>
-<h2 id="例子">例子</h2><p>说再多都不如来个例子实在，如下：(VC指的是viewController)</p>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>说再多都不如来个例子实在，如下：(VC指的是viewController)</p>
 <figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">|---General</span></span><br><span class="line">    <span class="string">|---AppDelegate</span></span><br><span class="line">    <span class="string">|---Application</span></span><br><span class="line">    <span class="string">|---Constant</span></span><br><span class="line">    <span class="string">|---UI</span></span><br><span class="line">        <span class="string">|---View</span></span><br><span class="line">        <span class="string">|---VC</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="string">|---Category</span></span><br><span class="line">    ...</span><br><span class="line"><span class="string">|---Entity</span></span><br><span class="line">    <span class="string">|---BaseEntity</span></span><br><span class="line">    <span class="string">|---UserEntity</span></span><br><span class="line">    <span class="string">|---CommentEntity</span></span><br><span class="line">    ...</span><br><span class="line"><span class="string">|---Http</span></span><br><span class="line">    <span class="string">|---Api</span></span><br><span class="line">    <span class="string">|---Manager</span></span><br><span class="line">    <span class="string">|---CodeHandler</span></span><br><span class="line">    <span class="string">|---ErrorHandler</span></span><br><span class="line">    <span class="string">|---HttpHandler</span></span><br><span class="line">        <span class="string">|---UserHttpHandler</span></span><br><span class="line">        <span class="string">|---CommentHttpHandler</span></span><br><span class="line">        ...</span><br><span class="line"><span class="string">|---DB</span></span><br><span class="line">    <span class="string">|---DBHelper</span></span><br><span class="line">    <span class="string">|---DBService</span></span><br><span class="line">    ...</span><br><span class="line"><span class="string">|---Util</span></span><br><span class="line">    <span class="string">|---StringUtil</span></span><br><span class="line">    <span class="string">|---NumberUtil</span></span><br><span class="line">    <span class="string">|---TimeUtil</span></span><br><span class="line">    ...</span><br><span class="line"><span class="string">|---Service</span></span><br><span class="line">    <span class="string">|---AccountService</span></span><br><span class="line">    <span class="string">|---ShareService</span></span><br><span class="line">    ...</span><br><span class="line"><span class="string">|---Lib</span></span><br><span class="line">    <span class="string">|---Umeng</span></span><br><span class="line">    <span class="string">|---QQSDK</span></span><br><span class="line">    <span class="string">|---SVProgressHUD</span></span><br><span class="line">    ...</span><br><span class="line"><span class="string">|---Module</span></span><br><span class="line">    <span class="string">|---Login</span></span><br><span class="line">        <span class="string">|---View</span></span><br><span class="line">        <span class="string">|---VC</span></span><br><span class="line">        <span class="string">|---XIB</span></span><br><span class="line">    <span class="string">|---Comment</span></span><br><span class="line">        <span class="string">|---View</span></span><br><span class="line">        <span class="string">|---VC</span></span><br><span class="line">        <span class="string">|---XIB</span></span><br><span class="line">        <span class="string">|---Business</span></span><br><span class="line">    <span class="string">|---Feeds</span></span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
 <p>乍一看好多，别被吓到=。=，容我细细讲解。</p>
-<h2 id="详细讲解">详细讲解</h2><h3 id="General">General</h3><p>General好理解，放的就是如AppDelegate之类的、项目中最普通的、最常用的组件。</p>
-<p><strong>AppDelegate</strong>:<br>App的Delegate类实现，这个必须有，就不用说了吧。  </p>
-<p><strong>Application</strong>:<br>如果自定义实现了Application类，就放在这里。  </p>
-<p><strong>Constant</strong>:<br>顾名思义，常量，项目用到的所有公共常量，如enum枚举类型的、Notification的Tag，常用的颜色、字符串等等等，都可以按照自己的需求划分不同的Group，放到Constant里面。  </p>
+<h2 id="详细讲解"><a href="#详细讲解" class="headerlink" title="详细讲解"></a>详细讲解</h2><h3 id="General"><a href="#General" class="headerlink" title="General"></a>General</h3><p>General好理解，放的就是如AppDelegate之类的、项目中最普通的、最常用的组件。</p>
+<p><strong>AppDelegate</strong>:<br>App的Delegate类实现，这个必须有，就不用说了吧。</p>
+<p><strong>Application</strong>:<br>如果自定义实现了Application类，就放在这里。</p>
+<p><strong>Constant</strong>:<br>顾名思义，常量，项目用到的所有公共常量，如enum枚举类型的、Notification的Tag，常用的颜色、字符串等等等，都可以按照自己的需求划分不同的Group，放到Constant里面。</p>
 <p><strong>UI</strong>:<br>项目中自定义的UIView、UIViewController子类之类的代码，就对应放在UI下的View、VC中。</p>
 <p><strong>Category</strong><br>对系统类做的扩展，各种Category，如<code>NSString+XXXExtension</code>这种，就统一放在Category目录下。</p>
 <p>如还有其他的通用组件，也不妨放到这里，做统一的管理。</p>
 <hr>
-<h3 id="Entity">Entity</h3><p>Entity，也有人喜欢叫Model（关于Entity和Model的区别，推荐看看<a href="http://blogsh.de/2011/09/08/models-vs-entities/" target="_blank" rel="external">这篇文章</a>，个人觉得研究研究Entity和Model概念的区别还是很有好处的），就是程序中的“实体”，如一个用户、一条评论、一首歌等等，简单来说就是一个独立“个体”的集合、打包，具体的自己查查吧，网上一大堆的，感觉跟JavaBean的概念比较像。</p>
+<h3 id="Entity"><a href="#Entity" class="headerlink" title="Entity"></a>Entity</h3><p>Entity，也有人喜欢叫Model（关于Entity和Model的区别，推荐看看<a href="http://blogsh.de/2011/09/08/models-vs-entities/" target="_blank" rel="external">这篇文章</a>，个人觉得研究研究Entity和Model概念的区别还是很有好处的），就是程序中的“实体”，如一个用户、一条评论、一首歌等等，简单来说就是一个独立“个体”的集合、打包，具体的自己查查吧，网上一大堆的，感觉跟JavaBean的概念比较像。</p>
 <p>通常来说，每个Entity类都比较简单，只包含若干个属性。但是有时候可能要做统一的处理，如，在从服务器取回的JSON数据解包成具体的Entity类，并且执行一系列初始化操作等等，所以可能要对所有的Entity类做统一处理。所以说，可以定制相应的BaseEntity基类，利用模板方法等办法，定制统一的初始化流程（好像扯远了=。=，这个后面会详细写篇东西分享给大家），BaseEntity就是放这些基类的东西的。</p>
 <p>有了BaseEntity后，对应的各个业务中的具体Entity，如UserEntity、CommentEntity，就可以分门别类的建立单独的Group存放。</p>
 <hr>
-<h3 id="Http">Http</h3><p>这个Group里面放跟网络请求相关的东西，详细如下：</p>
+<h3 id="Http"><a href="#Http" class="headerlink" title="Http"></a>Http</h3><p>这个Group里面放跟网络请求相关的东西，详细如下：</p>
 <p><strong>Api</strong>:<br>互联网应用少不了跟服务器打交道的各种网络接口，所以我在项目中把所有的API对应的相对URL地址、参数注释要求等等都放在了这里，好统一管理。</p>
 <p><strong>Manager</strong>:<br>定义最基本的网络请求，如GET、POST、PUT等请求的基本封装，获取图片的基本封装。<br>一般来说就是定制统一的基本请求接口，对上层提供一致、稳定的服务，真正的网络请求，可以自己用iOS原生的Api写，也可以用AFNetworking等第三方库做封装，图片也可以灵活的用AFNetworking、SDWebImage这些优秀的库实现。还有就是，可以方便的统一对请求做处理，如错误处理、Http的Code、状态处理等等。还可以统一的增加请求参数，如统一为每个请求都增加用户的ID、token什么的。</p>
 <p><strong>CodeHandler</strong><br>大部分的API设计都会有相应的状态码、Code，为了方便扩展，可以把这些处理Code的类单独放在这里。</p>
@@ -340,569 +247,236 @@
 <p><strong>HttpHandler</strong><br>这个Group里面放的是真正实现接口的类，如什么UserHttpHandler、CommentHttpHandler之类的，就是具体实现了接口调用、处理返回数据、回调的类。</p>
 <p>Http里面的各个Group的类其实都是相互关联的，设计的时候可以定制统一的接口（Protocol），然后创建类实现（conform）这些接口，也就是面向接口的编程，以最大限度的减少接口层的各个职能之间的耦合，方便扩展。</p>
 <hr>
-<h3 id="DB">DB</h3><p>介于iOS的SQLite不是那么好用，所以非常有必要为操作数据库的类建立单独的地盘=。=  </p>
+<h3 id="DB"><a href="#DB" class="headerlink" title="DB"></a>DB</h3><p>介于iOS的SQLite不是那么好用，所以非常有必要为操作数据库的类建立单独的地盘=。=</p>
 <p><strong>DBHelper</strong>:<br>放基础的操作数据库的类，如简单的查找、插入、更新、事务更新等等操作，为负载的数据库业务逻辑封装底层接口。比如对流行的FMDB进行封装等等。</p>
 <p><strong>DBService</strong>:<br>这里放具体的数据库业务实现类，至于为什么叫“Service”，因为我也想不出什么好的名字了=。= 按照自己的业务逻辑组织即可。</p>
 <hr>
-<h3 id="Util">Util</h3><p>放常用的工具类的地方。如字符串操作的类StringUtil、时间计算格式化类TimeUtil等，按具体需求而定，这个就不用多说了吧。</p>
+<h3 id="Util"><a href="#Util" class="headerlink" title="Util"></a>Util</h3><p>放常用的工具类的地方。如字符串操作的类StringUtil、时间计算格式化类TimeUtil等，按具体需求而定，这个就不用多说了吧。</p>
 <hr>
-<h3 id="Service">Service</h3><p>项目的需求多了，业务逻辑的代码就会越来越多，总不能都放在view controller里面吧。一些多处用到的，或者非常独立的业务代码，完全可以抽离出来，实现为单独的、跟界面无关的业务类。因为做的事很杂，所以干脆就叫Service了。<br><strong>AccountService</strong>、<strong>ShareService</strong>就是这种类。而且大部分的Service都应该是单例类，如<strong>AccountService</strong>类可能维护着程序运行期间的账户信息，<strong>ShareService</strong>对程序的分享功能做了统一处理等等，具体怎么用就随各位了。</p>
+<h3 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h3><p>项目的需求多了，业务逻辑的代码就会越来越多，总不能都放在view controller里面吧。一些多处用到的，或者非常独立的业务代码，完全可以抽离出来，实现为单独的、跟界面无关的业务类。因为做的事很杂，所以干脆就叫Service了。<br><strong>AccountService</strong>、<strong>ShareService</strong>就是这种类。而且大部分的Service都应该是单例类，如<strong>AccountService</strong>类可能维护着程序运行期间的账户信息，<strong>ShareService</strong>对程序的分享功能做了统一处理等等，具体怎么用就随各位了。</p>
 <hr>
-<h3 id="Lib">Lib</h3><p>Lib，放各种第三方库，因项目需要修改过的第三方组件等，像什么友盟、QQSDK之类的就可以放这。当然，一些不会做改动的库最好还是用CocoaoPod做统一管理。</p>
+<h3 id="Lib"><a href="#Lib" class="headerlink" title="Lib"></a>Lib</h3><p>Lib，放各种第三方库，因项目需要修改过的第三方组件等，像什么友盟、QQSDK之类的就可以放这。当然，一些不会做改动的库最好还是用CocoaoPod做统一管理。</p>
 <hr>
-<h3 id="Module">Module</h3><p>终于讲到了最重要的地方。<br>iOS工程中最多的文件往往就是各种View、ViewController类，以前总是看到有人只创建两个Group，一个叫Views，另一个叫ViewControllers，然后所有的Views、ViewController都往里面塞，然后随着需求的增加，这两个Group也臃肿不堪。。。  </p>
-<p><strong>办法总是有的。就是为工程划分模块-Module</strong><br>如何划分Module？我认为，可以按照以下两点建立：  </p>
+<h3 id="Module"><a href="#Module" class="headerlink" title="Module"></a>Module</h3><p>终于讲到了最重要的地方。<br>iOS工程中最多的文件往往就是各种View、ViewController类，以前总是看到有人只创建两个Group，一个叫Views，另一个叫ViewControllers，然后所有的Views、ViewController都往里面塞，然后随着需求的增加，这两个Group也臃肿不堪。。。</p>
+<p><strong>办法总是有的。就是为工程划分模块-Module</strong><br>如何划分Module？我认为，可以按照以下两点建立：</p>
 <ol>
-<li>以页面跳转分支划分。  </li>
-<li>以功能划分。  </li>
+<li>以页面跳转分支划分。</li>
+<li>以功能划分。</li>
 </ol>
 <p><strong>以页面跳转分支划分</strong><br>就是按照应用的页面设计与业务逻辑，从最顶级开始，一级一级页面往下跳转，找出其中的独立分支，归为一个Module模块。<br>举例来说，应用主界面有4个Tab页，就先分出四个Module，然后一级一级往下跳转，遇到分支就建立新的Module，如此递归的建立，就能大致划分出各个Module。当然，这么做是最粗糙的，还要根据情况，将不同的分支Module合并成一个Module，简化代码的组成。我在这只是提供个划分Module的方法，具体怎么设计就看各位读者了=。=</p>
 <p><strong>以功能划分</strong><br>这个好理解，无非就是根据前期项目的功能模块划分工程的代码Module组成。如什么用户设置Module、评论Module、登录Module等等。</p>
 <p>总的来数，就是要用Module将工程的代码分类管理，每个Module具有大致相同的结构，如都可能有本Module用到的View、ViewController，自定义的类Class等等，就是说，按照职能对代码划分，避免将所有的类都堆在一起，也好应对新的需求。</p>
-<h2 id="总结">总结</h2><p>啰啰嗦嗦说了一大堆，想必各位都看烦了吧=。=刚开始写博客，写到一个地方，又会引出另一块，写着写着容易写偏了。<br>写之前我也大致搜了一下，发现网上相关的资料好少，但是实际的经验告诉我，项目工程的目录结构非常重要，无论是对开发还是对后期的维护，所以想着应该写篇东西，分享我自己的经验给大家，有啥问题，多提意见啊~~~</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>啰啰嗦嗦说了一大堆，想必各位都看烦了吧=。=刚开始写博客，写到一个地方，又会引出另一块，写着写着容易写偏了。<br>写之前我也大致搜了一下，发现网上相关的资料好少，但是实际的经验告诉我，项目工程的目录结构非常重要，无论是对开发还是对后期的维护，所以想着应该写篇东西，分享我自己的经验给大家，有啥问题，多提意见啊~~~</p>
 
-      
-    </div>
-
-    <div>
-      
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/iOS/" rel="tag">#iOS</a>
-          
-            <a href="/tags/原创/" rel="tag">#原创</a>
-          
+            </div>
         </div>
-      
+    </div>
+</article>
 
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2014/11/02/LinkTextView-Android开源库-原创/" rel="next" title="Android开源库-LinkTextView-原创">
-                <i class="fa fa-chevron-left"></i> Android开源库-LinkTextView-原创
-              </a>
-            
-          </div>
 
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/02/05/Effective-Objective-C-读书笔记-Item-1/" rel="prev" title="Effective-Objective-C-读书笔记-Item-1">
-                Effective-Objective-C-读书笔记-Item-1 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
+
+
+    <section id="comment">
+        <div class="card">
+            <div class="card-content">
+                <!-- Duoshuo Comment BEGIN -->
+                <div class="ds-thread" data-thread-key="2015/02/01/iOS项目的目录结构-原创/" data-title="iOS项目的目录结构-原创" data-url="http://tutuge.me/2015/02/01/iOS项目的目录结构-原创/"></div>
+
+                <script type="text/javascript">
+                    console.log(document.querySelector('.ds-thread'));
+                    var duoshuoQuery = {
+                        short_name: 'tutuge'
+                    };
+                    (function() {
+                        var ds = document.createElement('script');
+                        ds.type = 'text/javascript';
+                        ds.async = true;
+                        ds.src = (document.location.protocol == 'https:'
+                            ? 'https:'
+                            : 'http:') + '//static.duoshuo.com/embed.js';
+                        ds.charset = 'UTF-8';
+                        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+                    })();
+                </script>
+                <!-- Duoshuo Comment END -->
+            </div>
         </div>
-      
-
-      
-      
-    </footer>
-  </article>
+    </section>
 
 
 
-    <div class="post-spread">
-      
-        <div class="ds-share flat" data-thread-key="2015/02/01/iOS项目的目录结构-原创/"
-     data-title="iOS项目的目录结构-原创"
-     data-content=""
-     data-url="http://tutuge.me/2015/02/01/iOS项目的目录结构-原创/">
-  <div class="ds-share-inline">
-    <ul  class="ds-share-icons-16">
+</div>
 
-      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
-      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
-      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
-      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
-      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
-
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large teal">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect teal accent-4" title="Return to top"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="Menu"><i class="fa fa-navicon"></i></a></li>
     </ul>
-    <div class="ds-share-icons-more">
-    </div>
-  </div>
-</div>
-      
-    </div>
   </div>
 
-
-          </div>
-          
-
-  <p>热评文章</p>
-  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
-
-
-          
-  <div class="comments" id="comments">
-    
-      <div class="ds-thread" data-thread-key="2015/02/01/iOS项目的目录结构-原创/"
-           data-title="iOS项目的目录结构-原创" data-url="http://tutuge.me/2015/02/01/iOS项目的目录结构-原创/">
-      </div>
-    
-  </div>
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <section class="site-overview sidebar-panel ">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/uploads/avatar_comic_240.png"
-               alt="土土哥" />
-          <p class="site-author-name" itemprop="name">土土哥</p>
-          <p class="site-description motion-element" itemprop="description">程序猿</p>
-        </div>
-        <nav class="site-state motion-element">
-          <div class="site-state-item site-state-posts">
-            <a href="/archives">
-              <span class="site-state-item-count">30</span>
-              <span class="site-state-item-name">日志</span>
-            </a>
-          </div>
-
-          
-            <div class="site-state-item site-state-categories">
-              
-                <span class="site-state-item-count">4</span>
-                <span class="site-state-item-name">分类</span>
-              
-            </div>
-          
-
-          
-            <div class="site-state-item site-state-tags">
-              <a href="/tags">
-                <span class="site-state-item-count">17</span>
-                <span class="site-state-item-name">标签</span>
-              </a>
-            </div>
-          
-
-        </nav>
-
-        
-          <div class="feed-link motion-element">
-            <a href="/atom.xml" rel="alternate">
-              <i class="fa fa-rss"></i>
-              RSS
-            </a>
-          </div>
-        
-
-        <div class="links-of-author motion-element">
-          
-            
-              <span class="links-of-author-item">
-                <a href="https://github.com/zekunyan" target="_blank">
-                  
-                    <i class="fa fa-github"></i> GitHub
-                  
-                </a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="https://twitter.com/zorro_tutuge" target="_blank">
-                  
-                    <i class="fa fa-twitter"></i> Twitter
-                  
-                </a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://weibo.com/zekunyan" target="_blank">
-                  
-                    <i class="fa fa-weibo"></i> Weibo
-                  
-                </a>
-              </span>
-            
-          
-        </div>
-
-        
-        
-          <div class="cc-license motion-element" itemprop="license">
-            <a href="http://creativecommons.org/licenses/by-nc-nd/4.0" class="cc-opacity" target="_blank">
-              <img src="/images/cc-by-nc-nd.svg" alt="Creative Commons" />
-            </a>
-          </div>
-        
-
-        
-        <div class="links-of-blogroll motion-element">
-          
-            <div class="links-of-blogroll-title">友情链接</div>
-            <ul class="links-of-blogroll-list">
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://chenrudan.github.io" target="_blank">女朋友的博客😊</a>
-                </li>
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://suta.name" target="_blank">很赞的设计师：苏塔</a>
-                </li>
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://neoyeelf.github.io" target="_blank">NeOye's blog</a>
-                </li>
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://raytaylorlin.com" target="_blank">Ray Taylor Lin's world</a>
-                </li>
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://bingyan.farbox.com" target="_blank">Howl写东西的地方</a>
-                </li>
-              
-            </ul>
-          
-        </div>
-
-      </section>
-
-      
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc-indicator-top post-toc-indicator">
-            <i class="fa fa-angle-double-up"></i>
-          </div>
-          <div class="post-toc">
-            
-              
-            
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#例子"><span class="nav-number">2.</span> <span class="nav-text">例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#详细讲解"><span class="nav-number">3.</span> <span class="nav-text">详细讲解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#General"><span class="nav-number">3.1.</span> <span class="nav-text">General</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Entity"><span class="nav-number">3.2.</span> <span class="nav-text">Entity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Http"><span class="nav-number">3.3.</span> <span class="nav-text">Http</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DB"><span class="nav-number">3.4.</span> <span class="nav-text">DB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Util"><span class="nav-number">3.5.</span> <span class="nav-text">Util</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Service"><span class="nav-number">3.6.</span> <span class="nav-text">Service</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lib"><span class="nav-number">3.7.</span> <span class="nav-text">Lib</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Module"><span class="nav-number">3.8.</span> <span class="nav-text">Module</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
-            
-          </div>
-          <div class="post-toc-indicator-bottom post-toc-indicator">
-            <i class="fa fa-angle-double-down"></i>
-          </div>
-        </section>
-      
-
-    </div>
-  </aside>
-
-
-        
-      </div>
     </main>
+    <footer class="page-footer blue-grey darken-1">
+    
+    <div class="container">
+        <div class="row">
+            
+            <div class="social-group col m3 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/zekunyan" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+            </div>
+            
 
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright" >
-  
-  &copy;  2014 - 
-  <span itemprop="copyrightYear">2016</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">燕泽堃</span>
-</div>
-
-<div class="powered-by">
-  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
-</div>
-
-<div class="theme-info">
-  主题 -
-  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
-    NexT.Pisces
-  </a>
-</div>
-
-
-
-      </div>
-    </footer>
-
-    <div class="back-to-top">
-      <i class="fa fa-arrow-up"></i>
+            
+            <div class="col m9 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
+                
+                    <a class="social-link" href="http://raytaylorlin.com/" target="_blank">raytaylorism主题作者的技术博客</a>
+                
+                    <a class="social-link" href="http://suta.name/" target="_blank">很赞的设计师</a>
+                
+                    <a class="social-link" href="http://neoyeelf.github.io/" target="_blank">NeOye&#39;s blog</a>
+                
+                    <a class="social-link" href="http://bingyan.farbox.com/" target="_blank">Howl写东西的地方</a>
+                
+            </div>
+            
+        </div>
     </div>
-  </div>
+    
 
-  
-
-
-  
-
-
-
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
+    <div class="footer-copyright teal-link-context">
+        <div class="container">
+            © 2016 tutuge.me, All rights reserved.
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
+        </div>
+    </div>
+</footer>
 
 
-  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
-
-  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-
-  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-
-  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
-
-  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
-
-  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前浏览器不支持博客完整功能。如果要获得最佳体验，请点击右上角···，复制链接，并在其它浏览器打开</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前浏览器不支持博客完整功能。如果要获得最佳体验，请点击右上角···，复制链接，并在其它浏览器打开</p>
+</div>
 
 
-  
+<script src="/js/jquery-2.1.1.min.js"></script>
+<script src="/js/materialize.min.js"></script>
 
+<script>
+(function($) {
+    $(document).ready(function() {
+        // 隐藏禁用javascript（针对微信内置浏览器）的提示
+        $('.noscript').hide();
 
-  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+        // 图片缩放效果
+        var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
 
-  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+        // 给图片加上点击放大效果（materialbox插件）
+        $imgs.addClass('materialboxed')
+            .each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
 
-
-
-  
-  
-
-
-  <script type="text/javascript" src="/js/src/affix.js?v=0.5.0"></script>
-
-  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=0.5.0"></script>
-
-
-
-  
-  
-<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
-
-<script type="text/javascript" id="sidebar.toc.highlight">
-  $(document).ready(function () {
-    var tocSelector = '.post-toc';
-    var $tocSelector = $(tocSelector);
-    var activeCurrentSelector = '.active-current';
-
-    $tocSelector
-      .on('activate.bs.scrollspy', function () {
-        var $currentActiveElement = $(tocSelector + ' .active').last();
-
-        removeCurrentActiveClass();
-        $currentActiveElement.addClass('active-current');
-
-        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
-      })
-      .on('clear.bs.scrollspy', function () {
-        removeCurrentActiveClass();
-      });
-
-    function removeCurrentActiveClass () {
-      $(tocSelector + ' ' + activeCurrentSelector)
-        .removeClass(activeCurrentSelector.substring(1));
-    }
-
-    function processTOC () {
-      getTOCMaxHeight();
-      toggleTOCOverflowIndicators();
-    }
-
-    function getTOCMaxHeight () {
-      var height = $('.sidebar').height() -
-                   $tocSelector.position().top -
-                   $('.post-toc-indicator-bottom').height();
-
-      $tocSelector.css('height', height);
-
-      return height;
-    }
-
-    function toggleTOCOverflowIndicators () {
-      tocOverflowIndicator(
-        '.post-toc-indicator-top',
-        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
-      );
-
-      tocOverflowIndicator(
-        '.post-toc-indicator-bottom',
-        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
-      )
-    }
-
-    $(document).on('sidebar.motion.complete', function () {
-      processTOC();
-    });
-
-    $('body').scrollspy({ target: tocSelector });
-    $(window).on('resize', function () {
-      if ( $('.sidebar').hasClass('sidebar-active') ) {
-        processTOC();
-      }
-    });
-
-    onScroll($tocSelector);
-
-    function onScroll (element) {
-      element.on('mousewheel DOMMouseScroll', function (event) {
-          var oe = event.originalEvent;
-          var delta = oe.wheelDelta || -oe.detail;
-
-          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
-          event.preventDefault();
-
-          toggleTOCOverflowIndicators();
-      });
-    }
-
-    function tocOverflowIndicator (indicator, action) {
-      var $indicator = $(indicator);
-      var opacity = action === 'show' ? 1 : 0;
-      $indicator.velocity ?
-        $indicator.velocity('stop').velocity({
-          opacity: opacity
-        }, { duration: 100 }) :
-        $indicator.stop().animate({
-          opacity: opacity
-        }, 100);
-    }
-
-  });
-</script>
-
-<script type="text/javascript" id="sidebar.nav">
-  $(document).ready(function () {
-    var html = $('html');
-    var TAB_ANIMATE_DURATION = 200;
-    var hasVelocity = $.isFunction(html.velocity);
-
-    $('.sidebar-nav li').on('click', function () {
-      var item = $(this);
-      var activeTabClassName = 'sidebar-nav-active';
-      var activePanelClassName = 'sidebar-panel-active';
-      if (item.hasClass(activeTabClassName)) {
-        return;
-      }
-
-      var currentTarget = $('.' + activePanelClassName);
-      var target = $('.' + item.data('target'));
-
-      hasVelocity ?
-        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
-          target
-            .velocity('stop')
-            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
-            .addClass(activePanelClassName);
-        }) :
-        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
-          currentTarget.hide();
-          target
-            .stop()
-            .css({'opacity': 0, 'display': 'block'})
-            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
-              currentTarget.removeClass(activePanelClassName);
-              target.addClass(activePanelClassName);
-            });
+        // 首页幻灯片
+        $('.slider').slider({
+            indicators: true,
+            full_width: true,
+            interval: 8000
         });
 
-      item.siblings().removeClass(activeTabClassName);
-      item.addClass(activeTabClassName);
-    });
+        $(".button-collapse").sideNav();
+        $(".category-menu").sideNav();
 
-    $('.post-toc a').on('click', function (e) {
-      e.preventDefault();
-      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
-      var offset = $(targetSelector).offset().top;
-      hasVelocity ?
-        html.velocity('stop').velocity('scroll', {
-          offset: offset  + 'px',
-          mobileHA: false
-        }) :
-        $('html, body').stop().animate({
-          scrollTop: offset
-        }, 500);
-    });
+        // 针对gallery post
+        $('.carousel').carousel({
+            full_width: true
+        });
+        $('.carousel-control.prev').click(function() {
+            $('.carousel').carousel('prev');
+        });
+        $('.carousel-control.next').click(function() {
+            $('.carousel').carousel('next');
+        });
 
-    // Expand sidebar on post detail page by default, when post has a toc.
-    NexT.motion.middleWares.sidebar = function () {
-      var $tocContent = $('.post-toc-content');
+        // 文章目录
+        $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+        // 修正文章目录的left-border颜色
+        var color = $('.table-of-contents-text').css('color');
+        $('.table-of-contents-link').css('border-left-color', color);
 
-      if (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always') {
-        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
-          NexT.utils.displaySidebar();
+        // 针对移动端做的优化：FAB按钮点击一下收回
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            $('.fixed-action-btn').addClass('click-to-toggle');
         }
-      }
-    };
-  });
+        // 回到顶部
+        $('.btn-return-top').click(function() {
+            $('body, html').animate({
+                scrollTop: 0
+            }, 500);
+        });
+
+        // 重置读书页面的Tab标签页的颜色
+        $('li.tab a').hover(function() {
+            $(this).toggleClass('text-lighten-4');
+        });
+        $('.indicator').addClass('teal lighten-2');
+
+        
+        // 添加new标签
+        $('.menu-reading,.menu-about').append('<span class="new badge teal accent-4"></span>');
+        
+    });
+})(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-68058110-1', 'auto');
+    ga('send', 'pageview');
+
 </script>
 
 
 
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=55079830" charset="UTF-8"></script>
 
 
 
-  
-
-  
-    
-  
-
-  <script type="text/javascript">
-    var duoshuoQuery = {short_name:"tutuge"};
-    (function() {
-      var ds = document.createElement('script');
-      ds.type = 'text/javascript';ds.async = true;
-      ds.id = 'duoshuo-script';
-      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-      ds.charset = 'UTF-8';
-      (document.getElementsByTagName('head')[0]
-      || document.getElementsByTagName('body')[0]).appendChild(ds);
-    })();
-  </script>
-
-  
-    
-  
-
-
-
-
-
-  
-  
-  
-
-  
 
 
 </body>

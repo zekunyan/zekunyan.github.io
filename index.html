@@ -1,1408 +1,633 @@
-<!doctype html>
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion">
+<!DOCTYPE HTML>
+<html>
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
+    
 
+    <title>iOS，Android程序猿，喜欢Mac、Linux、各种开源技术，各种语言</title>
+    <meta name="author" content="燕泽堃">
+    
+    <meta name="description" content="程序猿">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+    
+    <meta property="og:site_name" content="土土哥的技术Blog"/>
 
+    
+    <meta property="og:image" content="undefined"/>
+    
 
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="土土哥的技术Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
 
-
-
-
-
-
-
-
-
-
-  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
-
-
-
-
-  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-
-
-
-<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="tutuge,土土哥,iOS,Android,Linux,程序员,燕泽堃,iOS程序员,iOS开发" />
-
-
-
-
-
-  <link rel="alternate" href="/atom.xml" title="土土哥的技术Blog" type="application/atom+xml" />
-
-
-
-
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
-
-
-
-
-
-
-<meta name="description" content="程序猿">
-<meta property="og:type" content="website">
-<meta property="og:title" content="土土哥的技术Blog">
-<meta property="og:url" content="http://tutuge.me/index.html">
-<meta property="og:site_name" content="土土哥的技术Blog">
-<meta property="og:description" content="程序猿">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="土土哥的技术Blog">
-<meta name="twitter:description" content="程序猿">
-
-
-
-<script type="text/javascript" id="hexo.configuration">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    scheme: 'Pisces',
-    sidebar: {"position":"left","display":"post"},
-    fancybox: true,
-    motion: true,
-    duoshuo: {
-      userId: 9509393,
-      author: '土土哥'
-    }
-  };
-</script>
-
-  <title> 土土哥的技术Blog </title>
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
-  
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
 
-
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-68058110-1', 'auto');
-  ga('send', 'pageview');
-</script>
-
-
-  <script type="text/javascript">
-    var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "//hm.baidu.com/hm.js?c674423748672d339369a33103ded1e2";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
-  </script>
-
-
-
-  <script type="text/javascript">
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "//tajs.qq.com/stats?sId=55079830";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
-  </script>
-
-
-
-
-  <div style="display: none;">
-    <script src="http://s6.cnzz.com/stat.php?id=1253507635&web_id=1253507635" type="text/javascript"></script>
-  </div>
-
-
-
-
-
-  
-  
-    
-  
-
-  <div class="container one-collumn sidebar-position-left 
-   page-home 
- ">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-meta ">
-  
-
-  <div class="custom-logo-site-title">
-    <a href="/"  class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <span class="site-title">土土哥的技术Blog</span>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-  </div>
-  <p class="site-subtitle">iOS,Android程序猿一枚,喜欢Mac、Linux、各种开源技术，各种语言</p>
-</div>
-
-<div class="site-nav-toggle">
-  <button>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-  </button>
-</div>
-
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
+    <nav class="blue-grey">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">土土哥的技术Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            关于
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav blue-grey darken-1" id="main-menu">
         
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
-            
-            首页
-          </a>
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="http://7nj2iz.com1.z0.glb.clouddn.com/avatar_comic_big.png" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">土土哥</p>
+                        <p class="desc">iOS/技术宅</p>
+                    </div>
+                </div>
+            </div>
         </li>
-      
         
-        <li class="menu-item menu-item-about">
-          <a href="/about" rel="section">
-            
-              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
-            
-            关于
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-archives">
-          <a href="/archives" rel="section">
-            
-              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
-            
-            归档
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/tags" rel="section">
-            
-              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
-            
-            标签
-          </a>
-        </li>
-      
 
-      
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    关于
+                </a>
+            </li>
+        
     </ul>
-  
 
-  
-</nav>
-
- </div>
-    </header>
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-  <section id="posts" class="posts-expand">
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <ul class="side-nav blue-grey darken-1" id="category-menu">
+        <!--<li class="">
+            <h5 class="black-text">分类目录</h5>
+        </li>-->
 
     
-      <header class="post-header">
 
-        
-        
-          <h1 class="post-title" itemprop="name headline">
             
-            
-              
-                
-                <a class="post-title-link" href="/2015/12/31/TTGTagCollectionView/" itemprop="url">
-                  开源项目-TTGTagCollectionView
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/iOS/">
+                    iOS <span class="right">26 篇</span></a>
                 </a>
-              
-            
-          </h1>
+            </li>
+
         
 
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-12-31T21:56:04+08:00" content="2015-12-31">
-              2015-12-31
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/12/31/TTGTagCollectionView/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/12/31/TTGTagCollectionView/" itemprop="commentsCount"></span>
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/Android/">
+                    Android <span class="right">1 篇</span></a>
                 </a>
-              </span>
-            
-          
+            </li>
 
-          
+        
 
-          
-          
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/服务端/">
+                    服务端 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/其它/">
+                    其它 <span class="right">2 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
 
         </div>
-      </header>
+    </div>
+</nav>
+
+    <main>
+        
+
+
+
+<div id="article-list" class="container main-container">
+    
+        <article class="simple-article">
+        <div class="card">
+            <div class="card-content">
+                <div class="article-title">
+                    
+    
+        <h1 class="blue-grey-link-context"><a href="/2015/12/31/TTGTagCollectionView/">开源项目-TTGTagCollectionView</a></h1>
     
 
 
-    <div class="post-body" itemprop="articleBody">
+                </div>
 
-      
-      
+                <time class="teal-link-context" datetime="2015-12-31T13:56:04.000Z"><a href="/2015/12/31/TTGTagCollectionView/">2015-12-31</a></time>
 
-      
+                
+    <div class="tags-row">
         
-          <h2 id="更新">更新</h2><ul>
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
+        
+            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
+        
+            <a href="/tags/开源/" class="chip teal accent-4">开源</a>
+        
+    </div>
+
+
+
+                
+                    <div class="entry teal-link-context">
+                        <h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><ul>
 <li>2016-02-18: 修复了超长标签导致排版错误的Bug。</li>
 </ul>
-<h2 id="前言">前言</h2><p>这段时间做项目的时候，总是需要显示一些“标签”样式的内容，但是又找不到用的顺手的库，所以琢磨了几天，自己实现了出来，就有了这个库：TTGTagCollectionView。如果只需要显示文字标签的话，直接使用<code>TTGTextTagCollectionView</code>，需要自己定义标签的话，就用<code>TTGTagCollectionView</code>，效果如下:</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这段时间做项目的时候，总是需要显示一些“标签”样式的内容，但是又找不到用的顺手的库，所以琢磨了几天，自己实现了出来，就有了这个库：TTGTagCollectionView。如果只需要显示文字标签的话，直接使用<code>TTGTextTagCollectionView</code>，需要自己定义标签的话，就用<code>TTGTagCollectionView</code>，效果如下:</p>
 <p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/TTGTagCollectionView_screenshot.jpeg" alt="ScreenShot"></p>
 <p>CocoaPods: <code>pod &quot;TTGTagCollectionView&quot;</code></p>
 <p>Github地址: <a href="https://github.com/zekunyan/TTGTagCollectionView">https://github.com/zekunyan/TTGTagCollectionView</a></p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/12/31/TTGTagCollectionView/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
+                    </div>
                 
-                <a class="post-title-link" href="/2015/12/14/autolayout-example-with-masonry3/" itemprop="url">
-                  有趣的Autolayout示例3-Masonry实现
-                </a>
-              
+            </div>
+
             
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-12-14T21:36:08+08:00" content="2015-12-14">
-              2015-12-14
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
+            <div class="card-action teal-link-context">
+                <a href="2015/12/31/TTGTagCollectionView/">READ MORE</a>
+            </div>
             
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/12/14/autolayout-example-with-masonry3/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/12/14/autolayout-example-with-masonry3/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
         </div>
-      </header>
+</article>
+
+    
+        <article class="simple-article">
+        <div class="card">
+            <div class="card-content">
+                <div class="article-title">
+                    
+    
+        <h1 class="blue-grey-link-context"><a href="/2015/12/14/autolayout-example-with-masonry3/">有趣的Autolayout示例3-Masonry实现</a></h1>
     
 
 
-    <div class="post-body" itemprop="articleBody">
+                </div>
 
-      
-      
+                <time class="teal-link-context" datetime="2015-12-14T13:36:08.000Z"><a href="/2015/12/14/autolayout-example-with-masonry3/">2015-12-14</a></time>
 
-      
+                
+    <div class="tags-row">
         
-          <h2 id="更新">更新</h2><p>2015-12-23: 感谢<a href="https://github.com/XVXVXXX">XVXVXXX</a>的PR,Case 1不再需要Fake Header View，直接用contentInset就好~<br>2015-12-17：Case3的等间距，用UIStackView实现最优雅，但是无奈只有iOS9以上支持。兼容方案如OAStackView也可以，但是在UITableViewCell里面用，或者需要频繁的增减内部View的数量时，性能损耗有点厉害，会卡。所以，还是要看需求=。=</p>
-<h2 id="前言">前言</h2><p>第三篇来了。<br>依然是3个小例子，主要部分用Masonry手写代码实现，其它的约束在storyboard里面直接拖拽搭建。<br>至于为啥不用VFL，主要是因为它的“描述性”的写法很容易出错，没有补全、不好调试，写起来没有“代码”的感觉=。=。当然，这个仁者见仁智者见智~<br>三个例子分别是：<strong>Parallax Header</strong>，<strong>动态变高度的UITableViewCell</strong>，以及<strong>两种方式实现等间距</strong>。原理其实都很简单，例子也都是平时积累起来的。</p>
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
+        
+            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
+        
+            <a href="/tags/Autolayout/" class="chip teal accent-4">Autolayout</a>
+        
+            <a href="/tags/Masonry/" class="chip teal accent-4">Masonry</a>
+        
+    </div>
+
+
+
+                
+                    <div class="entry teal-link-context">
+                        <h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><p>2015-12-23: 感谢<a href="https://github.com/XVXVXXX">XVXVXXX</a>的PR,Case 1不再需要Fake Header View，直接用contentInset就好~<br>2015-12-17：Case3的等间距，用UIStackView实现最优雅，但是无奈只有iOS9以上支持。兼容方案如OAStackView也可以，但是在UITableViewCell里面用，或者需要频繁的增减内部View的数量时，性能损耗有点厉害，会卡。所以，还是要看需求=。=</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>第三篇来了。<br>依然是3个小例子，主要部分用Masonry手写代码实现，其它的约束在storyboard里面直接拖拽搭建。<br>至于为啥不用VFL，主要是因为它的“描述性”的写法很容易出错，没有补全、不好调试，写起来没有“代码”的感觉=。=。当然，这个仁者见仁智者见智~<br>三个例子分别是：<strong>Parallax Header</strong>，<strong>动态变高度的UITableViewCell</strong>，以及<strong>两种方式实现等间距</strong>。原理其实都很简单，例子也都是平时积累起来的。</p>
 <p>前两篇：<br>第一篇：<a href="http://tutuge.me/2015/05/23/autolayout-example-with-masonry/">有趣的Autolayout示例-Masonry实现</a><br>第二篇：<a href="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/">有趣的Autolayout示例2-Masonry实现</a></p>
 <p>Github地址：<br><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
 <p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry3_1.gif" alt="Gif示例"></p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/12/14/autolayout-example-with-masonry3/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
+                    </div>
                 
-                <a class="post-title-link" href="/2015/10/25/ttgemojirate-lib/" itemprop="url">
-                  Swift开源项目: TTGEmojiRate的实现
-                </a>
-              
+            </div>
+
             
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-10-25T19:32:42+08:00" content="2015-10-25">
-              2015-10-25
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
+            <div class="card-action teal-link-context">
+                <a href="2015/12/14/autolayout-example-with-masonry3/">READ MORE</a>
+            </div>
             
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/10/25/ttgemojirate-lib/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/25/ttgemojirate-lib/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
         </div>
-      </header>
+</article>
+
+    
+        <article class="simple-article">
+        <div class="card">
+            <div class="card-content">
+                <div class="article-title">
+                    
+    
+        <h1 class="blue-grey-link-context"><a href="/2015/10/25/ttgemojirate-lib/">Swift开源项目: TTGEmojiRate的实现</a></h1>
     
 
 
-    <div class="post-body" itemprop="articleBody">
+                </div>
 
-      
-      
+                <time class="teal-link-context" datetime="2015-10-25T11:32:42.000Z"><a href="/2015/10/25/ttgemojirate-lib/">2015-10-25</a></time>
 
-      
+                
+    <div class="tags-row">
         
-          <h2 id="前言">前言</h2><p>前段时间在Dribbble上发现了一个<a href="https://dribbble.com/shots/2211556-Rating-Version-A">Rating控件</a>的演示动画，控件以Emoji表情为基础，结合了上下滑动手势，正好最近正在深入学习iOS动画、绘图相关的知识，就尝试着用<code>UIBezierPath</code>实现了出来。本文就是TTGEmojiRate的实现过程。</p>
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
+        
+            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
+        
+            <a href="/tags/开源/" class="chip teal accent-4">开源</a>
+        
+            <a href="/tags/Swift/" class="chip teal accent-4">Swift</a>
+        
+    </div>
+
+
+
+                
+                    <div class="entry teal-link-context">
+                        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前段时间在Dribbble上发现了一个<a href="https://dribbble.com/shots/2211556-Rating-Version-A">Rating控件</a>的演示动画，控件以Emoji表情为基础，结合了上下滑动手势，正好最近正在深入学习iOS动画、绘图相关的知识，就尝试着用<code>UIBezierPath</code>实现了出来。本文就是TTGEmojiRate的实现过程。</p>
 <p>Github: <a href="https://github.com/zekunyan/TTGEmojiRate">https://github.com/zekunyan/TTGEmojiRate</a></p>
 <p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/TTGEmojiRate_screenshot2.gif" alt="TTGEmojiRate Example"></p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/10/25/ttgemojirate-lib/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
+                    </div>
                 
-                <a class="post-title-link" href="/2015/10/09/ttgsnackbar-lib/" itemprop="url">
-                  Swift写的库-TTGSnackbar
-                </a>
-              
+            </div>
+
             
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-10-09T19:49:09+08:00" content="2015-10-09">
-              2015-10-09
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
+            <div class="card-action teal-link-context">
+                <a href="2015/10/25/ttgemojirate-lib/">READ MORE</a>
+            </div>
             
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/10/09/ttgsnackbar-lib/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/09/ttgsnackbar-lib/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
         </div>
-      </header>
+</article>
+
+    
+        <article class="simple-article">
+        <div class="card">
+            <div class="card-content">
+                <div class="article-title">
+                    
+    
+        <h1 class="blue-grey-link-context"><a href="/2015/10/09/ttgsnackbar-lib/">Swift写的库-TTGSnackbar</a></h1>
     
 
 
-    <div class="post-body" itemprop="articleBody">
+                </div>
 
-      
-      
+                <time class="teal-link-context" datetime="2015-10-09T11:49:09.000Z"><a href="/2015/10/09/ttgsnackbar-lib/">2015-10-09</a></time>
 
-      
+                
+    <div class="tags-row">
         
-          
-            <h2 id="TTGSnackbar">TTGSnackbar</h2><p>国庆期间，用Swift写了个简单的控件库：TTGSnackbar，模仿Android的Snackbar。目前更新到了版本0.2.0。支持多种动画，增强了自定义。</p>
-<p>Github: <a href="https://github.com/zekunyan/TTGSnackbar" target="_blank" rel="external">https://github.com/zekunyan/TTGSnackbar</a></p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/TTGSnackbar_1.gif?refresh" alt="示例"></p>
-
-          
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
         
-      
+            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
+        
+            <a href="/tags/开源/" class="chip teal accent-4">开源</a>
+        
+            <a href="/tags/Swift/" class="chip teal accent-4">Swift</a>
+        
     </div>
 
-    <div>
-      
-    </div>
 
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/08/08/autolayout-example-with-masonry2/" itemprop="url">
-                  有趣的Autolayout示例2-Masonry实现
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-08-08T00:55:52+08:00" content="2015-08-08">
-              2015-08-08
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
 
                 
-                
+            </div>
 
-              
-            </span>
-          
-
-          
             
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/08/08/autolayout-example-with-masonry2/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/08/08/autolayout-example-with-masonry2/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
         </div>
-      </header>
+</article>
+
+    
+        <article class="simple-article">
+        <div class="card">
+            <div class="card-content">
+                <div class="article-title">
+                    
+    
+        <h1 class="blue-grey-link-context"><a href="/2015/08/08/autolayout-example-with-masonry2/">有趣的Autolayout示例2-Masonry实现</a></h1>
     
 
 
-    <div class="post-body" itemprop="articleBody">
+                </div>
 
-      
-      
+                <time class="teal-link-context" datetime="2015-08-07T16:55:52.000Z"><a href="/2015/08/08/autolayout-example-with-masonry2/">2015-08-08</a></time>
 
-      
+                
+    <div class="tags-row">
         
-          <h2 id="前言">前言</h2><p>Masonry写的Autolayout示例又来了，仍然是三个小例子，分别是<strong>变高度的UITableViewCell、topLayoutGuide与bottomLayoutGuide，还有自定义的baseline</strong>，外加两个基本的知识点讲解，说不上“有趣”=。=，比较基础，写了很多，各位随意看看吧~</p>
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
+        
+            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
+        
+            <a href="/tags/Autolayout/" class="chip teal accent-4">Autolayout</a>
+        
+            <a href="/tags/Masonry/" class="chip teal accent-4">Masonry</a>
+        
+    </div>
+
+
+
+                
+                    <div class="entry teal-link-context">
+                        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Masonry写的Autolayout示例又来了，仍然是三个小例子，分别是<strong>变高度的UITableViewCell、topLayoutGuide与bottomLayoutGuide，还有自定义的baseline</strong>，外加两个基本的知识点讲解，说不上“有趣”=。=，比较基础，写了很多，各位随意看看吧~</p>
 <p>第一篇: <a href="http://tutuge.me/2015/05/23/autolayout-example-with-masonry/">有趣的Autolayout示例-Masonry实现</a><br>第三篇: <a href="http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/">有趣的Autolayout示例3-Masonry实现</a></p>
 <p>Github地址：<br><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
 <p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_1.gif" alt="Gif示例"></p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/08/08/autolayout-example-with-masonry2/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
+                    </div>
                 
-                <a class="post-title-link" href="/2015/07/25/compatibility-with-macro-category-and-runtime/" itemprop="url">
-                  解决iOS项目的版本兼容问题-结合宏、Category和Runtime
-                </a>
-              
+            </div>
+
             
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-07-25T00:39:03+08:00" content="2015-07-25">
-              2015-07-25
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
+            <div class="card-action teal-link-context">
+                <a href="2015/08/08/autolayout-example-with-masonry2/">READ MORE</a>
+            </div>
             
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/07/25/compatibility-with-macro-category-and-runtime/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/07/25/compatibility-with-macro-category-and-runtime/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
         </div>
-      </header>
+</article>
+
+    
+        <article class="simple-article">
+        <div class="card">
+            <div class="card-content">
+                <div class="article-title">
+                    
+    
+        <h1 class="blue-grey-link-context"><a href="/2015/07/25/compatibility-with-macro-category-and-runtime/">解决iOS项目的版本兼容问题-结合宏、Category和Runtime</a></h1>
     
 
 
-    <div class="post-body" itemprop="articleBody">
+                </div>
 
-      
-      
+                <time class="teal-link-context" datetime="2015-07-24T16:39:03.000Z"><a href="/2015/07/25/compatibility-with-macro-category-and-runtime/">2015-07-25</a></time>
 
-      
+                
+    <div class="tags-row">
         
-          <h2 id="更新">更新</h2><h3 id="2015-11-16">2015-11-16</h3><p>感谢微博好友<strong>@zyyy_000</strong>的评论，补充了为什么要在<code>+ (void)load</code>方法里面做<strong>Method Swizzling</strong>。</p>
-<h2 id="前言">前言</h2><p>最近，在做项目时，因为某种原因，突然要“适配”iOS6（也是醉了。。。），保证极少数的iOS6用户可以“用上”新的版本。哪怕界面上有瑕疵，只要功能正常就行。于是就只好花几天时间对iOS6进行紧急适配（心中一万头驼羊奔跑而过。。。）  </p>
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
+        
+            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
+        
+            <a href="/tags/Runtime/" class="chip teal accent-4">Runtime</a>
+        
+    </div>
+
+
+
+                
+                    <div class="entry teal-link-context">
+                        <h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><h3 id="2015-11-16"><a href="#2015-11-16" class="headerlink" title="2015-11-16"></a>2015-11-16</h3><p>感谢微博好友<strong>@zyyy_000</strong>的评论，补充了为什么要在<code>+ (void)load</code>方法里面做<strong>Method Swizzling</strong>。</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近，在做项目时，因为某种原因，突然要“适配”iOS6（也是醉了。。。），保证极少数的iOS6用户可以“用上”新的版本。哪怕界面上有瑕疵，只要功能正常就行。于是就只好花几天时间对iOS6进行紧急适配（心中一万头驼羊奔跑而过。。。）</p>
 <p>本文总结了一些常规的，和“非常规”的iOS项目向老版本兼容的办法，结合了<strong>宏定义</strong>、<strong>Category</strong>和<strong>Runtime</strong>，大家看着消遣一下就好哈~</p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/07/25/compatibility-with-macro-category-and-runtime/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
+                    </div>
                 
-                <a class="post-title-link" href="/2015/07/08/fill-nil-property-of-object/" itemprop="url">
-                  用Runtime的手段填充任意NSObject对象的nil属性
-                </a>
-              
+            </div>
+
             
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-07-08T23:23:23+08:00" content="2015-07-08">
-              2015-07-08
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
+            <div class="card-action teal-link-context">
+                <a href="2015/07/25/compatibility-with-macro-category-and-runtime/">READ MORE</a>
+            </div>
             
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/07/08/fill-nil-property-of-object/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/07/08/fill-nil-property-of-object/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
         </div>
-      </header>
+</article>
+
+    
+        <article class="simple-article">
+        <div class="card">
+            <div class="card-content">
+                <div class="article-title">
+                    
+    
+        <h1 class="blue-grey-link-context"><a href="/2015/07/08/fill-nil-property-of-object/">用Runtime的手段填充任意NSObject对象的nil属性</a></h1>
     
 
 
-    <div class="post-body" itemprop="articleBody">
+                </div>
 
-      
-      
+                <time class="teal-link-context" datetime="2015-07-08T15:23:23.000Z"><a href="/2015/07/08/fill-nil-property-of-object/">2015-07-08</a></time>
 
-      
+                
+    <div class="tags-row">
         
-          <h2 id="前言">前言</h2><p>好久没有写东西了，忙啊。<br>前段时间参加了一下我们华科联创的HackDay（本人在读研=。=，目前在阿里实习），作品是一款<strong>实时在线对战游戏 - 波波攒</strong>，（介绍请看<a href="http://www.zhihu.com/question/24402279">知乎</a>）<br>从iOS游戏客户端（用的<strong>SpriteKit</strong>）到后台（<strong>PHP CI + Node + SocketIO + MySQL</strong>）全是自己一个人倒腾出来的，做了一把真正的全栈工程师，爽啊~<br>后面会完善整个游戏，增加角色、优化啥的，过上一段时间会上线的哈~</p>
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
+        
+            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
+        
+            <a href="/tags/Runtime/" class="chip teal accent-4">Runtime</a>
+        
+    </div>
+
+
+
+                
+                    <div class="entry teal-link-context">
+                        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>好久没有写东西了，忙啊。<br>前段时间参加了一下我们华科联创的HackDay（本人在读研=。=，目前在阿里实习），作品是一款<strong>实时在线对战游戏 - 波波攒</strong>，（介绍请看<a href="http://www.zhihu.com/question/24402279">知乎</a>）<br>从iOS游戏客户端（用的<strong>SpriteKit</strong>）到后台（<strong>PHP CI + Node + SocketIO + MySQL</strong>）全是自己一个人倒腾出来的，做了一把真正的全栈工程师，爽啊~<br>后面会完善整个游戏，增加角色、优化啥的，过上一段时间会上线的哈~</p>
 <p><strong>回到正文</strong>，本文主要介绍了怎么用Runtime的手段遍历任意NSObject对象的所有property，检查其值是否是nil，是的话根据其类型为其填充一个默认值。<br>Runtime毕竟是个“危险”的技术，本文的代码只是个初步的尝试。</p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/07/08/fill-nil-property-of-object/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
+                    </div>
                 
-                <a class="post-title-link" href="/2015/05/23/autolayout-example-with-masonry/" itemprop="url">
-                  有趣的Autolayout示例-Masonry实现
-                </a>
-              
+            </div>
+
             
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-05-23T19:59:22+08:00" content="2015-05-23">
-              2015-05-23
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
+            <div class="card-action teal-link-context">
+                <a href="2015/07/08/fill-nil-property-of-object/">READ MORE</a>
+            </div>
             
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/05/23/autolayout-example-with-masonry/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/05/23/autolayout-example-with-masonry/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
         </div>
-      </header>
+</article>
+
+    
+        <article class="simple-article">
+        <div class="card">
+            <div class="card-content">
+                <div class="article-title">
+                    
+    
+        <h1 class="blue-grey-link-context"><a href="/2015/05/23/autolayout-example-with-masonry/">有趣的Autolayout示例-Masonry实现</a></h1>
     
 
 
-    <div class="post-body" itemprop="articleBody">
+                </div>
 
-      
-      
+                <time class="teal-link-context" datetime="2015-05-23T11:59:22.000Z"><a href="/2015/05/23/autolayout-example-with-masonry/">2015-05-23</a></time>
 
-      
+                
+    <div class="tags-row">
         
-          <h2 id="更新">更新</h2><p>2015-12-23: 感谢<a href="https://github.com/XVXVXXX">XVXVXXX</a>的PR，更新了Case2<br>2015-12-15: 第三篇：<a href="http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/">有趣的Autolayout示例3-Masonry实现</a><br>2015-11-27: 感谢“谢小雷”指出打字错误~<br>2015-9-10: 第二篇: <a href="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/">有趣的Autolayout示例2-Masonry实现</a><br>2015-9-1: 感谢“王振宇C艹”指出打字错误，已经修改了哈~  </p>
-<h2 id="前言">前言</h2><p>好久没有写Blog了，这段时间有点忙啊=。=<br>本文举了3个比较有“特点”的Autolayout例子，源于微博上好友的提问，感觉比较有意思，也比较有代表性，就写了出来，分享给大家~<br>至于为什么用Masonry，那是因为它好用啊！（被问到过有关Masonry的问题，就索性用它来实现吧=。=）。</p>
-<h3 id="效果图">效果图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_1.gif" alt="效果图"></p>
-<h3 id="Github地址">Github地址</h3><p><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/05/23/autolayout-example-with-masonry/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
         
-      
+            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
+        
+            <a href="/tags/Autolayout/" class="chip teal accent-4">Autolayout</a>
+        
+            <a href="/tags/Masonry/" class="chip teal accent-4">Masonry</a>
+        
     </div>
 
-    <div>
-      
-    </div>
 
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/04/21/resizable-nstextattachment/" itemprop="url">
-                  UITextView编辑时插入自定义表情-续-自定义表情图片的大小
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-04-21T20:26:17+08:00" content="2015-04-21">
-              2015-04-21
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
 
                 
+                    <div class="entry teal-link-context">
+                        <h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><p>2015-12-23: 感谢<a href="https://github.com/XVXVXXX">XVXVXXX</a>的PR，更新了Case2<br>2015-12-15: 第三篇：<a href="http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/">有趣的Autolayout示例3-Masonry实现</a><br>2015-11-27: 感谢“谢小雷”指出打字错误~<br>2015-9-10: 第二篇: <a href="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/">有趣的Autolayout示例2-Masonry实现</a><br>2015-9-1: 感谢“王振宇C艹”指出打字错误，已经修改了哈~</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>好久没有写Blog了，这段时间有点忙啊=。=<br>本文举了3个比较有“特点”的Autolayout例子，源于微博上好友的提问，感觉比较有意思，也比较有代表性，就写了出来，分享给大家~<br>至于为什么用Masonry，那是因为它好用啊！（被问到过有关Masonry的问题，就索性用它来实现吧=。=）。</p>
+<h3 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_1.gif" alt="效果图"></p>
+<h3 id="Github地址"><a href="#Github地址" class="headerlink" title="Github地址"></a>Github地址</h3><p><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
+                    </div>
                 
+            </div>
 
-              
-            </span>
-          
-
-          
             
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/04/21/resizable-nstextattachment/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/04/21/resizable-nstextattachment/" itemprop="commentsCount"></span>
-                </a>
-              </span>
+            <div class="card-action teal-link-context">
+                <a href="2015/05/23/autolayout-example-with-masonry/">READ MORE</a>
+            </div>
             
-          
-
-          
-
-          
-          
-
         </div>
-      </header>
+</article>
+
+    
+        <article class="simple-article">
+        <div class="card">
+            <div class="card-content">
+                <div class="article-title">
+                    
+    
+        <h1 class="blue-grey-link-context"><a href="/2015/04/21/resizable-nstextattachment/">UITextView编辑时插入自定义表情-续-自定义表情图片的大小</a></h1>
     
 
 
-    <div class="post-body" itemprop="articleBody">
+                </div>
 
-      
-      
+                <time class="teal-link-context" datetime="2015-04-21T12:26:17.000Z"><a href="/2015/04/21/resizable-nstextattachment/">2015-04-21</a></time>
 
-      
+                
+    <div class="tags-row">
         
-          <h2 id="更新">更新</h2><ul>
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
+        
+            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
+        
+    </div>
+
+
+
+                
+                    <div class="entry teal-link-context">
+                        <h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><ul>
 <li>2015-11-27：增加了利用NSTextAttachment的bounds属性修改大小的方法。</li>
 </ul>
-<h2 id="前言">前言</h2><p>本文是基于<a href="http://tutuge.me/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/">UITextView编辑时插入自定义表情-简单的图文混编</a>写的，主要实现了在UITextView插入表情图片时，自定义表情大小的功能。</p>
-<h4 id="Github">Github</h4><p>本文代码工程地址：<a href="https://github.com/zekunyan/UITextViewDIYEmojiExample">https://github.com/zekunyan/UITextViewDIYEmojiExample</a></p>
-<h4 id="Gif示例图">Gif示例图</h4><p><img src="http://zorrochen.qiniudn.com/blog_resizable_nstextattachment_1.gif" alt="Gif示例图"></p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/04/21/resizable-nstextattachment/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本文是基于<a href="http://tutuge.me/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/">UITextView编辑时插入自定义表情-简单的图文混编</a>写的，主要实现了在UITextView插入表情图片时，自定义表情大小的功能。</p>
+<h4 id="Github"><a href="#Github" class="headerlink" title="Github"></a>Github</h4><p>本文代码工程地址：<a href="https://github.com/zekunyan/UITextViewDIYEmojiExample">https://github.com/zekunyan/UITextViewDIYEmojiExample</a></p>
+<h4 id="Gif示例图"><a href="#Gif示例图" class="headerlink" title="Gif示例图"></a>Gif示例图</h4><p><img src="http://zorrochen.qiniudn.com/blog_resizable_nstextattachment_1.gif" alt="Gif示例图"></p>
+                    </div>
                 
-                <a class="post-title-link" href="/2015/04/19/thrift-example-cpp-and-php/" itemprop="url">
-                  RPC框架Thrift例子-PHP调用C++后端程序
-                </a>
-              
+            </div>
+
             
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-04-19T17:04:56+08:00" content="2015-04-19">
-              2015-04-19
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/服务端/" itemprop="url" rel="index">
-                    <span itemprop="name">服务端</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
+            <div class="card-action teal-link-context">
+                <a href="2015/04/21/resizable-nstextattachment/">READ MORE</a>
+            </div>
             
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/04/19/thrift-example-cpp-and-php/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/04/19/thrift-example-cpp-and-php/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
         </div>
-      </header>
+</article>
+
+    
+        <article class="simple-article">
+        <div class="card">
+            <div class="card-content">
+                <div class="article-title">
+                    
+    
+        <h1 class="blue-grey-link-context"><a href="/2015/04/19/thrift-example-cpp-and-php/">RPC框架Thrift例子-PHP调用C++后端程序</a></h1>
     
 
 
-    <div class="post-body" itemprop="articleBody">
+                </div>
 
-      
-      
+                <time class="teal-link-context" datetime="2015-04-19T09:04:56.000Z"><a href="/2015/04/19/thrift-example-cpp-and-php/">2015-04-19</a></time>
 
-      
+                
+    <div class="tags-row">
         
-          <h2 id="更新">更新</h2><ul>
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
+        
+            <a href="/tags/C/" class="chip teal accent-4">C++</a>
+        
+            <a href="/tags/PHP/" class="chip teal accent-4">PHP</a>
+        
+            <a href="/tags/后端/" class="chip teal accent-4">后端</a>
+        
+    </div>
+
+
+
+                
+                    <div class="entry teal-link-context">
+                        <h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><ul>
 <li>2016-02-22: Response对象不用主动创建。</li>
 </ul>
-<h2 id="前言">前言</h2><p>前段时间用了一下Facebook的开源RPC框架Thrift，做PHP客户端调用C++后端程序，真心觉得Thrift不错！</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前段时间用了一下Facebook的开源RPC框架Thrift，做PHP客户端调用C++后端程序，真心觉得Thrift不错！</p>
 <p>本文项目地址：<a href="https://github.com/zekunyan/ThriftDemo_PHP_CPP">https://github.com/zekunyan/ThriftDemo_PHP_CPP</a></p>
 <p>先看看本文的例子示意图：</p>
 <p><img src="http://zorrochen.qiniudn.com/blog_thrift_example_cpp_and_php_1.jpg" alt="通信示意图"></p>
@@ -1411,314 +636,210 @@
 <li>PHP客户端发起请求，请求参数是“Request”类型，里面有studentID参数。</li>
 <li>CPP服务端收到请求返回数据，返回类型为“Response”，里面包含了student的信息，此处只是简单的示例。</li>
 </ol>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/04/19/thrift-example-cpp-and-php/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
+                    </div>
+                
+            </div>
 
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
+            
+            <div class="card-action teal-link-context">
+                <a href="2015/04/19/thrift-example-cpp-and-php/">READ MORE</a>
+            </div>
+            
+        </div>
+</article>
 
     
-  </section>
 
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
-  </nav>
+    <ul class="pagination center-align">
+    <li class="disabled">
+        <a href="/"><i class="fa fa-angle-left"></i></a>
+    </li>
+    
+    
+        <li class="active teal"><a href="/">1</a></li>
+    
+        <li class="waves-effect"><a href="/page/2">2</a></li>
+    
+        <li class="waves-effect"><a href="/page/3">3</a></li>
+    
+    
+    <li class="">
+        <a href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    </li>
+ </ul>
 
+</div>
 
-
-          </div>
-          
-
-
-          
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large teal">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect teal accent-4" title="Return to top"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="Menu"><i class="fa fa-navicon"></i></a></li>
+    </ul>
   </div>
 
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
-      
-
-      
-
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/uploads/avatar_comic_240.png"
-               alt="土土哥" />
-          <p class="site-author-name" itemprop="name">土土哥</p>
-          <p class="site-description motion-element" itemprop="description">程序猿</p>
-        </div>
-        <nav class="site-state motion-element">
-          <div class="site-state-item site-state-posts">
-            <a href="/archives">
-              <span class="site-state-item-count">30</span>
-              <span class="site-state-item-name">日志</span>
-            </a>
-          </div>
-
-          
-            <div class="site-state-item site-state-categories">
-              
-                <span class="site-state-item-count">4</span>
-                <span class="site-state-item-name">分类</span>
-              
-            </div>
-          
-
-          
-            <div class="site-state-item site-state-tags">
-              <a href="/tags">
-                <span class="site-state-item-count">17</span>
-                <span class="site-state-item-name">标签</span>
-              </a>
-            </div>
-          
-
-        </nav>
-
-        
-          <div class="feed-link motion-element">
-            <a href="/atom.xml" rel="alternate">
-              <i class="fa fa-rss"></i>
-              RSS
-            </a>
-          </div>
-        
-
-        <div class="links-of-author motion-element">
-          
-            
-              <span class="links-of-author-item">
-                <a href="https://github.com/zekunyan" target="_blank">
-                  
-                    <i class="fa fa-github"></i> GitHub
-                  
-                </a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="https://twitter.com/zorro_tutuge" target="_blank">
-                  
-                    <i class="fa fa-twitter"></i> Twitter
-                  
-                </a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://weibo.com/zekunyan" target="_blank">
-                  
-                    <i class="fa fa-weibo"></i> Weibo
-                  
-                </a>
-              </span>
-            
-          
-        </div>
-
-        
-        
-          <div class="cc-license motion-element" itemprop="license">
-            <a href="http://creativecommons.org/licenses/by-nc-nd/4.0" class="cc-opacity" target="_blank">
-              <img src="/images/cc-by-nc-nd.svg" alt="Creative Commons" />
-            </a>
-          </div>
-        
-
-        
-        <div class="links-of-blogroll motion-element">
-          
-            <div class="links-of-blogroll-title">友情链接</div>
-            <ul class="links-of-blogroll-list">
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://chenrudan.github.io" target="_blank">女朋友的博客😊</a>
-                </li>
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://suta.name" target="_blank">很赞的设计师：苏塔</a>
-                </li>
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://neoyeelf.github.io" target="_blank">NeOye's blog</a>
-                </li>
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://raytaylorlin.com" target="_blank">Ray Taylor Lin's world</a>
-                </li>
-              
-                <li class="links-of-blogroll-item">
-                  <a href="http://bingyan.farbox.com" target="_blank">Howl写东西的地方</a>
-                </li>
-              
-            </ul>
-          
-        </div>
-
-      </section>
-
-      
-
-    </div>
-  </aside>
-
-
-        
-      </div>
     </main>
+    <footer class="page-footer blue-grey darken-1">
+    
+    <div class="container">
+        <div class="row">
+            
+            <div class="social-group col m3 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/zekunyan" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+            </div>
+            
 
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright" >
-  
-  &copy;  2014 - 
-  <span itemprop="copyrightYear">2016</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">燕泽堃</span>
-</div>
-
-<div class="powered-by">
-  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
-</div>
-
-<div class="theme-info">
-  主题 -
-  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
-    NexT.Pisces
-  </a>
-</div>
-
-
-
-      </div>
-    </footer>
-
-    <div class="back-to-top">
-      <i class="fa fa-arrow-up"></i>
+            
+            <div class="col m9 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
+                
+                    <a class="social-link" href="http://raytaylorlin.com/" target="_blank">raytaylorism主题作者的技术博客</a>
+                
+                    <a class="social-link" href="http://suta.name/" target="_blank">很赞的设计师</a>
+                
+                    <a class="social-link" href="http://neoyeelf.github.io/" target="_blank">NeOye&#39;s blog</a>
+                
+                    <a class="social-link" href="http://bingyan.farbox.com/" target="_blank">Howl写东西的地方</a>
+                
+            </div>
+            
+        </div>
     </div>
-  </div>
+    
 
-  
+    <div class="footer-copyright teal-link-context">
+        <div class="container">
+            © 2016 tutuge.me, All rights reserved.
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
+        </div>
+    </div>
+</footer>
 
 
-  
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前浏览器不支持博客完整功能。如果要获得最佳体验，请点击右上角···，复制链接，并在其它浏览器打开</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前浏览器不支持博客完整功能。如果要获得最佳体验，请点击右上角···，复制链接，并在其它浏览器打开</p>
+</div>
 
 
+<script src="/js/jquery-2.1.1.min.js"></script>
+<script src="/js/materialize.min.js"></script>
 
+<script>
+(function($) {
+    $(document).ready(function() {
+        // 隐藏禁用javascript（针对微信内置浏览器）的提示
+        $('.noscript').hide();
 
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
+        // 图片缩放效果
+        var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+        // 给图片加上点击放大效果（materialbox插件）
+        $imgs.addClass('materialboxed')
+            .each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+        // 首页幻灯片
+        $('.slider').slider({
+            indicators: true,
+            full_width: true,
+            interval: 8000
+        });
+
+        $(".button-collapse").sideNav();
+        $(".category-menu").sideNav();
+
+        // 针对gallery post
+        $('.carousel').carousel({
+            full_width: true
+        });
+        $('.carousel-control.prev').click(function() {
+            $('.carousel').carousel('prev');
+        });
+        $('.carousel-control.next').click(function() {
+            $('.carousel').carousel('next');
+        });
+
+        // 文章目录
+        $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+        // 修正文章目录的left-border颜色
+        var color = $('.table-of-contents-text').css('color');
+        $('.table-of-contents-link').css('border-left-color', color);
+
+        // 针对移动端做的优化：FAB按钮点击一下收回
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            $('.fixed-action-btn').addClass('click-to-toggle');
+        }
+        // 回到顶部
+        $('.btn-return-top').click(function() {
+            $('body, html').animate({
+                scrollTop: 0
+            }, 500);
+        });
+
+        // 重置读书页面的Tab标签页的颜色
+        $('li.tab a').hover(function() {
+            $(this).toggleClass('text-lighten-4');
+        });
+        $('.indicator').addClass('teal lighten-2');
+
+        
+        // 添加new标签
+        $('.menu-reading,.menu-about').append('<span class="new badge teal accent-4"></span>');
+        
+    });
+})(jQuery);
 </script>
 
 
-  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
-
-  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-
-  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-
-  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
-
-  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
-
-  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
 
 
-  
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
+    ga('create', 'UA-68058110-1', 'auto');
+    ga('send', 'pageview');
 
-  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
-
-
-
-  
-  
-
-
-  <script type="text/javascript" src="/js/src/affix.js?v=0.5.0"></script>
-
-  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=0.5.0"></script>
+</script>
 
 
 
-  
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=55079830" charset="UTF-8"></script>
 
 
 
-  
-
-  
-    
-  
-
-  <script type="text/javascript">
-    var duoshuoQuery = {short_name:"tutuge"};
-    (function() {
-      var ds = document.createElement('script');
-      ds.type = 'text/javascript';ds.async = true;
-      ds.id = 'duoshuo-script';
-      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-      ds.charset = 'UTF-8';
-      (document.getElementsByTagName('head')[0]
-      || document.getElementsByTagName('body')[0]).appendChild(ds);
-    })();
-  </script>
-
-  
-    
-  
-
-
-
-
-
-  
-  
-  
-
-  
 
 
 </body>
