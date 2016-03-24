@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://tutuge.me/2015/10/09/ttgsnackbar-lib/</loc>
+    
+    <lastmod>2016-03-24T16:23:11.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://tutuge.me/about/index.html</loc>
     
     <lastmod>2016-03-21T07:44:50.000Z</lastmod>
@@ -75,13 +82,6 @@
     <loc>http://tutuge.me/2015/12/31/TTGTagCollectionView/</loc>
     
     <lastmod>2016-03-20T09:03:56.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://tutuge.me/2015/10/09/ttgsnackbar-lib/</loc>
-    
-    <lastmod>2016-03-20T09:03:54.000Z</lastmod>
     
   </url>
   

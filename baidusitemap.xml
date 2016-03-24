@@ -3,6 +3,32 @@
 
 
     
+  <url>
+    <loc>http://tutuge.me/2015/10/09/ttgsnackbar-lib/</loc>
+    <lastmod>2016-03-24T16:23:11.000Z</lastmod>
+    <data>
+        <display>
+        <title>Swift写的库-TTGSnackbar</title>
+        <pubTime>2015-10-09T11:49:09.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+        <tag>开源</tag>
+         
+        <tag>Swift</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
     
   <url>
     <loc>http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/</loc>
@@ -221,32 +247,6 @@
         <tag>iOS</tag>
          
         <tag>开源</tag>
-         
-         
-           
-             
-              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://tutuge.me/2015/10/09/ttgsnackbar-lib/</loc>
-    <lastmod>2016-03-20T09:03:54.000Z</lastmod>
-    <data>
-        <display>
-        <title>Swift写的库-TTGSnackbar</title>
-        <pubTime>2015-10-09T11:49:09.000Z</pubTime>
-        
-        <tag>原创</tag>
-         
-        <tag>iOS</tag>
-         
-        <tag>开源</tag>
-         
-        <tag>Swift</tag>
          
          
            
