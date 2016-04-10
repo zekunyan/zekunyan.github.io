@@ -68,6 +68,7 @@ ol.tabs {
 ul,
 ul li {
   list-style-type: disc;
+  word-break: break-word;
 }
 nav ul,
 .fixed-action-btn ul {
@@ -98,8 +99,12 @@ img {
 strong {
   font-weight: bold;
 }
-blockquote p {
-  margin: 0 !important;
+blockquote {
+  background-color: rgba(0,0,0,0.03);
+  padding: 0.6rem 0.6rem 0.6rem 1.2rem;
+}
+table {
+  margin-bottom: 1.5em;
 }
 nav ul a:hover {
   background-color: rgba(0,0,0,0);
@@ -391,7 +396,13 @@ article .card-content .entry p:last-child {
 }
 article .card-content .entry ul,
 article .card-content .entry ol {
-  margin-bottom: 1.5em;
+  margin-bottom: 1em;
+}
+article .card-content .entry ul ul,
+article .card-content .entry ol ul,
+article .card-content .entry ul ol,
+article .card-content .entry ol ol {
+  margin-bottom: 0;
 }
 article .card-content .entry h1,
 article .card-content .entry h2,
