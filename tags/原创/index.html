@@ -140,7 +140,7 @@
 
             <li class="collapse-level-0" collapse-level="0">
                 <a class="no-padding" href="/categories/iOS/">
-                    iOS <span class="right">26 篇</span></a>
+                    iOS <span class="right">28 篇</span></a>
                 </a>
             </li>
 
@@ -195,6 +195,18 @@
 
 
     <div class="collection mt-0">
+        
+            <a href="/2016/04/10/summary-of-code-organization/" class="collection-item grey-text text-darken-1">
+                <time datetime="2016-04-10T12:10:55.000Z">2016-04-10</time>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                总结一些iOS项目中组织代码的方法
+            </a>
+        
+            <a href="/2016/03/29/modular-and-component-summary/" class="collection-item grey-text text-darken-1">
+                <time datetime="2016-03-29T14:19:54.000Z">2016-03-29</time>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                对组件化与模块化的思考与总结
+            </a>
         
             <a href="/2015/12/31/TTGTagCollectionView/" class="collection-item grey-text text-darken-1">
                 <time datetime="2015-12-31T13:56:04.000Z">2015-12-31</time>
@@ -461,7 +473,13 @@
             }).materialbox();
 
         // 优化表格的显示
-        $('table').addClass('responsive-table striped bordered');
+        $('table').each(function() {
+            var $table = $(this);
+            // 除去多行代码的情况
+            if ($table.find('pre').length == 0) {
+                $table.addClass('responsive-table striped bordered');
+            }
+        });
 
         // 首页幻灯片
         $('.slider').slider({

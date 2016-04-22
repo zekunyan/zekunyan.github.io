@@ -1,0 +1,511 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>对组件化与模块化的思考与总结 | iOS，Android程序猿，喜欢Mac、Linux、各种开源技术，各种语言</title>
+    <meta name="author" content="燕泽堃">
+    
+    <meta name="description" content="程序猿">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="对组件化与模块化的思考与总结"/>
+    <meta property="og:site_name" content="土土哥的技术Blog"/>
+
+    
+    <meta property="og:image" content="undefined"/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="土土哥的技术Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="blue-grey">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">土土哥的技术Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav blue-grey darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="http://7nj2iz.com1.z0.glb.clouddn.com/avatar_comic_big.png" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">土土哥</p>
+                        <p class="desc">iOS/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav blue-grey darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/iOS/">
+                    iOS <span class="right">28 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/Android/">
+                    Android <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/服务端/">
+                    服务端 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/其它/">
+                    其它 <span class="right">2 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper blue-grey">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/iOS/">iOS</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>对组件化与模块化的思考与总结</h1>
+    
+
+
+            </div>
+            <time class="teal-link-context" datetime="2016-03-29T14:19:54.000Z"><a href="/2016/03/29/modular-and-component-summary/">2016-03-29</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
+        
+    </div>
+
+
+            <div class="toc teal-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#前言"><span class="section table-of-contents-text">前言</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#为什么"><span class="section table-of-contents-text">为什么</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#疑问"><span class="section table-of-contents-text">疑问</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#模块化"><span class="section table-of-contents-text">模块化</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#组件化"><span class="section table-of-contents-text">组件化</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#对比"><span class="section table-of-contents-text">对比</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#如何拆分"><span class="section table-of-contents-text">如何拆分</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#横向拆分业务、功能模块"><span class="section table-of-contents-text">横向拆分业务、功能模块</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#纵向拆分技术、架构模块"><span class="section table-of-contents-text">纵向拆分技术、架构模块</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#从界面入手，拆分可视化组件"><span class="section table-of-contents-text">从界面入手，拆分可视化组件</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#从数据入手，拆分数据加工组件"><span class="section table-of-contents-text">从数据入手，拆分数据加工组件</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#小节"><span class="section table-of-contents-text">小节</span></a></li></ol></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#最后"><span class="section table-of-contents-text">最后</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#参考"><span class="section table-of-contents-text">参考</span></a></li></ol>
+</div>
+
+
+            <div class="entry teal-link-context">
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前段时间反复研读了<a href="http://limboy.me/ios/2016/03/10/mgj-components.html" target="_blank" rel="external">蘑菇街 App 的组件化之路</a>、<a href="http://limboy.me/ios/2016/03/14/mgj-components-continued.html" target="_blank" rel="external">蘑菇街 App 的组件化之路·续</a>和<a href="http://casatwy.com/iOS-Modulization.html" target="_blank" rel="external">iOS应用架构谈 组件化方案</a>，然后又找到了其它一些研究组件化、模块化方案的文章，但是总觉得差点什么，所以还是决定从头开始思考。文章的标题起的好宽泛，感觉给自己挖了个深坑😂，其实只是自己对组件化、模块化的一些看法、总结😲</p>
+<a id="more"></a>
+<h2 id="为什么"><a href="#为什么" class="headerlink" title="为什么"></a>为什么</h2><p>先总结下为什么要大动干戈的对代码分模块、拆组件。   </p>
+<p><strong>代码量膨胀，不利于维护，更不利于新功能的开发</strong><br> 现在随便开发一个App的代码行数都是数以万计的，如果不对代码做合理的拆分，那简直就是灾难性的，估计只有最初的开发人员知道如何维护修改，如果换人开发的话，难以下手，更不用说开发新功能了。</p>
+<p><strong>不同业务代码耦合严重，难以多人合作，职责不分明</strong><br>多人一起开发时，如果代码结构、模块化的不好，就很难对不同业务划分出分界线，难以明确各自的职责，牵一发动全身，出了问题更是容易相互扯皮（这个时候只能说一句“怪我咯o(╯□╰)o”），更不用提合并代码时的冲突了。</p>
+<p>所以，合理的组织代码，划分模块、拆分组件是项目可以高效迭代的基础。</p>
+<h2 id="疑问"><a href="#疑问" class="headerlink" title="疑问"></a>疑问</h2><p>那到底什么是模块化、组件化？查资料的时候一会儿模块，一会儿组件，有什么联系，有什么区别？有人说这只是叫法习惯问题，知道大概意思就好，不用咬文嚼字，但是总觉得没有个“定义”感觉不踏实，所以还是求助了万能的维基百科=。=</p>
+<h2 id="模块化"><a href="#模块化" class="headerlink" title="模块化"></a>模块化</h2><p>维基百科的<a href="https://en.wikipedia.org/wiki/Modular_programming" target="_blank" rel="external">Modular programming</a>的开头定义如下:</p>
+<blockquote>
+<p>Modular programming is a software design technique that emphasizes separating the functionality of a program into independent, interchangeable modules, such that each contains everything necessary to execute only one aspect of the desired functionality.</p>
+</blockquote>
+<p>接着，在<strong>Key aspects</strong>部分的开头也说了:</p>
+<blockquote>
+<p>With modular programming, concerns are separated such that modules perform logically discrete functions, interacting through well-defined interfaces. </p>
+</blockquote>
+<p>可以总结为：模块化的目的在于将一个程序按照其功能做拆分，分成相互独立的模块，以便于每个模块只包含与其功能相关的内容，模块之间通过接口调用。</p>
+<p>当然，模块化编程的具体概念是包含了很多内容的，读者可以详细阅读下维基百科的定义。</p>
+<h2 id="组件化"><a href="#组件化" class="headerlink" title="组件化"></a>组件化</h2><p>关于组件化，能找到的比较接近的就是维基百科的<a href="https://en.wikipedia.org/wiki/Component-based_software_engineering" target="_blank" rel="external">Component-based software engineering</a>，其开头内容如下：</p>
+<blockquote>
+<p>Component-based software engineering (CBSE), also known as component-based development (CBD), is a branch of software engineering that emphasizes the separation of concerns in respect of the wide-ranging functionality available throughout a given software system. It is a reuse-based approach to defining, implementing and composing loosely coupled independent components into systems.</p>
+</blockquote>
+<p>乍一看，这不是跟模块化<strong>Modular programming</strong>的定义很相似嘛=。=<br>的确，文中也提到组件化跟模块化是很类似的，都是主要为了对一个系统做拆分，比如文中提到：  </p>
+<blockquote>
+<p>All system processes are placed into separate components so that all of the data and functions inside each component are semantically related (just as with the contents of classes). Because of this principle, it is often said that components are modular and cohesive.</p>
+</blockquote>
+<p>同时，组件还具有其他属性，如可替代性(substitutable)，通过接口(interface)访问，可重用性(Reusability)等，读者可自行阅读。</p>
+<h2 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h2><p>难道模块化跟组件化真的是完全一样的？的确，很多时候两者的概念完全可以相互替换，在实践中更是经常混用。<br>在求助谷歌，甚至阅读了大量的前端技术等其它技术领域的组件化、模块化的文章后，我觉得如果真要将它们两者做个对比，大概总结如下：</p>
+<ul>
+<li>模块化强调的是<strong>拆分</strong>，无论是从业务角度还是从架构、技术角度，模块化首先意味着将代码、数据等内容按照其职责不同分离，使其变得更加容易维护、迭代，使开发人员可以分而治之。</li>
+<li>组件化则着重于<strong>可重用性</strong>，不管是界面上反复使用的用户头像按钮，还是处理数据的流程中的某个部件，只要可以被反复使用，并且进行了高度封装，只能通过接口访问，就可以称其为“组件”。</li>
+</ul>
+<p>当然，并不是说模块就不能被复用，还是要根据实际情况来看，使系统更加容易维护，开发更加方便，才是最终目的😉</p>
+<h2 id="如何拆分"><a href="#如何拆分" class="headerlink" title="如何拆分"></a>如何拆分</h2><p>无论是模块化还是组件化，首先肯定是做拆分，但是如何拆分？怎么下手？依照什么标准？<br>下面简单总结一些方法。</p>
+<h4 id="横向拆分业务、功能模块"><a href="#横向拆分业务、功能模块" class="headerlink" title="横向拆分业务、功能模块"></a>横向拆分业务、功能模块</h4><p>很多时候，一个完整的软件程序是同时为多种业务服务的，所有可以优先按照业务的不同，将整个系统进行拆分。  </p>
+<p>如一个电商类型的App，就可以分出商品浏览模块、订单模块、购物车模块、消息模块、支付模块等。又如微信这种社交型应用，可以拆分出联系人模块、朋友圈模块、聊天模块、消息模块等。  </p>
+<p>其实就是从用户使用的角度，按照功能的不同划分模块，当然，这种业务模块是要由各种技术模块作支撑的。</p>
+<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/modular_and_component_summary_1.jpg" alt="横向拆分业务模块示例"></p>
+<h4 id="纵向拆分技术、架构模块"><a href="#纵向拆分技术、架构模块" class="headerlink" title="纵向拆分技术、架构模块"></a>纵向拆分技术、架构模块</h4><p>如果脱离业务，只从技术角度来看，则可以尝试纵向对系统拆分模块。</p>
+<p>其实这里的纵向拆分跟对系统的架构做分层有点像=。=，现如今只要需要联网请求API的App都免不了有网络请求、数据缓存、数据加工处理、数据展示、反馈用户操作等行为，所有这些环节层层递进才能完成一个功能。  </p>
+<p>当开始着手规划一个完整软件系统，或者说App时，就可以按照这些环节划分模块，纵向分层次的组合，搭建出一个以技术模块组成的简易系统架构图，方便后续的开发，如下图。</p>
+<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/modular_and_component_summary_2.jpg" alt="纵向拆分技术模块示例"></p>
+<p>大体上的技术模块划分好以后，就可以按照具体的需求，实现每个技术模块，乃至细分出更多的子模块，如缓存模块可能由键值对缓存（NSUserDefaults）、数据库缓存（SQLite、Realm）、图片缓存等子模块组成，根据具体情况而定。</p>
+<h4 id="从界面入手，拆分可视化组件"><a href="#从界面入手，拆分可视化组件" class="headerlink" title="从界面入手，拆分可视化组件"></a>从界面入手，拆分可视化组件</h4><p>现在再来看看如何从界面入手拆分可复用的组件。假如有如下布局的界面：</p>
+<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/modular_and_component_summary_3.jpg" alt="从界面入手拆分可视化组件"></p>
+<p>很多时候，像界面里面的“搜索框”、“头像按钮”、“内容框”和显示提示用的“加载中”HUD，甚至整个内容的Cell，都是可能在很多地方出现的，而且本身的样式、功能比较集中。<br>如头像可能要支持点击跳转，头像图片圆角，内容框有特定的Padding和字体大小等，所以可以将这些界面上的元素“提”出来，单独封装成一个组件，供整个App复用。或者直接用第三方的组件，如图中的“加载中”HUD，就可以用SVProgressHUD、MBProgressHUD等开源库。</p>
+<p>其实这里的组件有种sunnyxx大大提到过的“Self-Manager”的味道=。=，组件本身负责自己的所有功能、样式，参考：<a href="http://blog.sunnyxx.com/2015/12/19/self-manager-pattern-in-ios/" target="_blank" rel="external">iOS 开发中的 Self-Manager 模式</a>。当然跟前端的组件化也挺像的，如React里面的component，样式、功能都封装到component里面，以便更好地解耦复用。</p>
+<h4 id="从数据入手，拆分数据加工组件"><a href="#从数据入手，拆分数据加工组件" class="headerlink" title="从数据入手，拆分数据加工组件"></a>从数据入手，拆分数据加工组件</h4><p>再来看看从数据入手，拆分可复用的组件。假如有如下数据处理流程：</p>
+<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/modular_and_component_summary_4.jpg" alt="一数据处理流程示例"></p>
+<p>其实大部分时候，拆分模块、组件都是以清晰的流程、逻辑为基础的，就如上图的过程，当流程清晰后，可以拆分复用的组件也就“出来了”。<br>如从JSON数据实例化出对应的Entity对象，这个功能就是一个完整独立的组件，当然实际开发中会用Mantle、JSONModel等库实现。<br>以此类推，校验、格式化日期（如“几秒钟前、几天前”）、多语言等环节，都可以独立成一个个的组件。<br>当然，这里的组件一般是指能在多个模块使用的功能组件，如果只是在某个界面上才用的，倒不如放到ViewModel、Presenter等这些直接跟界面有关的类里面。</p>
+<h4 id="小节"><a href="#小节" class="headerlink" title="小节"></a>小节</h4><p>上面的几种方法比较适合不知道如何下手时使用=。=，真正的开发中，还是要根据实际情况考虑，情况也会复杂些。不过倒是可以总结几点原则：</p>
+<ul>
+<li><strong>单一职责</strong>，意味着一个模块、一个组件只做一件事，绝不多做。</li>
+<li><strong>正交性</strong>，意思是不重复，一个模块跟另一个模块的职责是正交的，没有重叠，组件也是一样。</li>
+<li><strong>单向依赖</strong>，模块之间最多是单向的依赖，如果出现A依赖B，B也依赖A，那么要么是A、B应该属于一个模块，要么就是整体的拆分有问题。一个完整的软件系统的模块依赖应该是一张有向无环图。（当然这是最终理想=。=）</li>
+<li><strong>紧凑性</strong>，模块、组件对外暴露的接口、属性应该尽可能的少，接口的参数个数也要少。</li>
+<li><strong>面向接口</strong>，模块、组件对外提供服务时最好是面向接口的，以便后期可以灵活的变更实现。</li>
+</ul>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>一切为了更加干净整洁的代码，“May the clean code be with you”😊</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://en.wikipedia.org/wiki/Component-based_software_engineering" target="_blank" rel="external">Component-based software engineering</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Modular_programming" target="_blank" rel="external">Modular programming</a></li>
+</ul>
+
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comment">
+        <div class="card">
+            <div class="card-content">
+                <!-- Duoshuo Comment BEGIN -->
+                <div class="ds-thread" data-thread-key="2016/03/29/modular-and-component-summary/" data-title="对组件化与模块化的思考与总结" data-url="http://tutuge.me/2016/03/29/modular-and-component-summary/"></div>
+
+                <script type="text/javascript">
+                    console.log(document.querySelector('.ds-thread'));
+                    var duoshuoQuery = {
+                        short_name: 'tutuge'
+                    };
+                    (function() {
+                        var ds = document.createElement('script');
+                        ds.type = 'text/javascript';
+                        ds.async = true;
+                        ds.src = (document.location.protocol == 'https:'
+                            ? 'https:'
+                            : 'http:') + '//static.duoshuo.com/embed.js';
+                        ds.charset = 'UTF-8';
+                        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+                    })();
+                </script>
+                <!-- Duoshuo Comment END -->
+            </div>
+        </div>
+    </section>
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large teal">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect teal accent-4" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="menu"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer blue-grey darken-1">
+    
+    <div class="container">
+        <div class="row">
+            
+            <div class="social-group col m3 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/zekunyan" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+            </div>
+            
+
+            
+            <div class="col m9 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
+                
+                    <a class="social-link" href="http://raytaylorlin.com/" target="_blank">raytaylorism主题作者的技术博客</a>
+                
+                    <a class="social-link" href="http://suta.name/" target="_blank">很赞的设计师</a>
+                
+                    <a class="social-link" href="http://neoyeelf.github.io/" target="_blank">NeOye&#39;s blog</a>
+                
+                    <a class="social-link" href="http://bingyan.farbox.com/" target="_blank">Howl写东西的地方</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright teal-link-context">
+        <div class="container">
+            © 2016 tutuge.me, All rights reserved.
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前浏览器不支持博客完整功能。如果要获得最佳体验，请点击右上角···，复制链接，并在其它浏览器打开</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前浏览器不支持博客完整功能。如果要获得最佳体验，请点击右上角···，复制链接，并在其它浏览器打开</p>
+</div>
+
+
+<script src="/js/jquery-2.1.1.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+(function($) {
+    $(document).ready(function() {
+        // 隐藏禁用javascript（针对微信内置浏览器）的提示
+        $('.noscript').hide();
+
+        // 图片缩放效果
+        var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+        // 给图片加上点击放大效果（materialbox插件）
+        $imgs.addClass('materialboxed')
+            .each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+        // 优化表格的显示
+        $('table').each(function() {
+            var $table = $(this);
+            // 除去多行代码的情况
+            if ($table.find('pre').length == 0) {
+                $table.addClass('responsive-table striped bordered');
+            }
+        });
+
+        // 首页幻灯片
+        $('.slider').slider({
+            indicators: true,
+            full_width: true,
+            interval: 8000
+        });
+
+        $(".button-collapse").sideNav();
+        $(".category-menu").sideNav();
+
+        // 针对gallery post
+        $('.carousel').carousel({
+            full_width: true
+        });
+        $('.carousel-control.prev').click(function() {
+            $('.carousel').carousel('prev');
+        });
+        $('.carousel-control.next').click(function() {
+            $('.carousel').carousel('next');
+        });
+
+        // 文章目录
+        $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+        // 修正文章目录的left-border颜色
+        var color = $('.table-of-contents-text').css('color');
+        $('.table-of-contents-link').css('border-left-color', color);
+
+        // 针对移动端做的优化：FAB按钮点击一下收回
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            $('.fixed-action-btn').addClass('click-to-toggle');
+        }
+        // 回到顶部
+        $('.btn-return-top').click(function() {
+            $('body, html').animate({
+                scrollTop: 0
+            }, 500);
+        });
+
+        // 重置读书页面的Tab标签页的颜色
+        $('li.tab a').hover(function() {
+            $(this).toggleClass('text-lighten-4');
+        });
+        $('.indicator').addClass('teal lighten-2');
+
+        
+        // 添加new标签
+        $('.menu-reading,.menu-about').append('<span class="new badge teal accent-4"></span>');
+        
+    });
+})(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-68058110-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=55079830" charset="UTF-8"></script>
+
+
+
+
+
+</body>
+</html>

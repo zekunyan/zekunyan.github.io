@@ -1,0 +1,527 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>总结一些iOS项目中组织代码的方法 | iOS，Android程序猿，喜欢Mac、Linux、各种开源技术，各种语言</title>
+    <meta name="author" content="燕泽堃">
+    
+    <meta name="description" content="程序猿">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="总结一些iOS项目中组织代码的方法"/>
+    <meta property="og:site_name" content="土土哥的技术Blog"/>
+
+    
+    <meta property="og:image" content="undefined"/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="土土哥的技术Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="blue-grey">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">土土哥的技术Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav blue-grey darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="http://7nj2iz.com1.z0.glb.clouddn.com/avatar_comic_big.png" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">土土哥</p>
+                        <p class="desc">iOS/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav blue-grey darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/iOS/">
+                    iOS <span class="right">28 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/Android/">
+                    Android <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/服务端/">
+                    服务端 <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/其它/">
+                    其它 <span class="right">2 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper blue-grey">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/iOS/">iOS</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>总结一些iOS项目中组织代码的方法</h1>
+    
+
+
+            </div>
+            <time class="teal-link-context" datetime="2016-04-10T12:10:55.000Z"><a href="/2016/04/10/summary-of-code-organization/">2016-04-10</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
+        
+            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
+        
+    </div>
+
+
+            <div class="toc teal-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#前言"><span class="section table-of-contents-text">前言</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#多个子项目-CocoaPods加私有仓库"><span class="section table-of-contents-text">多个子项目 - CocoaPods加私有仓库</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#构建私有Framework-Carthage"><span class="section table-of-contents-text">构建私有Framework - Carthage</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#项目内文件组织-Group和文件夹"><span class="section table-of-contents-text">项目内文件组织 - Group和文件夹</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#类内代码组织-Category"><span class="section table-of-contents-text">类内代码组织 - Category</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#文件内代码组织-pragam-mark、-MARK"><span class="section table-of-contents-text">文件内代码组织 - #pragam mark、// MARK -</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#最后"><span class="section table-of-contents-text">最后</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#参考"><span class="section table-of-contents-text">参考</span></a></li></ol>
+</div>
+
+
+            <div class="entry teal-link-context">
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>总结一些组织代码的方法，大到各个子项目模块之间，小到单个文件内部，涉及到了CocoaPods私有库、Carthage构建私有Framework、项目内Group和文件夹、类内用Category组织、文件内的#pragam mark、// MARK -。虽然有些老生常谈，就当是重新梳理一遍~</p>
+<a id="more"></a>
+<h2 id="多个子项目-CocoaPods加私有仓库"><a href="#多个子项目-CocoaPods加私有仓库" class="headerlink" title="多个子项目 - CocoaPods加私有仓库"></a>多个子项目 - CocoaPods加私有仓库</h2><p>感觉目前CocoaPods已经成了搞iOS开发的标配了，基本上所有的第三方库和组件都可以通过CocoaPods来集成管理。但是CocoaPods的功能其实不止管理第三方库和组件，团队内部的拆分出来的子项目和子模块，同样可以用CocoaPods来集成管理。</p>
+<p>先看看如下Podfile的示例：</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 源配置 #</span></span><br><span class="line">source <span class="string">'git@gitlab.xxx.com:cocoapods/specs.git'</span> <span class="comment"># 团队内部Gitlab源</span></span><br><span class="line">source <span class="string">'https://git.coding.net/xxx/specs.git'</span> <span class="comment"># Coding等私有Git托管平台</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># iOS版本支持 #</span></span><br><span class="line">platform <span class="symbol">:ios</span>, <span class="string">'7.0'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发中的子项目 #</span></span><br><span class="line">pod <span class="string">'XXXCommonUI'</span>, <span class="symbol">:path=&gt;</span> <span class="string">'/Users/tutuge/projects/Xcode/XXXCommonUI'</span> <span class="comment"># 本地路径</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 依赖的内部子项目 #</span></span><br><span class="line">pod <span class="string">'XXXModuleA'</span>, <span class="symbol">:git=&gt;</span> <span class="string">'git@gitlab.xxx.com:cocoapods/XXXModuleA'</span>, <span class="symbol">:branch=&gt;<span class="string">'develop'</span></span></span><br><span class="line">pod <span class="string">'XXXModuleB'</span>, <span class="string">'1.0.1'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 依赖的开源第三方库 #</span></span><br><span class="line">pod <span class="string">'AFNetworking'</span>,<span class="string">'3.0.0'</span></span><br><span class="line">pod <span class="string">'DTCoreText'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 额外的脚本 #</span></span><br><span class="line"><span class="comment"># ...</span></span><br></pre></td></tr></table></figure>
+<p><strong>私有Git仓库</strong>  </p>
+<p>虽然我们有万能的Github了，但是还是有些代码是不能公开的=。=，所以需要一个私有的Git仓库。<br>有自己服务器的，完全可以用<a href="https://about.gitlab.com/" target="_blank" rel="external">Gitlab</a>(或者<a href="https://gogs.io/" target="_blank" rel="external">Gogs</a>)搭建一个功能强大的私有Git仓库，管理项目代码，搭建CocoaPods私有源都很不错。<br>当然，懒得折腾的，也可以用第三方的私有Git服务，如：<a href="https://bitbucket.org/" target="_blank" rel="external">Bitbucket</a>、<a href="https://coding.net/" target="_blank" rel="external">Coding</a>等。</p>
+<p><strong>私有CocoaPods源</strong></p>
+<p>搭建一个私有CocoaPods源其实就是创建一个私有的<code>Spec Repo</code>，说白了就是一个存放了所有私有Pods的<code>Podspec</code>文件的，按照特定结构组织的目录，然后把这个目录推到私有Git仓库就成了一个私有的CocoaPods源。  </p>
+<p><code>Spec Repo</code>的目录结构示例如下：  </p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">├── <span class="selector-tag">Specs</span></span><br><span class="line">    └── <span class="selector-attr">[XXXModuleA]</span></span><br><span class="line">        └── <span class="selector-attr">[0.0.1]</span></span><br><span class="line">            └── <span class="selector-attr">[XXXModuleA]</span><span class="selector-class">.podspec</span><span class="selector-class">.json</span></span><br><span class="line">        └── <span class="selector-attr">[0.0.2]</span></span><br><span class="line">            └── <span class="selector-attr">[XXXModuleA]</span><span class="selector-class">.podspec</span><span class="selector-class">.json</span></span><br></pre></td></tr></table></figure>
+<p>然后添加私有源即可：  </p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod repo add XXXSpecRepo <span class="string">https:</span><span class="comment">//git.coding.net/xxx/specs.git</span></span><br></pre></td></tr></table></figure>
+<p><strong>创建私有CocoaPods项目的具体步骤</strong>  </p>
+<p>至于具体的创建步骤，CocoaPods的官方文档和一些优秀的博客已经说得很清楚了，我就不再重复了。推荐阅读：<a href="https://guides.cocoapods.org/" target="_blank" rel="external">CocoaPods Guides</a>，还有<a href="http://blog.wtlucky.com/blog/2015/02/26/create-private-podspec/" target="_blank" rel="external">使用Cocoapods创建私有podspec</a>，这篇很详细！</p>
+<p><strong>引用正在本地开发的子项目</strong></p>
+<p>主工程依赖的子项目也是可以同时开发的，用<code>path</code>指定路径即可，如<code>pod &#39;XXXCommonUI&#39;, :path=&gt; &#39;/Users/tutuge/projects/Xcode/XXXCommonUI&#39;</code>，然后<code>pod install</code>一下，依赖的本地工程就会集成到主工程的<code>Development Pods</code>目录下，开发时，就可以同时修改主项目和子项目了。</p>
+<h2 id="构建私有Framework-Carthage"><a href="#构建私有Framework-Carthage" class="headerlink" title="构建私有Framework - Carthage"></a>构建私有Framework - Carthage</h2><p>除了抽离出子项目，用Framework的方式来管理公共代码也是不错的选择，Framework的好处也是多多的:</p>
+<ul>
+<li>本质上是个bundle，不仅可以打包代码，还可以打包资源Assets、视图XIB等</li>
+<li>可以有选择的开放头文件、接口，避免了用CocoaPods集成子项目时，所有代码全部暴露的问题，只暴露需要的，代码更加清晰。</li>
+<li>从iOS 8开始支持的Cocoa Touch Framework可以支持动态Framework，能在主App和各种Extension之间共享一份二进制目标代码，加快应用加载速度，减小体积，加快编译速度等。</li>
+</ul>
+<p>基于Cocoa Touch Framework动态框架的种种优点，“去中心化”的轻量级依赖包管理工具<a href="https://github.com/Carthage/Carthage" target="_blank" rel="external">Carthage</a>也越来越受欢迎。<br>总的来说，Carthage没有CocoaPods那样的<code>Spec Repo</code>中心，不会对现有项目工程修改，只是完成了拉取代码、构建Framework的工作，非常的轻量级，所以用来构建团队内公用的Framework非常不错~</p>
+<p><strong>创建Framework</strong>  </p>
+<p>这里的Framework指的是Cocoa Touch Framework动态框架，静态Framework的缺点不少(如不能共享已加载到内存的二进制目标代码、构建麻烦等)，如果项目可以从iOS 8开始支持，为啥不用动态框架呢😉</p>
+<p>创建Framework的过程非常简单，Xcode 6以后就有了Framework项目模板，直接选中”Cocoa Touch Framework”模板，按照提示来即可。记得在<code>TARGETS-&gt;Build Phases-&gt;Headers-&gt;Public&quot;</code>加入要暴露的头文件（Swift的话，将要暴露的类、方法标记public）就好。</p>
+<p><strong>用Carthage构建Framework</strong></p>
+<p>Carthage只支持构建标记为“Shared”的项目Target，所以创建好了Framework工程后，还要设置Scheme为“Shared”，可以在当前Scheme的<code>Edit Scheme</code>里面设置，也可以在Xcode的菜单<code>Product-&gt;Scheme-&gt;Manage Schemes</code>里面设置。</p>
+<p>然后就可以将Framework工程推送到Git仓库中，可以是Github，也可以是私有Git仓库，如上一节提到的Coding、Bitbucket等，只要本机可以正常访问即可。记住打上版本号tag。</p>
+<p>然后就可以在一个测试工程中创建一个<code>Cartfile</code>文件，输入Framework的Git路径，按照官方文档设置一下”Run Script”，运行<code>carthage update</code>生成对应的Framework，就可以集成测试。</p>
+<p><strong>最终的Cartfile</strong></p>
+<p>由于Carthage的去中心化，用Carthage管理项目的Framework依赖就非常灵活，一个简单的示例如下：</p>
+<figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># 开发中的本地Framework</span></span><br><span class="line">git <span class="string">"file:///directory/to/project"</span> <span class="string">"develop"</span></span><br><span class="line"></span><br><span class="line"><span class="meta"># 依赖的私有Framework</span></span><br><span class="line">git <span class="string">"git@gitlab.xxx.com:cocoapods/XXXFramework.git"</span> <span class="string">"development"</span></span><br><span class="line"></span><br><span class="line"><span class="meta"># 第三方开源库</span></span><br><span class="line">github <span class="string">"Mantle/Mantle"</span> ~&gt; <span class="number">1.0</span></span><br></pre></td></tr></table></figure>
+<p>所以，Carthage可以方便的管理构建本地、私有、第三方的Framework库，而且更加方便~  </p>
+<p>详细的创建流程Google一下就有很多，如<a href="https://medium.com/@PyBaig/build-your-own-cocoa-touch-frameworks-in-swift-d4ea3d1f9ca3#.z38fy8psd" target="_blank" rel="external">Build your own Cocoa Touch Frameworks, in pure Swift</a>、<a href="https://robots.thoughtbot.com/creating-your-first-ios-framework" target="_blank" rel="external">Creating your first iOS Framework</a>、<a href="http://blog.mat.tc/how-to-make-a-carthage-compatible-framework/" target="_blank" rel="external">How to Make a Carthage-compatible Framework in Swift</a>。 </p>
+<p><strong>和CocoaPods混用</strong></p>
+<p>Carthage是没有任何侵入性的，不会对项目工程有修改，只是构建出了Framework文件，所以完全可以把Carthage当做纯粹的Framework构建工具，跟CocoaPods一起愉快的使用=。=</p>
+<h2 id="项目内文件组织-Group和文件夹"><a href="#项目内文件组织-Group和文件夹" class="headerlink" title="项目内文件组织 - Group和文件夹"></a>项目内文件组织 - Group和文件夹</h2><p>项目内的代码组织，其实就是代码文件的组织，总的来说，其实有以下三种：</p>
+<ol>
+<li>具有物理文件夹结构的Folder reference</li>
+<li>从Xcode创建的逻辑上的Group</li>
+<li>具有物理文件夹结构的Group</li>
+</ol>
+<p><strong>排除Folder reference</strong></p>
+<p>Folder reference说白了就是硬盘上一个文件夹的逻辑引用，有点像Linux文件系统里面的软连接=。=，图标是蓝色的，将一个文件夹拖到Xcode中时，<code>Create folder references</code>选项创建的就是。  </p>
+<p>虽然编译时也会被打包到程序中，更能同步真正文件夹内部的修改，但是遗憾是的里面的代码文件是不能自动的加入到Xcode的编译中的，要手动一个一个加，而且图片资源也不能在IB里面使用，代码里面使用也要加上路径，所以一般是纯资源文件夹用Folder reference的方式引用，对于组织代码文件，就可以排除Folder reference的方式。</p>
+<p><strong>纯逻辑Group文件平铺，脱离Xcode不方便查看</strong></p>
+<p>首先要明确的是，Group是Xcode对文件的一种逻辑上的引用，并且在编译时Xcode会把所有的Group展开，所以代码里面也就不用像Folder reference一样加上路径，还可以针对Target作区分，很方便。  </p>
+<p>但是Xcode中创建的Group并没有对应到文件系统中的文件夹，导致一旦脱离Xcode看代码，所有的文件都平铺在了根目录下，非常不方便。</p>
+<p>难道没有办法了？</p>
+<p><strong>有物理文件夹结构的Group最好</strong></p>
+<p>还有一种Group是可以有物理文件夹结构的，其实将一个文件夹拖到Xcode中，选择<code>Create groups for any added folders</code>创建的Group就是既有Group的有点，又可以保持物理文件夹结构。这样无意是最好的~</p>
+<p>手动创建:<br>可以<code>Add Files To XXXX</code>，然后选择<code>New Folder</code>创建文件夹，然后把代码文件拖进去，再添加回Xcode。</p>
+<p>自动创建：<br>对于现有的大量的Group，手动一个一个创建实在不方便，还好有个命令行工具：<a href="https://github.com/venmo/synx" target="_blank" rel="external">synx</a>，直接在工程根目录运行<code>synx XXX.xcodeproj</code>就可以自动为Group创建物理文件夹。<br>当然，CocoaPods管理的库要重新<code>pod install</code>一次，手动添加的Framework也要重新添加。</p>
+<h2 id="类内代码组织-Category"><a href="#类内代码组织-Category" class="headerlink" title="类内代码组织 - Category"></a>类内代码组织 - Category</h2><p>Objective-C中的Category实在是太方便了，可以灵活的为现有的类增加方法，甚至是系统的类。<br>但是其实Category也可以拿来组织一个类的实现，将类的Property、方法按照业务、功能拆分到不同的Category里面，使类的结构更加清晰。 </p>
+<p>系统API本身就有大量的例子，如UIViewController的：</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">@interface</span> UIViewController (UIContainerViewControllerCallbacks)</span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"><span class="variable">@end</span></span><br><span class="line"></span><br><span class="line"><span class="variable">@interface</span> UIViewController(UIViewControllerTransitioning)</span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"><span class="variable">@end</span></span><br></pre></td></tr></table></figure>
+<p>实现的时候还可以每个Category对应一个头文件和.m文件，类的结构更加清晰：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">XXXClass<span class="selector-class">.h</span></span><br><span class="line">XXXClass<span class="selector-class">.m</span></span><br><span class="line">XXXClass+XXXModuleA<span class="selector-class">.h</span></span><br><span class="line">XXXClass+XXXModuleA<span class="selector-class">.m</span></span><br><span class="line">XXXClass+XXXModuleB<span class="selector-class">.h</span></span><br><span class="line">XXXClass+XXXModuleB.m</span><br></pre></td></tr></table></figure>
+<h2 id="文件内代码组织-pragam-mark、-MARK"><a href="#文件内代码组织-pragam-mark、-MARK" class="headerlink" title="文件内代码组织 - #pragam mark、// MARK -"></a>文件内代码组织 - #pragam mark、// MARK -</h2><p>整理文件内的代码时，最好的手段就是用<code>#pragam mark</code>宏定义，Swift的话就是<code>// MARK -</code>。  </p>
+<p>Objective-C冗长的语法注定了一个代码文件的行数不会少=。=，如果没有一定的规范，实在是难以迭代，所以最好就是开发前约定一种规则，对主要的类的实现都约定出一套规范，如UIViewController的子类、UIView的子类、UITableViewCell的子类等，然后开发人员按照这个规范写代码，这样才能使代码更好维护。</p>
+<p>如，UIViewController的子类实现时，可以按照如下顺序组织代码：</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">@implementation XXXViewController</span><br><span class="line"></span><br><span class="line"><span class="comment">// 内存相关</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - Memory manager</span></span><br><span class="line"></span><br><span class="line">- (instancetype)init</span><br><span class="line">- (<span class="keyword">void</span>)dealloc</span><br><span class="line"></span><br><span class="line"><span class="comment">// 类生命周期相关的</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - Life cycle</span></span><br><span class="line"></span><br><span class="line">(<span class="keyword">void</span>)viewDidLoad</span><br><span class="line"></span><br><span class="line"><span class="comment">// 类的Public方法</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - Public methods</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 所有的Actions</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - Actions</span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)didTapCancelButton:(UIButton *button)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 通知回调，具体可以细分</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - Notifications - XXX</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 系统的Delegate</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - UITableViewDelegate</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 自定义类的Delegate</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - XXXDelegate</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 自定义View、初始化等</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - Custom views</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 类私有方法</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - Private methods</span></span><br><span class="line"></span><br><span class="line">@<span class="built_in">end</span></span><br></pre></td></tr></table></figure>
+<p>当然，具体的组织方法还要根据项目本身的架构、模式决定，上面的只是参考。</p>
+<p><strong>进一步：创建项目专属文件模板</strong></p>
+<p>既然定下了文件内的组织顺序，每次写代码手工输入也还是有点麻烦，所以更进一步的话就是创建自定义的Xcode文件模板，把不同类的<code>#pragma mark</code>顺序规则直接写到模板里面，以后开发人员创建文件时直接用项目专属的模板就可以了~</p>
+<p>具体的创建Xcode模板的步骤不在本文范畴=。=，不过倒是发现了一个Xcode插件，专门用来创建模板的：<a href="https://github.com/samdods/Stencil" target="_blank" rel="external">Stencil: A plugin for Xcode allowing you to easily create custom file templates</a>，以及对应的文章：<a href="http://sam.dods.co/blog/2015/05/02/stencil-xcode-plugin/" target="_blank" rel="external">Introducing Stencil</a>，还有一些教程：<a href="http://www.telerik.com/blogs/how-to-create-custom-project-templates-in-xcode-7" target="_blank" rel="external">How to Create Custom Project Templates in Xcode 7</a>，<a href="https://robots.thoughtbot.com/creating-custom-xcode-templates" target="_blank" rel="external">Creating Custom Xcode Templates</a>，读者可自行阅读~</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>一切为了更加干净整洁的代码，“May the clean code be with you”😊</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://cocoapods.org/" target="_blank" rel="external">CocoaPods</a></li>
+<li><a href="https://github.com/Carthage/Carthage" target="_blank" rel="external">Carthage</a></li>
+<li><a href="http://vocaro.com/trevor/blog/2012/10/21/xcode-groups-vs-folder-references/" target="_blank" rel="external">Xcode Groups vs. Folder References</a></li>
+<li><a href="http://www.knowstack.com/framework-vs-library-cocoa-ios/" target="_blank" rel="external">Framework vs Library (Static &amp; Shared) in (Cocoa/OSX, Cocoa Touch/iOS)</a></li>
+<li><a href="https://onevcat.com/2016/01/create-framework/" target="_blank" rel="external">onevcat-如何打造一个让人愉快的框架</a></li>
+</ul>
+
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comment">
+        <div class="card">
+            <div class="card-content">
+                <!-- Duoshuo Comment BEGIN -->
+                <div class="ds-thread" data-thread-key="2016/04/10/summary-of-code-organization/" data-title="总结一些iOS项目中组织代码的方法" data-url="http://tutuge.me/2016/04/10/summary-of-code-organization/"></div>
+
+                <script type="text/javascript">
+                    console.log(document.querySelector('.ds-thread'));
+                    var duoshuoQuery = {
+                        short_name: 'tutuge'
+                    };
+                    (function() {
+                        var ds = document.createElement('script');
+                        ds.type = 'text/javascript';
+                        ds.async = true;
+                        ds.src = (document.location.protocol == 'https:'
+                            ? 'https:'
+                            : 'http:') + '//static.duoshuo.com/embed.js';
+                        ds.charset = 'UTF-8';
+                        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+                    })();
+                </script>
+                <!-- Duoshuo Comment END -->
+            </div>
+        </div>
+    </section>
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large teal">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect teal accent-4" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="menu"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer blue-grey darken-1">
+    
+    <div class="container">
+        <div class="row">
+            
+            <div class="social-group col m3 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/zekunyan" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+            </div>
+            
+
+            
+            <div class="col m9 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
+                
+                    <a class="social-link" href="http://raytaylorlin.com/" target="_blank">raytaylorism主题作者的技术博客</a>
+                
+                    <a class="social-link" href="http://suta.name/" target="_blank">很赞的设计师</a>
+                
+                    <a class="social-link" href="http://neoyeelf.github.io/" target="_blank">NeOye&#39;s blog</a>
+                
+                    <a class="social-link" href="http://bingyan.farbox.com/" target="_blank">Howl写东西的地方</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright teal-link-context">
+        <div class="container">
+            © 2016 tutuge.me, All rights reserved.
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前浏览器不支持博客完整功能。如果要获得最佳体验，请点击右上角···，复制链接，并在其它浏览器打开</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前浏览器不支持博客完整功能。如果要获得最佳体验，请点击右上角···，复制链接，并在其它浏览器打开</p>
+</div>
+
+
+<script src="/js/jquery-2.1.1.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+(function($) {
+    $(document).ready(function() {
+        // 隐藏禁用javascript（针对微信内置浏览器）的提示
+        $('.noscript').hide();
+
+        // 图片缩放效果
+        var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+        // 给图片加上点击放大效果（materialbox插件）
+        $imgs.addClass('materialboxed')
+            .each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+        // 优化表格的显示
+        $('table').each(function() {
+            var $table = $(this);
+            // 除去多行代码的情况
+            if ($table.find('pre').length == 0) {
+                $table.addClass('responsive-table striped bordered');
+            }
+        });
+
+        // 首页幻灯片
+        $('.slider').slider({
+            indicators: true,
+            full_width: true,
+            interval: 8000
+        });
+
+        $(".button-collapse").sideNav();
+        $(".category-menu").sideNav();
+
+        // 针对gallery post
+        $('.carousel').carousel({
+            full_width: true
+        });
+        $('.carousel-control.prev').click(function() {
+            $('.carousel').carousel('prev');
+        });
+        $('.carousel-control.next').click(function() {
+            $('.carousel').carousel('next');
+        });
+
+        // 文章目录
+        $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+        // 修正文章目录的left-border颜色
+        var color = $('.table-of-contents-text').css('color');
+        $('.table-of-contents-link').css('border-left-color', color);
+
+        // 针对移动端做的优化：FAB按钮点击一下收回
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            $('.fixed-action-btn').addClass('click-to-toggle');
+        }
+        // 回到顶部
+        $('.btn-return-top').click(function() {
+            $('body, html').animate({
+                scrollTop: 0
+            }, 500);
+        });
+
+        // 重置读书页面的Tab标签页的颜色
+        $('li.tab a').hover(function() {
+            $(this).toggleClass('text-lighten-4');
+        });
+        $('.indicator').addClass('teal lighten-2');
+
+        
+        // 添加new标签
+        $('.menu-reading,.menu-about').append('<span class="new badge teal accent-4"></span>');
+        
+    });
+})(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-68058110-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=55079830" charset="UTF-8"></script>
+
+
+
+
+
+</body>
+</html>

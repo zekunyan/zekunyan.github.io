@@ -3,6 +3,48 @@
 
 
     
+  <url>
+    <loc>http://tutuge.me/2016/04/10/summary-of-code-organization/</loc>
+    <lastmod>2016-04-22T15:59:16.000Z</lastmod>
+    <data>
+        <display>
+        <title>总结一些iOS项目中组织代码的方法</title>
+        <pubTime>2016-04-10T12:10:55.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://tutuge.me/2016/03/29/modular-and-component-summary/</loc>
+    <lastmod>2016-04-15T15:10:25.000Z</lastmod>
+    <data>
+        <display>
+        <title>对组件化与模块化的思考与总结</title>
+        <pubTime>2016-03-29T14:19:54.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
     
   <url>
     <loc>http://tutuge.me/2015/10/09/ttgsnackbar-lib/</loc>
