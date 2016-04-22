@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://tutuge.me/"/>
-  <updated>2016-04-22T15:59:16.000Z</updated>
+  <updated>2016-04-22T16:05:15.000Z</updated>
   <id>http://tutuge.me/</id>
   
   <author>
@@ -19,8 +19,8 @@
     <title>总结一些iOS项目中组织代码的方法</title>
     <link href="http://tutuge.me/2016/04/10/summary-of-code-organization/"/>
     <id>http://tutuge.me/2016/04/10/summary-of-code-organization/</id>
-    <published>2016-04-10T12:10:55.000Z</published>
-    <updated>2016-04-22T15:59:16.000Z</updated>
+    <published>2016-04-10T12:10:56.000Z</published>
+    <updated>2016-04-22T16:05:15.000Z</updated>
     
     <content type="html">&lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;总结一些组织代码的方法，大到各个子项目模块之间，小到单个文件内部，涉及到了CocoaPods私有库、Carthage构建私有Framework、项目内Group和文件夹、类内用Category组织、文件内的#pragam mark、// MARK -。虽然有些老生常谈，就当是重新梳理一遍~&lt;/p&gt;
 &lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
