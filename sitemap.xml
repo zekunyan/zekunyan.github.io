@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://tutuge.me/about/index.html</loc>
+    
+    <lastmod>2016-04-30T15:22:19.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://tutuge.me/2016/04/10/summary-of-code-organization/</loc>
     
     <lastmod>2016-04-22T16:07:49.000Z</lastmod>
@@ -12,13 +19,6 @@
     <loc>http://tutuge.me/2016/03/29/modular-and-component-summary/</loc>
     
     <lastmod>2016-04-15T15:10:25.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://tutuge.me/about/index.html</loc>
-    
-    <lastmod>2016-04-10T14:16:16.000Z</lastmod>
     
   </url>
   

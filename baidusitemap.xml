@@ -3,6 +3,7 @@
 
 
     
+    
   <url>
     <loc>http://tutuge.me/2016/04/10/summary-of-code-organization/</loc>
     <lastmod>2016-04-22T16:07:49.000Z</lastmod>
@@ -44,7 +45,6 @@
     </data>
     </url>
 
-    
     
   <url>
     <loc>http://tutuge.me/2015/10/09/ttgsnackbar-lib/</loc>
@@ -428,9 +428,9 @@
         
         <tag>原创</tag>
          
-        <tag>开源</tag>
-         
         <tag>Android</tag>
+         
+        <tag>开源</tag>
          
          
            
