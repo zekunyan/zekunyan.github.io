@@ -1,0 +1,621 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>API返回结果设计经验与总结 | iOS，Android程序猿，喜欢Mac、Linux、各种开源技术，各种语言</title>
+    <meta name="author" content="燕泽堃">
+    
+    <meta name="description" content="程序猿">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="API返回结果设计经验与总结"/>
+    <meta property="og:site_name" content="土土哥的技术Blog"/>
+
+    
+    <meta property="og:image" content="undefined"/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="土土哥的技术Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="blue-grey">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">土土哥的技术Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav blue-grey darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="http://7nj2iz.com1.z0.glb.clouddn.com/avatar_comic_big.png" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">土土哥</p>
+                        <p class="desc">iOS/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav blue-grey darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/iOS/">
+                    iOS <span class="right">29 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/Android/">
+                    Android <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/服务端/">
+                    服务端 <span class="right">2 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/其它/">
+                    其它 <span class="right">2 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper blue-grey">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/服务端/">服务端</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>API返回结果设计经验与总结</h1>
+    
+
+
+            </div>
+            <time class="teal-link-context" datetime="2016-05-02T02:44:49.000Z"><a href="/2016/05/02/design-json-api-respoense/">2016-05-02</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
+        
+    </div>
+
+
+            <div class="toc teal-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#前言"><span class="section table-of-contents-text">前言</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#结构"><span class="section table-of-contents-text">结构</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#data字段-请求数据"><span class="section table-of-contents-text">data字段 - 请求数据</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#msg字段-请求状态描述，调试用"><span class="section table-of-contents-text">msg字段 - 请求状态描述，调试用</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#code字段-业务自定义状态码"><span class="section table-of-contents-text">code字段 - 业务自定义状态码</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#extra字段-全局附加数据"><span class="section table-of-contents-text">extra字段 - 全局附加数据</span></a></li></ol></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#最佳实践"><span class="section table-of-contents-text">最佳实践</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#规范统一的命名"><span class="section table-of-contents-text">规范统一的命名</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#空值、空字段的处理"><span class="section table-of-contents-text">空值、空字段的处理</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#布尔boolean值的处理"><span class="section table-of-contents-text">布尔boolean值的处理</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#时间、日期字段"><span class="section table-of-contents-text">时间、日期字段</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#type类型的处理"><span class="section table-of-contents-text">type类型的处理</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#完整的URL"><span class="section table-of-contents-text">完整的URL</span></a></li></ol></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#总结"><span class="section table-of-contents-text">总结</span></a></li></ol>
+</div>
+
+
+            <div class="entry teal-link-context">
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>RESTful API的设计已经很成熟了，大家也都比较认可。本文也不再过多介绍RESTful API相关的知识，而是针对JSON型API的返回结果设计，总结下自己的经验。</p>
+<h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><p>先来看看返回结果的结构示例：</p>
+<figure class="highlight qml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attribute">data</span> : &#123; <span class="comment">// 请求数据，对象或数组均可</span></span><br><span class="line">        <span class="attribute">user_id</span>: <span class="number">123</span>,</span><br><span class="line">        <span class="attribute">user_name</span>: <span class="string">"tutuge"</span>,</span><br><span class="line">        <span class="attribute">user_avatar_url</span>: <span class="string">"http://tutuge.me/avatar.jpg"</span></span><br><span class="line">        ...</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attribute">msg</span> : <span class="string">"done"</span>, <span class="comment">// 请求状态描述，调试用</span></span><br><span class="line">    <span class="attribute">code</span>: <span class="number">1001</span>, <span class="comment">// 业务自定义状态码</span></span><br><span class="line">    <span class="attribute">extra</span> : &#123; <span class="comment">// 全局附加数据，字段、内容不定</span></span><br><span class="line">        <span class="attribute">type</span>: <span class="number">1</span>,</span><br><span class="line">        <span class="attribute">desc</span>: <span class="string">"签到成功！"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h4 id="data字段-请求数据"><a href="#data字段-请求数据" class="headerlink" title="data字段 - 请求数据"></a>data字段 - 请求数据</h4><p>首先是本次请求结果的数据<code>data</code>字段，其值为对象（字典）或数组均可以，根据业务而定。</p>
+<p>如请求的是某个用户的个人profile信息，就可以是对象，对象里面是用户profile的键值对数据，如<code>user_id: 123</code>、<code>user_name: &quot;tutuge&quot;</code>等。</p>
+<p>如果请求的是列表数据，就可以是数组，如请求用户列表：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">data:</span> [</span><br><span class="line">    &#123;<span class="string">user_id:</span> <span class="number">123</span>, <span class="string">user_name:</span> <span class="string">"tutuge"</span>&#125;,</span><br><span class="line">    &#123;<span class="string">user_id:</span> <span class="number">321</span>, <span class="string">user_name:</span> <span class="string">"zekunyan"</span>&#125;,</span><br><span class="line">    ...</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>数组、对象，相互嵌套，灵活组合即可。</p>
+<p>对于iOS来说，解析<code>data</code>字段是对象还是数组也很容易，在接收到JSON数据字典后，如AFNetworking的返回结果，对<code>data</code>判断其类型即可：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ([jsonDict[@<span class="string">"data"</span>] <span class="string">isKindOfClass:</span>[NSDictionary <span class="class"><span class="keyword">class</span>]]) &#123;</span></span><br><span class="line">    <span class="comment">// JSON对象</span></span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([jsonDict[@<span class="string">"data"</span>] <span class="string">isKindOfClass:</span>[NSArray <span class="class"><span class="keyword">class</span>]]) &#123;</span></span><br><span class="line">    <span class="comment">// JSON数组</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="msg字段-请求状态描述，调试用"><a href="#msg字段-请求状态描述，调试用" class="headerlink" title="msg字段 - 请求状态描述，调试用"></a>msg字段 - 请求状态描述，调试用</h4><p><code>msg</code>字段是本次请求的业务、状态描述信息，主要用于调试、测试等。  </p>
+<p>如“done”、“请求缺少参数！”</p>
+<p>服务端可以自由发挥，开发人员看得懂就好。 😲 </p>
+<h4 id="code字段-业务自定义状态码"><a href="#code字段-业务自定义状态码" class="headerlink" title="code字段 - 业务自定义状态码"></a>code字段 - 业务自定义状态码</h4><p><code>code</code>字段，业务自定义的状态码。  </p>
+<p>其实是否要在API里面自定义业务状态码，<strong>非常有争议</strong>=。=，因为Http请求本身已经有了完备的状态码，再定义一套状态码直观上感受却是不对劲。但是实际开发中，确实发现自定义业务状态码的必要性，如一次成功的Http status 200的请求，可能由于用户未登录、登录过期而有不同的返回结果和处理方式，所以还是保留了<code>code</code>。</p>
+<p>状态码的定义也最好有一套规范，如按照用户相关、授权相关、各种业务，做简单的分类：</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Code 业务自定义状态码定义示例</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 授权相关</span></span><br><span class="line"><span class="number">1001</span>: 无权限访问</span><br><span class="line"><span class="number">1002</span>: access_token过期</span><br><span class="line"><span class="number">1003</span>: unique_token无效</span><br><span class="line"><span class="attr">...</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 用户相关</span></span><br><span class="line"><span class="number">2001</span>: 未登录</span><br><span class="line"><span class="number">2002</span>: 用户信息错误</span><br><span class="line"><span class="number">2003</span>: 用户不存在</span><br><span class="line"></span><br><span class="line"><span class="comment">// 业务1</span></span><br><span class="line"><span class="number">3001</span>: 业务<span class="number">1</span>XXX</span><br><span class="line"><span class="number">3002</span>: 业务<span class="number">1</span>XXX</span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br></pre></td></tr></table></figure>
+<p><code>Code</code>业务状态码最好是用常量定义的，当然有能力的动态配置更新更好，这里就不再详细说明。</p>
+<p>Http的状态码参考：<a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes" target="_blank" rel="external">List of HTTP status codes</a></p>
+<h4 id="extra字段-全局附加数据"><a href="#extra字段-全局附加数据" class="headerlink" title="extra字段 - 全局附加数据"></a>extra字段 - 全局附加数据</h4><p><code>extra</code>字段，用来表示全局的附加数据。  </p>
+<p>这个字段来源于之前做项目时，用户的操作（数据请求），会导致用户的等级、经验变化，而具体什么时候产生不确定，由服务端的规则决定，并且客户端要及时向用户展示变化，所以加上了<code>extra</code>字段。</p>
+<p>在设计<code>extra</code>字段的时候，并没有对其结构内容做限制，所以比较灵活，但是还是要有个<code>type</code>字段，来做约束，如：</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 升级</span></span><br><span class="line"><span class="symbol">type:</span> <span class="number">1</span>,</span><br><span class="line"><span class="symbol">show_msg:</span> <span class="string">"恭喜您升级到XXX"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 完成任务</span></span><br><span class="line"><span class="symbol">type:</span> <span class="number">2</span>,</span><br><span class="line"><span class="symbol">task_desc:</span> <span class="string">"达成XXX成就"</span></span><br></pre></td></tr></table></figure>
+<p>总的来说就是自由发挥，只要服务端、客户端相互沟通好即可。当然，也要避免乱用，保证真的需要全局附加数据才使用这个字段。</p>
+<h2 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h2><h4 id="规范统一的命名"><a href="#规范统一的命名" class="headerlink" title="规范统一的命名"></a>规范统一的命名</h4><p><strong>命名风格统一</strong>  </p>
+<p>不管是驼峰式还是下划线式，统一就好。当然，按照目前的“大众规范”，还是统一小写加下划线比较好=。=<br>如：<code>user_id</code>，<code>user_name</code>，<code>user_age</code>等。</p>
+<p><strong>语义清晰，遵守常用缩写</strong></p>
+<p>字段的名字最好能体现字段的类型，遵守一些“常用”的缩写，如：</p>
+<figure class="highlight ceylon"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 字符串</span></span><br><span class="line">user<span class="number">_n</span>ame, task<span class="number">_</span>desc, date<span class="number">_</span>str, article<span class="number">_</span>title, feed<span class="number">_</span>content 等</span><br><span class="line"></span><br><span class="line"><span class="comment">// 数字</span></span><br><span class="line">user<span class="number">_</span>id, users<span class="number">_</span>count, task<span class="number">_n</span>um, xxx<span class="number">_</span>offset 等</span><br><span class="line"></span><br><span class="line"><span class="comment">// 日期</span></span><br><span class="line">login<span class="number">_</span>at, create<span class="number">_</span>date, logout<span class="number">_</span>time 等</span><br><span class="line"></span><br><span class="line"><span class="comment">// 布尔</span></span><br><span class="line"><span class="keyword">is</span><span class="number">_</span>done, <span class="keyword">is</span><span class="number">_</span>vip, protected, can<span class="number">_</span>read 等</span><br><span class="line"></span><br><span class="line"><span class="comment">// URL</span></span><br><span class="line">user<span class="number">_</span>avatar<span class="number">_u</span>rl, thumb<span class="number">_u</span>rl 等</span><br><span class="line"></span><br><span class="line"><span class="comment">// 数组</span></span><br><span class="line">users, profiles, thumb<span class="number">_</span>imgs 等</span><br></pre></td></tr></table></figure>
+<h4 id="空值、空字段的处理"><a href="#空值、空字段的处理" class="headerlink" title="空值、空字段的处理"></a>空值、空字段的处理</h4><p>空值、空字段的处理也是比较容易出问题。</p>
+<p><strong>统一空值用null</strong></p>
+<p>除了布尔类型的，其余的空值统一用<code>null</code>表示，客户端保证每种字段的<code>null</code>可以被正常处理。</p>
+<p><strong>给不同类型设置默认空值</strong></p>
+<p>除了<code>null</code>，还可以对字段设置“默认值”，如数字就是<code>0</code>，字符串就是空字符串<code>&quot;&quot;</code>，数组就是空数组<code>[]</code>，对象就是空对象<code>{}</code>，这样有个好处就是可以避免很多客户端（Java、OC）处理空值（Null、nil、null）产生的异常。但是危害就是容易语义不明。还是要根据具体业务、前后端约定而定。</p>
+<p>以前写过一篇<a href="http://tutuge.me/2015/07/08/fill-nil-property-of-object/">用Runtime的手段填充任意NSObject对象的nil属性</a>，其实就是为对象空值统一设置默认值的=。=，可以参考。</p>
+<h4 id="布尔boolean值的处理"><a href="#布尔boolean值的处理" class="headerlink" title="布尔boolean值的处理"></a>布尔boolean值的处理</h4><p>说实话，我见过各种布尔值表示方式，如：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">is_login:</span> <span class="literal">true</span>,</span><br><span class="line"><span class="string">is_login:</span> <span class="string">"true"</span>,</span><br><span class="line"><span class="string">is_login:</span> <span class="number">1</span></span><br><span class="line"><span class="string">is_login:</span> <span class="string">"TRUE"</span></span><br><span class="line"><span class="string">is_login:</span> <span class="string">"YES"</span></span><br><span class="line"><span class="comment">// ...天啊</span></span><br></pre></td></tr></table></figure>
+<p>由于语言本身的限制、框架的处理方式，不对布尔类型的值做限制总觉得不踏实，像C、C++、Objective-C里面的布尔就是数字0和1，其它语言也都各自不一样，还有从数据库读写导致的布尔值类型不一致等。</p>
+<p>所以，如果可以的话，最好一开始就对所有请求参数、结果的布尔值类型做限定，个人觉得<strong>统一成数字0和1</strong>最好。</p>
+<p>然后在客户端和服务端统一设置常量、宏定义，定义布尔的类型，所有的参数、结果的布尔字段全部做强制约束。</p>
+<h4 id="时间、日期字段"><a href="#时间、日期字段" class="headerlink" title="时间、日期字段"></a>时间、日期字段</h4><p>时间的处理也是非常容易出错的，特别是遇上时区转换的时候。</p>
+<p><strong>强制GMT/UTC时间戳</strong></p>
+<p>一种做法就是强制所有时间参数只能传Unix时间戳，也就是标准GMT/UTC时间戳，然后由各自的客户端根据自己的时区、显示要求做处理后显示。</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 从服务器接收的时间数据</span></span><br><span class="line"><span class="symbol">login_at:</span> <span class="number">1462068610</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 根据时区、显示要求转换，如北京时间</span></span><br><span class="line">显示：<span class="number">2016</span>年<span class="number">5</span>月<span class="number">1</span>日下午<span class="number">1</span>点、<span class="number">1</span>天前等</span><br></pre></td></tr></table></figure>
+<p>这样的话，客户端、服务端存储、读取时间都相当于处理纯数字。</p>
+<p><strong>使用ISO 8601带时区的时间日期字符串</strong></p>
+<p>使用Unix时间戳有个坏处，就是：</p>
+<ul>
+<li>最早只能到<code>1970/1/1 0:0:0</code>GMT时间，一旦需求早于这个时间，时间戳就成了负数=。=</li>
+<li>不方便人阅读。调试API的时候，开发人员不能直观看出具体时间，很不方便</li>
+</ul>
+<p>所以，可以按照<a href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank" rel="external">ISO 8601</a>标准，用字符串保存、传输时间。</p>
+<p>如果以<code>YYYY-MM-DDThh:mm:ssTZD</code>格式为准, 时间的形式就是<code>1997-07-16T19:20:30+01:00</code>，保存了时区信息，也方便阅读。</p>
+<h4 id="type类型的处理"><a href="#type类型的处理" class="headerlink" title="type类型的处理"></a>type类型的处理</h4><p>API数据中免不了各种类型字段，如用户类型<code>user_type</code>、登录类型<code>login_type</code>等，类型的表示也可以分为数字、字符串两种。</p>
+<p><strong>数字表示类型</strong></p>
+<p>这个应该是最直接的方式了，客户端和服务端共同维护某个API下、某个数据类型中的type常量，靠文档约束。</p>
+<p><strong>字符串表示类型</strong></p>
+<p>数字的类型毕竟不利于直观阅读，如果可以的话，用字符串也是不错的，当然坏处就是代码里面就不能用<code>Switch</code>语句了（除了强大的Swift=。=）</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 如登录类型，QQ、微信、微博等</span></span><br><span class="line"><span class="symbol">login_type:</span> <span class="string">"qq"</span>,</span><br><span class="line"><span class="symbol">login_type:</span> <span class="string">"wechat"</span>,</span><br><span class="line"><span class="symbol">login_type:</span> <span class="string">"sina_weibo"</span>,</span><br></pre></td></tr></table></figure>
+<h4 id="完整的URL"><a href="#完整的URL" class="headerlink" title="完整的URL"></a>完整的URL</h4><p>API里面的数据也会有URL类型的，一般来说如用户的头像、各种图片、音频等资源，都是以URL链接的形式返回的。  </p>
+<p>返回的URL一定要“完整”，主要指的是不要忘记URL里面的<strong>协议</strong>部分，也就是<code>scheme</code>部分。</p>
+<p>像<code>tutuge.me/imgs/1.jpg</code>这种URL值，就是不完整的，没有指明网络协议，难道靠猜=。=<br>应该是<code>http://tutuge.me/imgs/1.jpg</code>。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>嗯，规范非常重要。😁</p>
+
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comment">
+        <div class="card">
+            <div class="card-content">
+                <!-- Duoshuo Comment BEGIN -->
+                <div class="ds-thread" data-thread-key="2016/05/02/design-json-api-respoense/" data-title="API返回结果设计经验与总结" data-url="http://tutuge.me/2016/05/02/design-json-api-respoense/"></div>
+
+                <script type="text/javascript">
+                    console.log(document.querySelector('.ds-thread'));
+                    var duoshuoQuery = {
+                        short_name: 'tutuge'
+                    };
+                    (function() {
+                        var ds = document.createElement('script');
+                        ds.type = 'text/javascript';
+                        ds.async = true;
+                        ds.src = (document.location.protocol == 'https:'
+                            ? 'https:'
+                            : 'http:') + '//static.duoshuo.com/embed.js';
+                        ds.charset = 'UTF-8';
+                        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+                    })();
+                </script>
+                <!-- Duoshuo Comment END -->
+            </div>
+        </div>
+    </section>
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large teal">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect teal accent-4" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="menu"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer blue-grey darken-1">
+    
+    <div class="container">
+        <div class="row">
+            
+            <div class="social-group col m3 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/zekunyan" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+            </div>
+            
+
+            
+            <div class="col m9 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
+                
+                    <a class="social-link" href="http://raytaylorlin.com/" target="_blank">raytaylorism主题作者的技术博客</a>
+                
+                    <a class="social-link" href="http://suta.name/" target="_blank">很赞的设计师</a>
+                
+                    <a class="social-link" href="http://neoyeelf.github.io/" target="_blank">NeOye&#39;s blog</a>
+                
+                    <a class="social-link" href="http://bingyan.farbox.com/" target="_blank">Howl写东西的地方</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright teal-link-context">
+        <div class="container">
+            © 2016 tutuge.me, All rights reserved.
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery-2.1.1.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('teal lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-reading, .menu-about').append('<span class="new badge teal accent-4"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal();
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-68058110-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=55079830" charset="UTF-8"></script>
+
+
+
+
+
+</body>
+</html>

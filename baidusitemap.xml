@@ -3,6 +3,48 @@
 
 
     
+  <url>
+    <loc>http://tutuge.me/2016/05/02/design-json-api-respoense/</loc>
+    <lastmod>2016-05-03T07:29:51.000Z</lastmod>
+    <data>
+        <display>
+        <title>API返回结果设计经验与总结</title>
+        <pubTime>2016-05-02T02:44:49.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+         
+           
+             
+              <breadCrumb title="服务端" url="http://tutuge.me/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://tutuge.me/2016/04/30/autoreleasing-meet-autoreleasepool/</loc>
+    <lastmod>2016-05-02T16:08:13.000Z</lastmod>
+    <data>
+        <display>
+        <title>结合访问Out Parameters出现EXC_BAD_ACCESS的例子，反编译汇编解读__autoreleasing</title>
+        <pubTime>2016-04-30T11:19:23.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
     
   <url>
     <loc>http://tutuge.me/2016/04/10/summary-of-code-organization/</loc>

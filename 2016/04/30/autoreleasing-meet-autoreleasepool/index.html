@@ -1,0 +1,636 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>结合访问Out Parameters出现EXC_BAD_ACCESS的例子，反编译汇编解读__autoreleasing | iOS，Android程序猿，喜欢Mac、Linux、各种开源技术，各种语言</title>
+    <meta name="author" content="燕泽堃">
+    
+    <meta name="description" content="程序猿">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="结合访问Out Parameters出现EXC_BAD_ACCESS的例子，反编译汇编解读__autoreleasing"/>
+    <meta property="og:site_name" content="土土哥的技术Blog"/>
+
+    
+    <meta property="og:image" content="undefined"/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="土土哥的技术Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="blue-grey">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">土土哥的技术Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav blue-grey darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="http://7nj2iz.com1.z0.glb.clouddn.com/avatar_comic_big.png" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">土土哥</p>
+                        <p class="desc">iOS/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav blue-grey darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/iOS/">
+                    iOS <span class="right">29 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/Android/">
+                    Android <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/服务端/">
+                    服务端 <span class="right">2 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/其它/">
+                    其它 <span class="right">2 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper blue-grey">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/iOS/">iOS</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>结合访问Out Parameters出现EXC_BAD_ACCESS的例子，反编译汇编解读__autoreleasing</h1>
+    
+
+
+            </div>
+            <time class="teal-link-context" datetime="2016-04-30T11:19:23.000Z"><a href="/2016/04/30/autoreleasing-meet-autoreleasepool/">2016-04-30</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
+        
+            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
+        
+    </div>
+
+
+            <div class="toc teal-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#更新"><span class="section table-of-contents-text">更新</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#前言"><span class="section table-of-contents-text">前言</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#2016-05-01更新-关于本文的反编译汇编代码"><span class="section table-of-contents-text">2016-05-01更新 - 关于本文的反编译汇编代码</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Out-Parameters-指针的指针"><span class="section table-of-contents-text">Out Parameters - 指针的指针</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#出现EXC-BAD-ACCESS的代码示例"><span class="section table-of-contents-text">出现EXC_BAD_ACCESS的代码示例</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#autoreleasing-变量所有权-ownership-修饰符"><span class="section table-of-contents-text">__autoreleasing - 变量所有权(ownership)修饰符</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#方法的Out-Parameters参数会自动添加-autoreleasing属性"><span class="section table-of-contents-text">方法的Out Parameters参数会自动添加__autoreleasing属性</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#如果传给Out-Parameters参数的变量没有用-autoreleasing修饰，编译器会创建一个临时变量并以-autoreleasing修饰再传入"><span class="section table-of-contents-text">如果传给Out Parameters参数的变量没有用__autoreleasing修饰，编译器会创建一个临时变量并以__autoreleasing修饰再传入</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#开头例子出现EXC-BAD-ACCESS错误的原因"><span class="section table-of-contents-text">开头例子出现EXC_BAD_ACCESS错误的原因</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#总结"><span class="section table-of-contents-text">总结</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#参考"><span class="section table-of-contents-text">参考</span></a></li></ol>
+</div>
+
+
+            <div class="entry teal-link-context">
+                <h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><p>2016-05-01: 补充了一点本文涉及的汇编知识</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本文结合一段访问<code>Out Parameters</code>出现了<code>EXC_BAD_ACCESS</code>错误的代码，通过反编译等手段验证Objective-C中<code>__autoreleasing</code>的一些特点。</p>
+<a id="more"></a>
+<h2 id="2016-05-01更新-关于本文的反编译汇编代码"><a href="#2016-05-01更新-关于本文的反编译汇编代码" class="headerlink" title="2016-05-01更新 - 关于本文的反编译汇编代码"></a>2016-05-01更新 - 关于本文的反编译汇编代码</h2><p>本文的反编译基于MachO 64bits，即System V X86_64，读懂本文需要的最简单Calling convention如下：</p>
+<p>函数参数顺序：  </p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">rdi, rsi, rdx, rcx等寄存器</span><br><span class="line">对应到</span><br><span class="line">id objc_msgSend ( id object, SEL cmd, arg1, arg2 ... );</span><br><span class="line">就是</span><br><span class="line"><span class="attr">rdi</span> = object <span class="comment"># 被调用对象</span></span><br><span class="line"><span class="attr">rsi</span> = cmd <span class="comment"># 方法selector</span></span><br><span class="line"><span class="attr">rdx</span> = arg1 <span class="comment"># 方法第一个参数</span></span><br><span class="line"><span class="attr">rcx</span> = arg2 <span class="comment"># 方法第二个参数</span></span><br></pre></td></tr></table></figure>
+<p>函数返回值：</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">本文只涉及: <span class="built_in">rax</span>寄存器</span><br></pre></td></tr></table></figure>
+<p>详细可参考：  </p>
+<ul>
+<li><a href="https://developer.apple.com/library/ios/documentation/Xcode/Conceptual/iPhoneOSABIReference/Introduction/Introduction.html" target="_blank" rel="external">iOS ABI Function Call Guide</a>  </li>
+<li><a href="https://developer.apple.com/library/mac/documentation/DeveloperTools/Conceptual/LowLevelABI/000-Introduction/introduction.html#//apple_ref/doc/uid/TP40002437-SW1" target="_blank" rel="external">OS X ABI Function Call Guide</a>  </li>
+<li><a href="http://wiki.osdev.org/Calling_Conventions" target="_blank" rel="external">OS DEV Calling Conventions</a></li>
+</ul>
+<h2 id="Out-Parameters-指针的指针"><a href="#Out-Parameters-指针的指针" class="headerlink" title="Out Parameters - 指针的指针"></a>Out Parameters - 指针的指针</h2><p>所谓<code>Out Parameters</code>，其实就是<strong>指针的指针</strong>，熟悉C/C++的朋友应该不陌生，通过指针的指针可以改变指针的值，在Objective-C里面很多地方用到了这种方法，来在函数、方法内部改变参数的原始值，如：</p>
+<figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// NSFileManager的方法</span></span><br><span class="line">- (<span class="keyword">BOOL</span>)removeItemAtURL:(NSURL *)URL <span class="built_in">error</span>:(NSError **)<span class="built_in">error</span></span><br></pre></td></tr></table></figure>
+<p>第二个参数<code>(NSError **)error</code>，就是<code>Out Parameters</code>，调用时传递NSError类型指针的地址即可：</p>
+<figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">NSError *<span class="built_in">error</span> = nil;</span><br><span class="line">[[NSFileManager defaultManager] removeItemAtURL:url <span class="built_in">error</span>:&amp;<span class="built_in">error</span>];</span><br><span class="line"><span class="comment">// 处理error...</span></span><br></pre></td></tr></table></figure>
+<h2 id="出现EXC-BAD-ACCESS的代码示例"><a href="#出现EXC-BAD-ACCESS的代码示例" class="headerlink" title="出现EXC_BAD_ACCESS的代码示例"></a>出现EXC_BAD_ACCESS的代码示例</h2><p>假设有如下遍历数组检查数值零的方法：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)checkZeroInArray:(<span class="built_in">NSArray</span> &lt;<span class="built_in">NSNumber</span> *&gt; *)array error:(<span class="built_in">NSError</span> **)error &#123;</span><br><span class="line">    <span class="comment">// 遍历</span></span><br><span class="line">    [array enumerateObjectsUsingBlock:^(<span class="built_in">NSNumber</span> * _Nonnull number, <span class="built_in">NSUInteger</span> index, <span class="built_in">BOOL</span> * _Nonnull stop) &#123;</span><br><span class="line">        <span class="keyword">if</span> (number.integerValue == <span class="number">0</span>) &#123; <span class="comment">// 检查</span></span><br><span class="line">            <span class="keyword">if</span> (error) &#123; <span class="comment">// 指针是否有效</span></span><br><span class="line">                *error = [<span class="built_in">NSError</span> errorWithDomain:<span class="string">@"me.tutuge"</span> code:<span class="number">100</span> userInfo:<span class="literal">nil</span>]; <span class="comment">// 创建NSError实例</span></span><br><span class="line">            &#125;</span><br><span class="line">            *stop = <span class="literal">TRUE</span>; <span class="comment">// 停止遍历</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>调用的时候如下：  </p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">NSError *<span class="keyword">error</span> = nil;</span><br><span class="line">[self checkZeroInArray:numbers <span class="keyword">error</span>:&amp;<span class="keyword">error</span>]; <span class="comment">// 取地址</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">error</span>) &#123;</span><br><span class="line">    NSLog(@<span class="string">"Error: %@"</span>, <span class="keyword">error</span>); <span class="comment">// EXC_BAD_ACCESS错误</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以得出，<code>NSLog(@&quot;Error: %@&quot;, error)</code>访问<code>error</code>的时候，<code>error</code>的地址指向的内存空间已经被释放，所以才会出现<code>EXC_BAD_ACCESS</code>错误。  </p>
+<p>但是为什么会被释放？什么时候被释放的？经过一番查证，发现跟<code>__autoreleasing</code>和<code>@autoreleasepool</code>有关。</p>
+<p>下面先对<code>__autoreleasing</code>做点研究=。=</p>
+<h2 id="autoreleasing-变量所有权-ownership-修饰符"><a href="#autoreleasing-变量所有权-ownership-修饰符" class="headerlink" title="__autoreleasing - 变量所有权(ownership)修饰符"></a>__autoreleasing - 变量所有权(ownership)修饰符</h2><p>先看看<code>__autoreleasing</code>的定义及一些特点。 </p>
+<p><code>__autoreleasing</code>是变量所有权修饰符的一种，除了它，还有<code>__strong</code>、<code>__weak</code>和<code>__unsafe_unretained</code>，详细的说明可以参考：<a href="http://clang.llvm.org/docs/AutomaticReferenceCounting.html#ownership-qualification" target="_blank" rel="external">Clang文档-Objective-C Automatic Reference Counting (ARC)</a>  </p>
+<p>简单来说，就是被<code>__autoreleasing</code>修饰的变量会被加入到当前的autoreleasepool中，可以理解为如下两段分别在ARC和MRC中的代码等价：</p>
+<figure class="highlight hsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ARC</span></span><br><span class="line">id __autoreleasing obj = someObj<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// MRC</span></span><br><span class="line">id obj = [[someObj retain] autorelease]<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<p>再进一步，除开各种影响因素，假设有如下函数：  </p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)funcWithObj:(<span class="keyword">id</span>)someObj &#123;</span><br><span class="line">    <span class="keyword">id</span> __autoreleasing obj = someObj;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>用Hopper Disassembler反编译后为如下汇编代码(MachO 64bits)：</p>
+<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/autoreleasing-meet-autoreleasepool_1.jpg" alt="funcWithObj:反汇编"></p>
+<p><strong><code>var_18</code>就是obj变量：</strong><br><code>lea rax, qword [ss:rbp+var_18]</code>和<code>mov rdi, rax</code>取了var_18的地址放在<code>rdi</code>寄存器中，<code>mov rsi, rdx</code>将<code>someObj</code>值放到了rsi寄存器中，然后调用<code>id objc_storeStrong(id *object, id value)</code>函数最终将<code>someObj</code>值保存在<code>var_18</code>变量中。</p>
+<p><strong><code>__autoreleasing</code>导致了<code>id objc_retainAutorelease(id value)</code>函数的调用：</strong><br><code>call imp___stubs__objc_retainAutorelease</code>，就是对<code>obj</code>变量，也就是<code>var_18</code>，调用了<code>objc_retainAutorelease</code>函数，先retain然后autorelease了一次，其实现大致如下：</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">id <span class="title">objc_retainAutorelease</span>(<span class="params">id <span class="keyword">value</span></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> objc_autorelease(objc_retain(<span class="keyword">value</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>objc_storeStrong</code>和<code>objc_retainAutorelease</code>可参考：<a href="http://clang.llvm.org/docs/AutomaticReferenceCounting.html#arc-runtime-objc-retainautorelease" target="_blank" rel="external">Clang文档-Objective-C Automatic Reference Counting (ARC)</a></p>
+<p>可验证，用<code>__autoreleasing</code>修饰的变量会被添加到当前的autoreleasepool中。</p>
+<h2 id="方法的Out-Parameters参数会自动添加-autoreleasing属性"><a href="#方法的Out-Parameters参数会自动添加-autoreleasing属性" class="headerlink" title="方法的Out Parameters参数会自动添加__autoreleasing属性"></a>方法的Out Parameters参数会自动添加__autoreleasing属性</h2><p>当方法参数里面有Out Parameters参数时，就是有指针的指针类型时，编译器会自动为参数加上<code>__autoreleasing</code>属性，如以下两个方法：</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)generateError1:(NSError **)<span class="keyword">error</span> &#123;</span><br><span class="line">    *<span class="keyword">error</span> = [NSError <span class="keyword">new</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)generateError2:(NSError * __autoreleasing *)<span class="keyword">error</span> &#123;</span><br><span class="line">    *<span class="keyword">error</span> = [NSError <span class="keyword">new</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译时，<code>generateError1:</code>会对参数<code>error</code>自动添加<code>__autoreleasing</code>，然后就跟<code>generateError2:</code>的实现完全一致了。</p>
+<p>通过反汇编也可看出两者完全一致：</p>
+<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/autoreleasing-meet-autoreleasepool_2.jpg" alt="Out Parameters参数会自动添加__autoreleasing属性"></p>
+<p>在<code>call imp___stubs__objc_msgSend</code>完成后，<code>rax</code>寄存器保存了<code>[NSError new]</code>的对象，然后<code>mov rdi, rax</code>，转移到<code>rdi</code>寄存器，作为<code>objc_autorelease</code>函数的参数被调用，<code>*error</code>被加到了当前的autoreleasepool中。</p>
+<h2 id="如果传给Out-Parameters参数的变量没有用-autoreleasing修饰，编译器会创建一个临时变量并以-autoreleasing修饰再传入"><a href="#如果传给Out-Parameters参数的变量没有用-autoreleasing修饰，编译器会创建一个临时变量并以-autoreleasing修饰再传入" class="headerlink" title="如果传给Out Parameters参数的变量没有用__autoreleasing修饰，编译器会创建一个临时变量并以__autoreleasing修饰再传入"></a>如果传给Out Parameters参数的变量没有用__autoreleasing修饰，编译器会创建一个临时变量并以__autoreleasing修饰再传入</h2><p>根据苹果的<a href="https://developer.apple.com/library/mac/releasenotes/ObjectiveC/RN-TransitioningToARC/Introduction/Introduction.html" target="_blank" rel="external">Transitioning to ARC Release Notes</a>文档可知，如果有如下调用：</p>
+<figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSError *<span class="built_in">error</span>; <span class="comment">// 默认__strong类型</span></span><br><span class="line">[self generateError1:&amp;<span class="built_in">error</span>]；</span><br></pre></td></tr></table></figure>
+<p>编译器检测到<code>generateError1:</code>方法的Out Parameters类型参数，但是调用时的<code>error</code>又不是<code>__autoreleasing</code>修饰的，会自动创建一个<code>__autoreleasing</code>修饰的临时变量，来代替<code>error</code>传入，重写后如：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSError</span> * error; <span class="comment">// 默认__strong类型</span></span><br><span class="line"><span class="built_in">NSError</span> * __autoreleasing tmp = error;</span><br><span class="line">[<span class="keyword">self</span> generateError1:&amp;tmp]；</span><br></pre></td></tr></table></figure>
+<p>通过汇编来验证一下：</p>
+<p>假如有如下调用：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)runTest &#123;</span><br><span class="line">    <span class="built_in">NSError</span> *error = <span class="literal">nil</span>;</span><br><span class="line">    [<span class="keyword">self</span> generateError1:&amp;error]; <span class="comment">// 就是上面的实现</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>反汇编后，如下：</p>
+<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/autoreleasing-meet-autoreleasepool_3.jpg" alt="自动添加__autoreleasing临时变量"></p>
+<p>代码有点多=。=，从图中汇编可知：<code>var_20</code>就是自动生成的临时变量，<code>var_18</code>是我们定义的<code>error</code>变量。</p>
+<p><code>mov qword [ss:rbp+var_18], 0x0</code>对<code>var_18</code>做初始化，也就是赋<code>nil</code>值，然后<code>mov rdi, qword [ss:rbp+var_18]</code>和<code>mov qword [ss:rbp+var_20], rdi</code>就是用<code>var_18</code>初始化了<code>var_20</code>临时变量。</p>
+<p><code>lea rdx, qword [ss:rbp+var_20]</code>将<code>var_20</code>临时变量的地址存到了<code>rdx</code>寄存器中，作为<code>objc_msgSend</code>实现<code>generateError1:</code>调用时的第三个参数，也就是<code>(NSError **):error</code>参数，完成调用。</p>
+<p>调用完成后，通过如下调用，将临时变量<code>var_20</code>的值保存到<code>var_18</code>，即<code>error</code>变量中。</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">lea</span> <span class="built_in">rdx</span>, <span class="built_in">qword</span> [<span class="built_in">ss</span>:<span class="built_in">rbp</span>+var_18] # var_18为objc_storeStrong第一个参数</span><br><span class="line"><span class="keyword">mov</span> <span class="built_in">rsi</span>, <span class="built_in">qword</span> [<span class="built_in">ss</span>:<span class="built_in">rbp</span>+var_20] # var_20为objc_storeStrong第二个参数</span><br><span class="line"><span class="keyword">mov</span> <span class="built_in">rdi</span>, <span class="built_in">rdx</span></span><br><span class="line"><span class="keyword">call</span> imp___stubs__objc_storeStrong</span><br></pre></td></tr></table></figure>
+<h2 id="开头例子出现EXC-BAD-ACCESS错误的原因"><a href="#开头例子出现EXC-BAD-ACCESS错误的原因" class="headerlink" title="开头例子出现EXC_BAD_ACCESS错误的原因"></a>开头例子出现EXC_BAD_ACCESS错误的原因</h2><p>经过上面一番对<code>__autoreleasing</code>的总结，再来看看开头例子的错误原因就比较容易懂了。</p>
+<p><strong>enumerateObjectsUsingBlock会在循环内部自动添加autoreleasepool</strong></p>
+<p>首先应该明确的就是<code>enumerateObjectsUsingBlock:</code>在用block迭代遍历NSArray的元素时，会自动添加autoreleasepool，对于例子来说，相当于：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 枚举遍历</span></span><br><span class="line">[array enumerateObjectsUsingBlock:^(<span class="built_in">NSNumber</span> * _Nonnull number, <span class="built_in">NSUInteger</span> index, <span class="built_in">BOOL</span> * _Nonnull stop) &#123;</span><br><span class="line">    <span class="keyword">if</span> (number.integerValue == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (error) &#123;</span><br><span class="line">            *error = [<span class="built_in">NSError</span> errorWithDomain:<span class="string">@"me.tutuge"</span> code:<span class="number">100</span> userInfo:<span class="literal">nil</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        *stop = <span class="literal">TRUE</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+<p>结合<code>__autoreleasing</code>后，重写为：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSNumber</span> *number = <span class="literal">nil</span>;</span><br><span class="line"><span class="built_in">BOOL</span> stop = <span class="literal">FALSE</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="built_in">NSUInteger</span> index = <span class="number">0</span>; index &lt; array.count &amp;&amp; !stop; index++) &#123;</span><br><span class="line">    <span class="keyword">@autoreleasepool</span> &#123; <span class="comment">// 自动添加 </span></span><br><span class="line">        number = array[index];</span><br><span class="line">        <span class="keyword">if</span> (error) &#123;</span><br><span class="line">            *error = [[<span class="built_in">NSError</span> errorWithDomain:<span class="string">@"me.tutuge"</span> code:<span class="number">100</span> userInfo:<span class="literal">nil</span>] autorelease]; <span class="comment">// 注意这个autorelease !</span></span><br><span class="line">        &#125;</span><br><span class="line">        stop = <span class="literal">TRUE</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而<code>autorelease</code>对应的函数<code>id objc_autorelease(id value)</code>的官方解释： </p>
+<blockquote>
+<p>If value is null, this call has no effect. Otherwise, it adds the object to the innermost autorelease pool exactly as if the object had been sent the autorelease message.</p>
+</blockquote>
+<p>其中的<strong>innermost autorelease pool</strong>表示的就是“最内层”的autoreleasepool，对于例子来说就是<code>*error</code>被添加到了循环内的autoreleasepool中，当然，导致的结果就是本次循环结束后，<code>*error</code>也随着一起被释放了。</p>
+<p>最终导致了外部访问了已经被释放的<code>*error</code>，出现了EXC_BAD_ACCESS错误。</p>
+<p>😲</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>很多时候不能想当然的写代码=。=，要不然出了问题找都找不到，每个细节都很重要。<br>嗯，现在读汇编快多了。。。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="http://clang.llvm.org/docs/AutomaticReferenceCounting.html" target="_blank" rel="external">Clang document: Objective-C Automatic Reference Counting (ARC)</a></li>
+<li><a href="https://developer.apple.com/library/mac/releasenotes/ObjectiveC/RN-TransitioningToARC/Introduction/Introduction.html" target="_blank" rel="external">Transitioning to ARC Release Notes</a></li>
+<li><a href="http://blog.sunnyxx.com/2014/10/15/behind-autorelease/" target="_blank" rel="external">黑幕背后的Autorelease</a></li>
+</ul>
+
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comment">
+        <div class="card">
+            <div class="card-content">
+                <!-- Duoshuo Comment BEGIN -->
+                <div class="ds-thread" data-thread-key="2016/04/30/autoreleasing-meet-autoreleasepool/" data-title="结合访问Out Parameters出现EXC_BAD_ACCESS的例子，反编译汇编解读__autoreleasing" data-url="http://tutuge.me/2016/04/30/autoreleasing-meet-autoreleasepool/"></div>
+
+                <script type="text/javascript">
+                    console.log(document.querySelector('.ds-thread'));
+                    var duoshuoQuery = {
+                        short_name: 'tutuge'
+                    };
+                    (function() {
+                        var ds = document.createElement('script');
+                        ds.type = 'text/javascript';
+                        ds.async = true;
+                        ds.src = (document.location.protocol == 'https:'
+                            ? 'https:'
+                            : 'http:') + '//static.duoshuo.com/embed.js';
+                        ds.charset = 'UTF-8';
+                        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+                    })();
+                </script>
+                <!-- Duoshuo Comment END -->
+            </div>
+        </div>
+    </section>
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large teal">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect teal accent-4" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="menu"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer blue-grey darken-1">
+    
+    <div class="container">
+        <div class="row">
+            
+            <div class="social-group col m3 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/zekunyan" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+            </div>
+            
+
+            
+            <div class="col m9 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
+                
+                    <a class="social-link" href="http://raytaylorlin.com/" target="_blank">raytaylorism主题作者的技术博客</a>
+                
+                    <a class="social-link" href="http://suta.name/" target="_blank">很赞的设计师</a>
+                
+                    <a class="social-link" href="http://neoyeelf.github.io/" target="_blank">NeOye&#39;s blog</a>
+                
+                    <a class="social-link" href="http://bingyan.farbox.com/" target="_blank">Howl写东西的地方</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright teal-link-context">
+        <div class="container">
+            © 2016 tutuge.me, All rights reserved.
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery-2.1.1.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('teal lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-reading, .menu-about').append('<span class="new badge teal accent-4"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal();
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-68058110-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=55079830" charset="UTF-8"></script>
+
+
+
+
+
+</body>
+</html>

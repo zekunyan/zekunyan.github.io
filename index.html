@@ -140,7 +140,7 @@
 
             <li class="collapse-level-0" collapse-level="0">
                 <a class="no-padding" href="/categories/iOS/">
-                    iOS <span class="right">28 篇</span></a>
+                    iOS <span class="right">29 篇</span></a>
                 </a>
             </li>
 
@@ -156,7 +156,7 @@
 
             <li class="collapse-level-0" collapse-level="0">
                 <a class="no-padding" href="/categories/服务端/">
-                    服务端 <span class="right">1 篇</span></a>
+                    服务端 <span class="right">2 篇</span></a>
                 </a>
             </li>
 
@@ -177,12 +177,109 @@
     </div>
 </nav>
 
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
     <main>
         
 
 
 
 <div id="article-list" class="container main-container">
+    
+        <article class="simple-article">
+        <div class="card">
+            <div class="card-content">
+                <div class="article-title">
+                    
+    
+        <h1 class="blue-grey-link-context"><a href="/2016/05/02/design-json-api-respoense/">API返回结果设计经验与总结</a></h1>
+    
+
+
+                </div>
+
+                <time class="teal-link-context" datetime="2016-05-02T02:44:49.000Z"><a href="/2016/05/02/design-json-api-respoense/">2016-05-02</a></time>
+
+                
+    <div class="tags-row">
+        
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
+        
+    </div>
+
+
+
+                
+                    <div class="entry teal-link-context">
+                        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>RESTful API的设计已经很成熟了，大家也都比较认可。本文也不再过多介绍RESTful API相关的知识，而是针对JSON型API的返回结果设计，总结下自己的经验。</p>
+<h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><p>先来看看返回结果的结构示例：</p>
+<figure class="highlight qml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attribute">data</span> : &#123; <span class="comment">// 请求数据，对象或数组均可</span></span><br><span class="line">        <span class="attribute">user_id</span>: <span class="number">123</span>,</span><br><span class="line">        <span class="attribute">user_name</span>: <span class="string">"tutuge"</span>,</span><br><span class="line">        <span class="attribute">user_avatar_url</span>: <span class="string">"http://tutuge.me/avatar.jpg"</span></span><br><span class="line">        ...</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attribute">msg</span> : <span class="string">"done"</span>, <span class="comment">// 请求状态描述，调试用</span></span><br><span class="line">    <span class="attribute">code</span>: <span class="number">1001</span>, <span class="comment">// 业务自定义状态码</span></span><br><span class="line">    <span class="attribute">extra</span> : &#123; <span class="comment">// 全局附加数据，字段、内容不定</span></span><br><span class="line">        <span class="attribute">type</span>: <span class="number">1</span>,</span><br><span class="line">        <span class="attribute">desc</span>: <span class="string">"签到成功！"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+                    </div>
+                
+            </div>
+
+            
+            <div class="card-action teal-link-context">
+                <a href="2016/05/02/design-json-api-respoense/">READ MORE</a>
+            </div>
+            
+        </div>
+</article>
+
+    
+        <article class="simple-article">
+        <div class="card">
+            <div class="card-content">
+                <div class="article-title">
+                    
+    
+        <h1 class="blue-grey-link-context"><a href="/2016/04/30/autoreleasing-meet-autoreleasepool/">结合访问Out Parameters出现EXC_BAD_ACCESS的例子，反编译汇编解读__autoreleasing</a></h1>
+    
+
+
+                </div>
+
+                <time class="teal-link-context" datetime="2016-04-30T11:19:23.000Z"><a href="/2016/04/30/autoreleasing-meet-autoreleasepool/">2016-04-30</a></time>
+
+                
+    <div class="tags-row">
+        
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
+        
+            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
+        
+    </div>
+
+
+
+                
+                    <div class="entry teal-link-context">
+                        <h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><p>2016-05-01: 补充了一点本文涉及的汇编知识</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本文结合一段访问<code>Out Parameters</code>出现了<code>EXC_BAD_ACCESS</code>错误的代码，通过反编译等手段验证Objective-C中<code>__autoreleasing</code>的一些特点。</p>
+                    </div>
+                
+            </div>
+
+            
+            <div class="card-action teal-link-context">
+                <a href="2016/04/30/autoreleasing-meet-autoreleasepool/">READ MORE</a>
+            </div>
+            
+        </div>
+</article>
+
     
         <article class="simple-article">
         <div class="card">
@@ -552,98 +649,6 @@
 </article>
 
     
-        <article class="simple-article">
-        <div class="card">
-            <div class="card-content">
-                <div class="article-title">
-                    
-    
-        <h1 class="blue-grey-link-context"><a href="/2015/07/08/fill-nil-property-of-object/">用Runtime的手段填充任意NSObject对象的nil属性</a></h1>
-    
-
-
-                </div>
-
-                <time class="teal-link-context" datetime="2015-07-08T15:23:23.000Z"><a href="/2015/07/08/fill-nil-property-of-object/">2015-07-08</a></time>
-
-                
-    <div class="tags-row">
-        
-            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
-        
-            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
-        
-            <a href="/tags/Runtime/" class="chip teal accent-4">Runtime</a>
-        
-    </div>
-
-
-
-                
-                    <div class="entry teal-link-context">
-                        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>好久没有写东西了，忙啊。<br>前段时间参加了一下我们华科联创的HackDay（本人在读研=。=，目前在阿里实习），作品是一款<strong>实时在线对战游戏 - 波波攒</strong>，（介绍请看<a href="http://www.zhihu.com/question/24402279">知乎</a>）<br>从iOS游戏客户端（用的<strong>SpriteKit</strong>）到后台（<strong>PHP CI + Node + SocketIO + MySQL</strong>）全是自己一个人倒腾出来的，做了一把真正的全栈工程师，爽啊~<br>后面会完善整个游戏，增加角色、优化啥的，过上一段时间会上线的哈~</p>
-<p><strong>回到正文</strong>，本文主要介绍了怎么用Runtime的手段遍历任意NSObject对象的所有property，检查其值是否是nil，是的话根据其类型为其填充一个默认值。<br>Runtime毕竟是个“危险”的技术，本文的代码只是个初步的尝试。</p>
-                    </div>
-                
-            </div>
-
-            
-            <div class="card-action teal-link-context">
-                <a href="2015/07/08/fill-nil-property-of-object/">READ MORE</a>
-            </div>
-            
-        </div>
-</article>
-
-    
-        <article class="simple-article">
-        <div class="card">
-            <div class="card-content">
-                <div class="article-title">
-                    
-    
-        <h1 class="blue-grey-link-context"><a href="/2015/05/23/autolayout-example-with-masonry/">有趣的Autolayout示例-Masonry实现</a></h1>
-    
-
-
-                </div>
-
-                <time class="teal-link-context" datetime="2015-05-23T11:59:22.000Z"><a href="/2015/05/23/autolayout-example-with-masonry/">2015-05-23</a></time>
-
-                
-    <div class="tags-row">
-        
-            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
-        
-            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
-        
-            <a href="/tags/Autolayout/" class="chip teal accent-4">Autolayout</a>
-        
-            <a href="/tags/Masonry/" class="chip teal accent-4">Masonry</a>
-        
-    </div>
-
-
-
-                
-                    <div class="entry teal-link-context">
-                        <h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><p>2015-12-23: 感谢<a href="https://github.com/XVXVXXX">XVXVXXX</a>的PR，更新了Case2<br>2015-12-15: 第三篇：<a href="http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/">有趣的Autolayout示例3-Masonry实现</a><br>2015-11-27: 感谢“谢小雷”指出打字错误~<br>2015-9-10: 第二篇: <a href="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/">有趣的Autolayout示例2-Masonry实现</a><br>2015-9-1: 感谢“王振宇C艹”指出打字错误，已经修改了哈~</p>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>好久没有写Blog了，这段时间有点忙啊=。=<br>本文举了3个比较有“特点”的Autolayout例子，源于微博上好友的提问，感觉比较有意思，也比较有代表性，就写了出来，分享给大家~<br>至于为什么用Masonry，那是因为它好用啊！（被问到过有关Masonry的问题，就索性用它来实现吧=。=）。</p>
-<h3 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_1.gif" alt="效果图"></p>
-<h3 id="Github地址"><a href="#Github地址" class="headerlink" title="Github地址"></a>Github地址</h3><p><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
-                    </div>
-                
-            </div>
-
-            
-            <div class="card-action teal-link-context">
-                <a href="2015/05/23/autolayout-example-with-masonry/">READ MORE</a>
-            </div>
-            
-        </div>
-</article>
-
-    
 
     <ul class="pagination center-align">
     <li class="disabled">
@@ -732,11 +737,11 @@
 
     <noscript>
     <div class="noscript">
-        <p class="center-align">当前浏览器不支持博客完整功能。如果要获得最佳体验，请点击右上角···，复制链接，并在其它浏览器打开</p>
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
     </div>
 </noscript>
 <div class="noscript">
-    <p class="center-align">当前浏览器不支持博客完整功能。如果要获得最佳体验，请点击右上角···，复制链接，并在其它浏览器打开</p>
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
 </div>
 
 
@@ -744,79 +749,173 @@
 <script src="/js/materialize.min.js"></script>
 
 <script>
-(function($) {
-    $(document).ready(function() {
-        // 隐藏禁用javascript（针对微信内置浏览器）的提示
-        $('.noscript').hide();
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
 
-        // 图片缩放效果
-        var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
 
-        // 给图片加上点击放大效果（materialbox插件）
-        $imgs.addClass('materialboxed')
-            .each(function(i, el) {
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
                 $(this).attr('data-caption', $(this).attr('alt') || ' ');
             }).materialbox();
 
-        // 优化表格的显示
-        $('table').each(function() {
-            var $table = $(this);
-            // 除去多行代码的情况
-            if ($table.find('pre').length == 0) {
-                $table.addClass('responsive-table striped bordered');
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
             }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('teal lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-reading, .menu-about').append('<span class="new badge teal accent-4"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal();
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
         });
 
-        // 首页幻灯片
-        $('.slider').slider({
-            indicators: true,
-            full_width: true,
-            interval: 8000
-        });
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
+                                });
 
-        $(".button-collapse").sideNav();
-        $(".category-menu").sideNav();
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
+                                    });
 
-        // 针对gallery post
-        $('.carousel').carousel({
-            full_width: true
-        });
-        $('.carousel-control.prev').click(function() {
-            $('.carousel').carousel('prev');
-        });
-        $('.carousel-control.next').click(function() {
-            $('.carousel').carousel('next');
-        });
-
-        // 文章目录
-        $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
-        // 修正文章目录的left-border颜色
-        var color = $('.table-of-contents-text').css('color');
-        $('.table-of-contents-link').css('border-left-color', color);
-
-        // 针对移动端做的优化：FAB按钮点击一下收回
-        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-            $('.fixed-action-btn').addClass('click-to-toggle');
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
         }
-        // 回到顶部
-        $('.btn-return-top').click(function() {
-            $('body, html').animate({
-                scrollTop: 0
-            }, 500);
-        });
-
-        // 重置读书页面的Tab标签页的颜色
-        $('li.tab a').hover(function() {
-            $(this).toggleClass('text-lighten-4');
-        });
-        $('.indicator').addClass('teal lighten-2');
-
-        
-        // 添加new标签
-        $('.menu-reading,.menu-about').append('<span class="new badge teal accent-4"></span>');
-        
-    });
-})(jQuery);
+    })(jQuery);
 </script>
 
 
