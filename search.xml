@@ -10,44 +10,45 @@
 <h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><p>先来看看返回结果的结构示例：</p>
 <figure class="highlight qml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attribute">data</span> : &#123; <span class="comment">// 请求数据，对象或数组均可</span></span><br><span class="line">        <span class="attribute">user_id</span>: <span class="number">123</span>,</span><br><span class="line">        <span class="attribute">user_name</span>: <span class="string">"tutuge"</span>,</span><br><span class="line">        <span class="attribute">user_avatar_url</span>: <span class="string">"http://tutuge.me/avatar.jpg"</span></span><br><span class="line">        ...</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attribute">msg</span> : <span class="string">"done"</span>, <span class="comment">// 请求状态描述，调试用</span></span><br><span class="line">    <span class="attribute">code</span>: <span class="number">1001</span>, <span class="comment">// 业务自定义状态码</span></span><br><span class="line">    <span class="attribute">extra</span> : &#123; <span class="comment">// 全局附加数据，字段、内容不定</span></span><br><span class="line">        <span class="attribute">type</span>: <span class="number">1</span>,</span><br><span class="line">        <span class="attribute">desc</span>: <span class="string">"签到成功！"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <a id="more"></a>
-<h4 id="data字段-请求数据"><a href="#data字段-请求数据" class="headerlink" title="data字段 - 请求数据"></a>data字段 - 请求数据</h4><p>首先是本次请求结果的数据<code>data</code>字段，其值为对象（字典）或数组均可以，根据业务而定。</p>
+<h3 id="data字段-请求数据"><a href="#data字段-请求数据" class="headerlink" title="data字段 - 请求数据"></a>data字段 - 请求数据</h3><p>首先是本次请求结果的数据<code>data</code>字段，其值为对象（字典）或数组均可以，根据业务而定。</p>
 <p>如请求的是某个用户的个人profile信息，就可以是对象，对象里面是用户profile的键值对数据，如<code>user_id: 123</code>、<code>user_name: &quot;tutuge&quot;</code>等。</p>
 <p>如果请求的是列表数据，就可以是数组，如请求用户列表：</p>
 <figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">data:</span> [</span><br><span class="line">    &#123;<span class="string">user_id:</span> <span class="number">123</span>, <span class="string">user_name:</span> <span class="string">"tutuge"</span>&#125;,</span><br><span class="line">    &#123;<span class="string">user_id:</span> <span class="number">321</span>, <span class="string">user_name:</span> <span class="string">"zekunyan"</span>&#125;,</span><br><span class="line">    ...</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
 <p>数组、对象，相互嵌套，灵活组合即可。</p>
 <p>对于iOS来说，解析<code>data</code>字段是对象还是数组也很容易，在接收到JSON数据字典后，如AFNetworking的返回结果，对<code>data</code>判断其类型即可：</p>
 <figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ([jsonDict[@<span class="string">"data"</span>] <span class="string">isKindOfClass:</span>[NSDictionary <span class="class"><span class="keyword">class</span>]]) &#123;</span></span><br><span class="line">    <span class="comment">// JSON对象</span></span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([jsonDict[@<span class="string">"data"</span>] <span class="string">isKindOfClass:</span>[NSArray <span class="class"><span class="keyword">class</span>]]) &#123;</span></span><br><span class="line">    <span class="comment">// JSON数组</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="msg字段-请求状态描述，调试用"><a href="#msg字段-请求状态描述，调试用" class="headerlink" title="msg字段 - 请求状态描述，调试用"></a>msg字段 - 请求状态描述，调试用</h4><p><code>msg</code>字段是本次请求的业务、状态描述信息，主要用于调试、测试等。  </p>
+<h3 id="msg字段-请求状态描述，调试用"><a href="#msg字段-请求状态描述，调试用" class="headerlink" title="msg字段 - 请求状态描述，调试用"></a>msg字段 - 请求状态描述，调试用</h3><p><code>msg</code>字段是本次请求的业务、状态描述信息，主要用于调试、测试等。</p>
 <p>如“done”、“请求缺少参数！”</p>
-<p>服务端可以自由发挥，开发人员看得懂就好。 😲 </p>
-<h4 id="code字段-业务自定义状态码"><a href="#code字段-业务自定义状态码" class="headerlink" title="code字段 - 业务自定义状态码"></a>code字段 - 业务自定义状态码</h4><p><code>code</code>字段，业务自定义的状态码。  </p>
+<p>服务端可以自由发挥，开发人员看得懂就好。 -_-|||</p>
+<h3 id="code字段-业务自定义状态码"><a href="#code字段-业务自定义状态码" class="headerlink" title="code字段 - 业务自定义状态码"></a>code字段 - 业务自定义状态码</h3><p><code>code</code>字段，业务自定义的状态码。</p>
 <p>其实是否要在API里面自定义业务状态码，<strong>非常有争议</strong>=。=，因为Http请求本身已经有了完备的状态码，再定义一套状态码直观上感受却是不对劲。但是实际开发中，确实发现自定义业务状态码的必要性，如一次成功的Http status 200的请求，可能由于用户未登录、登录过期而有不同的返回结果和处理方式，所以还是保留了<code>code</code>。</p>
 <p>状态码的定义也最好有一套规范，如按照用户相关、授权相关、各种业务，做简单的分类：</p>
 <figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Code 业务自定义状态码定义示例</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 授权相关</span></span><br><span class="line"><span class="number">1001</span>: 无权限访问</span><br><span class="line"><span class="number">1002</span>: access_token过期</span><br><span class="line"><span class="number">1003</span>: unique_token无效</span><br><span class="line"><span class="attr">...</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 用户相关</span></span><br><span class="line"><span class="number">2001</span>: 未登录</span><br><span class="line"><span class="number">2002</span>: 用户信息错误</span><br><span class="line"><span class="number">2003</span>: 用户不存在</span><br><span class="line"></span><br><span class="line"><span class="comment">// 业务1</span></span><br><span class="line"><span class="number">3001</span>: 业务<span class="number">1</span>XXX</span><br><span class="line"><span class="number">3002</span>: 业务<span class="number">1</span>XXX</span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br></pre></td></tr></table></figure>
 <p><code>Code</code>业务状态码最好是用常量定义的，当然有能力的动态配置更新更好，这里就不再详细说明。</p>
 <p>Http的状态码参考：<a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes" target="_blank" rel="external">List of HTTP status codes</a></p>
-<h4 id="extra字段-全局附加数据"><a href="#extra字段-全局附加数据" class="headerlink" title="extra字段 - 全局附加数据"></a>extra字段 - 全局附加数据</h4><p><code>extra</code>字段，用来表示全局的附加数据。  </p>
+<h3 id="extra字段-全局附加数据"><a href="#extra字段-全局附加数据" class="headerlink" title="extra字段 - 全局附加数据"></a>extra字段 - 全局附加数据</h3><p><code>extra</code>字段，用来表示全局的附加数据。</p>
 <p>这个字段来源于之前做项目时，用户的操作（数据请求），会导致用户的等级、经验变化，而具体什么时候产生不确定，由服务端的规则决定，并且客户端要及时向用户展示变化，所以加上了<code>extra</code>字段。</p>
 <p>在设计<code>extra</code>字段的时候，并没有对其结构内容做限制，所以比较灵活，但是还是要有个<code>type</code>字段，来做约束，如：</p>
 <figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 升级</span></span><br><span class="line"><span class="symbol">type:</span> <span class="number">1</span>,</span><br><span class="line"><span class="symbol">show_msg:</span> <span class="string">"恭喜您升级到XXX"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 完成任务</span></span><br><span class="line"><span class="symbol">type:</span> <span class="number">2</span>,</span><br><span class="line"><span class="symbol">task_desc:</span> <span class="string">"达成XXX成就"</span></span><br></pre></td></tr></table></figure>
 <p>总的来说就是自由发挥，只要服务端、客户端相互沟通好即可。当然，也要避免乱用，保证真的需要全局附加数据才使用这个字段。</p>
-<h2 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h2><h4 id="规范统一的命名"><a href="#规范统一的命名" class="headerlink" title="规范统一的命名"></a>规范统一的命名</h4><p><strong>命名风格统一</strong>  </p>
+<h2 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h2><p>总结几点最佳实践。</p>
+<h3 id="规范统一的命名"><a href="#规范统一的命名" class="headerlink" title="规范统一的命名"></a>规范统一的命名</h3><p><strong>命名风格统一</strong></p>
 <p>不管是驼峰式还是下划线式，统一就好。当然，按照目前的“大众规范”，还是统一小写加下划线比较好=。=<br>如：<code>user_id</code>，<code>user_name</code>，<code>user_age</code>等。</p>
 <p><strong>语义清晰，遵守常用缩写</strong></p>
 <p>字段的名字最好能体现字段的类型，遵守一些“常用”的缩写，如：</p>
 <figure class="highlight ceylon"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 字符串</span></span><br><span class="line">user<span class="number">_n</span>ame, task<span class="number">_</span>desc, date<span class="number">_</span>str, article<span class="number">_</span>title, feed<span class="number">_</span>content 等</span><br><span class="line"></span><br><span class="line"><span class="comment">// 数字</span></span><br><span class="line">user<span class="number">_</span>id, users<span class="number">_</span>count, task<span class="number">_n</span>um, xxx<span class="number">_</span>offset 等</span><br><span class="line"></span><br><span class="line"><span class="comment">// 日期</span></span><br><span class="line">login<span class="number">_</span>at, create<span class="number">_</span>date, logout<span class="number">_</span>time 等</span><br><span class="line"></span><br><span class="line"><span class="comment">// 布尔</span></span><br><span class="line"><span class="keyword">is</span><span class="number">_</span>done, <span class="keyword">is</span><span class="number">_</span>vip, protected, can<span class="number">_</span>read 等</span><br><span class="line"></span><br><span class="line"><span class="comment">// URL</span></span><br><span class="line">user<span class="number">_</span>avatar<span class="number">_u</span>rl, thumb<span class="number">_u</span>rl 等</span><br><span class="line"></span><br><span class="line"><span class="comment">// 数组</span></span><br><span class="line">users, profiles, thumb<span class="number">_</span>imgs 等</span><br></pre></td></tr></table></figure>
-<h4 id="空值、空字段的处理"><a href="#空值、空字段的处理" class="headerlink" title="空值、空字段的处理"></a>空值、空字段的处理</h4><p>空值、空字段的处理也是比较容易出问题。</p>
+<h3 id="空值、空字段的处理"><a href="#空值、空字段的处理" class="headerlink" title="空值、空字段的处理"></a>空值、空字段的处理</h3><p>空值、空字段的处理也是比较容易出问题。</p>
 <p><strong>统一空值用null</strong></p>
 <p>除了布尔类型的，其余的空值统一用<code>null</code>表示，客户端保证每种字段的<code>null</code>可以被正常处理。</p>
 <p><strong>给不同类型设置默认空值</strong></p>
 <p>除了<code>null</code>，还可以对字段设置“默认值”，如数字就是<code>0</code>，字符串就是空字符串<code>&quot;&quot;</code>，数组就是空数组<code>[]</code>，对象就是空对象<code>{}</code>，这样有个好处就是可以避免很多客户端（Java、OC）处理空值（Null、nil、null）产生的异常。但是危害就是容易语义不明。还是要根据具体业务、前后端约定而定。</p>
 <p>以前写过一篇<a href="http://tutuge.me/2015/07/08/fill-nil-property-of-object/">用Runtime的手段填充任意NSObject对象的nil属性</a>，其实就是为对象空值统一设置默认值的=。=，可以参考。</p>
-<h4 id="布尔boolean值的处理"><a href="#布尔boolean值的处理" class="headerlink" title="布尔boolean值的处理"></a>布尔boolean值的处理</h4><p>说实话，我见过各种布尔值表示方式，如：</p>
+<h3 id="布尔boolean值的处理"><a href="#布尔boolean值的处理" class="headerlink" title="布尔boolean值的处理"></a>布尔boolean值的处理</h3><p>说实话，我见过各种布尔值表示方式，如：</p>
 <figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">is_login:</span> <span class="literal">true</span>,</span><br><span class="line"><span class="string">is_login:</span> <span class="string">"true"</span>,</span><br><span class="line"><span class="string">is_login:</span> <span class="number">1</span></span><br><span class="line"><span class="string">is_login:</span> <span class="string">"TRUE"</span></span><br><span class="line"><span class="string">is_login:</span> <span class="string">"YES"</span></span><br><span class="line"><span class="comment">// ...天啊</span></span><br></pre></td></tr></table></figure>
 <p>由于语言本身的限制、框架的处理方式，不对布尔类型的值做限制总觉得不踏实，像C、C++、Objective-C里面的布尔就是数字0和1，其它语言也都各自不一样，还有从数据库读写导致的布尔值类型不一致等。</p>
 <p>所以，如果可以的话，最好一开始就对所有请求参数、结果的布尔值类型做限定，个人觉得<strong>统一成数字0和1</strong>最好。</p>
 <p>然后在客户端和服务端统一设置常量、宏定义，定义布尔的类型，所有的参数、结果的布尔字段全部做强制约束。</p>
-<h4 id="时间、日期字段"><a href="#时间、日期字段" class="headerlink" title="时间、日期字段"></a>时间、日期字段</h4><p>时间的处理也是非常容易出错的，特别是遇上时区转换的时候。</p>
+<h3 id="时间、日期字段"><a href="#时间、日期字段" class="headerlink" title="时间、日期字段"></a>时间、日期字段</h3><p>时间的处理也是非常容易出错的，特别是遇上时区转换的时候。</p>
 <p><strong>强制GMT/UTC时间戳</strong></p>
 <p>一种做法就是强制所有时间参数只能传Unix时间戳，也就是标准GMT/UTC时间戳，然后由各自的客户端根据自己的时区、显示要求做处理后显示。</p>
 <figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 从服务器接收的时间数据</span></span><br><span class="line"><span class="symbol">login_at:</span> <span class="number">1462068610</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 根据时区、显示要求转换，如北京时间</span></span><br><span class="line">显示：<span class="number">2016</span>年<span class="number">5</span>月<span class="number">1</span>日下午<span class="number">1</span>点、<span class="number">1</span>天前等</span><br></pre></td></tr></table></figure>
@@ -60,16 +61,16 @@
 </ul>
 <p>所以，可以按照<a href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank" rel="external">ISO 8601</a>标准，用字符串保存、传输时间。</p>
 <p>如果以<code>YYYY-MM-DDThh:mm:ssTZD</code>格式为准, 时间的形式就是<code>1997-07-16T19:20:30+01:00</code>，保存了时区信息，也方便阅读。</p>
-<h4 id="type类型的处理"><a href="#type类型的处理" class="headerlink" title="type类型的处理"></a>type类型的处理</h4><p>API数据中免不了各种类型字段，如用户类型<code>user_type</code>、登录类型<code>login_type</code>等，类型的表示也可以分为数字、字符串两种。</p>
+<h3 id="type类型的处理"><a href="#type类型的处理" class="headerlink" title="type类型的处理"></a>type类型的处理</h3><p>API数据中免不了各种类型字段，如用户类型<code>user_type</code>、登录类型<code>login_type</code>等，类型的表示也可以分为数字、字符串两种。</p>
 <p><strong>数字表示类型</strong></p>
 <p>这个应该是最直接的方式了，客户端和服务端共同维护某个API下、某个数据类型中的type常量，靠文档约束。</p>
 <p><strong>字符串表示类型</strong></p>
 <p>数字的类型毕竟不利于直观阅读，如果可以的话，用字符串也是不错的，当然坏处就是代码里面就不能用<code>Switch</code>语句了（除了强大的Swift=。=）</p>
 <figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 如登录类型，QQ、微信、微博等</span></span><br><span class="line"><span class="symbol">login_type:</span> <span class="string">"qq"</span>,</span><br><span class="line"><span class="symbol">login_type:</span> <span class="string">"wechat"</span>,</span><br><span class="line"><span class="symbol">login_type:</span> <span class="string">"sina_weibo"</span>,</span><br></pre></td></tr></table></figure>
-<h4 id="完整的URL"><a href="#完整的URL" class="headerlink" title="完整的URL"></a>完整的URL</h4><p>API里面的数据也会有URL类型的，一般来说如用户的头像、各种图片、音频等资源，都是以URL链接的形式返回的。  </p>
+<h3 id="完整的URL"><a href="#完整的URL" class="headerlink" title="完整的URL"></a>完整的URL</h3><p>API里面的数据也会有URL类型的，一般来说如用户的头像、各种图片、音频等资源，都是以URL链接的形式返回的。</p>
 <p>返回的URL一定要“完整”，主要指的是不要忘记URL里面的<strong>协议</strong>部分，也就是<code>scheme</code>部分。</p>
 <p>像<code>tutuge.me/imgs/1.jpg</code>这种URL值，就是不完整的，没有指明网络协议，难道靠猜=。=<br>应该是<code>http://tutuge.me/imgs/1.jpg</code>。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>嗯，规范非常重要。😁</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>嗯，规范非常重要。:-D</p>
 ]]></content>
     </entry>
     
@@ -80,14 +81,14 @@
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本文结合一段访问<code>Out Parameters</code>出现了<code>EXC_BAD_ACCESS</code>错误的代码，通过反编译等手段验证Objective-C中<code>__autoreleasing</code>的一些特点。</p>
 <a id="more"></a>
 <h2 id="2016-05-01更新-关于本文的反编译汇编代码"><a href="#2016-05-01更新-关于本文的反编译汇编代码" class="headerlink" title="2016-05-01更新 - 关于本文的反编译汇编代码"></a>2016-05-01更新 - 关于本文的反编译汇编代码</h2><p>本文的反编译基于MachO 64bits，即System V X86_64，读懂本文需要的最简单Calling convention如下：</p>
-<p>函数参数顺序：  </p>
+<p>函数参数顺序：</p>
 <figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">rdi, rsi, rdx, rcx等寄存器</span><br><span class="line">对应到</span><br><span class="line">id objc_msgSend ( id object, SEL cmd, arg1, arg2 ... );</span><br><span class="line">就是</span><br><span class="line"><span class="attr">rdi</span> = object <span class="comment"># 被调用对象</span></span><br><span class="line"><span class="attr">rsi</span> = cmd <span class="comment"># 方法selector</span></span><br><span class="line"><span class="attr">rdx</span> = arg1 <span class="comment"># 方法第一个参数</span></span><br><span class="line"><span class="attr">rcx</span> = arg2 <span class="comment"># 方法第二个参数</span></span><br></pre></td></tr></table></figure>
 <p>函数返回值：</p>
 <figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">本文只涉及: <span class="built_in">rax</span>寄存器</span><br></pre></td></tr></table></figure>
-<p>详细可参考：  </p>
+<p>详细可参考：</p>
 <ul>
-<li><a href="https://developer.apple.com/library/ios/documentation/Xcode/Conceptual/iPhoneOSABIReference/Introduction/Introduction.html" target="_blank" rel="external">iOS ABI Function Call Guide</a>  </li>
-<li><a href="https://developer.apple.com/library/mac/documentation/DeveloperTools/Conceptual/LowLevelABI/000-Introduction/introduction.html#//apple_ref/doc/uid/TP40002437-SW1" target="_blank" rel="external">OS X ABI Function Call Guide</a>  </li>
+<li><a href="https://developer.apple.com/library/ios/documentation/Xcode/Conceptual/iPhoneOSABIReference/Introduction/Introduction.html" target="_blank" rel="external">iOS ABI Function Call Guide</a></li>
+<li><a href="https://developer.apple.com/library/mac/documentation/DeveloperTools/Conceptual/LowLevelABI/000-Introduction/introduction.html#//apple_ref/doc/uid/TP40002437-SW1" target="_blank" rel="external">OS X ABI Function Call Guide</a></li>
 <li><a href="http://wiki.osdev.org/Calling_Conventions" target="_blank" rel="external">OS DEV Calling Conventions</a></li>
 </ul>
 <h2 id="Out-Parameters-指针的指针"><a href="#Out-Parameters-指针的指针" class="headerlink" title="Out Parameters - 指针的指针"></a>Out Parameters - 指针的指针</h2><p>所谓<code>Out Parameters</code>，其实就是<strong>指针的指针</strong>，熟悉C/C++的朋友应该不陌生，通过指针的指针可以改变指针的值，在Objective-C里面很多地方用到了这种方法，来在函数、方法内部改变参数的原始值，如：</p>
@@ -96,16 +97,16 @@
 <figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">NSError *<span class="built_in">error</span> = nil;</span><br><span class="line">[[NSFileManager defaultManager] removeItemAtURL:url <span class="built_in">error</span>:&amp;<span class="built_in">error</span>];</span><br><span class="line"><span class="comment">// 处理error...</span></span><br></pre></td></tr></table></figure>
 <h2 id="出现EXC-BAD-ACCESS的代码示例"><a href="#出现EXC-BAD-ACCESS的代码示例" class="headerlink" title="出现EXC_BAD_ACCESS的代码示例"></a>出现EXC_BAD_ACCESS的代码示例</h2><p>假设有如下遍历数组检查数值零的方法：</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)checkZeroInArray:(<span class="built_in">NSArray</span> &lt;<span class="built_in">NSNumber</span> *&gt; *)array error:(<span class="built_in">NSError</span> **)error &#123;</span><br><span class="line">    <span class="comment">// 遍历</span></span><br><span class="line">    [array enumerateObjectsUsingBlock:^(<span class="built_in">NSNumber</span> * _Nonnull number, <span class="built_in">NSUInteger</span> index, <span class="built_in">BOOL</span> * _Nonnull stop) &#123;</span><br><span class="line">        <span class="keyword">if</span> (number.integerValue == <span class="number">0</span>) &#123; <span class="comment">// 检查</span></span><br><span class="line">            <span class="keyword">if</span> (error) &#123; <span class="comment">// 指针是否有效</span></span><br><span class="line">                *error = [<span class="built_in">NSError</span> errorWithDomain:<span class="string">@"me.tutuge"</span> code:<span class="number">100</span> userInfo:<span class="literal">nil</span>]; <span class="comment">// 创建NSError实例</span></span><br><span class="line">            &#125;</span><br><span class="line">            *stop = <span class="literal">TRUE</span>; <span class="comment">// 停止遍历</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>调用的时候如下：  </p>
+<p>调用的时候如下：</p>
 <figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">NSError *<span class="keyword">error</span> = nil;</span><br><span class="line">[self checkZeroInArray:numbers <span class="keyword">error</span>:&amp;<span class="keyword">error</span>]; <span class="comment">// 取地址</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">error</span>) &#123;</span><br><span class="line">    NSLog(@<span class="string">"Error: %@"</span>, <span class="keyword">error</span>); <span class="comment">// EXC_BAD_ACCESS错误</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以得出，<code>NSLog(@&quot;Error: %@&quot;, error)</code>访问<code>error</code>的时候，<code>error</code>的地址指向的内存空间已经被释放，所以才会出现<code>EXC_BAD_ACCESS</code>错误。  </p>
+<p>可以得出，<code>NSLog(@&quot;Error: %@&quot;, error)</code>访问<code>error</code>的时候，<code>error</code>的地址指向的内存空间已经被释放，所以才会出现<code>EXC_BAD_ACCESS</code>错误。</p>
 <p>但是为什么会被释放？什么时候被释放的？经过一番查证，发现跟<code>__autoreleasing</code>和<code>@autoreleasepool</code>有关。</p>
 <p>下面先对<code>__autoreleasing</code>做点研究=。=</p>
-<h2 id="autoreleasing-变量所有权-ownership-修饰符"><a href="#autoreleasing-变量所有权-ownership-修饰符" class="headerlink" title="__autoreleasing - 变量所有权(ownership)修饰符"></a>__autoreleasing - 变量所有权(ownership)修饰符</h2><p>先看看<code>__autoreleasing</code>的定义及一些特点。 </p>
-<p><code>__autoreleasing</code>是变量所有权修饰符的一种，除了它，还有<code>__strong</code>、<code>__weak</code>和<code>__unsafe_unretained</code>，详细的说明可以参考：<a href="http://clang.llvm.org/docs/AutomaticReferenceCounting.html#ownership-qualification" target="_blank" rel="external">Clang文档-Objective-C Automatic Reference Counting (ARC)</a>  </p>
+<h2 id="autoreleasing-变量所有权-ownership-修饰符"><a href="#autoreleasing-变量所有权-ownership-修饰符" class="headerlink" title="__autoreleasing - 变量所有权(ownership)修饰符"></a>__autoreleasing - 变量所有权(ownership)修饰符</h2><p>先看看<code>__autoreleasing</code>的定义及一些特点。</p>
+<p><code>__autoreleasing</code>是变量所有权修饰符的一种，除了它，还有<code>__strong</code>、<code>__weak</code>和<code>__unsafe_unretained</code>，详细的说明可以参考：<a href="http://clang.llvm.org/docs/AutomaticReferenceCounting.html#ownership-qualification" target="_blank" rel="external">Clang文档-Objective-C Automatic Reference Counting (ARC)</a></p>
 <p>简单来说，就是被<code>__autoreleasing</code>修饰的变量会被加入到当前的autoreleasepool中，可以理解为如下两段分别在ARC和MRC中的代码等价：</p>
 <figure class="highlight hsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ARC</span></span><br><span class="line">id __autoreleasing obj = someObj<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// MRC</span></span><br><span class="line">id obj = [[someObj retain] autorelease]<span class="comment">;</span></span><br></pre></td></tr></table></figure>
-<p>再进一步，除开各种影响因素，假设有如下函数：  </p>
+<p>再进一步，除开各种影响因素，假设有如下函数：</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)funcWithObj:(<span class="keyword">id</span>)someObj &#123;</span><br><span class="line">    <span class="keyword">id</span> __autoreleasing obj = someObj;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>用Hopper Disassembler反编译后为如下汇编代码(MachO 64bits)：</p>
 <p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/autoreleasing-meet-autoreleasepool_1.jpg" alt="funcWithObj:反汇编"></p>
@@ -120,9 +121,9 @@
 <p>通过反汇编也可看出两者完全一致：</p>
 <p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/autoreleasing-meet-autoreleasepool_2.jpg" alt="Out Parameters参数会自动添加__autoreleasing属性"></p>
 <p>在<code>call imp___stubs__objc_msgSend</code>完成后，<code>rax</code>寄存器保存了<code>[NSError new]</code>的对象，然后<code>mov rdi, rax</code>，转移到<code>rdi</code>寄存器，作为<code>objc_autorelease</code>函数的参数被调用，<code>*error</code>被加到了当前的autoreleasepool中。</p>
-<h2 id="如果传给Out-Parameters参数的变量没有用-autoreleasing修饰，编译器会创建一个临时变量并以-autoreleasing修饰再传入"><a href="#如果传给Out-Parameters参数的变量没有用-autoreleasing修饰，编译器会创建一个临时变量并以-autoreleasing修饰再传入" class="headerlink" title="如果传给Out Parameters参数的变量没有用__autoreleasing修饰，编译器会创建一个临时变量并以__autoreleasing修饰再传入"></a>如果传给Out Parameters参数的变量没有用__autoreleasing修饰，编译器会创建一个临时变量并以__autoreleasing修饰再传入</h2><p>根据苹果的<a href="https://developer.apple.com/library/mac/releasenotes/ObjectiveC/RN-TransitioningToARC/Introduction/Introduction.html" target="_blank" rel="external">Transitioning to ARC Release Notes</a>文档可知，如果有如下调用：</p>
+<h2 id="如果传给Out-Parameters参数的变量没有用-autoreleasing修饰，编译器会创建一个临时变量并以-autoreleasing修饰再传入"><a href="#如果传给Out-Parameters参数的变量没有用-autoreleasing修饰，编译器会创建一个临时变量并以-autoreleasing修饰再传入" class="headerlink" title="如果传给Out Parameters参数的变量没有用__autoreleasing修饰，编译器会创建一个临时变量并以__autoreleasing修饰再传入"></a>如果传给Out Parameters参数的变量没有用__autoreleasing修饰，编译器会创建一个临时变量并以__autoreleasing修饰再传入</h2><p>根据苹果的<a href="https://developer.apple.com/library/mac/releasenotes/ObjectiveC/RN-TransitioningToARC/Introduction/Introduction.html" target="_blank" rel="external">Transitioning to ARC Release Notes</a>文档可知，如果有如下调用:</p>
 <figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSError *<span class="built_in">error</span>; <span class="comment">// 默认__strong类型</span></span><br><span class="line">[self generateError1:&amp;<span class="built_in">error</span>]；</span><br></pre></td></tr></table></figure>
-<p>编译器检测到<code>generateError1:</code>方法的Out Parameters类型参数，但是调用时的<code>error</code>又不是<code>__autoreleasing</code>修饰的，会自动创建一个<code>__autoreleasing</code>修饰的临时变量，来代替<code>error</code>传入，重写后如：</p>
+<p>编译器检测到<code>generateError1:</code>方法的Out Parameters类型参数，但是调用时的<code>error</code>又不是<code>__autoreleasing</code>修饰的，就会自动创建一个<code>__autoreleasing</code>修饰的临时变量，用来代替<code>error</code>传入，编译器重写后如下：</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSError</span> * error; <span class="comment">// 默认__strong类型</span></span><br><span class="line"><span class="built_in">NSError</span> * __autoreleasing tmp = error;</span><br><span class="line">[<span class="keyword">self</span> generateError1:&amp;tmp]；</span><br></pre></td></tr></table></figure>
 <p>通过汇编来验证一下：</p>
 <p>假如有如下调用：</p>
@@ -139,14 +140,13 @@
 <p>首先应该明确的就是<code>enumerateObjectsUsingBlock:</code>在用block迭代遍历NSArray的元素时，会自动添加autoreleasepool，对于例子来说，相当于：</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 枚举遍历</span></span><br><span class="line">[array enumerateObjectsUsingBlock:^(<span class="built_in">NSNumber</span> * _Nonnull number, <span class="built_in">NSUInteger</span> index, <span class="built_in">BOOL</span> * _Nonnull stop) &#123;</span><br><span class="line">    <span class="keyword">if</span> (number.integerValue == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (error) &#123;</span><br><span class="line">            *error = [<span class="built_in">NSError</span> errorWithDomain:<span class="string">@"me.tutuge"</span> code:<span class="number">100</span> userInfo:<span class="literal">nil</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        *stop = <span class="literal">TRUE</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
 <p>结合<code>__autoreleasing</code>后，重写为：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSNumber</span> *number = <span class="literal">nil</span>;</span><br><span class="line"><span class="built_in">BOOL</span> stop = <span class="literal">FALSE</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="built_in">NSUInteger</span> index = <span class="number">0</span>; index &lt; array.count &amp;&amp; !stop; index++) &#123;</span><br><span class="line">    <span class="keyword">@autoreleasepool</span> &#123; <span class="comment">// 自动添加 </span></span><br><span class="line">        number = array[index];</span><br><span class="line">        <span class="keyword">if</span> (error) &#123;</span><br><span class="line">            *error = [[<span class="built_in">NSError</span> errorWithDomain:<span class="string">@"me.tutuge"</span> code:<span class="number">100</span> userInfo:<span class="literal">nil</span>] autorelease]; <span class="comment">// 注意这个autorelease !</span></span><br><span class="line">        &#125;</span><br><span class="line">        stop = <span class="literal">TRUE</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>而<code>autorelease</code>对应的函数<code>id objc_autorelease(id value)</code>的官方解释： </p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSNumber</span> *number = <span class="literal">nil</span>;</span><br><span class="line"><span class="built_in">BOOL</span> stop = <span class="literal">FALSE</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="built_in">NSUInteger</span> index = <span class="number">0</span>; index &lt; array.count &amp;&amp; !stop; index++) &#123;</span><br><span class="line">    <span class="keyword">@autoreleasepool</span> &#123; <span class="comment">// 自动添加</span></span><br><span class="line">        number = array[index];</span><br><span class="line">        <span class="keyword">if</span> (error) &#123;</span><br><span class="line">            *error = [[<span class="built_in">NSError</span> errorWithDomain:<span class="string">@"me.tutuge"</span> code:<span class="number">100</span> userInfo:<span class="literal">nil</span>] autorelease]; <span class="comment">// 注意这个autorelease !</span></span><br><span class="line">        &#125;</span><br><span class="line">        stop = <span class="literal">TRUE</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而<code>autorelease</code>对应的函数<code>id objc_autorelease(id value)</code>的官方解释：</p>
 <blockquote>
 <p>If value is null, this call has no effect. Otherwise, it adds the object to the innermost autorelease pool exactly as if the object had been sent the autorelease message.</p>
 </blockquote>
 <p>其中的<strong>innermost autorelease pool</strong>表示的就是“最内层”的autoreleasepool，对于例子来说就是<code>*error</code>被添加到了循环内的autoreleasepool中，当然，导致的结果就是本次循环结束后，<code>*error</code>也随着一起被释放了。</p>
 <p>最终导致了外部访问了已经被释放的<code>*error</code>，出现了EXC_BAD_ACCESS错误。</p>
-<p>😲</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>很多时候不能想当然的写代码=。=，要不然出了问题找都找不到，每个细节都很重要。<br>嗯，现在读汇编快多了。。。</p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a href="http://clang.llvm.org/docs/AutomaticReferenceCounting.html" target="_blank" rel="external">Clang document: Objective-C Automatic Reference Counting (ARC)</a></li>
@@ -184,7 +184,7 @@
 </ul>
 <p>基于Cocoa Touch Framework动态框架的种种优点，“去中心化”的轻量级依赖包管理工具<a href="https://github.com/Carthage/Carthage" target="_blank" rel="external">Carthage</a>也越来越受欢迎。<br>总的来说，Carthage没有CocoaPods那样的<code>Spec Repo</code>中心，不会对现有项目工程修改，只是完成了拉取代码、构建Framework的工作，非常的轻量级，所以用来构建团队内公用的Framework非常不错~</p>
 <p><strong>创建Framework</strong>  </p>
-<p>这里的Framework指的是Cocoa Touch Framework动态框架，静态Framework的缺点不少(如不能共享已加载到内存的二进制目标代码、构建麻烦等)，如果项目可以从iOS 8开始支持，为啥不用动态框架呢😉</p>
+<p>这里的Framework指的是Cocoa Touch Framework动态框架，静态Framework的缺点不少(如不能共享已加载到内存的二进制目标代码、构建麻烦等)，如果项目可以从iOS 8开始支持，为啥不用动态框架呢~</p>
 <p>创建Framework的过程非常简单，Xcode 6以后就有了Framework项目模板，直接选中”Cocoa Touch Framework”模板，按照提示来即可。记得在<code>TARGETS-&gt;Build Phases-&gt;Headers-&gt;Public&quot;</code>加入要暴露的头文件（Swift的话，将要暴露的类、方法标记public）就好。</p>
 <p><strong>用Carthage构建Framework</strong></p>
 <p>Carthage只支持构建标记为“Shared”的项目Target，所以创建好了Framework工程后，还要设置Scheme为“Shared”，可以在当前Scheme的<code>Edit Scheme</code>里面设置，也可以在Xcode的菜单<code>Product-&gt;Scheme-&gt;Manage Schemes</code>里面设置。</p>
@@ -227,7 +227,7 @@
 <p><strong>进一步：创建项目专属文件模板</strong></p>
 <p>既然定下了文件内的组织顺序，每次写代码手工输入也还是有点麻烦，所以更进一步的话就是创建自定义的Xcode文件模板，把不同类的<code>#pragma mark</code>顺序规则直接写到模板里面，以后开发人员创建文件时直接用项目专属的模板就可以了~</p>
 <p>具体的创建Xcode模板的步骤不在本文范畴=。=，不过倒是发现了一个Xcode插件，专门用来创建模板的：<a href="https://github.com/samdods/Stencil" target="_blank" rel="external">Stencil: A plugin for Xcode allowing you to easily create custom file templates</a>，以及对应的文章：<a href="http://sam.dods.co/blog/2015/05/02/stencil-xcode-plugin/" target="_blank" rel="external">Introducing Stencil</a>，还有一些教程：<a href="http://www.telerik.com/blogs/how-to-create-custom-project-templates-in-xcode-7" target="_blank" rel="external">How to Create Custom Project Templates in Xcode 7</a>，<a href="https://robots.thoughtbot.com/creating-custom-xcode-templates" target="_blank" rel="external">Creating Custom Xcode Templates</a>，读者可自行阅读~</p>
-<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>一切为了更加干净整洁的代码，“May the clean code be with you”😊</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>一切为了更加干净整洁的代码，“May the clean code be with you”</p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a href="https://cocoapods.org/" target="_blank" rel="external">CocoaPods</a></li>
 <li><a href="https://github.com/Carthage/Carthage" target="_blank" rel="external">Carthage</a></li>
@@ -241,7 +241,7 @@
     <entry>
       <title><![CDATA[对组件化与模块化的思考与总结]]></title>
       <url>http://tutuge.me/2016/03/29/modular-and-component-summary/</url>
-      <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前段时间反复研读了<a href="http://limboy.me/ios/2016/03/10/mgj-components.html" target="_blank" rel="external">蘑菇街 App 的组件化之路</a>、<a href="http://limboy.me/ios/2016/03/14/mgj-components-continued.html" target="_blank" rel="external">蘑菇街 App 的组件化之路·续</a>和<a href="http://casatwy.com/iOS-Modulization.html" target="_blank" rel="external">iOS应用架构谈 组件化方案</a>，然后又找到了其它一些研究组件化、模块化方案的文章，但是总觉得差点什么，所以还是决定从头开始思考。文章的标题起的好宽泛，感觉给自己挖了个深坑😂，其实只是自己对组件化、模块化的一些看法、总结😲</p>
+      <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前段时间反复研读了<a href="http://limboy.me/ios/2016/03/10/mgj-components.html" target="_blank" rel="external">蘑菇街 App 的组件化之路</a>、<a href="http://limboy.me/ios/2016/03/14/mgj-components-continued.html" target="_blank" rel="external">蘑菇街 App 的组件化之路·续</a>和<a href="http://casatwy.com/iOS-Modulization.html" target="_blank" rel="external">iOS应用架构谈 组件化方案</a>，然后又找到了其它一些研究组件化、模块化方案的文章，但是总觉得差点什么，所以还是决定从头开始思考。文章的标题起的好宽泛，感觉给自己挖了个深坑-。-，其实只是自己对组件化、模块化的一些看法、总结。</p>
 <a id="more"></a>
 <h2 id="为什么"><a href="#为什么" class="headerlink" title="为什么"></a>为什么</h2><p>先总结下为什么要大动干戈的对代码分模块、拆组件。   </p>
 <p><strong>代码量膨胀，不利于维护，更不利于新功能的开发</strong><br> 现在随便开发一个App的代码行数都是数以万计的，如果不对代码做合理的拆分，那简直就是灾难性的，估计只有最初的开发人员知道如何维护修改，如果换人开发的话，难以下手，更不用说开发新功能了。</p>
@@ -272,7 +272,7 @@
 <li>模块化强调的是<strong>拆分</strong>，无论是从业务角度还是从架构、技术角度，模块化首先意味着将代码、数据等内容按照其职责不同分离，使其变得更加容易维护、迭代，使开发人员可以分而治之。</li>
 <li>组件化则着重于<strong>可重用性</strong>，不管是界面上反复使用的用户头像按钮，还是处理数据的流程中的某个部件，只要可以被反复使用，并且进行了高度封装，只能通过接口访问，就可以称其为“组件”。</li>
 </ul>
-<p>当然，并不是说模块就不能被复用，还是要根据实际情况来看，使系统更加容易维护，开发更加方便，才是最终目的😉</p>
+<p>当然，并不是说模块就不能被复用，还是要根据实际情况来看，使系统更加容易维护，开发更加方便，才是最终目的。</p>
 <h2 id="如何拆分"><a href="#如何拆分" class="headerlink" title="如何拆分"></a>如何拆分</h2><p>无论是模块化还是组件化，首先肯定是做拆分，但是如何拆分？怎么下手？依照什么标准？<br>下面简单总结一些方法。</p>
 <h4 id="横向拆分业务、功能模块"><a href="#横向拆分业务、功能模块" class="headerlink" title="横向拆分业务、功能模块"></a>横向拆分业务、功能模块</h4><p>很多时候，一个完整的软件程序是同时为多种业务服务的，所有可以优先按照业务的不同，将整个系统进行拆分。  </p>
 <p>如一个电商类型的App，就可以分出商品浏览模块、订单模块、购物车模块、消息模块、支付模块等。又如微信这种社交型应用，可以拆分出联系人模块、朋友圈模块、聊天模块、消息模块等。  </p>
@@ -298,7 +298,7 @@
 <li><strong>紧凑性</strong>，模块、组件对外暴露的接口、属性应该尽可能的少，接口的参数个数也要少。</li>
 <li><strong>面向接口</strong>，模块、组件对外提供服务时最好是面向接口的，以便后期可以灵活的变更实现。</li>
 </ul>
-<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>一切为了更加干净整洁的代码，“May the clean code be with you”😊</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>一切为了更加干净整洁的代码，“May the clean code be with you”</p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a href="https://en.wikipedia.org/wiki/Component-based_software_engineering" target="_blank" rel="external">Component-based software engineering</a></li>
 <li><a href="https://en.wikipedia.org/wiki/Modular_programming" target="_blank" rel="external">Modular programming</a></li>
@@ -1834,5 +1834,1025 @@
     </entry>
     
   
+  
+    
+    <entry>
+      <title></title>
+      <url>http://tutuge.me/404.html</url>
+      <content type="html"><![CDATA[
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>404 啦！</title>
+  <meta name="author" content="">
+  <meta name="description" content="">
+
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link href="asset/css/screen.css" rel="stylesheet" type="text/css">
+  <script src="asset/js/modernizr-2.0.js"></script>
+  <script src="asset/js/jquery.min.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/solarized_light.css" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <style type="text/css">
+  .cat-children-p{ padding: 6px 0px;}
+  .hljs{background: none;}
+  html{ background: none;}
+  html,body,body>div{ height: 100%; background-color: #f8f8f8;}
+	body>div>div{ border: none;}
+	@media print {
+		#content .hljs{
+			overflow: visible; word-wrap: break-word;
+  		}
+	}
+   #MathJax_Message{ height: 25px;}
+
+  </style>
+  <script type="text/javascript">
+  var isAddSildbar = false;
+  </script>
+  <script src="asset/js/octopress.js" type="text/javascript"></script>
+  <link rel="stylesheet" type="text/css" href="octopress.css">
+
+</head>
+<script type="text/javascript">
+//链接新开窗口
+function addBlankTargetForLinks () {
+  $('a[href^="http"]').each(function(){
+      $(this).attr('target', '_blank');
+  });
+}
+$(document).ready(function(event) {
+  addBlankTargetForLinks();
+});
+</script>
+<body>
+ 
+  <div id="main">
+    <div id="content"> 
+<div>
+	<article class="hentry" role="article">
+	<header>
+			  	<h1 class="entry-title">404 啦！</h1>
+			 </header>
+		  	<div class="entry-content">
+		  	
+		  	</div>
+
+		
+	  
+	</article>
+</div>
+ </div></div>
+
+</body>
+</html>]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[关于]]></title>
+      <url>http://tutuge.me/about/index.html</url>
+      <content type="html"><![CDATA[<blockquote>
+<p>姓名: 燕泽堃<br>Email: zekunyan@163.com<br>Github: <a href="https://github.com/zekunyan" target="_blank" rel="external">https://github.com/zekunyan</a><br>博客 - 土土哥的技术博客: <a href="http://tutuge.me">http://tutuge.me</a><br>开发经验: iOS、Android、后台开发<br>微博: <a href="http://weibo.com/zekunyan" target="_blank" rel="external">http://weibo.com/zekunyan</a>  </p>
+</blockquote>
+<h2 id="教育经历"><a href="#教育经历" class="headerlink" title="教育经历"></a>教育经历</h2><p>华中科技大学 - 本科 - 电子信息工程 -（2010-2014）<br>华中科技大学 - 工程硕士 - 电子与通信工程 -（2014-2016）对=。=，我2016年6月份才毕业。  </p>
+<h2 id="实习经历"><a href="#实习经历" class="headerlink" title="实习经历"></a>实习经历</h2><p>阿里巴巴 - B2B国际事业部 - iOS开发工程师 - (2015-6至2015-9)</p>
+<h2 id="工作经历"><a href="#工作经历" class="headerlink" title="工作经历"></a>工作经历</h2><p>阿里巴巴 - B2B国际事业部 - iOS开发工程师 - (2016-7开始)</p>
+<h2 id="技能"><a href="#技能" class="headerlink" title="技能"></a>技能</h2><ul>
+<li>熟悉：C, C++, Java, Objective-C, Swift</li>
+<li>了解：PHP, Python, html, js, css, Node.js, Linux Shell脚本</li>
+<li>数据库：MySQL, SQLite, MongoDB</li>
+<li>华科蝴蝶Hudbt网站（PHP+nginx+memcache）服务器管理员。</li>
+</ul>
+<h2 id="在校期间主要项目经历"><a href="#在校期间主要项目经历" class="headerlink" title="在校期间主要项目经历"></a>在校期间主要项目经历</h2><h3 id="妈妈搜索iOS客户端"><a href="#妈妈搜索iOS客户端" class="headerlink" title="妈妈搜索iOS客户端"></a><a href="https://itunes.apple.com/cn/app/ma-ma-sou-suo/id1068092349?ls=1&amp;mt=8" target="_blank" rel="external">妈妈搜索iOS客户端</a></h3><p>简介：<strong>妈妈搜索</strong>：最贴心的育儿知识服务！按照【健康】【养育】【教育】3个板块提供最权威、最贴心的育儿知识搜索服务。<strong>独立完成1.0、1.1版本开发</strong><br>(学校实验室试水项目，内测阶段)</p>
+<ul>
+<li>为应用内的标签显示开发出独立组件库：<a href="https://github.com/zekunyan/TTGTagCollectionView" target="_blank" rel="external">TTGTagCollectionView</a></li>
+<li>富文本样式内容排版、渲染</li>
+<li>对UITableView做大幅度封装，集成下拉刷新、加载更多、无内容时的PlaceHolder显示、Loading动画显示、变高Cell计算等常用功能，并可以独立配置，计划开源，暂定名<strong>TTGTableManager</strong></li>
+</ul>
+<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/resume_momsearch.jpg?imageView2/0/w/800/q/100" alt="妈妈搜索"></p>
+<h3 id="青桔音乐iOS客户端"><a href="#青桔音乐iOS客户端" class="headerlink" title="青桔音乐iOS客户端"></a><a href="https://itunes.apple.com/us/app/qing-ju-yin-le-quan-guo-zui/id913235479?l=zh&amp;ls=1&amp;mt=8" target="_blank" rel="external">青桔音乐iOS客户端</a></h3><p>简介：<a href="http://www.qingvoice.com" target="_blank" rel="external">青桔音乐</a>，定位校园音乐主题社交平台，为全国高校校园音乐用户提供属于自己的高品质音乐社交服务。全国高校“校园好声音”网络大赛合作平台。<strong>独立完成2.0之前版本开发，期间持续重构、优化</strong>。<br>(<a href="http://voice.yiban.cn/" target="_blank" rel="external">上海易班、教育部全国校园好声音</a>合作项目)</p>
+<ul>
+<li>实现类微信朋友圈的“消息流”页面，并通过优化，保证其性能与流畅度。</li>
+<li>通过NSProxy、Objective-C Runtime等技术设计并实现模块化的网络接口层。</li>
+<li>实现与服务器的类OAuth标准通信，如AccessToken的更新、Http请求的自动缓存等。</li>
+<li>实现在文本中嵌入自定义表情，并自动维护表情图片的更新、缓存。</li>
+<li>实现评论列表、输入框等复杂UI控件的重用。</li>
+<li>运用委托者、模板方法、代理、MVC、MVVM等设计模式，优化代码结构。</li>
+</ul>
+<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/resume_qingvoice.jpg?imageView2/0/w/800/q/100" alt="青桔音乐"></p>
+<h3 id="波波攒-实时在线对战游戏"><a href="#波波攒-实时在线对战游戏" class="headerlink" title="波波攒-实时在线对战游戏"></a>波波攒-实时在线对战游戏</h3><p><a href="https://segmentfault.com/e/1160000002680118" target="_blank" rel="external">2015华中科技大学联创团队HackDay</a>参赛作品。<br>iOS客户端+PHP、Node.js、SocketIO、MySQL后台。<br><strong>独立完成前后台开发</strong>。</p>
+<ul>
+<li>采用SpriteKit编写iOS端游戏部分。</li>
+<li>SocketIO实现客户端与服务器间游戏对战实时通信。</li>
+</ul>
+<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/resume_bobozan.jpg?imageView2/0/w/800/q/100" alt="波波攒"></p>
+<h3 id="Android应用-VNote笔记"><a href="#Android应用-VNote笔记" class="headerlink" title="Android应用-VNote笔记"></a>Android应用-<a href="http://app.mi.com/detail/49044" target="_blank" rel="external">VNote笔记</a></h3><p><strong>Google 2013 年第四届 Android 应用开发中国大学生挑战赛-华中赛区-<a href="http://www.google.cn/university/androidchallenge/2013/regional.html#tab=group5" target="_blank" rel="external">三等奖</a></strong><br>多功能笔记应用，可记录文字、待办事项、图片、录音、涂鸦，同时支持悬浮笔记。<strong>独立完成设计、美工、开发</strong>。那个时候只会用PS=。=</p>
+<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/resume_vnote.jpg?imageView2/0/w/800/q/100" alt="VNote笔记"></p>
+<h3 id="其它项目"><a href="#其它项目" class="headerlink" title="其它项目"></a>其它项目</h3><ul>
+<li>Android: <a href="http://www.appchina.com/app/com.example.android_broadcast_wifi" target="_blank" rel="external">WIFI助手</a> (2012.12), <a href="http://www.appchina.com/app/com.zorro.android_bluetoothsharefile" target="_blank" rel="external">蓝牙共享文件</a> (2012.10), <a href="http://www.appchina.com/app/com.zorro.shareapp" target="_blank" rel="external">蓝牙分享应用</a> (2012.9), <a href="http://www.appchina.com/app/zx.android.cfunctions" target="_blank" rel="external">C语言函数查询</a> (2011.10) <strong>UI都非常丑-_-|||</strong></li>
+<li>IBM VRAID vSphere Web Client Plugin，与IBM合作项目，VMWare vSphere平台上管理硬件的Web插件。</li>
+<li>基于Facebook的RPC框架Thrift，编写C++后端、PHP前端的Web服务程序。</li>
+<li>维护开发基于Java、Python、 RMI、MySQL、MongoDB、Lucene的简单分布式数据挖掘处理系统。</li>
+</ul>
+<h2 id="Github"><a href="#Github" class="headerlink" title="Github"></a>Github</h2><ul>
+<li>iOS-<a href="https://github.com/zekunyan/TTGEmojiRate" target="_blank" rel="external">TTGEmojiRate</a>: Rating组件，以Emoji表情为基础，上下拖动改变Emoji表情，增强交互性</li>
+<li>iOS-<a href="https://github.com/zekunyan/TTGTagCollectionView" target="_blank" rel="external">TTGTagCollectionView</a>: 标签集合组件。同时支持文字标签和自定义View标签，高度可定制</li>
+<li>iOS-<a href="https://github.com/zekunyan/TTGSnackbar" target="_blank" rel="external">TTGSnackbar</a>: 模仿Android的Snackbar的一个HUD组件</li>
+<li>Android-<a href="https://github.com/zekunyan/LinkTextView" target="_blank" rel="external">LinkTextView</a>: 增强型TextView，增加高度可定制的文字链接</li>
+<li>iOS-<a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="external">AutolayoutExampleWithMasonry</a>: Autolayout示例，Masonry实现</li>
+<li>iOS-<a href="https://github.com/zekunyan/UITextViewDIYEmojiExample" target="_blank" rel="external">UITextViewDIYEmojiExample</a>: 在UITextView中插入自定义表情示例</li>
+<li>iOS-<a href="https://github.com/zekunyan/HttpProxyExample" target="_blank" rel="external">HttpProxyExample</a>: NSProxy示例</li>
+<li>iOS-<a href="https://github.com/zekunyan/AutoReleasePoolTestExample" target="_blank" rel="external">AutoReleasePoolTestExample</a>: @autoreleasepool的优化循环内存占用的示例</li>
+<li>iOS-<a href="https://github.com/zekunyan/iOS-Tasks" target="_blank" rel="external">iOS-Tasks</a>: ITEC学习iOS同学的Github聚集地=。=</li>
+<li>后端-<a href="https://github.com/zekunyan/ThriftDemo_PHP_CPP" target="_blank" rel="external">ThriftDemo_PHP_CPP</a>: RPC框架Thrift的示例</li>
+</ul>
+<h2 id="博客"><a href="#博客" class="headerlink" title="博客"></a>博客</h2><p>日均PV300左右，被收入”<strong><a href="https://github.com/tangqiaoboy/iOSBlogCN" target="_blank" rel="external">中文 iOS/Mac 开发博客列表</a></strong>”。</p>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[tags]]></title>
+      <url>http://tutuge.me/tags/index.html</url>
+      <content type="html"></content>
+    </entry>
+    
+    <entry>
+      <title></title>
+      <url>http://tutuge.me/share/rcpr_setup.html</url>
+      <content type="html"><![CDATA[<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<style>
+body {
+  font-family: Helvetica, arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: white;
+  padding: 30px; }
+
+body > *:first-child {
+  margin-top: 0 !important; }
+body > *:last-child {
+  margin-bottom: 0 !important; }
+
+a {
+  color: #4183C4; }
+a.absent {
+  color: #cc0000; }
+a.anchor {
+  display: block;
+  padding-left: 30px;
+  margin-left: -30px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0; }
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+  cursor: text;
+  position: relative; }
+
+h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA09pVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoMTMuMCAyMDEyMDMwNS5tLjQxNSAyMDEyLzAzLzA1OjIxOjAwOjAwKSAgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OUM2NjlDQjI4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OUM2NjlDQjM4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5QzY2OUNCMDg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo5QzY2OUNCMTg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PsQhXeAAAABfSURBVHjaYvz//z8DJYCRUgMYQAbAMBQIAvEqkBQWXI6sHqwHiwG70TTBxGaiWwjCTGgOUgJiF1J8wMRAIUA34B4Q76HUBelAfJYSA0CuMIEaRP8wGIkGMA54bgQIMACAmkXJi0hKJQAAAABJRU5ErkJggg==) no-repeat 10px center;
+  text-decoration: none; }
+
+h1 tt, h1 code {
+  font-size: inherit; }
+
+h2 tt, h2 code {
+  font-size: inherit; }
+
+h3 tt, h3 code {
+  font-size: inherit; }
+
+h4 tt, h4 code {
+  font-size: inherit; }
+
+h5 tt, h5 code {
+  font-size: inherit; }
+
+h6 tt, h6 code {
+  font-size: inherit; }
+
+h1 {
+  font-size: 28px;
+  color: black; }
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #cccccc;
+  color: black; }
+
+h3 {
+  font-size: 18px; }
+
+h4 {
+  font-size: 16px; }
+
+h5 {
+  font-size: 14px; }
+
+h6 {
+  color: #777777;
+  font-size: 14px; }
+
+p, blockquote, ul, ol, dl, li, table, pre {
+  margin: 15px 0; }
+
+hr {
+  background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAECAYAAACtBE5DAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OENDRjNBN0E2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OENDRjNBN0I2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4Q0NGM0E3ODY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4Q0NGM0E3OTY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PqqezsUAAAAfSURBVHjaYmRABcYwBiM2QSA4y4hNEKYDQxAEAAIMAHNGAzhkPOlYAAAAAElFTkSuQmCC) repeat-x 0 0;
+  border: 0 none;
+  color: #cccccc;
+  height: 4px;
+  padding: 0;
+}
+
+body > h2:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+body > h1:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+  body > h1:first-child + h2 {
+    margin-top: 0;
+    padding-top: 0; }
+body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0; }
+
+h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+  margin-top: 0; }
+
+li p.first {
+  display: inline-block; }
+li {
+  margin: 0; }
+ul, ol {
+  padding-left: 30px; }
+
+ul :first-child, ol :first-child {
+  margin-top: 0; }
+
+dl {
+  padding: 0; }
+  dl dt {
+    font-size: 14px;
+    font-weight: bold;
+    font-style: italic;
+    padding: 0;
+    margin: 15px 0 5px; }
+    dl dt:first-child {
+      padding: 0; }
+    dl dt > :first-child {
+      margin-top: 0; }
+    dl dt > :last-child {
+      margin-bottom: 0; }
+  dl dd {
+    margin: 0 0 15px;
+    padding: 0 15px; }
+    dl dd > :first-child {
+      margin-top: 0; }
+    dl dd > :last-child {
+      margin-bottom: 0; }
+
+blockquote {
+  border-left: 4px solid #dddddd;
+  padding: 0 15px;
+  color: #777777; }
+  blockquote > :first-child {
+    margin-top: 0; }
+  blockquote > :last-child {
+    margin-bottom: 0; }
+
+table {
+  padding: 0;border-collapse: collapse; }
+  table tr {
+    border-top: 1px solid #cccccc;
+    background-color: white;
+    margin: 0;
+    padding: 0; }
+    table tr:nth-child(2n) {
+      background-color: #f8f8f8; }
+    table tr th {
+      font-weight: bold;
+      border: 1px solid #cccccc;
+      margin: 0;
+      padding: 6px 13px; }
+    table tr td {
+      border: 1px solid #cccccc;
+      margin: 0;
+      padding: 6px 13px; }
+    table tr th :first-child, table tr td :first-child {
+      margin-top: 0; }
+    table tr th :last-child, table tr td :last-child {
+      margin-bottom: 0; }
+
+img {
+  max-width: 100%; }
+
+span.frame {
+  display: block;
+  overflow: hidden; }
+  span.frame > span {
+    border: 1px solid #dddddd;
+    display: block;
+    float: left;
+    overflow: hidden;
+    margin: 13px 0 0;
+    padding: 7px;
+    width: auto; }
+  span.frame span img {
+    display: block;
+    float: left; }
+  span.frame span span {
+    clear: both;
+    color: #333333;
+    display: block;
+    padding: 5px 0 0; }
+span.align-center {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+  span.align-center > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px auto 0;
+    text-align: center; }
+  span.align-center span img {
+    margin: 0 auto;
+    text-align: center; }
+span.align-right {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+  span.align-right > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px 0 0;
+    text-align: right; }
+  span.align-right span img {
+    margin: 0;
+    text-align: right; }
+span.float-left {
+  display: block;
+  margin-right: 13px;
+  overflow: hidden;
+  float: left; }
+  span.float-left span {
+    margin: 13px 0 0; }
+span.float-right {
+  display: block;
+  margin-left: 13px;
+  overflow: hidden;
+  float: right; }
+  span.float-right > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px auto 0;
+    text-align: right; }
+
+code, tt {
+  margin: 0 2px;
+  padding: 0 5px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px; }
+
+pre code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent; }
+
+.highlight pre {
+  background-color: #f8f8f8;
+  border: 1px solid #cccccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px; }
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #cccccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px; }
+  pre code, pre tt {
+    background-color: transparent;
+    border: none; }
+
+sup {
+    font-size: 0.83em;
+    vertical-align: super;
+    line-height: 0;
+}
+* {
+	-webkit-print-color-adjust: exact;
+}
+@media screen and (min-width: 914px) {
+    body {
+        width: 854px;
+        margin:0 auto;
+    }
+}
+@media print {
+	table, pre {
+		page-break-inside: avoid;
+	}
+	pre {
+		word-wrap: break-word;
+	}
+}
+</style>
+<title>CentOS 6.5 RCPR web环境配置</title>
+
+</head>
+<body>
+<h1>CentOS 6.5 RCPR web环境配置</h1>
+
+<h2>基本要求</h2>
+
+<h4>组件总览：</h4>
+
+<ol>
+<li>armabillo，opencv 2.4.x，git</li>
+<li>g++、cmake、automake等。</li>
+<li>apache，php</li>
+<li>thrift</li>
+</ol>
+
+
+<h4>安装基本组件：</h4>
+
+<p>sudo yum -y groupinstall "Development Tools"</p>
+
+<hr>
+
+<h2>安装Thrift</h2>
+
+<h4>升级 autoconf</h4>
+
+<p>wget http://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.gz
+tar xvf autoconf-2.69.tar.gz
+cd autoconf-2.69
+./configure --prefix=/usr
+make
+sudo make install
+cd ..</p>
+
+<h4>升级 automake</h4>
+
+<p>wget http://ftp.gnu.org/gnu/automake/automake-1.14.tar.gz
+tar xvf automake-1.14.tar.gz
+cd automake-1.14
+./configure --prefix=/usr
+make
+sudo make install
+cd ..</p>
+
+<h4>升级bison</h4>
+
+<p>wget http://ftp.gnu.org/gnu/bison/bison-2.5.1.tar.gz
+tar xvf bison-2.5.1.tar.gz
+cd bison-2.5.1
+./configure --prefix=/usr
+make
+sudo make install
+cd ..</p>
+
+<h4>安装 C++ Lib Dependencies</h4>
+
+<p>sudo yum -y install libevent-devel zlib-devel openssl-devel</p>
+
+<h4>安装Boost</h4>
+
+<p>wget http://sourceforge.net/projects/boost/files/boost/1.55.0/boost_1_55_0.tar.gz
+tar xvf boost_1_55_0.tar.gz
+cd boost_1_55_0
+./bootstrap.sh
+sudo ./b2 install</p>
+
+<h4>安装 Thrift</h4>
+
+<p>git clone https://git-wip-us.apache.org/repos/asf/thrift.git
+cd thrift
+./bootstrap.sh
+./configure --with-lua=no
+make
+sudo make install</p>
+
+<hr>
+
+<h2>安装 OpenCV</h2>
+
+<p>wget http://jaist.dl.sourceforge.net/project/opencvlibrary/opencv-unix/2.4.8/opencv-2.4.8.zip
+unzip opencv-2.4.8.zip
+mv opencv-2.4.8 path_of_your_workspace #以后还需要
+cd path_of_your_workspace/opencv-2.4.8/
+mkdir release
+cd release
+cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local ..
+make
+sudo make install</p>
+
+<hr>
+
+<h2>安装 Armabillo</h2>
+
+<p>wget http://sourceforge.net/projects/arma/files/armadillo-4.650.4.tar.gz
+tar zxf armadillo-4.650.4.tar.gz
+cd armadillo-4.650.4
+./configure
+make
+sudo make install</p>
+
+<hr>
+
+<h2>安装Apache、PHP</h2>
+
+<h3>Apache</h3>
+
+<ul>
+<li>yum -y install httpd</li>
+<li>chkconfig --levels 235 httpd on #开机启动</li>
+<li>/etc/init.d/httpd start #开启服务</li>
+</ul>
+
+
+<h4>目录：</h4>
+
+<ul>
+<li>/var/www/html : web 根目录。</li>
+<li>配置文件：/etc/httpd/conf/httpd.conf</li>
+<li>其余配置文件：/etc/httpd/conf.d/</li>
+</ul>
+
+
+<h2>PHP</h2>
+
+<ul>
+<li>yum -y install php</li>
+<li>/etc/init.d/httpd restart # 重启apache</li>
+</ul>
+
+
+<h4>安装PHP扩展</h4>
+
+<ul>
+<li>yum -y install php-gd php-imap php-ldap php-odbc php-pear php-xml php-xmlrpc php-mbstring php-mcrypt php-mssql php-snmp php-soap php-tidy curl curl-devel</li>
+<li>yum -y install php-pecl-apc</li>
+<li>/etc/init.d/httpd restart # 重启apache</li>
+</ul>
+
+
+<hr>
+
+<h2>配置</h2>
+
+<h4>apache</h4>
+
+<p>编辑配置文件：/etc/httpd/conf/httpd.conf。
+修改web根目录的为“AllowOverride All”。
+重启。</p>
+
+<h4>/var/www/html</h4>
+
+<p>创建“upload”目录，设置777权限。（因为web程序以apache账户运行）</p>
+
+<hr>
+
+<h2>安装编译RCPR C++后端程序</h2>
+
+<h4>下载、编译</h4>
+
+<p>cd 某个目录
+git clone git@git.coding.net:zekunyan/RCPR_Thrift.git #120.24.247.190的ssh公钥已经添加到coding上。
+cd RCPR_Thrift/RCPR/server
+mkdir build
+cd build
+cmake .. # 采用外部编译，两个点
+make</p>
+
+<h4>运行</h4>
+
+<ul>
+<li><strong>将model.bin、haarcascade_frontalface_alt.xml</strong>复制到本目录（build目录）</li>
+<li>切换到root，（sudo -i，避免文件读写错误）</li>
+<li>nohup ./RCPR_Server.run &amp; （后台运行）</li>
+<li>可以通过查看nohup.out文件看log。</li>
+</ul>
+
+
+<h4>停止程序</h4>
+
+<ul>
+<li>ps aux | grep RCPR</li>
+<li>kill -9 (对应的进程PID)</li>
+</ul>
+
+
+<hr>
+
+<h2>安装RCPR PHP端程序</h2>
+
+<p>cd /var/www/html
+git clone git@git.coding.net:zekunyan/RCPR_PHP.git
+mv RCPR_PHP RCPR</p>
+
+<p>测试：http://120.24.247.190/RCPR/test/index.html</p>
+
+<h2>编写清理上传图片临时目录脚本</h2>
+
+<p>因为测试页面的图片要显示，不能马上删除，所以要编写脚本，定时删除。</p>
+
+<p>脚本内容：</p>
+
+<pre><code>#!/bin/sh
+
+echo 'Begin clean at' `date`
+cd /var/www/html/upload
+echo 'Total files: ' `ls -l | wc -l`
+rm -rf *
+echo 'Clean done at ' `date`
+</code></pre>
+
+<p>设置crontab，每天23点删除：</p>
+
+<pre><code>0 23 * * * sh /home/yzk/program/crontab/cleanUploadImg.sh &gt;&gt; /home/yzk/program/crontab/cleanLog.txt 2&gt;&amp;1
+</code></pre>
+</body>
+</html>]]></content>
+    </entry>
+    
+    <entry>
+      <title></title>
+      <url>http://tutuge.me/share/rcpr_api.html</url>
+      <content type="html"><![CDATA[<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<style>
+body {
+  font-family: Helvetica, arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: white;
+  padding: 30px; }
+
+body > *:first-child {
+  margin-top: 0 !important; }
+body > *:last-child {
+  margin-bottom: 0 !important; }
+
+a {
+  color: #4183C4; }
+a.absent {
+  color: #cc0000; }
+a.anchor {
+  display: block;
+  padding-left: 30px;
+  margin-left: -30px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0; }
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+  cursor: text;
+  position: relative; }
+
+h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA09pVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoMTMuMCAyMDEyMDMwNS5tLjQxNSAyMDEyLzAzLzA1OjIxOjAwOjAwKSAgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OUM2NjlDQjI4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OUM2NjlDQjM4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5QzY2OUNCMDg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo5QzY2OUNCMTg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PsQhXeAAAABfSURBVHjaYvz//z8DJYCRUgMYQAbAMBQIAvEqkBQWXI6sHqwHiwG70TTBxGaiWwjCTGgOUgJiF1J8wMRAIUA34B4Q76HUBelAfJYSA0CuMIEaRP8wGIkGMA54bgQIMACAmkXJi0hKJQAAAABJRU5ErkJggg==) no-repeat 10px center;
+  text-decoration: none; }
+
+h1 tt, h1 code {
+  font-size: inherit; }
+
+h2 tt, h2 code {
+  font-size: inherit; }
+
+h3 tt, h3 code {
+  font-size: inherit; }
+
+h4 tt, h4 code {
+  font-size: inherit; }
+
+h5 tt, h5 code {
+  font-size: inherit; }
+
+h6 tt, h6 code {
+  font-size: inherit; }
+
+h1 {
+  font-size: 28px;
+  color: black; }
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #cccccc;
+  color: black; }
+
+h3 {
+  font-size: 18px; }
+
+h4 {
+  font-size: 16px; }
+
+h5 {
+  font-size: 14px; }
+
+h6 {
+  color: #777777;
+  font-size: 14px; }
+
+p, blockquote, ul, ol, dl, li, table, pre {
+  margin: 15px 0; }
+
+hr {
+  background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAECAYAAACtBE5DAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OENDRjNBN0E2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OENDRjNBN0I2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4Q0NGM0E3ODY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4Q0NGM0E3OTY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PqqezsUAAAAfSURBVHjaYmRABcYwBiM2QSA4y4hNEKYDQxAEAAIMAHNGAzhkPOlYAAAAAElFTkSuQmCC) repeat-x 0 0;
+  border: 0 none;
+  color: #cccccc;
+  height: 4px;
+  padding: 0;
+}
+
+body > h2:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+body > h1:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+  body > h1:first-child + h2 {
+    margin-top: 0;
+    padding-top: 0; }
+body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0; }
+
+h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+  margin-top: 0; }
+
+li p.first {
+  display: inline-block; }
+li {
+  margin: 0; }
+ul, ol {
+  padding-left: 30px; }
+
+ul :first-child, ol :first-child {
+  margin-top: 0; }
+
+dl {
+  padding: 0; }
+  dl dt {
+    font-size: 14px;
+    font-weight: bold;
+    font-style: italic;
+    padding: 0;
+    margin: 15px 0 5px; }
+    dl dt:first-child {
+      padding: 0; }
+    dl dt > :first-child {
+      margin-top: 0; }
+    dl dt > :last-child {
+      margin-bottom: 0; }
+  dl dd {
+    margin: 0 0 15px;
+    padding: 0 15px; }
+    dl dd > :first-child {
+      margin-top: 0; }
+    dl dd > :last-child {
+      margin-bottom: 0; }
+
+blockquote {
+  border-left: 4px solid #dddddd;
+  padding: 0 15px;
+  color: #777777; }
+  blockquote > :first-child {
+    margin-top: 0; }
+  blockquote > :last-child {
+    margin-bottom: 0; }
+
+table {
+  padding: 0;border-collapse: collapse; }
+  table tr {
+    border-top: 1px solid #cccccc;
+    background-color: white;
+    margin: 0;
+    padding: 0; }
+    table tr:nth-child(2n) {
+      background-color: #f8f8f8; }
+    table tr th {
+      font-weight: bold;
+      border: 1px solid #cccccc;
+      margin: 0;
+      padding: 6px 13px; }
+    table tr td {
+      border: 1px solid #cccccc;
+      margin: 0;
+      padding: 6px 13px; }
+    table tr th :first-child, table tr td :first-child {
+      margin-top: 0; }
+    table tr th :last-child, table tr td :last-child {
+      margin-bottom: 0; }
+
+img {
+  max-width: 100%; }
+
+span.frame {
+  display: block;
+  overflow: hidden; }
+  span.frame > span {
+    border: 1px solid #dddddd;
+    display: block;
+    float: left;
+    overflow: hidden;
+    margin: 13px 0 0;
+    padding: 7px;
+    width: auto; }
+  span.frame span img {
+    display: block;
+    float: left; }
+  span.frame span span {
+    clear: both;
+    color: #333333;
+    display: block;
+    padding: 5px 0 0; }
+span.align-center {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+  span.align-center > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px auto 0;
+    text-align: center; }
+  span.align-center span img {
+    margin: 0 auto;
+    text-align: center; }
+span.align-right {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+  span.align-right > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px 0 0;
+    text-align: right; }
+  span.align-right span img {
+    margin: 0;
+    text-align: right; }
+span.float-left {
+  display: block;
+  margin-right: 13px;
+  overflow: hidden;
+  float: left; }
+  span.float-left span {
+    margin: 13px 0 0; }
+span.float-right {
+  display: block;
+  margin-left: 13px;
+  overflow: hidden;
+  float: right; }
+  span.float-right > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px auto 0;
+    text-align: right; }
+
+code, tt {
+  margin: 0 2px;
+  padding: 0 5px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px; }
+
+pre code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent; }
+
+.highlight pre {
+  background-color: #f8f8f8;
+  border: 1px solid #cccccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px; }
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #cccccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px; }
+  pre code, pre tt {
+    background-color: transparent;
+    border: none; }
+
+sup {
+    font-size: 0.83em;
+    vertical-align: super;
+    line-height: 0;
+}
+* {
+	-webkit-print-color-adjust: exact;
+}
+@media screen and (min-width: 914px) {
+    body {
+        width: 854px;
+        margin:0 auto;
+    }
+}
+@media print {
+	table, pre {
+		page-break-inside: avoid;
+	}
+	pre {
+		word-wrap: break-word;
+	}
+}
+</style>
+<title>RCPR 人脸29点检测API说明文档</title>
+
+</head>
+<body>
+<h1>RCPR 人脸29点检测API说明文档</h1>
+
+<h2>Web 测试页面</h2>
+
+<p><a href="http://120.24.247.190/RCPR/test/index.html" target="_blank" rel="external">http://120.24.247.190/RCPR/test/index.html</a></p>
+
+<p>（别上传太多=。=，图片文件一天清理一次）</p>
+
+<hr>
+
+<h2>API</h2>
+
+<p><a href="http://120.24.247.190/RCPR/detect_landmark" target="_blank" rel="external">http://120.24.247.190/RCPR/detect_landmark</a></p>
+
+<ul>
+<li>请求方式：POST</li>
+<li>参数：img-->图片文件，multipart/form-data方式</li>
+<li>目前没有加上图片归一化处理，别上传太大的图。</li>
+</ul>
+
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="https://www.imququ.com/post/four-ways-to-post-data-in-http.html" target="_blank" rel="external">四种常见的 POST 提交数据方式</a></li>
+</ul>
+
+</body>
+</html>]]></content>
+    </entry>
+    
   
 </search>

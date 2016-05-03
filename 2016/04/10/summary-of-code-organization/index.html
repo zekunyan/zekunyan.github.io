@@ -79,6 +79,14 @@
                         </a>
                     </li>
                 
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
             </ul>
             <div>
     <ul class="side-nav blue-grey darken-1" id="main-menu">
@@ -128,6 +136,14 @@
                     <i class="fa fa-user "></i>
                     
                     关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
                 </a>
             </li>
         
@@ -265,7 +281,7 @@
 </ul>
 <p>基于Cocoa Touch Framework动态框架的种种优点，“去中心化”的轻量级依赖包管理工具<a href="https://github.com/Carthage/Carthage" target="_blank" rel="external">Carthage</a>也越来越受欢迎。<br>总的来说，Carthage没有CocoaPods那样的<code>Spec Repo</code>中心，不会对现有项目工程修改，只是完成了拉取代码、构建Framework的工作，非常的轻量级，所以用来构建团队内公用的Framework非常不错~</p>
 <p><strong>创建Framework</strong>  </p>
-<p>这里的Framework指的是Cocoa Touch Framework动态框架，静态Framework的缺点不少(如不能共享已加载到内存的二进制目标代码、构建麻烦等)，如果项目可以从iOS 8开始支持，为啥不用动态框架呢😉</p>
+<p>这里的Framework指的是Cocoa Touch Framework动态框架，静态Framework的缺点不少(如不能共享已加载到内存的二进制目标代码、构建麻烦等)，如果项目可以从iOS 8开始支持，为啥不用动态框架呢~</p>
 <p>创建Framework的过程非常简单，Xcode 6以后就有了Framework项目模板，直接选中”Cocoa Touch Framework”模板，按照提示来即可。记得在<code>TARGETS-&gt;Build Phases-&gt;Headers-&gt;Public&quot;</code>加入要暴露的头文件（Swift的话，将要暴露的类、方法标记public）就好。</p>
 <p><strong>用Carthage构建Framework</strong></p>
 <p>Carthage只支持构建标记为“Shared”的项目Target，所以创建好了Framework工程后，还要设置Scheme为“Shared”，可以在当前Scheme的<code>Edit Scheme</code>里面设置，也可以在Xcode的菜单<code>Product-&gt;Scheme-&gt;Manage Schemes</code>里面设置。</p>
@@ -308,7 +324,7 @@
 <p><strong>进一步：创建项目专属文件模板</strong></p>
 <p>既然定下了文件内的组织顺序，每次写代码手工输入也还是有点麻烦，所以更进一步的话就是创建自定义的Xcode文件模板，把不同类的<code>#pragma mark</code>顺序规则直接写到模板里面，以后开发人员创建文件时直接用项目专属的模板就可以了~</p>
 <p>具体的创建Xcode模板的步骤不在本文范畴=。=，不过倒是发现了一个Xcode插件，专门用来创建模板的：<a href="https://github.com/samdods/Stencil" target="_blank" rel="external">Stencil: A plugin for Xcode allowing you to easily create custom file templates</a>，以及对应的文章：<a href="http://sam.dods.co/blog/2015/05/02/stencil-xcode-plugin/" target="_blank" rel="external">Introducing Stencil</a>，还有一些教程：<a href="http://www.telerik.com/blogs/how-to-create-custom-project-templates-in-xcode-7" target="_blank" rel="external">How to Create Custom Project Templates in Xcode 7</a>，<a href="https://robots.thoughtbot.com/creating-custom-xcode-templates" target="_blank" rel="external">Creating Custom Xcode Templates</a>，读者可自行阅读~</p>
-<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>一切为了更加干净整洁的代码，“May the clean code be with you”😊</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>一切为了更加干净整洁的代码，“May the clean code be with you”</p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a href="https://cocoapods.org/" target="_blank" rel="external">CocoaPods</a></li>
 <li><a href="https://github.com/Carthage/Carthage" target="_blank" rel="external">Carthage</a></li>

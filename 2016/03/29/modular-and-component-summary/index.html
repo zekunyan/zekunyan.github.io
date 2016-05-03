@@ -79,6 +79,14 @@
                         </a>
                     </li>
                 
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
             </ul>
             <div>
     <ul class="side-nav blue-grey darken-1" id="main-menu">
@@ -128,6 +136,14 @@
                     <i class="fa fa-user "></i>
                     
                     关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
                 </a>
             </li>
         
@@ -238,7 +254,7 @@
 
 
             <div class="entry teal-link-context">
-                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前段时间反复研读了<a href="http://limboy.me/ios/2016/03/10/mgj-components.html" target="_blank" rel="external">蘑菇街 App 的组件化之路</a>、<a href="http://limboy.me/ios/2016/03/14/mgj-components-continued.html" target="_blank" rel="external">蘑菇街 App 的组件化之路·续</a>和<a href="http://casatwy.com/iOS-Modulization.html" target="_blank" rel="external">iOS应用架构谈 组件化方案</a>，然后又找到了其它一些研究组件化、模块化方案的文章，但是总觉得差点什么，所以还是决定从头开始思考。文章的标题起的好宽泛，感觉给自己挖了个深坑😂，其实只是自己对组件化、模块化的一些看法、总结😲</p>
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前段时间反复研读了<a href="http://limboy.me/ios/2016/03/10/mgj-components.html" target="_blank" rel="external">蘑菇街 App 的组件化之路</a>、<a href="http://limboy.me/ios/2016/03/14/mgj-components-continued.html" target="_blank" rel="external">蘑菇街 App 的组件化之路·续</a>和<a href="http://casatwy.com/iOS-Modulization.html" target="_blank" rel="external">iOS应用架构谈 组件化方案</a>，然后又找到了其它一些研究组件化、模块化方案的文章，但是总觉得差点什么，所以还是决定从头开始思考。文章的标题起的好宽泛，感觉给自己挖了个深坑-。-，其实只是自己对组件化、模块化的一些看法、总结。</p>
 <a id="more"></a>
 <h2 id="为什么"><a href="#为什么" class="headerlink" title="为什么"></a>为什么</h2><p>先总结下为什么要大动干戈的对代码分模块、拆组件。   </p>
 <p><strong>代码量膨胀，不利于维护，更不利于新功能的开发</strong><br> 现在随便开发一个App的代码行数都是数以万计的，如果不对代码做合理的拆分，那简直就是灾难性的，估计只有最初的开发人员知道如何维护修改，如果换人开发的话，难以下手，更不用说开发新功能了。</p>
@@ -269,7 +285,7 @@
 <li>模块化强调的是<strong>拆分</strong>，无论是从业务角度还是从架构、技术角度，模块化首先意味着将代码、数据等内容按照其职责不同分离，使其变得更加容易维护、迭代，使开发人员可以分而治之。</li>
 <li>组件化则着重于<strong>可重用性</strong>，不管是界面上反复使用的用户头像按钮，还是处理数据的流程中的某个部件，只要可以被反复使用，并且进行了高度封装，只能通过接口访问，就可以称其为“组件”。</li>
 </ul>
-<p>当然，并不是说模块就不能被复用，还是要根据实际情况来看，使系统更加容易维护，开发更加方便，才是最终目的😉</p>
+<p>当然，并不是说模块就不能被复用，还是要根据实际情况来看，使系统更加容易维护，开发更加方便，才是最终目的。</p>
 <h2 id="如何拆分"><a href="#如何拆分" class="headerlink" title="如何拆分"></a>如何拆分</h2><p>无论是模块化还是组件化，首先肯定是做拆分，但是如何拆分？怎么下手？依照什么标准？<br>下面简单总结一些方法。</p>
 <h4 id="横向拆分业务、功能模块"><a href="#横向拆分业务、功能模块" class="headerlink" title="横向拆分业务、功能模块"></a>横向拆分业务、功能模块</h4><p>很多时候，一个完整的软件程序是同时为多种业务服务的，所有可以优先按照业务的不同，将整个系统进行拆分。  </p>
 <p>如一个电商类型的App，就可以分出商品浏览模块、订单模块、购物车模块、消息模块、支付模块等。又如微信这种社交型应用，可以拆分出联系人模块、朋友圈模块、聊天模块、消息模块等。  </p>
@@ -295,7 +311,7 @@
 <li><strong>紧凑性</strong>，模块、组件对外暴露的接口、属性应该尽可能的少，接口的参数个数也要少。</li>
 <li><strong>面向接口</strong>，模块、组件对外提供服务时最好是面向接口的，以便后期可以灵活的变更实现。</li>
 </ul>
-<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>一切为了更加干净整洁的代码，“May the clean code be with you”😊</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>一切为了更加干净整洁的代码，“May the clean code be with you”</p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a href="https://en.wikipedia.org/wiki/Component-based_software_engineering" target="_blank" rel="external">Component-based software engineering</a></li>
 <li><a href="https://en.wikipedia.org/wiki/Modular_programming" target="_blank" rel="external">Modular programming</a></li>
