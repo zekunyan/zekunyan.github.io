@@ -508,7 +508,14 @@
             
 
             // 搜索功能
-            $('.modal-trigger').leanModal();
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
             var searchXml = "search.xml";
             if (searchXml.length == 0) {
              	searchXml = "search.xml";

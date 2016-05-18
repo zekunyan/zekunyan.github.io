@@ -1918,6 +1918,12 @@ $(document).ready(function(event) {
     </entry>
     
     <entry>
+      <title><![CDATA[tags]]></title>
+      <url>http://tutuge.me/tags/index.html</url>
+      <content type="html"></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[关于]]></title>
       <url>http://tutuge.me/about/index.html</url>
       <content type="html"><![CDATA[<blockquote>
@@ -1977,12 +1983,6 @@ $(document).ready(function(event) {
 </ul>
 <h2 id="博客"><a href="#博客" class="headerlink" title="博客"></a>博客</h2><p>日均PV300左右，被收入”<strong><a href="https://github.com/tangqiaoboy/iOSBlogCN" target="_blank" rel="external">中文 iOS/Mac 开发博客列表</a></strong>”。</p>
 ]]></content>
-    </entry>
-    
-    <entry>
-      <title><![CDATA[tags]]></title>
-      <url>http://tutuge.me/tags/index.html</url>
-      <content type="html"></content>
     </entry>
     
     <entry>
