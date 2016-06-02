@@ -4,6 +4,32 @@
 
     
   <url>
+    <loc>http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/</loc>
+    <lastmod>2016-06-02T13:27:04.000Z</lastmod>
+    <data>
+        <display>
+        <title>有趣的Autolayout示例3-Masonry实现</title>
+        <pubTime>2015-12-14T13:36:08.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+        <tag>Autolayout</tag>
+         
+        <tag>Masonry</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://tutuge.me/2016/05/02/design-json-api-respoense/</loc>
     <lastmod>2016-05-03T09:09:07.000Z</lastmod>
     <data>
@@ -103,32 +129,6 @@
         <tag>开源</tag>
          
         <tag>Swift</tag>
-         
-         
-           
-             
-              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/</loc>
-    <lastmod>2016-03-21T07:17:36.000Z</lastmod>
-    <data>
-        <display>
-        <title>有趣的Autolayout示例3-Masonry实现</title>
-        <pubTime>2015-12-14T13:36:08.000Z</pubTime>
-        
-        <tag>原创</tag>
-         
-        <tag>iOS</tag>
-         
-        <tag>Autolayout</tag>
-         
-        <tag>Masonry</tag>
          
          
            
