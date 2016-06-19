@@ -5,10 +5,10 @@
     
   <url>
     <loc>http://tutuge.me/2016/06/19/translation-why-objcmsgsend-must-be-written-in-assembly/</loc>
-    <lastmod>2016-06-19T19:59:29.000Z</lastmod>
+    <lastmod>2016-06-19T20:25:28.000Z</lastmod>
     <data>
         <display>
-        <title>翻译-为什么objc_msgSend必须用汇编写</title>
+        <title>翻译-为什么objc_msgSend必须用汇编实现</title>
         <pubTime>2016-06-18T16:19:23.000Z</pubTime>
         
         <tag>iOS</tag>

@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://tutuge.me/"/>
-  <updated>2016-06-19T19:59:29.000Z</updated>
+  <updated>2016-06-19T20:25:28.000Z</updated>
   <id>http://tutuge.me/</id>
   
   <author>
@@ -16,11 +16,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>翻译-为什么objc_msgSend必须用汇编写</title>
+    <title>翻译-为什么objc_msgSend必须用汇编实现</title>
     <link href="http://tutuge.me/2016/06/19/translation-why-objcmsgsend-must-be-written-in-assembly/"/>
     <id>http://tutuge.me/2016/06/19/translation-why-objcmsgsend-must-be-written-in-assembly/</id>
     <published>2016-06-18T16:19:23.000Z</published>
-    <updated>2016-06-19T19:59:29.000Z</updated>
+    <updated>2016-06-19T20:25:28.000Z</updated>
     
     <content type="html">&lt;h2 id=&quot;译者前言&quot;&gt;&lt;a href=&quot;#译者前言&quot; class=&quot;headerlink&quot; title=&quot;译者前言&quot;&gt;&lt;/a&gt;译者前言&lt;/h2&gt;&lt;p&gt;总是看到有人说用汇编实现&lt;code&gt;objc_msgSend&lt;/code&gt;是为了速度快，当然这个不可否认。但是难道没有别的原因？于是就看到了这篇文章，遂翻译之！=。=&lt;br&gt;我自己的理解就是，用汇编实现，是为了应对不同的“&lt;a href=&quot;https://en.wikipedia.org/wiki/Calling_convention&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Calling convention&lt;/a&gt;”，把函数调用前的栈和寄存器的参数、状态设置，交给编译器去处理。&lt;br&gt;先看看原文吧。&lt;/p&gt;
 &lt;blockquote&gt;
