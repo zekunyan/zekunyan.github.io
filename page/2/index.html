@@ -156,7 +156,7 @@
 
             <li class="collapse-level-0" collapse-level="0">
                 <a class="no-padding" href="/categories/iOS/">
-                    iOS <span class="right">29 篇</span></a>
+                    iOS <span class="right">30 篇</span></a>
                 </a>
             </li>
 
@@ -213,6 +213,51 @@
 
 
 <div id="article-list" class="container main-container">
+    
+        <article class="simple-article">
+        <div class="card">
+            <div class="card-content">
+                <div class="article-title">
+                    
+    
+        <h1 class="blue-grey-link-context"><a href="/2015/07/25/compatibility-with-macro-category-and-runtime/">解决iOS项目的版本兼容问题-结合宏、Category和Runtime</a></h1>
+    
+
+
+                </div>
+
+                <time class="teal-link-context" datetime="2015-07-24T16:39:03.000Z"><a href="/2015/07/25/compatibility-with-macro-category-and-runtime/">2015-07-25</a></time>
+
+                
+    <div class="tags-row">
+        
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
+        
+            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
+        
+            <a href="/tags/Runtime/" class="chip teal accent-4">Runtime</a>
+        
+    </div>
+
+
+
+                
+                    <div class="entry teal-link-context">
+                        <h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><h3 id="2015-11-16"><a href="#2015-11-16" class="headerlink" title="2015-11-16"></a>2015-11-16</h3><p>感谢微博好友<strong>@zyyy_000</strong>的评论，补充了为什么要在<code>+ (void)load</code>方法里面做<strong>Method Swizzling</strong>。</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近，在做项目时，因为某种原因，突然要“适配”iOS6（也是醉了。。。），保证极少数的iOS6用户可以“用上”新的版本。哪怕界面上有瑕疵，只要功能正常就行。于是就只好花几天时间对iOS6进行紧急适配（心中一万头驼羊奔跑而过。。。）</p>
+<p>本文总结了一些常规的，和“非常规”的iOS项目向老版本兼容的办法，结合了<strong>宏定义</strong>、<strong>Category</strong>和<strong>Runtime</strong>，大家看着消遣一下就好哈~</p>
+                    </div>
+                
+            </div>
+
+            
+            <div class="card-action teal-link-context">
+                <a href="2015/07/25/compatibility-with-macro-category-and-runtime/">READ MORE</a>
+            </div>
+            
+        </div>
+</article>
+
     
         <article class="simple-article">
         <div class="card">
@@ -639,53 +684,6 @@
             
             <div class="card-action teal-link-context">
                 <a href="2015/03/15/有关宏定义的经验与技巧-简化代码-增强Log/">READ MORE</a>
-            </div>
-            
-        </div>
-</article>
-
-    
-        <article class="simple-article">
-        <div class="card">
-            <div class="card-content">
-                <div class="article-title">
-                    
-    
-        <h1 class="blue-grey-link-context"><a href="/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/">Effective-Objective-C-读书笔记-Item-4-如何正确定义常量</a></h1>
-    
-
-
-                </div>
-
-                <time class="teal-link-context" datetime="2015-03-10T16:07:23.000Z"><a href="/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/">2015-03-11</a></time>
-
-                
-    <div class="tags-row">
-        
-            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
-        
-            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
-        
-            <a href="/tags/翻译/" class="chip teal accent-4">翻译</a>
-        
-            <a href="/tags/笔记/" class="chip teal accent-4">笔记</a>
-        
-    </div>
-
-
-
-                
-                    <div class="entry teal-link-context">
-                        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>写博客果然比光看书要花时间=。=，书都快看完了，才写到第4节。但是总结一遍，的确印象深刻啊~~</p>
-<p>这次的主题是“<strong>常量</strong>”，非常常用，又非常重要的东西~良好的代码规范、设计，少不了各种<strong>常量</strong>。</p>
-<h2 id="Item-4-Prefer-Typed-Constants-to-Preprocessor-define"><a href="#Item-4-Prefer-Typed-Constants-to-Preprocessor-define" class="headerlink" title="Item 4 - Prefer Typed Constants to Preprocessor #define"></a>Item 4 - Prefer Typed Constants to Preprocessor #define</h2><p>本节着重对比了常量的定义形式，类型常量和#define的区别、各自的特点。最后得出，我们应该用带有类型的常量，而不是#define。</p>
-                    </div>
-                
-            </div>
-
-            
-            <div class="card-action teal-link-context">
-                <a href="2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/">READ MORE</a>
             </div>
             
         </div>

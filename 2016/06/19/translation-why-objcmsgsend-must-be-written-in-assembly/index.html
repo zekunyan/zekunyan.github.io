@@ -7,7 +7,7 @@
 
     
 
-    <title>归档：2015/8 | iOS，Android程序猿，喜欢Mac、Linux、各种开源技术，各种语言</title>
+    <title>翻译-为什么objc_msgSend必须用汇编写 | iOS，Android程序猿，喜欢Mac、Linux、各种开源技术，各种语言</title>
     <meta name="author" content="燕泽堃">
     
     <meta name="description" content="程序猿">
@@ -15,7 +15,7 @@
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    
+    <meta property="og:title" content="翻译-为什么objc_msgSend必须用汇编写"/>
     <meta property="og:site_name" content="土土哥的技术Blog"/>
 
     
@@ -209,40 +209,129 @@
 
     <main>
         <div class="container main-container">
-    
-
-<nav class="page-nav hide-on-small-only">
+    <nav class="page-nav hide-on-small-only">
     <div class="nav-wrapper blue-grey">
-        <span class="breadcrumb">当前位置（归档）</span>
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/iOS/">iOS</a>
+
+
         
 
         
     </div>
 </nav>
 
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>翻译-为什么objc_msgSend必须用汇编写</h1>
+    
 
 
-    <ul class="collapsible mt-0" data-collapsible="accordion">
+            </div>
+            <time class="teal-link-context" datetime="2016-06-18T16:19:23.000Z"><a href="/2016/06/19/translation-why-objcmsgsend-must-be-written-in-assembly/">2016-06-19</a></time>
+
+            
+    <div class="tags-row">
         
+            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
         
-            <li>
-                <div class="collapsible-header active">
-                    <i class="fa fa-archive"></i>2015
-                </div>
-                <div class="collapsible-body">
-                    <div class="collection">
-                        
-                            <a href="/2015/08/08/autolayout-example-with-masonry2/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2015-08-07T16:55:52.000Z">2015-08-08</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                有趣的Autolayout示例2-Masonry实现
-                            </a>
-                        
-                    </div>
-                </div>
-            </li>
+            <a href="/tags/翻译/" class="chip teal accent-4">翻译</a>
         
-    </ul>
+    </div>
+
+
+            <div class="toc teal-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#译者前言"><span class="section table-of-contents-text">译者前言</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#开始"><span class="section table-of-contents-text">开始</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#THE-RETURN-TYPE-返回类型"><span class="section table-of-contents-text">THE RETURN TYPE - 返回类型</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#THE-IMP-方法对应的函数指针"><span class="section table-of-contents-text">THE IMP - 方法对应的函数指针</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#THE-ARG-TYPES-AND-COUNT-参数类型和数量"><span class="section table-of-contents-text">THE ARG TYPES AND COUNT - 参数类型和数量</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#UNWINDING-THE-CALL-拆解调用"><span class="section table-of-contents-text">UNWINDING THE CALL - 拆解调用</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#WRAP-UP-总结"><span class="section table-of-contents-text">WRAP UP - 总结</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#UPDATE-后续"><span class="section table-of-contents-text">UPDATE - 后续</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#译者总结"><span class="section table-of-contents-text">译者总结</span></a></li></ol>
+</div>
+
+
+            <div class="entry teal-link-context">
+                <h2 id="译者前言"><a href="#译者前言" class="headerlink" title="译者前言"></a>译者前言</h2><p>总是看到有人说用汇编实现<code>objc_msgSend</code>是为了速度快，当然这个不可否认。但是难道没有别的原因？于是就看到了这篇文章，遂翻译之！=。=<br>我自己的理解就是，用汇编实现，是为了应对不同的“<a href="https://en.wikipedia.org/wiki/Calling_convention" target="_blank" rel="external">Calling convention</a>”，把函数调用前的栈和寄存器的参数、状态设置，交给编译器去处理。<br>先看看原文吧。</p>
+<blockquote>
+<p>原作者: <a href="https://www.linkedin.com/in/ari-grant-789a1015" target="_blank" rel="external">Ari Grant</a><br>原文链接: <a href="http://arigrant.com/blog/2014/2/12/why-objcmsgsend-must-be-written-in-assembly" target="_blank" rel="external">Why objc_msgSend Must be Written in Assembly</a></p>
+</blockquote>
+<a id="more"></a>
+<h2 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h2><p>对于Objective-C来说，调用一个对象实例的方法，也叫作向这个对象实例<strong>“发送消息”</strong>，而每条“消息”，在编译阶段都会转变为一次对<code>objc_msgSend</code>函数的调用，调用的参数不仅有原本消息的所有参数，还有消息的接收者<code>receiver</code>和对应的方法<code>selector</code>。举个例子，下面的语句：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[receiver <span class="string">message:</span>foo <span class="string">beforeDate:</span>bar];</span><br></pre></td></tr></table></figure>
+<p>将会被编译成：</p>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">objc_msgSend(<span class="name">receiver</span>, @selector(<span class="name">message</span><span class="symbol">:beforeDate</span>:), foo, bar)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<p>对于<code>objc_msgSend</code>函数的实现原理，前人已经做了大量的探索。所以，本文将会把重点放在<code>objc_msgSend</code>的一个之前没有太受到关注的点上，那就是：</p>
+<p><strong><code>objc_msgSend</code>是不可能用Objective-C、C或者C++实现的。</strong></p>
+<h2 id="THE-RETURN-TYPE-返回类型"><a href="#THE-RETURN-TYPE-返回类型" class="headerlink" title="THE RETURN TYPE - 返回类型"></a>THE RETURN TYPE - 返回类型</h2><p>先看看如下两行代码： </p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSUInteger n = [array <span class="built_in">count</span>]<span class="comment">;</span></span><br><span class="line">id obj = [array objectAtIndex:<span class="number">6</span>]<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<p>直观上看，将会被编译成：</p>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSUInteger n = objc_msgSend(<span class="name">array</span>,  @selector(<span class="name">count</span>))<span class="comment">;</span></span><br><span class="line">id obj = objc_msgSend(<span class="name">array</span>, @selector(<span class="name">objectAtIndex</span>:), <span class="number">6</span>)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<p>但是实际上这是不可能的，因为没有函数可以同时满足这两个调用。而且它的返回值也不能同时是<code>NSUInteger</code>和<code>id</code>。</p>
+<p>而且，上面的代码也是无法编译通过的。那么，加上类型转换怎么样？</p>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSUInteger n = (<span class="name">NSUInteger</span> (<span class="name">*</span>)(<span class="name">id</span>, SEL))objc_msgSend(<span class="name">array</span>,  @selector(<span class="name">count</span>))<span class="comment">;</span></span><br><span class="line">id obj = (<span class="name">id</span> (<span class="name">*</span>)(<span class="name">id</span>, SEL, NSUInteger))objc_msgSend(<span class="name">array</span>, @selector(<span class="name">objectAtIndex</span>:), <span class="number">6</span>)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<p>这下可以编译通过了，虽然看起来不直观。。。<br><code>objc_msgSend</code>是一个Public的函数，在<code>&lt;objc/message.h&gt;</code>里声明，如果你想直接调用它，就必须按照上面的格式加上强制类型转换，要不然是无法编译通过的。但是<code>objc_msgSend</code>到底是如何实现，来支持各种返回类型的？本文后面会讲到。</p>
+<h2 id="THE-IMP-方法对应的函数指针"><a href="#THE-IMP-方法对应的函数指针" class="headerlink" title="THE IMP - 方法对应的函数指针"></a>THE IMP - 方法对应的函数指针</h2><p><code>objc_msgSend</code>函数的本质很简单，传入一个接受者对象实例<code>receiver</code>和方法名<code>selector</code>，它就会按照以下步骤执行：（译者注：只是最粗略的步骤=。=）</p>
+<ul>
+<li>获取<code>receiver</code>得类Class</li>
+<li>在Class的方法列表method table里面查找对应<code>selector</code>的方法实现</li>
+<li>找到的话就调用，返回</li>
+<li>找不到就在其父类中找，重复前面的步骤（直到没有父类为止）</li>
+</ul>
+<p>整个流程很简单，沿着继承链，向上找到方法<code>selector</code>对应的函数指针即可，也就是<code>IMP</code>。同时，在每层Class中都有缓存，加快后续的方法查找。但是，这也只是<code>objc_msgSend</code>的实现细节，所以，接着往下看。</p>
+<h2 id="THE-ARG-TYPES-AND-COUNT-参数类型和数量"><a href="#THE-ARG-TYPES-AND-COUNT-参数类型和数量" class="headerlink" title="THE ARG TYPES AND COUNT - 参数类型和数量"></a>THE ARG TYPES AND COUNT - 参数类型和数量</h2><p>简单来说，当<code>objc_msgSend</code>找到对应的函数指针后，只要用传入的参数调用这个函数即可。剩下来的就是找到一种方法，可以调用任意参数类型、数量的任意函数。<br>参数的数量很容易计算。然后我们可以把所有的参数都放入<code>varargs</code>，然后调用函数时传入即可。但是这样的话，每个Objective-C的方法都必须在其<code>prologue</code>（译者注：函数执行具体的“任务”前，所做的准备环节）里面把所有的参数从<code>varargs</code>里面提取出来。<br>这种把参数打包到<code>varargs</code>里面然后又取出来的办法显然是非常糟糕的，同时也是不必要的。</p>
+<p>在C语言中，调用一个函数会被编译成对应的汇编语言指令，首先是设置参数（把参数放到寄存器、栈上），然后用如<code>jump</code>或者<code>call</code>的指令，跳到具体的函数代码地址处。如果我们想支持任意类型的函数类型，我们就必须写一个<code>switch</code>语句，把所有的参数组合情况都包含起来，这样才能正确的为任何形式的函数设置参数（译者注：即按照某种<strong>“规范”、“约定”</strong>，把参数依次存放到“约定”的寄存器、栈上），这显然是没有扩展性的，更是不可能的。</p>
+<h2 id="UNWINDING-THE-CALL-拆解调用"><a href="#UNWINDING-THE-CALL-拆解调用" class="headerlink" title="UNWINDING THE CALL - 拆解调用"></a>UNWINDING THE CALL - 拆解调用</h2><p><code>objc_msgSend</code>的解决办法，主要依据的是：<strong>当objc_msgSend被调用时，所有的参数已经被设置好了</strong>。  </p>
+<p>换一种方式来说，就是：<strong>在objc_msgSend开始执行时，栈帧（stack frame）的状态、数据，和各个寄存器的组合形式、数据，跟调用具体的函数指针（IMP）时所需的状态、数据，是完全一致的！</strong></p>
+<p>如下这行代码：</p>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id obj = objc_msgSend(<span class="name">array</span>, @selector(<span class="name">objectAtIndex</span>:), <span class="number">6</span>)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<p>在调用<code>objc_msgSend</code>时，需要设置三个参数，分别是被调用方<code>receiver</code>、方法名<code>selector</code>和最后一个整型参数6。这和具体的方法函数IMP的参数顺序、类型是完全一致的，也就是说，<strong>调用<code>objc_msgSend</code>前，设置的栈、寄存器的状态、数据正是调用具体的方法函数时需要的状态！</strong>  </p>
+<p>所以，当<code>objc_msgSend</code>找到要调用的函数实现IMP后，只需要把所有的对栈、寄存器的操作“倒”回到<code>objc_msgSend</code>执行开始的状态（类似于函数执行完成return返回前，做的“收尾处理”工作一样，即epilogue），直接<code>jump/call</code>到IMP函数指针对应的地址，执行指令即可，因为所有的参数已经被设置好了。</p>
+<p>同时，当<code>selector</code>对应的IMP执行完成后，返回值也被正确的设置好了（在x86平台上，返回值被设置到了指定的寄存器<code>eax/rax</code>里，在arm上，则是<code>r0</code>寄存器），所以，我们也不必担心前文提到的不同类型的返回值问题了。</p>
+<h2 id="WRAP-UP-总结"><a href="#WRAP-UP-总结" class="headerlink" title="WRAP UP - 总结"></a>WRAP UP - 总结</h2><p>把上面提到的所有解释综合起来，就是：在C语言里面调用函数，必须在编译时就知道调用的“状态”；而这些“状态”在运行时是无法得出或正确处理的，所以必须往底层走，用汇编处理。（译者注：这里不知道咋翻译好=。=，原文是：calling a function in C requires the signature to be known for each call-site at compile-time；doing so at run-time is not possible and so one must drop down into assembly and party there instead.）</p>
+<h2 id="UPDATE-后续"><a href="#UPDATE-后续" class="headerlink" title="UPDATE - 后续"></a>UPDATE - 后续</h2><p>有人指出<code>objc_msgSend</code>有可能是用GCC的扩展方法<code>__builtin_apply_args</code>，<code>__builtin_apply</code>，和<code>__builtin_return</code>实现的。这也正指出了一个事实，就是这些builtins方法是非常有必要的，因为单靠语言本身无法实现这些功能。实现<code>objc_msgSend</code>所需要的技巧，也正是实现这些builtins方法所需要的技巧。本文的目的并不是非要将什么是真正的C、什么不是真正的C分个清楚，只是为了指出<code>objc_msgSend</code>特殊罢了。</p>
+<h2 id="译者总结"><a href="#译者总结" class="headerlink" title="译者总结"></a>译者总结</h2><p>开头也说了，我的理解是：用汇编实现，是为了应对不同的“<a href="https://en.wikipedia.org/wiki/Calling_convention" target="_blank" rel="external">Calling convention</a>”，把函数调用前的栈和寄存器的参数、状态设置，交给编译器去处理。  </p>
+<p>嗯，以后不要再说用汇编实现只是为了快了=。=</p>
+
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comment">
+        <div class="card">
+            <div class="card-content">
+                <!-- Duoshuo Comment BEGIN -->
+                <div class="ds-thread" data-thread-key="2016/06/19/translation-why-objcmsgsend-must-be-written-in-assembly/" data-title="翻译-为什么objc_msgSend必须用汇编写" data-url="http://tutuge.me/2016/06/19/translation-why-objcmsgsend-must-be-written-in-assembly/"></div>
+
+                <script type="text/javascript">
+                    console.log(document.querySelector('.ds-thread'));
+                    var duoshuoQuery = {
+                        short_name: 'tutuge'
+                    };
+                    (function() {
+                        var ds = document.createElement('script');
+                        ds.type = 'text/javascript';
+                        ds.async = true;
+                        ds.src = (document.location.protocol == 'https:'
+                            ? 'https:'
+                            : 'http:') + '//static.duoshuo.com/embed.js';
+                        ds.charset = 'UTF-8';
+                        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+                    })();
+                </script>
+                <!-- Duoshuo Comment END -->
+            </div>
+        </div>
+    </section>
+
 
 
 </div>

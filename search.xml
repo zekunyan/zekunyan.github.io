@@ -4,6 +4,52 @@
   
     
     <entry>
+      <title><![CDATA[翻译-为什么objc_msgSend必须用汇编写]]></title>
+      <url>http://tutuge.me/2016/06/19/translation-why-objcmsgsend-must-be-written-in-assembly/</url>
+      <content type="html"><![CDATA[<h2 id="译者前言"><a href="#译者前言" class="headerlink" title="译者前言"></a>译者前言</h2><p>总是看到有人说用汇编实现<code>objc_msgSend</code>是为了速度快，当然这个不可否认。但是难道没有别的原因？于是就看到了这篇文章，遂翻译之！=。=<br>我自己的理解就是，用汇编实现，是为了应对不同的“<a href="https://en.wikipedia.org/wiki/Calling_convention" target="_blank" rel="external">Calling convention</a>”，把函数调用前的栈和寄存器的参数、状态设置，交给编译器去处理。<br>先看看原文吧。</p>
+<blockquote>
+<p>原作者: <a href="https://www.linkedin.com/in/ari-grant-789a1015" target="_blank" rel="external">Ari Grant</a><br>原文链接: <a href="http://arigrant.com/blog/2014/2/12/why-objcmsgsend-must-be-written-in-assembly" target="_blank" rel="external">Why objc_msgSend Must be Written in Assembly</a></p>
+</blockquote>
+<a id="more"></a>
+<h2 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h2><p>对于Objective-C来说，调用一个对象实例的方法，也叫作向这个对象实例<strong>“发送消息”</strong>，而每条“消息”，在编译阶段都会转变为一次对<code>objc_msgSend</code>函数的调用，调用的参数不仅有原本消息的所有参数，还有消息的接收者<code>receiver</code>和对应的方法<code>selector</code>。举个例子，下面的语句：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[receiver <span class="string">message:</span>foo <span class="string">beforeDate:</span>bar];</span><br></pre></td></tr></table></figure>
+<p>将会被编译成：</p>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">objc_msgSend(<span class="name">receiver</span>, @selector(<span class="name">message</span><span class="symbol">:beforeDate</span>:), foo, bar)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<p>对于<code>objc_msgSend</code>函数的实现原理，前人已经做了大量的探索。所以，本文将会把重点放在<code>objc_msgSend</code>的一个之前没有太受到关注的点上，那就是：</p>
+<p><strong><code>objc_msgSend</code>是不可能用Objective-C、C或者C++实现的。</strong></p>
+<h2 id="THE-RETURN-TYPE-返回类型"><a href="#THE-RETURN-TYPE-返回类型" class="headerlink" title="THE RETURN TYPE - 返回类型"></a>THE RETURN TYPE - 返回类型</h2><p>先看看如下两行代码： </p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSUInteger n = [array <span class="built_in">count</span>]<span class="comment">;</span></span><br><span class="line">id obj = [array objectAtIndex:<span class="number">6</span>]<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<p>直观上看，将会被编译成：</p>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSUInteger n = objc_msgSend(<span class="name">array</span>,  @selector(<span class="name">count</span>))<span class="comment">;</span></span><br><span class="line">id obj = objc_msgSend(<span class="name">array</span>, @selector(<span class="name">objectAtIndex</span>:), <span class="number">6</span>)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<p>但是实际上这是不可能的，因为没有函数可以同时满足这两个调用。而且它的返回值也不能同时是<code>NSUInteger</code>和<code>id</code>。</p>
+<p>而且，上面的代码也是无法编译通过的。那么，加上类型转换怎么样？</p>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSUInteger n = (<span class="name">NSUInteger</span> (<span class="name">*</span>)(<span class="name">id</span>, SEL))objc_msgSend(<span class="name">array</span>,  @selector(<span class="name">count</span>))<span class="comment">;</span></span><br><span class="line">id obj = (<span class="name">id</span> (<span class="name">*</span>)(<span class="name">id</span>, SEL, NSUInteger))objc_msgSend(<span class="name">array</span>, @selector(<span class="name">objectAtIndex</span>:), <span class="number">6</span>)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<p>这下可以编译通过了，虽然看起来不直观。。。<br><code>objc_msgSend</code>是一个Public的函数，在<code>&lt;objc/message.h&gt;</code>里声明，如果你想直接调用它，就必须按照上面的格式加上强制类型转换，要不然是无法编译通过的。但是<code>objc_msgSend</code>到底是如何实现，来支持各种返回类型的？本文后面会讲到。</p>
+<h2 id="THE-IMP-方法对应的函数指针"><a href="#THE-IMP-方法对应的函数指针" class="headerlink" title="THE IMP - 方法对应的函数指针"></a>THE IMP - 方法对应的函数指针</h2><p><code>objc_msgSend</code>函数的本质很简单，传入一个接受者对象实例<code>receiver</code>和方法名<code>selector</code>，它就会按照以下步骤执行：（译者注：只是最粗略的步骤=。=）</p>
+<ul>
+<li>获取<code>receiver</code>得类Class</li>
+<li>在Class的方法列表method table里面查找对应<code>selector</code>的方法实现</li>
+<li>找到的话就调用，返回</li>
+<li>找不到就在其父类中找，重复前面的步骤（直到没有父类为止）</li>
+</ul>
+<p>整个流程很简单，沿着继承链，向上找到方法<code>selector</code>对应的函数指针即可，也就是<code>IMP</code>。同时，在每层Class中都有缓存，加快后续的方法查找。但是，这也只是<code>objc_msgSend</code>的实现细节，所以，接着往下看。</p>
+<h2 id="THE-ARG-TYPES-AND-COUNT-参数类型和数量"><a href="#THE-ARG-TYPES-AND-COUNT-参数类型和数量" class="headerlink" title="THE ARG TYPES AND COUNT - 参数类型和数量"></a>THE ARG TYPES AND COUNT - 参数类型和数量</h2><p>简单来说，当<code>objc_msgSend</code>找到对应的函数指针后，只要用传入的参数调用这个函数即可。剩下来的就是找到一种方法，可以调用任意参数类型、数量的任意函数。<br>参数的数量很容易计算。然后我们可以把所有的参数都放入<code>varargs</code>，然后调用函数时传入即可。但是这样的话，每个Objective-C的方法都必须在其<code>prologue</code>（译者注：函数执行具体的“任务”前，所做的准备环节）里面把所有的参数从<code>varargs</code>里面提取出来。<br>这种把参数打包到<code>varargs</code>里面然后又取出来的办法显然是非常糟糕的，同时也是不必要的。</p>
+<p>在C语言中，调用一个函数会被编译成对应的汇编语言指令，首先是设置参数（把参数放到寄存器、栈上），然后用如<code>jump</code>或者<code>call</code>的指令，跳到具体的函数代码地址处。如果我们想支持任意类型的函数类型，我们就必须写一个<code>switch</code>语句，把所有的参数组合情况都包含起来，这样才能正确的为任何形式的函数设置参数（译者注：即按照某种<strong>“规范”、“约定”</strong>，把参数依次存放到“约定”的寄存器、栈上），这显然是没有扩展性的，更是不可能的。</p>
+<h2 id="UNWINDING-THE-CALL-拆解调用"><a href="#UNWINDING-THE-CALL-拆解调用" class="headerlink" title="UNWINDING THE CALL - 拆解调用"></a>UNWINDING THE CALL - 拆解调用</h2><p><code>objc_msgSend</code>的解决办法，主要依据的是：<strong>当objc_msgSend被调用时，所有的参数已经被设置好了</strong>。  </p>
+<p>换一种方式来说，就是：<strong>在objc_msgSend开始执行时，栈帧（stack frame）的状态、数据，和各个寄存器的组合形式、数据，跟调用具体的函数指针（IMP）时所需的状态、数据，是完全一致的！</strong></p>
+<p>如下这行代码：</p>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id obj = objc_msgSend(<span class="name">array</span>, @selector(<span class="name">objectAtIndex</span>:), <span class="number">6</span>)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<p>在调用<code>objc_msgSend</code>时，需要设置三个参数，分别是被调用方<code>receiver</code>、方法名<code>selector</code>和最后一个整型参数6。这和具体的方法函数IMP的参数顺序、类型是完全一致的，也就是说，<strong>调用<code>objc_msgSend</code>前，设置的栈、寄存器的状态、数据正是调用具体的方法函数时需要的状态！</strong>  </p>
+<p>所以，当<code>objc_msgSend</code>找到要调用的函数实现IMP后，只需要把所有的对栈、寄存器的操作“倒”回到<code>objc_msgSend</code>执行开始的状态（类似于函数执行完成return返回前，做的“收尾处理”工作一样，即epilogue），直接<code>jump/call</code>到IMP函数指针对应的地址，执行指令即可，因为所有的参数已经被设置好了。</p>
+<p>同时，当<code>selector</code>对应的IMP执行完成后，返回值也被正确的设置好了（在x86平台上，返回值被设置到了指定的寄存器<code>eax/rax</code>里，在arm上，则是<code>r0</code>寄存器），所以，我们也不必担心前文提到的不同类型的返回值问题了。</p>
+<h2 id="WRAP-UP-总结"><a href="#WRAP-UP-总结" class="headerlink" title="WRAP UP - 总结"></a>WRAP UP - 总结</h2><p>把上面提到的所有解释综合起来，就是：在C语言里面调用函数，必须在编译时就知道调用的“状态”；而这些“状态”在运行时是无法得出或正确处理的，所以必须往底层走，用汇编处理。（译者注：这里不知道咋翻译好=。=，原文是：calling a function in C requires the signature to be known for each call-site at compile-time；doing so at run-time is not possible and so one must drop down into assembly and party there instead.）</p>
+<h2 id="UPDATE-后续"><a href="#UPDATE-后续" class="headerlink" title="UPDATE - 后续"></a>UPDATE - 后续</h2><p>有人指出<code>objc_msgSend</code>有可能是用GCC的扩展方法<code>__builtin_apply_args</code>，<code>__builtin_apply</code>，和<code>__builtin_return</code>实现的。这也正指出了一个事实，就是这些builtins方法是非常有必要的，因为单靠语言本身无法实现这些功能。实现<code>objc_msgSend</code>所需要的技巧，也正是实现这些builtins方法所需要的技巧。本文的目的并不是非要将什么是真正的C、什么不是真正的C分个清楚，只是为了指出<code>objc_msgSend</code>特殊罢了。</p>
+<h2 id="译者总结"><a href="#译者总结" class="headerlink" title="译者总结"></a>译者总结</h2><p>开头也说了，我的理解是：用汇编实现，是为了应对不同的“<a href="https://en.wikipedia.org/wiki/Calling_convention" target="_blank" rel="external">Calling convention</a>”，把函数调用前的栈和寄存器的参数、状态设置，交给编译器去处理。  </p>
+<p>嗯，以后不要再说用汇编实现只是为了快了=。=</p>
+]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[API返回结果设计经验与总结]]></title>
       <url>http://tutuge.me/2016/05/02/design-json-api-respoense/</url>
       <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>RESTful API的设计已经很成熟了，大家也都比较认可。本文也不再过多介绍RESTful API相关的知识，而是针对JSON型API的返回结果设计，总结下自己的经验。</p>
@@ -1996,354 +2042,6 @@ $(document).ready(function(event) {
     </entry>
     
     <entry>
-      <title><![CDATA[tags]]></title>
-      <url>http://tutuge.me/tags/index.html</url>
-      <content type="html"></content>
-    </entry>
-    
-    <entry>
-      <title></title>
-      <url>http://tutuge.me/share/rcpr_api.html</url>
-      <content type="html"><![CDATA[<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<style>
-body {
-  font-family: Helvetica, arial, sans-serif;
-  font-size: 14px;
-  line-height: 1.6;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  background-color: white;
-  padding: 30px; }
-
-body > *:first-child {
-  margin-top: 0 !important; }
-body > *:last-child {
-  margin-bottom: 0 !important; }
-
-a {
-  color: #4183C4; }
-a.absent {
-  color: #cc0000; }
-a.anchor {
-  display: block;
-  padding-left: 30px;
-  margin-left: -30px;
-  cursor: pointer;
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0; }
-
-h1, h2, h3, h4, h5, h6 {
-  margin: 20px 0 10px;
-  padding: 0;
-  font-weight: bold;
-  -webkit-font-smoothing: antialiased;
-  cursor: text;
-  position: relative; }
-
-h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
-  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA09pVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoMTMuMCAyMDEyMDMwNS5tLjQxNSAyMDEyLzAzLzA1OjIxOjAwOjAwKSAgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OUM2NjlDQjI4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OUM2NjlDQjM4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5QzY2OUNCMDg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo5QzY2OUNCMTg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PsQhXeAAAABfSURBVHjaYvz//z8DJYCRUgMYQAbAMBQIAvEqkBQWXI6sHqwHiwG70TTBxGaiWwjCTGgOUgJiF1J8wMRAIUA34B4Q76HUBelAfJYSA0CuMIEaRP8wGIkGMA54bgQIMACAmkXJi0hKJQAAAABJRU5ErkJggg==) no-repeat 10px center;
-  text-decoration: none; }
-
-h1 tt, h1 code {
-  font-size: inherit; }
-
-h2 tt, h2 code {
-  font-size: inherit; }
-
-h3 tt, h3 code {
-  font-size: inherit; }
-
-h4 tt, h4 code {
-  font-size: inherit; }
-
-h5 tt, h5 code {
-  font-size: inherit; }
-
-h6 tt, h6 code {
-  font-size: inherit; }
-
-h1 {
-  font-size: 28px;
-  color: black; }
-
-h2 {
-  font-size: 24px;
-  border-bottom: 1px solid #cccccc;
-  color: black; }
-
-h3 {
-  font-size: 18px; }
-
-h4 {
-  font-size: 16px; }
-
-h5 {
-  font-size: 14px; }
-
-h6 {
-  color: #777777;
-  font-size: 14px; }
-
-p, blockquote, ul, ol, dl, li, table, pre {
-  margin: 15px 0; }
-
-hr {
-  background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAECAYAAACtBE5DAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OENDRjNBN0E2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OENDRjNBN0I2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4Q0NGM0E3ODY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4Q0NGM0E3OTY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PqqezsUAAAAfSURBVHjaYmRABcYwBiM2QSA4y4hNEKYDQxAEAAIMAHNGAzhkPOlYAAAAAElFTkSuQmCC) repeat-x 0 0;
-  border: 0 none;
-  color: #cccccc;
-  height: 4px;
-  padding: 0;
-}
-
-body > h2:first-child {
-  margin-top: 0;
-  padding-top: 0; }
-body > h1:first-child {
-  margin-top: 0;
-  padding-top: 0; }
-  body > h1:first-child + h2 {
-    margin-top: 0;
-    padding-top: 0; }
-body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
-  margin-top: 0;
-  padding-top: 0; }
-
-a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
-  margin-top: 0;
-  padding-top: 0; }
-
-h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
-  margin-top: 0; }
-
-li p.first {
-  display: inline-block; }
-li {
-  margin: 0; }
-ul, ol {
-  padding-left: 30px; }
-
-ul :first-child, ol :first-child {
-  margin-top: 0; }
-
-dl {
-  padding: 0; }
-  dl dt {
-    font-size: 14px;
-    font-weight: bold;
-    font-style: italic;
-    padding: 0;
-    margin: 15px 0 5px; }
-    dl dt:first-child {
-      padding: 0; }
-    dl dt > :first-child {
-      margin-top: 0; }
-    dl dt > :last-child {
-      margin-bottom: 0; }
-  dl dd {
-    margin: 0 0 15px;
-    padding: 0 15px; }
-    dl dd > :first-child {
-      margin-top: 0; }
-    dl dd > :last-child {
-      margin-bottom: 0; }
-
-blockquote {
-  border-left: 4px solid #dddddd;
-  padding: 0 15px;
-  color: #777777; }
-  blockquote > :first-child {
-    margin-top: 0; }
-  blockquote > :last-child {
-    margin-bottom: 0; }
-
-table {
-  padding: 0;border-collapse: collapse; }
-  table tr {
-    border-top: 1px solid #cccccc;
-    background-color: white;
-    margin: 0;
-    padding: 0; }
-    table tr:nth-child(2n) {
-      background-color: #f8f8f8; }
-    table tr th {
-      font-weight: bold;
-      border: 1px solid #cccccc;
-      margin: 0;
-      padding: 6px 13px; }
-    table tr td {
-      border: 1px solid #cccccc;
-      margin: 0;
-      padding: 6px 13px; }
-    table tr th :first-child, table tr td :first-child {
-      margin-top: 0; }
-    table tr th :last-child, table tr td :last-child {
-      margin-bottom: 0; }
-
-img {
-  max-width: 100%; }
-
-span.frame {
-  display: block;
-  overflow: hidden; }
-  span.frame > span {
-    border: 1px solid #dddddd;
-    display: block;
-    float: left;
-    overflow: hidden;
-    margin: 13px 0 0;
-    padding: 7px;
-    width: auto; }
-  span.frame span img {
-    display: block;
-    float: left; }
-  span.frame span span {
-    clear: both;
-    color: #333333;
-    display: block;
-    padding: 5px 0 0; }
-span.align-center {
-  display: block;
-  overflow: hidden;
-  clear: both; }
-  span.align-center > span {
-    display: block;
-    overflow: hidden;
-    margin: 13px auto 0;
-    text-align: center; }
-  span.align-center span img {
-    margin: 0 auto;
-    text-align: center; }
-span.align-right {
-  display: block;
-  overflow: hidden;
-  clear: both; }
-  span.align-right > span {
-    display: block;
-    overflow: hidden;
-    margin: 13px 0 0;
-    text-align: right; }
-  span.align-right span img {
-    margin: 0;
-    text-align: right; }
-span.float-left {
-  display: block;
-  margin-right: 13px;
-  overflow: hidden;
-  float: left; }
-  span.float-left span {
-    margin: 13px 0 0; }
-span.float-right {
-  display: block;
-  margin-left: 13px;
-  overflow: hidden;
-  float: right; }
-  span.float-right > span {
-    display: block;
-    overflow: hidden;
-    margin: 13px auto 0;
-    text-align: right; }
-
-code, tt {
-  margin: 0 2px;
-  padding: 0 5px;
-  white-space: nowrap;
-  border: 1px solid #eaeaea;
-  background-color: #f8f8f8;
-  border-radius: 3px; }
-
-pre code {
-  margin: 0;
-  padding: 0;
-  white-space: pre;
-  border: none;
-  background: transparent; }
-
-.highlight pre {
-  background-color: #f8f8f8;
-  border: 1px solid #cccccc;
-  font-size: 13px;
-  line-height: 19px;
-  overflow: auto;
-  padding: 6px 10px;
-  border-radius: 3px; }
-
-pre {
-  background-color: #f8f8f8;
-  border: 1px solid #cccccc;
-  font-size: 13px;
-  line-height: 19px;
-  overflow: auto;
-  padding: 6px 10px;
-  border-radius: 3px; }
-  pre code, pre tt {
-    background-color: transparent;
-    border: none; }
-
-sup {
-    font-size: 0.83em;
-    vertical-align: super;
-    line-height: 0;
-}
-* {
-	-webkit-print-color-adjust: exact;
-}
-@media screen and (min-width: 914px) {
-    body {
-        width: 854px;
-        margin:0 auto;
-    }
-}
-@media print {
-	table, pre {
-		page-break-inside: avoid;
-	}
-	pre {
-		word-wrap: break-word;
-	}
-}
-</style>
-<title>RCPR 人脸29点检测API说明文档</title>
-
-</head>
-<body>
-<h1>RCPR 人脸29点检测API说明文档</h1>
-
-<h2>Web 测试页面</h2>
-
-<p><a href="http://120.24.247.190/RCPR/test/index.html" target="_blank" rel="external">http://120.24.247.190/RCPR/test/index.html</a></p>
-
-<p>（别上传太多=。=，图片文件一天清理一次）</p>
-
-<hr>
-
-<h2>API</h2>
-
-<p><a href="http://120.24.247.190/RCPR/detect_landmark" target="_blank" rel="external">http://120.24.247.190/RCPR/detect_landmark</a></p>
-
-<ul>
-<li>请求方式：POST</li>
-<li>参数：img-->图片文件，multipart/form-data方式</li>
-<li>目前没有加上图片归一化处理，别上传太大的图。</li>
-</ul>
-
-
-<h2>参考</h2>
-
-<ul>
-<li><a href="https://www.imququ.com/post/four-ways-to-post-data-in-http.html" target="_blank" rel="external">四种常见的 POST 提交数据方式</a></li>
-</ul>
-
-</body>
-</html>]]></content>
-    </entry>
-    
-    <entry>
       <title></title>
       <url>http://tutuge.me/share/rcpr_setup.html</url>
       <content type="html"><![CDATA[<!doctype html>
@@ -2866,6 +2564,354 @@ echo 'Clean done at ' `date`
 
 <pre><code>0 23 * * * sh /home/yzk/program/crontab/cleanUploadImg.sh &gt;&gt; /home/yzk/program/crontab/cleanLog.txt 2&gt;&amp;1
 </code></pre>
+</body>
+</html>]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[tags]]></title>
+      <url>http://tutuge.me/tags/index.html</url>
+      <content type="html"></content>
+    </entry>
+    
+    <entry>
+      <title></title>
+      <url>http://tutuge.me/share/rcpr_api.html</url>
+      <content type="html"><![CDATA[<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<style>
+body {
+  font-family: Helvetica, arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: white;
+  padding: 30px; }
+
+body > *:first-child {
+  margin-top: 0 !important; }
+body > *:last-child {
+  margin-bottom: 0 !important; }
+
+a {
+  color: #4183C4; }
+a.absent {
+  color: #cc0000; }
+a.anchor {
+  display: block;
+  padding-left: 30px;
+  margin-left: -30px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0; }
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+  cursor: text;
+  position: relative; }
+
+h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA09pVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoMTMuMCAyMDEyMDMwNS5tLjQxNSAyMDEyLzAzLzA1OjIxOjAwOjAwKSAgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OUM2NjlDQjI4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OUM2NjlDQjM4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5QzY2OUNCMDg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo5QzY2OUNCMTg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PsQhXeAAAABfSURBVHjaYvz//z8DJYCRUgMYQAbAMBQIAvEqkBQWXI6sHqwHiwG70TTBxGaiWwjCTGgOUgJiF1J8wMRAIUA34B4Q76HUBelAfJYSA0CuMIEaRP8wGIkGMA54bgQIMACAmkXJi0hKJQAAAABJRU5ErkJggg==) no-repeat 10px center;
+  text-decoration: none; }
+
+h1 tt, h1 code {
+  font-size: inherit; }
+
+h2 tt, h2 code {
+  font-size: inherit; }
+
+h3 tt, h3 code {
+  font-size: inherit; }
+
+h4 tt, h4 code {
+  font-size: inherit; }
+
+h5 tt, h5 code {
+  font-size: inherit; }
+
+h6 tt, h6 code {
+  font-size: inherit; }
+
+h1 {
+  font-size: 28px;
+  color: black; }
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #cccccc;
+  color: black; }
+
+h3 {
+  font-size: 18px; }
+
+h4 {
+  font-size: 16px; }
+
+h5 {
+  font-size: 14px; }
+
+h6 {
+  color: #777777;
+  font-size: 14px; }
+
+p, blockquote, ul, ol, dl, li, table, pre {
+  margin: 15px 0; }
+
+hr {
+  background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAECAYAAACtBE5DAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OENDRjNBN0E2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OENDRjNBN0I2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4Q0NGM0E3ODY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4Q0NGM0E3OTY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PqqezsUAAAAfSURBVHjaYmRABcYwBiM2QSA4y4hNEKYDQxAEAAIMAHNGAzhkPOlYAAAAAElFTkSuQmCC) repeat-x 0 0;
+  border: 0 none;
+  color: #cccccc;
+  height: 4px;
+  padding: 0;
+}
+
+body > h2:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+body > h1:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+  body > h1:first-child + h2 {
+    margin-top: 0;
+    padding-top: 0; }
+body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0; }
+
+h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+  margin-top: 0; }
+
+li p.first {
+  display: inline-block; }
+li {
+  margin: 0; }
+ul, ol {
+  padding-left: 30px; }
+
+ul :first-child, ol :first-child {
+  margin-top: 0; }
+
+dl {
+  padding: 0; }
+  dl dt {
+    font-size: 14px;
+    font-weight: bold;
+    font-style: italic;
+    padding: 0;
+    margin: 15px 0 5px; }
+    dl dt:first-child {
+      padding: 0; }
+    dl dt > :first-child {
+      margin-top: 0; }
+    dl dt > :last-child {
+      margin-bottom: 0; }
+  dl dd {
+    margin: 0 0 15px;
+    padding: 0 15px; }
+    dl dd > :first-child {
+      margin-top: 0; }
+    dl dd > :last-child {
+      margin-bottom: 0; }
+
+blockquote {
+  border-left: 4px solid #dddddd;
+  padding: 0 15px;
+  color: #777777; }
+  blockquote > :first-child {
+    margin-top: 0; }
+  blockquote > :last-child {
+    margin-bottom: 0; }
+
+table {
+  padding: 0;border-collapse: collapse; }
+  table tr {
+    border-top: 1px solid #cccccc;
+    background-color: white;
+    margin: 0;
+    padding: 0; }
+    table tr:nth-child(2n) {
+      background-color: #f8f8f8; }
+    table tr th {
+      font-weight: bold;
+      border: 1px solid #cccccc;
+      margin: 0;
+      padding: 6px 13px; }
+    table tr td {
+      border: 1px solid #cccccc;
+      margin: 0;
+      padding: 6px 13px; }
+    table tr th :first-child, table tr td :first-child {
+      margin-top: 0; }
+    table tr th :last-child, table tr td :last-child {
+      margin-bottom: 0; }
+
+img {
+  max-width: 100%; }
+
+span.frame {
+  display: block;
+  overflow: hidden; }
+  span.frame > span {
+    border: 1px solid #dddddd;
+    display: block;
+    float: left;
+    overflow: hidden;
+    margin: 13px 0 0;
+    padding: 7px;
+    width: auto; }
+  span.frame span img {
+    display: block;
+    float: left; }
+  span.frame span span {
+    clear: both;
+    color: #333333;
+    display: block;
+    padding: 5px 0 0; }
+span.align-center {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+  span.align-center > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px auto 0;
+    text-align: center; }
+  span.align-center span img {
+    margin: 0 auto;
+    text-align: center; }
+span.align-right {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+  span.align-right > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px 0 0;
+    text-align: right; }
+  span.align-right span img {
+    margin: 0;
+    text-align: right; }
+span.float-left {
+  display: block;
+  margin-right: 13px;
+  overflow: hidden;
+  float: left; }
+  span.float-left span {
+    margin: 13px 0 0; }
+span.float-right {
+  display: block;
+  margin-left: 13px;
+  overflow: hidden;
+  float: right; }
+  span.float-right > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px auto 0;
+    text-align: right; }
+
+code, tt {
+  margin: 0 2px;
+  padding: 0 5px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px; }
+
+pre code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent; }
+
+.highlight pre {
+  background-color: #f8f8f8;
+  border: 1px solid #cccccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px; }
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #cccccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px; }
+  pre code, pre tt {
+    background-color: transparent;
+    border: none; }
+
+sup {
+    font-size: 0.83em;
+    vertical-align: super;
+    line-height: 0;
+}
+* {
+	-webkit-print-color-adjust: exact;
+}
+@media screen and (min-width: 914px) {
+    body {
+        width: 854px;
+        margin:0 auto;
+    }
+}
+@media print {
+	table, pre {
+		page-break-inside: avoid;
+	}
+	pre {
+		word-wrap: break-word;
+	}
+}
+</style>
+<title>RCPR 人脸29点检测API说明文档</title>
+
+</head>
+<body>
+<h1>RCPR 人脸29点检测API说明文档</h1>
+
+<h2>Web 测试页面</h2>
+
+<p><a href="http://120.24.247.190/RCPR/test/index.html" target="_blank" rel="external">http://120.24.247.190/RCPR/test/index.html</a></p>
+
+<p>（别上传太多=。=，图片文件一天清理一次）</p>
+
+<hr>
+
+<h2>API</h2>
+
+<p><a href="http://120.24.247.190/RCPR/detect_landmark" target="_blank" rel="external">http://120.24.247.190/RCPR/detect_landmark</a></p>
+
+<ul>
+<li>请求方式：POST</li>
+<li>参数：img-->图片文件，multipart/form-data方式</li>
+<li>目前没有加上图片归一化处理，别上传太大的图。</li>
+</ul>
+
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="https://www.imququ.com/post/four-ways-to-post-data-in-http.html" target="_blank" rel="external">四种常见的 POST 提交数据方式</a></li>
+</ul>
+
 </body>
 </html>]]></content>
     </entry>
