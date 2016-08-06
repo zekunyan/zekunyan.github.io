@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://tutuge.me/"/>
-  <updated>2016-06-19T20:25:28.000Z</updated>
+  <updated>2016-08-06T17:32:15.000Z</updated>
   <id>http://tutuge.me/</id>
   
   <author>
@@ -14,6 +14,120 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>有趣的Autolayout示例4-Masonry实现</title>
+    <link href="http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/"/>
+    <id>http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/</id>
+    <published>2016-08-06T13:41:17.000Z</published>
+    <updated>2016-08-06T17:32:15.000Z</updated>
+    
+    <content type="html">&lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;第四篇来了。&lt;br&gt;还是3个小例子，仍然是主要部分用Masonry手写代码实现，其它的约束在storyboard里面直接拖拽搭建。&lt;br&gt;三个例子分别是：  &lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;用约束优先级保证可移动View的内容可见性&lt;/li&gt;
+&lt;li&gt;Autolayout的约束=控件间位置关系的“绑定”&lt;/li&gt;
+&lt;li&gt;利用&lt;code&gt;layoutIfNeeded&lt;/code&gt;控制约束的生效时机&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;前三篇：  &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;第一篇：&lt;a href=&quot;http://tutuge.me/2015/05/23/autolayout-example-with-masonry/&quot;&gt;有趣的Autolayout示例-Masonry实现&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;第二篇：&lt;a href=&quot;http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/&quot;&gt;有趣的Autolayout示例2-Masonry实现&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;第三篇：&lt;a href=&quot;http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/&quot;&gt;有趣的Autolayout示例3-Masonry实现&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Github地址：&lt;br&gt;&lt;a href=&quot;https://github.com/zekunyan/AutolayoutExampleWithMasonry&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/zekunyan/AutolayoutExampleWithMasonry&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry4_1.gif&quot; alt=&quot;Gif示例&quot;&gt;&lt;/p&gt;
+&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
+&lt;h2 id=&quot;Case-1-用约束优先级保证可移动View的内容可见性&quot;&gt;&lt;a href=&quot;#Case-1-用约束优先级保证可移动View的内容可见性&quot; class=&quot;headerlink&quot; title=&quot;Case 1: 用约束优先级保证可移动View的内容可见性&quot;&gt;&lt;/a&gt;Case 1: 用约束优先级保证可移动View的内容可见性&lt;/h2&gt;&lt;h3 id=&quot;实现功能&quot;&gt;&lt;a href=&quot;#实现功能&quot; class=&quot;headerlink&quot; title=&quot;实现功能&quot;&gt;&lt;/a&gt;实现功能&lt;/h3&gt;&lt;p&gt;Case 1实现的功能就是，可以用手指拖动一个灰色的Tip控件，在红框containerView内移动，并且保持移动到红框边缘时，Tip控件的内容不会超出红框，保证内容的可见性。&lt;/p&gt;
+&lt;h3 id=&quot;Frame-VS-Autolayout&quot;&gt;&lt;a href=&quot;#Frame-VS-Autolayout&quot; class=&quot;headerlink&quot; title=&quot;Frame VS Autolayout&quot;&gt;&lt;/a&gt;Frame VS Autolayout&lt;/h3&gt;&lt;p&gt;如果不用Autolayout的话，直接计算、设定frame，那么可能的步骤如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;获取手指当前触摸点在红框containerView内的坐标&lt;/li&gt;
+&lt;li&gt;计算Tip控件的宽高&lt;/li&gt;
+&lt;li&gt;根据宽高，计算、判断Tip控件会不会在新的位置上超出边界&lt;/li&gt;
+&lt;li&gt;调整新的Tip位置坐标&lt;/li&gt;
+&lt;li&gt;设置Tip控件的frame，指定新的坐标&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这样去实现的话，代码将会比较“丑”=。。=，有大量的判断、数值计算，而且容易出错。&lt;/p&gt;
+&lt;p&gt;而用Autolayout的话，&lt;strong&gt;只需要两步&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;设置约束&lt;/li&gt;
+&lt;li&gt;根据手指坐标，更新left、top两个约束，即更新Tip的位置&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;至于保证Tip内容在可见范围内，就交给Autolayout处理吧~&lt;/p&gt;
+&lt;h3 id=&quot;关键原理&quot;&gt;&lt;a href=&quot;#关键原理&quot; class=&quot;headerlink&quot; title=&quot;关键原理&quot;&gt;&lt;/a&gt;关键原理&lt;/h3&gt;&lt;p&gt;用Autolayout实现的关键，就是&lt;strong&gt;善于利用约束的优先级&lt;/strong&gt;。先看看设置的约束示意图：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry4_2.png?1=1&quot; alt=&quot;Case 1: 用约束优先级保证可移动View的内容可见性&quot;&gt;&lt;/p&gt;
+&lt;p&gt;中间的tipLabel就是被移动的控件  &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;褐色的两个约束，分别是Tip控件的centerX和centerY，与上级View的left和top的约束，用来对Tip定位&lt;/li&gt;
+&lt;li&gt;四个蓝色的约束，则是确保Tip内容不超出边界的约束&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;重点其实就在于，&lt;strong&gt;蓝色的约束的优先级比褐色的优先级高，这样，在移动中，系统会优先满足Tip的内容保持在边界内&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id=&quot;实现细节&quot;&gt;&lt;a href=&quot;#实现细节&quot; class=&quot;headerlink&quot; title=&quot;实现细节&quot;&gt;&lt;/a&gt;实现细节&lt;/h3&gt;&lt;p&gt;具体的设置约束代码如下：&lt;/p&gt;
+&lt;h4 id=&quot;左边和顶部的约束-控制位置&quot;&gt;&lt;a href=&quot;#左边和顶部的约束-控制位置&quot; class=&quot;headerlink&quot; title=&quot;左边和顶部的约束 - 控制位置&quot;&gt;&lt;/a&gt;左边和顶部的约束 - 控制位置&lt;/h4&gt;&lt;p&gt;首先设置两个属性，保存左边和顶部的约束，用于在移动时调整位置：&lt;/p&gt;
+&lt;figure class=&quot;highlight crmsh&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;@&lt;span class=&quot;keyword&quot;&gt;property&lt;/span&gt;&lt;span class=&quot;title&quot;&gt; &lt;/span&gt;(nonatomic, strong) MASConstraint *leftConstraint;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;@&lt;span class=&quot;keyword&quot;&gt;property&lt;/span&gt;&lt;span class=&quot;title&quot;&gt; &lt;/span&gt;(nonatomic, strong) MASConstraint *topConstraint;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;然后就是设置具体的left、top约束，并设置优先级为750，也就是High&lt;/p&gt;
+&lt;figure class=&quot;highlight scheme&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;[&lt;span class=&quot;name&quot;&gt;_tipLabel&lt;/span&gt; mas_makeConstraints:^(&lt;span class=&quot;name&quot;&gt;MASConstraintMaker&lt;/span&gt; *make) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    // 优先级要比边界条件低&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    _leftConstraint = make.centerX.equalTo(&lt;span class=&quot;name&quot;&gt;_containerView.mas_left&lt;/span&gt;).with.offset(&lt;span class=&quot;name&quot;&gt;50&lt;/span&gt;).priorityHigh()&lt;span class=&quot;comment&quot;&gt;; &lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    // 优先级要比边界条件低&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    _topConstraint = make.centerY.equalTo(&lt;span class=&quot;name&quot;&gt;_containerView.mas_top&lt;/span&gt;).with.offset(&lt;span class=&quot;name&quot;&gt;50&lt;/span&gt;).priorityHigh()&lt;span class=&quot;comment&quot;&gt;;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    // ...&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;]&lt;span class=&quot;comment&quot;&gt;;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h4 id=&quot;四周的约束-保证内容在边界内&quot;&gt;&lt;a href=&quot;#四周的约束-保证内容在边界内&quot; class=&quot;headerlink&quot; title=&quot;四周的约束 - 保证内容在边界内&quot;&gt;&lt;/a&gt;四周的约束 - 保证内容在边界内&lt;/h4&gt;&lt;p&gt;然后就是上下左右四个边界的约束：&lt;/p&gt;
+&lt;figure class=&quot;highlight clojure&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;[_tipLabel mas_makeConstraints:^(&lt;span class=&quot;name&quot;&gt;MASConstraintMaker&lt;/span&gt; *make) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    // 设置边界条件约束，保证内容可见，优先级&lt;span class=&quot;number&quot;&gt;1000&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    make.left.greaterThanOrEqualTo(&lt;span class=&quot;name&quot;&gt;_containerView.mas_left&lt;/span&gt;)&lt;span class=&quot;comment&quot;&gt;;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    make.right.lessThanOrEqualTo(&lt;span class=&quot;name&quot;&gt;_containerView.mas_right&lt;/span&gt;)&lt;span class=&quot;comment&quot;&gt;;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    make.top.greaterThanOrEqualTo(&lt;span class=&quot;name&quot;&gt;_containerView.mas_top&lt;/span&gt;)&lt;span class=&quot;comment&quot;&gt;;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    make.bottom.lessThanOrEqualTo(&lt;span class=&quot;name&quot;&gt;_containerView.mas_bottom&lt;/span&gt;)&lt;span class=&quot;comment&quot;&gt;;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    // ...&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;]&lt;span class=&quot;comment&quot;&gt;;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;这个地方要注意是&lt;code&gt;lessThanOrEqualTo&lt;/code&gt;还是&lt;code&gt;greaterThanOrEqualTo&lt;/code&gt;。&lt;/p&gt;
+&lt;h4 id=&quot;滑动时更新Tip位置&quot;&gt;&lt;a href=&quot;#滑动时更新Tip位置&quot; class=&quot;headerlink&quot; title=&quot;滑动时更新Tip位置&quot;&gt;&lt;/a&gt;滑动时更新Tip位置&lt;/h4&gt;&lt;p&gt;这一点比较简单，直接将当前触摸的坐标赋值给&lt;code&gt;leftConstraint&lt;/code&gt;和&lt;code&gt;rightConstraint&lt;/code&gt;就好：&lt;/p&gt;
+&lt;figure class=&quot;highlight applescript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;_leftConstraint.&lt;span class=&quot;built_in&quot;&gt;offset&lt;/span&gt; = touchPoint.x;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;_topConstraint.&lt;span class=&quot;built_in&quot;&gt;offset&lt;/span&gt; = touchPoint.y;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h3 id=&quot;小节&quot;&gt;&lt;a href=&quot;#小节&quot; class=&quot;headerlink&quot; title=&quot;小节&quot;&gt;&lt;/a&gt;小节&lt;/h3&gt;&lt;p&gt;对比起来，明显是用Autolayout的方法比计算设置frame的方法要“优雅”的多=。=，灵活运用约束的优先级，往往可以减少很多工作量。&lt;/p&gt;
+&lt;h2 id=&quot;Case-2-Autolayout的约束-控件间位置关系的“动态绑定”&quot;&gt;&lt;a href=&quot;#Case-2-Autolayout的约束-控件间位置关系的“动态绑定”&quot; class=&quot;headerlink&quot; title=&quot;Case 2: Autolayout的约束=控件间位置关系的“动态绑定”&quot;&gt;&lt;/a&gt;Case 2: Autolayout的约束=控件间位置关系的“动态绑定”&lt;/h2&gt;&lt;h3 id=&quot;实现功能-1&quot;&gt;&lt;a href=&quot;#实现功能-1&quot; class=&quot;headerlink&quot; title=&quot;实现功能&quot;&gt;&lt;/a&gt;实现功能&lt;/h3&gt;&lt;p&gt;Case 2的功能其实是在Case 1的基础上实现的，就是在移动一个View的时候，另一个Attachment附件View，始终保持跟这个View的相对位置不变，就像是“附着”、“捆绑”在这个View上一样。&lt;/p&gt;
+&lt;h3 id=&quot;关键概念：约束-“动态的绑定”&quot;&gt;&lt;a href=&quot;#关键概念：约束-“动态的绑定”&quot; class=&quot;headerlink&quot; title=&quot;关键概念：约束 = “动态的绑定”&quot;&gt;&lt;/a&gt;关键概念：约束 = “动态的绑定”&lt;/h3&gt;&lt;p&gt;之所以写这个例子，主要是想从概念上更加深入的理解Autolayout与传统的设置Frame的不同，即Autolayout里面的约束，其实是“动态的绑定”，是控件相互之间的位置关系绑定，约束是可以&lt;strong&gt;实时&lt;/strong&gt;保证这种绑定关系的。&lt;/p&gt;
+&lt;p&gt;传统的设置Frame，在View的内容、位置要变化时，是要手动设置的，是“一次性”的，而Autolayout，在确定了约束后，会实时的用约束的规则去更新Frame，所以可以避免这种手动设置。&lt;/p&gt;
+&lt;p&gt;所以，对于本例子来说，设置Frame的方式和Autolayout的方式对比如下：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry4_3.png?1=1&quot; alt=&quot;Case 2: Autolayout的约束=控件间位置关系的“绑定”&quot;&gt;&lt;/p&gt;
+&lt;p&gt;用Autolayout的话，只要把Attachment的位置设置为相对于TipLabel就可以了。&lt;/p&gt;
+&lt;h3 id=&quot;实现细节-1&quot;&gt;&lt;a href=&quot;#实现细节-1&quot; class=&quot;headerlink&quot; title=&quot;实现细节&quot;&gt;&lt;/a&gt;实现细节&lt;/h3&gt;&lt;p&gt;代码比较简单，如下：&lt;/p&gt;
+&lt;figure class=&quot;highlight clojure&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;[attachmentView mas_makeConstraints:^(&lt;span class=&quot;name&quot;&gt;MASConstraintMaker&lt;/span&gt; *make) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    // 依附在tipLabel上&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    make.left.equalTo(&lt;span class=&quot;name&quot;&gt;_tipLabel.mas_left&lt;/span&gt;).with.offset(&lt;span class=&quot;number&quot;&gt;20&lt;/span&gt;).priorityHigh()&lt;span class=&quot;comment&quot;&gt;;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    make.bottom.equalTo(&lt;span class=&quot;name&quot;&gt;_tipLabel.mas_top&lt;/span&gt;).with.offset(&lt;span class=&quot;name&quot;&gt;-2&lt;/span&gt;).priorityHigh()&lt;span class=&quot;comment&quot;&gt;;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;]&lt;span class=&quot;comment&quot;&gt;;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;移动Tip的相关代码看Case 1的就行~&lt;/p&gt;
+&lt;h3 id=&quot;小节-1&quot;&gt;&lt;a href=&quot;#小节-1&quot; class=&quot;headerlink&quot; title=&quot;小节&quot;&gt;&lt;/a&gt;小节&lt;/h3&gt;&lt;p&gt;本小节的Case比较简单，主要是为了着重点出“Autolayout约束=动态位置绑定”这个点，理解了这一点，才能更好地运用Autolayout~&lt;/p&gt;
+&lt;h2 id=&quot;Case-3-利用layoutIfNeeded控制约束的生效时机&quot;&gt;&lt;a href=&quot;#Case-3-利用layoutIfNeeded控制约束的生效时机&quot; class=&quot;headerlink&quot; title=&quot;Case 3: 利用layoutIfNeeded控制约束的生效时机&quot;&gt;&lt;/a&gt;Case 3: 利用layoutIfNeeded控制约束的生效时机&lt;/h2&gt;&lt;h3 id=&quot;实现功能-2&quot;&gt;&lt;a href=&quot;#实现功能-2&quot; class=&quot;headerlink&quot; title=&quot;实现功能&quot;&gt;&lt;/a&gt;实现功能&lt;/h3&gt;&lt;p&gt;Case 3的例子，是一个灰色的View，初始时在屏幕中央，然后按下“执行动画”后，从左边滑入。&lt;/p&gt;
+&lt;h3 id=&quot;步骤分析&quot;&gt;&lt;a href=&quot;#步骤分析&quot; class=&quot;headerlink&quot; title=&quot;步骤分析&quot;&gt;&lt;/a&gt;步骤分析&lt;/h3&gt;&lt;p&gt;直观上看，感觉是在按下按钮时，修改View的水平方向上的某个约束，然后用UIView的动画执行变化就好了。  &lt;/p&gt;
+&lt;p&gt;但是仔细分析，应该是先设置View的位置到屏幕的左边看不见的区域，然后用动画平滑的再让View移动回原位。&lt;/p&gt;
+&lt;p&gt;就是说，只是从左边移动回来时，才让动画生效！问题就变成了，如何让&lt;strong&gt;约束分段执行&lt;/strong&gt;，或者说，&lt;strong&gt;控制约束的生效时机&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;步骤可以由下图表示：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry4_4.png?1=1&quot; alt=&quot;Case 3: 利用layoutIfNeeded控制约束的生效时机&quot;&gt;&lt;/p&gt;
+&lt;h3 id=&quot;实现关键&quot;&gt;&lt;a href=&quot;#实现关键&quot; class=&quot;headerlink&quot; title=&quot;实现关键&quot;&gt;&lt;/a&gt;实现关键&lt;/h3&gt;&lt;p&gt;步骤分析清楚了，那么问题就是如何让约束在修改后，“立即”生效，而不是等到系统自动在下次更新布局时被动的生效。&lt;/p&gt;
+&lt;p&gt;答案就是：利用&lt;strong&gt;&lt;code&gt;layoutIfNeeded&lt;/code&gt;&lt;/strong&gt;  &lt;/p&gt;
+&lt;p&gt;在更改了约束后，调用&lt;code&gt;layoutIfNeeded&lt;/code&gt;，就可以通知系统立即刷新布局，从而更新Frame。如果要更加“保险”，可以在调用&lt;code&gt;layoutIfNeeded&lt;/code&gt;前，加上调用&lt;code&gt;setNeedsUpdateConstraints&lt;/code&gt;、&lt;code&gt;setNeedsLayout&lt;/code&gt;，系统刷新布局时，就会先更新约束，然后根据约束重新计算相关View的Frame，想了解具体的过程的，可以参考：&lt;a href=&quot;https://developer.apple.com/videos/play/wwdc2015/218/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Mysteries of Auto Layout, Part 1 - WWDC 2015&lt;/a&gt;、&lt;a href=&quot;https://developer.apple.com/videos/play/wwdc2015/219/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Mysteries of Auto Layout, Part 2&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&quot;实现细节-2&quot;&gt;&lt;a href=&quot;#实现细节-2&quot; class=&quot;headerlink&quot; title=&quot;实现细节&quot;&gt;&lt;/a&gt;实现细节&lt;/h3&gt;&lt;p&gt;具体的实现代码如下：&lt;/p&gt;
+&lt;figure class=&quot;highlight objectivec&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// 设置初始状态，移动View到屏幕左边不可见区域&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;_center&lt;span class=&quot;built_in&quot;&gt;XConstraint&lt;/span&gt;.equalTo(@(-&lt;span class=&quot;built_in&quot;&gt;CGRectGetWidth&lt;/span&gt;(&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;.view.frame)));&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// 立即让约束生效,刷新Frame&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;.view layoutIfNeeded];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// 设置要动画的约束，移回原位&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;_center&lt;span class=&quot;built_in&quot;&gt;XConstraint&lt;/span&gt;.equalTo(@&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// 执行动画&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[&lt;span class=&quot;built_in&quot;&gt;UIView&lt;/span&gt; animateWithDuration:&lt;span class=&quot;number&quot;&gt;0.3&lt;/span&gt;f animations:^&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    [&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;.view layoutIfNeeded]; &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;];&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h3 id=&quot;小节-2&quot;&gt;&lt;a href=&quot;#小节-2&quot; class=&quot;headerlink&quot; title=&quot;小节&quot;&gt;&lt;/a&gt;小节&lt;/h3&gt;&lt;p&gt;之前在实现&lt;a href=&quot;https://github.com/zekunyan/TTGSnackbar&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;TTGSnackbar&lt;/a&gt;的时候，就大量的使用了&lt;code&gt;layoutIfNeeded&lt;/code&gt;来立即刷新View的Frame，然后才让产生动画的约束变动生效，也就是分阶段的让约束生效，非常管用~&lt;/p&gt;
+&lt;h2 id=&quot;总结&quot;&gt;&lt;a href=&quot;#总结&quot; class=&quot;headerlink&quot; title=&quot;总结&quot;&gt;&lt;/a&gt;总结&lt;/h2&gt;&lt;p&gt;不知不觉已经第四篇了，一共12个Case，都是平时开发时总结出来的点，以及对Autolayout的理解，希望可以一直将这个系列坚持下去~~&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;第四篇来了。&lt;br&gt;还是3个小例子，仍然是主要部分用Masonry手写代码实现，其它的约束在storyboard里面直接拖拽搭建。&lt;br&gt;三个例子分别是：  &lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;用约束优先级保证可移动View的内容可见性&lt;/li&gt;
+&lt;li&gt;Autolayout的约束=控件间位置关系的“绑定”&lt;/li&gt;
+&lt;li&gt;利用&lt;code&gt;layoutIfNeeded&lt;/code&gt;控制约束的生效时机&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;前三篇：  &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;第一篇：&lt;a href=&quot;http://tutuge.me/2015/05/23/autolayout-example-with-masonry/&quot;&gt;有趣的Autolayout示例-Masonry实现&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;第二篇：&lt;a href=&quot;http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/&quot;&gt;有趣的Autolayout示例2-Masonry实现&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;第三篇：&lt;a href=&quot;http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/&quot;&gt;有趣的Autolayout示例3-Masonry实现&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Github地址：&lt;br&gt;&lt;a href=&quot;https://github.com/zekunyan/AutolayoutExampleWithMasonry&quot;&gt;https://github.com/zekunyan/AutolayoutExampleWithMasonry&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry4_1.gif&quot; alt=&quot;Gif示例&quot;&gt;&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="iOS" scheme="http://tutuge.me/categories/iOS/"/>
+    
+    
+      <category term="原创" scheme="http://tutuge.me/tags/%E5%8E%9F%E5%88%9B/"/>
+    
+      <category term="iOS" scheme="http://tutuge.me/tags/iOS/"/>
+    
+      <category term="Autolayout" scheme="http://tutuge.me/tags/Autolayout/"/>
+    
+      <category term="Masonry" scheme="http://tutuge.me/tags/Masonry/"/>
+    
+  </entry>
   
   <entry>
     <title>翻译-为什么objc_msgSend必须用汇编实现</title>
@@ -929,7 +1043,7 @@
     <link href="http://tutuge.me/2015/07/25/compatibility-with-macro-category-and-runtime/"/>
     <id>http://tutuge.me/2015/07/25/compatibility-with-macro-category-and-runtime/</id>
     <published>2015-07-24T16:39:03.000Z</published>
-    <updated>2016-03-20T09:02:37.000Z</updated>
+    <updated>2016-07-17T09:25:25.000Z</updated>
     
     <content type="html">&lt;h2 id=&quot;更新&quot;&gt;&lt;a href=&quot;#更新&quot; class=&quot;headerlink&quot; title=&quot;更新&quot;&gt;&lt;/a&gt;更新&lt;/h2&gt;&lt;h3 id=&quot;2015-11-16&quot;&gt;&lt;a href=&quot;#2015-11-16&quot; class=&quot;headerlink&quot; title=&quot;2015-11-16&quot;&gt;&lt;/a&gt;2015-11-16&lt;/h3&gt;&lt;p&gt;感谢微博好友&lt;strong&gt;@zyyy_000&lt;/strong&gt;的评论，补充了为什么要在&lt;code&gt;+ (void)load&lt;/code&gt;方法里面做&lt;strong&gt;Method Swizzling&lt;/strong&gt;。&lt;/p&gt;
 &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;最近，在做项目时，因为某种原因，突然要“适配”iOS6（也是醉了。。。），保证极少数的iOS6用户可以“用上”新的版本。哪怕界面上有瑕疵，只要功能正常就行。于是就只好花几天时间对iOS6进行紧急适配（心中一万头驼羊奔跑而过。。。）&lt;/p&gt;

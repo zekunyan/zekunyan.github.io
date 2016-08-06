@@ -4,6 +4,56 @@
 
     
   <url>
+    <loc>http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/</loc>
+    <lastmod>2016-08-06T17:32:15.000Z</lastmod>
+    <data>
+        <display>
+        <title>有趣的Autolayout示例4-Masonry实现</title>
+        <pubTime>2016-08-06T13:41:17.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+        <tag>Autolayout</tag>
+         
+        <tag>Masonry</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://tutuge.me/2015/07/25/compatibility-with-macro-category-and-runtime/</loc>
+    <lastmod>2016-07-17T09:25:25.000Z</lastmod>
+    <data>
+        <display>
+        <title>解决iOS项目的版本兼容问题-结合宏、Category和Runtime</title>
+        <pubTime>2015-07-24T16:39:03.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+        <tag>Runtime</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://tutuge.me/2016/06/19/translation-why-objcmsgsend-must-be-written-in-assembly/</loc>
     <lastmod>2016-06-19T20:25:28.000Z</lastmod>
     <data>
@@ -687,30 +737,6 @@
         <tag>原创</tag>
          
         <tag>iOS</tag>
-         
-         
-           
-             
-              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://tutuge.me/2015/07/25/compatibility-with-macro-category-and-runtime/</loc>
-    <lastmod>2016-03-20T09:02:37.000Z</lastmod>
-    <data>
-        <display>
-        <title>解决iOS项目的版本兼容问题-结合宏、Category和Runtime</title>
-        <pubTime>2015-07-24T16:39:03.000Z</pubTime>
-        
-        <tag>原创</tag>
-         
-        <tag>iOS</tag>
-         
-        <tag>Runtime</tag>
          
          
            

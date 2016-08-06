@@ -112,6 +112,10 @@ nav ul a:hover {
 nav .brand-logo {
   font-size: 1.6rem;
 }
+.side-nav li,
+.side-nav a {
+  padding: 0 15px;
+}
 .card {
   margin-top: 0;
 }
@@ -603,6 +607,7 @@ a.social-link:hover {
 }
 #category-menu.side-nav li {
   line-height: 36px;
+  padding-right: 15px;
 }
 .toc {
   position: fixed;
