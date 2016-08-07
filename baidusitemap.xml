@@ -4,20 +4,268 @@
 
     
   <url>
-    <loc>http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/</loc>
-    <lastmod>2016-08-06T17:32:15.000Z</lastmod>
+    <loc>http://tutuge.me/2014/11/01/%E7%AC%AC%E4%B8%80%E7%AF%87Blog/</loc>
+    <lastmod>2016-08-07T06:21:05.000Z</lastmod>
     <data>
         <display>
-        <title>有趣的Autolayout示例4-Masonry实现</title>
-        <pubTime>2016-08-06T13:41:17.000Z</pubTime>
+        <title>第一篇Blog</title>
+        <pubTime>2014-10-31T16:13:15.000Z</pubTime>
+        
+        <tag>杂烩</tag>
+         
+         
+           
+             
+              <breadCrumb title="其它" url="http://tutuge.me/categories/%E5%85%B6%E5%AE%83/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://tutuge.me/2015/03/07/UITextView%E7%BC%96%E8%BE%91%E6%97%B6%E6%8F%92%E5%85%A5%E8%87%AA%E5%AE%9A%E4%B9%89%E8%A1%A8%E6%83%85-%E7%AE%80%E5%8D%95%E7%9A%84%E5%9B%BE%E6%96%87%E6%B7%B7%E7%BC%96/</loc>
+    <lastmod>2016-08-07T06:19:54.000Z</lastmod>
+    <data>
+        <display>
+        <title>UITextView编辑时插入自定义表情-简单的图文混编</title>
+        <pubTime>2015-03-07T03:04:38.000Z</pubTime>
         
         <tag>原创</tag>
          
         <tag>iOS</tag>
          
-        <tag>Autolayout</tag>
          
-        <tag>Masonry</tag>
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://tutuge.me/2015/12/31/TTGTagCollectionView/</loc>
+    <lastmod>2016-08-07T06:19:30.000Z</lastmod>
+    <data>
+        <display>
+        <title>开源项目-TTGTagCollectionView</title>
+        <pubTime>2015-12-31T13:56:04.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+        <tag>开源</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://tutuge.me/2015/10/25/ttgemojirate-lib/</loc>
+    <lastmod>2016-08-07T06:18:41.000Z</lastmod>
+    <data>
+        <display>
+        <title>Swift开源项目: TTGEmojiRate的实现</title>
+        <pubTime>2015-10-25T11:32:42.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+        <tag>开源</tag>
+         
+        <tag>Swift</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://tutuge.me/2016/06/19/translation-why-objcmsgsend-must-be-written-in-assembly/</loc>
+    <lastmod>2016-08-07T06:17:32.000Z</lastmod>
+    <data>
+        <display>
+        <title>翻译-为什么objc_msgSend必须用汇编实现</title>
+        <pubTime>2016-06-18T16:19:23.000Z</pubTime>
+        
+        <tag>iOS</tag>
+         
+        <tag>翻译</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://tutuge.me/2016/04/10/summary-of-code-organization/</loc>
+    <lastmod>2016-08-07T06:16:22.000Z</lastmod>
+    <data>
+        <display>
+        <title>总结一些iOS项目中组织代码的方法</title>
+        <pubTime>2016-04-10T12:10:56.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://tutuge.me/2015/04/03/something-about-gcd/</loc>
+    <lastmod>2016-08-07T06:14:47.000Z</lastmod>
+    <data>
+        <display>
+        <title>GCD使用经验与技巧浅谈</title>
+        <pubTime>2015-04-03T13:59:56.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://tutuge.me/2016/03/29/modular-and-component-summary/</loc>
+    <lastmod>2016-08-07T06:13:42.000Z</lastmod>
+    <data>
+        <display>
+        <title>对组件化与模块化的思考与总结</title>
+        <pubTime>2016-03-29T14:19:54.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://tutuge.me/2014/11/02/LinkTextView-Android%E5%BC%80%E6%BA%90%E5%BA%93-%E5%8E%9F%E5%88%9B/</loc>
+    <lastmod>2016-08-07T06:12:55.000Z</lastmod>
+    <data>
+        <display>
+        <title>Android开源库-LinkTextView-原创</title>
+        <pubTime>2014-11-01T18:34:46.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>Android</tag>
+         
+        <tag>开源</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android" url="http://tutuge.me/categories/Android/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://tutuge.me/2015/02/01/iOS%E9%A1%B9%E7%9B%AE%E7%9A%84%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84-%E5%8E%9F%E5%88%9B/</loc>
+    <lastmod>2016-08-07T06:11:25.000Z</lastmod>
+    <data>
+        <display>
+        <title>iOS项目的目录结构-原创</title>
+        <pubTime>2015-01-31T18:27:21.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://tutuge.me/2015/07/08/fill-nil-property-of-object/</loc>
+    <lastmod>2016-08-07T06:10:23.000Z</lastmod>
+    <data>
+        <display>
+        <title>用Runtime的手段填充任意NSObject对象的nil属性</title>
+        <pubTime>2015-07-08T15:23:23.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+        <tag>Runtime</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://tutuge.me/2015/03/11/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-4-%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%AE%9A%E4%B9%89%E5%B8%B8%E9%87%8F/</loc>
+    <lastmod>2016-08-07T06:09:31.000Z</lastmod>
+    <data>
+        <display>
+        <title>Effective-Objective-C-读书笔记-Item-4-如何正确定义常量</title>
+        <pubTime>2015-03-10T16:07:23.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+        <tag>翻译</tag>
+         
+        <tag>笔记</tag>
          
          
            
@@ -31,7 +279,7 @@
     
   <url>
     <loc>http://tutuge.me/2015/07/25/compatibility-with-macro-category-and-runtime/</loc>
-    <lastmod>2016-07-17T09:25:25.000Z</lastmod>
+    <lastmod>2016-08-07T06:08:13.000Z</lastmod>
     <data>
         <display>
         <title>解决iOS项目的版本兼容问题-结合宏、Category和Runtime</title>
@@ -54,16 +302,142 @@
 
     
   <url>
-    <loc>http://tutuge.me/2016/06/19/translation-why-objcmsgsend-must-be-written-in-assembly/</loc>
-    <lastmod>2016-06-19T20:25:28.000Z</lastmod>
+    <loc>http://tutuge.me/2015/03/29/bind-data-to-gcd-queue/</loc>
+    <lastmod>2016-08-07T06:07:19.000Z</lastmod>
     <data>
         <display>
-        <title>翻译-为什么objc_msgSend必须用汇编实现</title>
-        <pubTime>2016-06-18T16:19:23.000Z</pubTime>
+        <title>为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权</title>
+        <pubTime>2015-03-29T11:27:40.000Z</pubTime>
         
+        <tag>原创</tag>
+         
         <tag>iOS</tag>
          
-        <tag>翻译</tag>
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://tutuge.me/2016/04/30/autoreleasing-meet-autoreleasepool/</loc>
+    <lastmod>2016-08-07T06:06:35.000Z</lastmod>
+    <data>
+        <display>
+        <title>结合访问Out Parameters出现EXC_BAD_ACCESS的例子，反编译汇编解读__autoreleasing</title>
+        <pubTime>2016-04-30T11:19:23.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/</loc>
+    <lastmod>2016-08-07T06:04:25.000Z</lastmod>
+    <data>
+        <display>
+        <title>有趣的Autolayout示例3-Masonry实现</title>
+        <pubTime>2015-12-14T13:36:08.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+        <tag>Autolayout</tag>
+         
+        <tag>Masonry</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/</loc>
+    <lastmod>2016-08-07T06:03:08.000Z</lastmod>
+    <data>
+        <display>
+        <title>有趣的Autolayout示例2-Masonry实现</title>
+        <pubTime>2015-08-07T16:55:52.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+        <tag>Autolayout</tag>
+         
+        <tag>Masonry</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://tutuge.me/2015/05/23/autolayout-example-with-masonry/</loc>
+    <lastmod>2016-08-07T05:52:00.000Z</lastmod>
+    <data>
+        <display>
+        <title>有趣的Autolayout示例-Masonry实现</title>
+        <pubTime>2015-05-23T11:59:22.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+        <tag>Autolayout</tag>
+         
+        <tag>Masonry</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/</loc>
+    <lastmod>2016-08-06T17:32:15.000Z</lastmod>
+    <data>
+        <display>
+        <title>有趣的Autolayout示例4-Masonry实现</title>
+        <pubTime>2016-08-06T13:41:17.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+        <tag>Autolayout</tag>
+         
+        <tag>Masonry</tag>
          
          
            
@@ -102,32 +476,6 @@
 
     
   <url>
-    <loc>http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/</loc>
-    <lastmod>2016-06-02T13:27:04.000Z</lastmod>
-    <data>
-        <display>
-        <title>有趣的Autolayout示例3-Masonry实现</title>
-        <pubTime>2015-12-14T13:36:08.000Z</pubTime>
-        
-        <tag>原创</tag>
-         
-        <tag>iOS</tag>
-         
-        <tag>Autolayout</tag>
-         
-        <tag>Masonry</tag>
-         
-         
-           
-             
-              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://tutuge.me/2016/05/02/design-json-api-respoense/</loc>
     <lastmod>2016-05-03T09:09:07.000Z</lastmod>
     <data>
@@ -141,70 +489,6 @@
            
              
               <breadCrumb title="服务端" url="http://tutuge.me/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://tutuge.me/2016/04/30/autoreleasing-meet-autoreleasepool/</loc>
-    <lastmod>2016-05-03T09:00:29.000Z</lastmod>
-    <data>
-        <display>
-        <title>结合访问Out Parameters出现EXC_BAD_ACCESS的例子，反编译汇编解读__autoreleasing</title>
-        <pubTime>2016-04-30T11:19:23.000Z</pubTime>
-        
-        <tag>原创</tag>
-         
-        <tag>iOS</tag>
-         
-         
-           
-             
-              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://tutuge.me/2016/03/29/modular-and-component-summary/</loc>
-    <lastmod>2016-05-03T08:42:34.000Z</lastmod>
-    <data>
-        <display>
-        <title>对组件化与模块化的思考与总结</title>
-        <pubTime>2016-03-29T14:19:54.000Z</pubTime>
-        
-        <tag>原创</tag>
-         
-         
-           
-             
-              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://tutuge.me/2016/04/10/summary-of-code-organization/</loc>
-    <lastmod>2016-05-03T08:42:16.000Z</lastmod>
-    <data>
-        <display>
-        <title>总结一些iOS项目中组织代码的方法</title>
-        <pubTime>2016-04-10T12:10:56.000Z</pubTime>
-        
-        <tag>原创</tag>
-         
-        <tag>iOS</tag>
-         
-         
-           
-             
-              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
           
         </display>
     </data>
@@ -232,26 +516,6 @@
            
              
               <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://tutuge.me/2014/11/01/%E7%AC%AC%E4%B8%80%E7%AF%87Blog/</loc>
-    <lastmod>2016-03-20T09:04:10.000Z</lastmod>
-    <data>
-        <display>
-        <title>第一篇Blog</title>
-        <pubTime>2014-10-31T16:13:15.000Z</pubTime>
-        
-        <tag>杂烩</tag>
-         
-         
-           
-             
-              <breadCrumb title="其它" url="http://tutuge.me/categories/%E5%85%B6%E5%AE%83/"/>
           
         </display>
     </data>
@@ -395,78 +659,6 @@
 
     
   <url>
-    <loc>http://tutuge.me/2015/03/07/UITextView%E7%BC%96%E8%BE%91%E6%97%B6%E6%8F%92%E5%85%A5%E8%87%AA%E5%AE%9A%E4%B9%89%E8%A1%A8%E6%83%85-%E7%AE%80%E5%8D%95%E7%9A%84%E5%9B%BE%E6%96%87%E6%B7%B7%E7%BC%96/</loc>
-    <lastmod>2016-03-20T09:03:58.000Z</lastmod>
-    <data>
-        <display>
-        <title>UITextView编辑时插入自定义表情-简单的图文混编</title>
-        <pubTime>2015-03-07T03:04:38.000Z</pubTime>
-        
-        <tag>原创</tag>
-         
-        <tag>iOS</tag>
-         
-         
-           
-             
-              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://tutuge.me/2015/12/31/TTGTagCollectionView/</loc>
-    <lastmod>2016-03-20T09:03:56.000Z</lastmod>
-    <data>
-        <display>
-        <title>开源项目-TTGTagCollectionView</title>
-        <pubTime>2015-12-31T13:56:04.000Z</pubTime>
-        
-        <tag>原创</tag>
-         
-        <tag>iOS</tag>
-         
-        <tag>开源</tag>
-         
-         
-           
-             
-              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://tutuge.me/2015/10/25/ttgemojirate-lib/</loc>
-    <lastmod>2016-03-20T09:03:52.000Z</lastmod>
-    <data>
-        <display>
-        <title>Swift开源项目: TTGEmojiRate的实现</title>
-        <pubTime>2015-10-25T11:32:42.000Z</pubTime>
-        
-        <tag>原创</tag>
-         
-        <tag>iOS</tag>
-         
-        <tag>开源</tag>
-         
-        <tag>Swift</tag>
-         
-         
-           
-             
-              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://tutuge.me/2015/04/19/thrift-example-cpp-and-php/</loc>
     <lastmod>2016-03-20T09:03:50.000Z</lastmod>
     <data>
@@ -486,28 +678,6 @@
            
              
               <breadCrumb title="服务端" url="http://tutuge.me/categories/%E6%9C%8D%E5%8A%A1%E7%AB%AF/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://tutuge.me/2015/04/03/something-about-gcd/</loc>
-    <lastmod>2016-03-20T09:03:49.000Z</lastmod>
-    <data>
-        <display>
-        <title>GCD使用经验与技巧浅谈</title>
-        <pubTime>2015-04-03T13:59:56.000Z</pubTime>
-        
-        <tag>原创</tag>
-         
-        <tag>iOS</tag>
-         
-         
-           
-             
-              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
           
         </display>
     </data>
@@ -559,76 +729,6 @@
 
     
   <url>
-    <loc>http://tutuge.me/2014/11/02/LinkTextView-Android%E5%BC%80%E6%BA%90%E5%BA%93-%E5%8E%9F%E5%88%9B/</loc>
-    <lastmod>2016-03-20T09:03:43.000Z</lastmod>
-    <data>
-        <display>
-        <title>Android开源库-LinkTextView-原创</title>
-        <pubTime>2014-11-01T18:34:46.000Z</pubTime>
-        
-        <tag>原创</tag>
-         
-        <tag>Android</tag>
-         
-        <tag>开源</tag>
-         
-         
-           
-             
-              <breadCrumb title="Android" url="http://tutuge.me/categories/Android/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://tutuge.me/2015/02/01/iOS%E9%A1%B9%E7%9B%AE%E7%9A%84%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84-%E5%8E%9F%E5%88%9B/</loc>
-    <lastmod>2016-03-20T09:03:42.000Z</lastmod>
-    <data>
-        <display>
-        <title>iOS项目的目录结构-原创</title>
-        <pubTime>2015-01-31T18:27:21.000Z</pubTime>
-        
-        <tag>原创</tag>
-         
-        <tag>iOS</tag>
-         
-         
-           
-             
-              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://tutuge.me/2015/07/08/fill-nil-property-of-object/</loc>
-    <lastmod>2016-03-20T09:03:40.000Z</lastmod>
-    <data>
-        <display>
-        <title>用Runtime的手段填充任意NSObject对象的nil属性</title>
-        <pubTime>2015-07-08T15:23:23.000Z</pubTime>
-        
-        <tag>原创</tag>
-         
-        <tag>iOS</tag>
-         
-        <tag>Runtime</tag>
-         
-         
-           
-             
-              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://tutuge.me/2015/03/01/Entity%E5%92%8CModel%E7%9A%84%E4%B8%8D%E5%90%8C-%E5%85%B3%E4%BA%8E%E4%BB%A3%E7%A0%81%E7%9A%84%E6%95%B0%E6%8D%AE%E5%B1%82/</loc>
     <lastmod>2016-03-20T09:03:37.000Z</lastmod>
     <data>
@@ -637,32 +737,6 @@
         <pubTime>2015-03-01T15:03:10.000Z</pubTime>
         
         <tag>原创</tag>
-         
-         
-           
-             
-              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://tutuge.me/2015/03/11/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-4-%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%AE%9A%E4%B9%89%E5%B8%B8%E9%87%8F/</loc>
-    <lastmod>2016-03-20T09:03:35.000Z</lastmod>
-    <data>
-        <display>
-        <title>Effective-Objective-C-读书笔记-Item-4-如何正确定义常量</title>
-        <pubTime>2015-03-10T16:07:23.000Z</pubTime>
-        
-        <tag>原创</tag>
-         
-        <tag>iOS</tag>
-         
-        <tag>翻译</tag>
-         
-        <tag>笔记</tag>
          
          
            
@@ -749,28 +823,6 @@
 
     
   <url>
-    <loc>http://tutuge.me/2015/03/29/bind-data-to-gcd-queue/</loc>
-    <lastmod>2016-03-20T09:02:21.000Z</lastmod>
-    <data>
-        <display>
-        <title>为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权</title>
-        <pubTime>2015-03-29T11:27:40.000Z</pubTime>
-        
-        <tag>原创</tag>
-         
-        <tag>iOS</tag>
-         
-         
-           
-             
-              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://tutuge.me/2015/02/19/Block%E7%B1%BB%E5%9E%8B%E5%8F%98%E9%87%8F-%E7%BC%93%E5%AD%98Http%E8%AF%B7%E6%B1%82%E4%B8%8E%E5%9B%9E%E8%B0%83/</loc>
     <lastmod>2016-03-20T09:02:18.000Z</lastmod>
     <data>
@@ -781,58 +833,6 @@
         <tag>原创</tag>
          
         <tag>iOS</tag>
-         
-         
-           
-             
-              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/</loc>
-    <lastmod>2016-03-20T08:56:19.000Z</lastmod>
-    <data>
-        <display>
-        <title>有趣的Autolayout示例2-Masonry实现</title>
-        <pubTime>2015-08-07T16:55:52.000Z</pubTime>
-        
-        <tag>原创</tag>
-         
-        <tag>iOS</tag>
-         
-        <tag>Autolayout</tag>
-         
-        <tag>Masonry</tag>
-         
-         
-           
-             
-              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://tutuge.me/2015/05/23/autolayout-example-with-masonry/</loc>
-    <lastmod>2016-03-20T08:55:17.000Z</lastmod>
-    <data>
-        <display>
-        <title>有趣的Autolayout示例-Masonry实现</title>
-        <pubTime>2015-05-23T11:59:22.000Z</pubTime>
-        
-        <tag>原创</tag>
-         
-        <tag>iOS</tag>
-         
-        <tag>Autolayout</tag>
-         
-        <tag>Masonry</tag>
          
          
            

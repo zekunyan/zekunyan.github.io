@@ -271,7 +271,8 @@
 <li>NSTextAttachment，NSAttributedString的一种样式类，可以在文本中显示图片。</li>
 <li>NSTextStorage，UITextView中的实际的文本封装。（见参考中的UITextView文档）</li>
 </ul>
-<h3 id="表情与其标志"><a href="#表情与其标志" class="headerlink" title="表情与其标志"></a>表情与其标志</h3><p>首先需要明确的是，我们的自定义表情一定是有一一对应的“<strong>标志</strong>”的，如“<strong>[/emoji_haha]</strong>”。<br>就是说，为了方便处理，方便在数据库、网络传输中保存、传输带有表情图片的文本，我们必须要为每种表情取特定的“<strong>名字</strong>”，数据库中储存的、网络传输的文本就只包含这些标志名字就行，在显示的时候做对应的替换。</p>
+<h3 id="表情与其标志"><a href="#表情与其标志" class="headerlink" title="表情与其标志"></a>表情与其标志</h3><p>首先需要明确的是，我们的自定义表情一定是有一一对应的“<strong>标志</strong>”的，如“<strong>[/emoji_haha]</strong>”。</p>
+<p>就是说，为了方便处理，方便在数据库、网络传输中保存、传输带有表情图片的文本，我们必须要为每种表情取特定的“<strong>名字</strong>”，数据库中储存的、网络传输的文本就只包含这些标志名字就行，在显示的时候做对应的替换。</p>
 <p>如：</p>
 <p><strong>tutuge.me<img src="http://zorrochen.qiniudn.com/blog_uitextview_input_emoji_emoji_1.png" alt="表情"></strong></p>
 <p>对应的纯文本就是：</p>

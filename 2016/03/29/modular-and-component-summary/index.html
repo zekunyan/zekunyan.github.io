@@ -257,8 +257,10 @@
                 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前段时间反复研读了<a href="http://limboy.me/ios/2016/03/10/mgj-components.html" target="_blank" rel="external">蘑菇街 App 的组件化之路</a>、<a href="http://limboy.me/ios/2016/03/14/mgj-components-continued.html" target="_blank" rel="external">蘑菇街 App 的组件化之路·续</a>和<a href="http://casatwy.com/iOS-Modulization.html" target="_blank" rel="external">iOS应用架构谈 组件化方案</a>，然后又找到了其它一些研究组件化、模块化方案的文章，但是总觉得差点什么，所以还是决定从头开始思考。文章的标题起的好宽泛，感觉给自己挖了个深坑-。-，其实只是自己对组件化、模块化的一些看法、总结。</p>
 <a id="more"></a>
 <h2 id="为什么"><a href="#为什么" class="headerlink" title="为什么"></a>为什么</h2><p>先总结下为什么要大动干戈的对代码分模块、拆组件。   </p>
-<p><strong>代码量膨胀，不利于维护，更不利于新功能的开发</strong><br> 现在随便开发一个App的代码行数都是数以万计的，如果不对代码做合理的拆分，那简直就是灾难性的，估计只有最初的开发人员知道如何维护修改，如果换人开发的话，难以下手，更不用说开发新功能了。</p>
-<p><strong>不同业务代码耦合严重，难以多人合作，职责不分明</strong><br>多人一起开发时，如果代码结构、模块化的不好，就很难对不同业务划分出分界线，难以明确各自的职责，牵一发动全身，出了问题更是容易相互扯皮（这个时候只能说一句“怪我咯o(╯□╰)o”），更不用提合并代码时的冲突了。</p>
+<p><strong>代码量膨胀，不利于维护，更不利于新功能的开发</strong>  </p>
+<p> 现在随便开发一个App的代码行数都是数以万计的，如果不对代码做合理的拆分，那简直就是灾难性的，估计只有最初的开发人员知道如何维护修改，如果换人开发的话，难以下手，更不用说开发新功能了。</p>
+<p><strong>不同业务代码耦合严重，难以多人合作，职责不分明</strong>  </p>
+<p>多人一起开发时，如果代码结构、模块化的不好，就很难对不同业务划分出分界线，难以明确各自的职责，牵一发动全身，出了问题更是容易相互扯皮（这个时候只能说一句“怪我咯o(╯□╰)o”），更不用提合并代码时的冲突了。</p>
 <p>所以，合理的组织代码，划分模块、拆分组件是项目可以高效迭代的基础。</p>
 <h2 id="疑问"><a href="#疑问" class="headerlink" title="疑问"></a>疑问</h2><p>那到底什么是模块化、组件化？查资料的时候一会儿模块，一会儿组件，有什么联系，有什么区别？有人说这只是叫法习惯问题，知道大概意思就好，不用咬文嚼字，但是总觉得没有个“定义”感觉不踏实，所以还是求助了万能的维基百科=。=</p>
 <h2 id="模块化"><a href="#模块化" class="headerlink" title="模块化"></a>模块化</h2><p>维基百科的<a href="https://en.wikipedia.org/wiki/Modular_programming" target="_blank" rel="external">Modular programming</a>的开头定义如下:</p>
@@ -280,7 +282,8 @@
 <p>All system processes are placed into separate components so that all of the data and functions inside each component are semantically related (just as with the contents of classes). Because of this principle, it is often said that components are modular and cohesive.</p>
 </blockquote>
 <p>同时，组件还具有其他属性，如可替代性(substitutable)，通过接口(interface)访问，可重用性(Reusability)等，读者可自行阅读。</p>
-<h2 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h2><p>难道模块化跟组件化真的是完全一样的？的确，很多时候两者的概念完全可以相互替换，在实践中更是经常混用。<br>在求助谷歌，甚至阅读了大量的前端技术等其它技术领域的组件化、模块化的文章后，我觉得如果真要将它们两者做个对比，大概总结如下：</p>
+<h2 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h2><p>难道模块化跟组件化真的是完全一样的？的确，很多时候两者的概念完全可以相互替换，在实践中更是经常混用。  </p>
+<p>在求助谷歌，甚至阅读了大量的前端技术等其它技术领域的组件化、模块化的文章后，我觉得如果真要将它们两者做个对比，大概总结如下：</p>
 <ul>
 <li>模块化强调的是<strong>拆分</strong>，无论是从业务角度还是从架构、技术角度，模块化首先意味着将代码、数据等内容按照其职责不同分离，使其变得更加容易维护、迭代，使开发人员可以分而治之。</li>
 <li>组件化则着重于<strong>可重用性</strong>，不管是界面上反复使用的用户头像按钮，还是处理数据的流程中的某个部件，只要可以被反复使用，并且进行了高度封装，只能通过接口访问，就可以称其为“组件”。</li>
@@ -302,7 +305,10 @@
 <p>其实这里的组件有种sunnyxx大大提到过的“Self-Manager”的味道=。=，组件本身负责自己的所有功能、样式，参考：<a href="http://blog.sunnyxx.com/2015/12/19/self-manager-pattern-in-ios/" target="_blank" rel="external">iOS 开发中的 Self-Manager 模式</a>。当然跟前端的组件化也挺像的，如React里面的component，样式、功能都封装到component里面，以便更好地解耦复用。</p>
 <h4 id="从数据入手，拆分数据加工组件"><a href="#从数据入手，拆分数据加工组件" class="headerlink" title="从数据入手，拆分数据加工组件"></a>从数据入手，拆分数据加工组件</h4><p>再来看看从数据入手，拆分可复用的组件。假如有如下数据处理流程：</p>
 <p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/modular_and_component_summary_4.jpg" alt="一数据处理流程示例"></p>
-<p>其实大部分时候，拆分模块、组件都是以清晰的流程、逻辑为基础的，就如上图的过程，当流程清晰后，可以拆分复用的组件也就“出来了”。<br>如从JSON数据实例化出对应的Entity对象，这个功能就是一个完整独立的组件，当然实际开发中会用Mantle、JSONModel等库实现。<br>以此类推，校验、格式化日期（如“几秒钟前、几天前”）、多语言等环节，都可以独立成一个个的组件。<br>当然，这里的组件一般是指能在多个模块使用的功能组件，如果只是在某个界面上才用的，倒不如放到ViewModel、Presenter等这些直接跟界面有关的类里面。</p>
+<p>其实大部分时候，拆分模块、组件都是以清晰的流程、逻辑为基础的，就如上图的过程，当流程清晰后，可以拆分复用的组件也就“出来了”。 </p>
+<p>如从JSON数据实例化出对应的Entity对象，这个功能就是一个完整独立的组件，当然实际开发中会用Mantle、JSONModel等库实现。  </p>
+<p>以此类推，校验、格式化日期（如“几秒钟前、几天前”）、多语言等环节，都可以独立成一个个的组件。  </p>
+<p>当然，这里的组件一般是指能在多个模块使用的功能组件，如果只是在某个界面上才用的，倒不如放到ViewModel、Presenter等这些直接跟界面有关的类里面。</p>
 <h4 id="小节"><a href="#小节" class="headerlink" title="小节"></a>小节</h4><p>上面的几种方法比较适合不知道如何下手时使用=。=，真正的开发中，还是要根据实际情况考虑，情况也会复杂些。不过倒是可以总结几点原则：</p>
 <ul>
 <li><strong>单一职责</strong>，意味着一个模块、一个组件只做一件事，绝不多做。</li>

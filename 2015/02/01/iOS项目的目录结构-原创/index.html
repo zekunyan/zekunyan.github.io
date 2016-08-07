@@ -262,11 +262,16 @@
 <figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">|---General</span></span><br><span class="line">    <span class="string">|---AppDelegate</span></span><br><span class="line">    <span class="string">|---Application</span></span><br><span class="line">    <span class="string">|---Constant</span></span><br><span class="line">    <span class="string">|---UI</span></span><br><span class="line">        <span class="string">|---View</span></span><br><span class="line">        <span class="string">|---VC</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="string">|---Category</span></span><br><span class="line">    ...</span><br><span class="line"><span class="string">|---Entity</span></span><br><span class="line">    <span class="string">|---BaseEntity</span></span><br><span class="line">    <span class="string">|---UserEntity</span></span><br><span class="line">    <span class="string">|---CommentEntity</span></span><br><span class="line">    ...</span><br><span class="line"><span class="string">|---Http</span></span><br><span class="line">    <span class="string">|---Api</span></span><br><span class="line">    <span class="string">|---Manager</span></span><br><span class="line">    <span class="string">|---CodeHandler</span></span><br><span class="line">    <span class="string">|---ErrorHandler</span></span><br><span class="line">    <span class="string">|---HttpHandler</span></span><br><span class="line">        <span class="string">|---UserHttpHandler</span></span><br><span class="line">        <span class="string">|---CommentHttpHandler</span></span><br><span class="line">        ...</span><br><span class="line"><span class="string">|---DB</span></span><br><span class="line">    <span class="string">|---DBHelper</span></span><br><span class="line">    <span class="string">|---DBService</span></span><br><span class="line">    ...</span><br><span class="line"><span class="string">|---Util</span></span><br><span class="line">    <span class="string">|---StringUtil</span></span><br><span class="line">    <span class="string">|---NumberUtil</span></span><br><span class="line">    <span class="string">|---TimeUtil</span></span><br><span class="line">    ...</span><br><span class="line"><span class="string">|---Service</span></span><br><span class="line">    <span class="string">|---AccountService</span></span><br><span class="line">    <span class="string">|---ShareService</span></span><br><span class="line">    ...</span><br><span class="line"><span class="string">|---Lib</span></span><br><span class="line">    <span class="string">|---Umeng</span></span><br><span class="line">    <span class="string">|---QQSDK</span></span><br><span class="line">    <span class="string">|---SVProgressHUD</span></span><br><span class="line">    ...</span><br><span class="line"><span class="string">|---Module</span></span><br><span class="line">    <span class="string">|---Login</span></span><br><span class="line">        <span class="string">|---View</span></span><br><span class="line">        <span class="string">|---VC</span></span><br><span class="line">        <span class="string">|---XIB</span></span><br><span class="line">    <span class="string">|---Comment</span></span><br><span class="line">        <span class="string">|---View</span></span><br><span class="line">        <span class="string">|---VC</span></span><br><span class="line">        <span class="string">|---XIB</span></span><br><span class="line">        <span class="string">|---Business</span></span><br><span class="line">    <span class="string">|---Feeds</span></span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
 <p>乍一看好多，别被吓到=。=，容我细细讲解。</p>
 <h2 id="详细讲解"><a href="#详细讲解" class="headerlink" title="详细讲解"></a>详细讲解</h2><h3 id="General"><a href="#General" class="headerlink" title="General"></a>General</h3><p>General好理解，放的就是如AppDelegate之类的、项目中最普通的、最常用的组件。</p>
-<p><strong>AppDelegate</strong>:<br>App的Delegate类实现，这个必须有，就不用说了吧。</p>
-<p><strong>Application</strong>:<br>如果自定义实现了Application类，就放在这里。</p>
-<p><strong>Constant</strong>:<br>顾名思义，常量，项目用到的所有公共常量，如enum枚举类型的、Notification的Tag，常用的颜色、字符串等等等，都可以按照自己的需求划分不同的Group，放到Constant里面。</p>
-<p><strong>UI</strong>:<br>项目中自定义的UIView、UIViewController子类之类的代码，就对应放在UI下的View、VC中。</p>
-<p><strong>Category</strong><br>对系统类做的扩展，各种Category，如<code>NSString+XXXExtension</code>这种，就统一放在Category目录下。</p>
+<p><strong>AppDelegate</strong>:</p>
+<p>App的Delegate类实现，这个必须有，就不用说了吧。</p>
+<p><strong>Application</strong>:</p>
+<p>如果自定义实现了Application类，就放在这里。</p>
+<p><strong>Constant</strong>:</p>
+<p>顾名思义，常量，项目用到的所有公共常量，如enum枚举类型的、Notification的Tag，常用的颜色、字符串等等等，都可以按照自己的需求划分不同的Group，放到Constant里面。</p>
+<p><strong>UI</strong>:</p>
+<p>项目中自定义的UIView、UIViewController子类之类的代码，就对应放在UI下的View、VC中。</p>
+<p><strong>Category</strong>:</p>
+<p>对系统类做的扩展，各种Category，如<code>NSString+XXXExtension</code>这种，就统一放在Category目录下。</p>
 <p>如还有其他的通用组件，也不妨放到这里，做统一的管理。</p>
 <hr>
 <h3 id="Entity"><a href="#Entity" class="headerlink" title="Entity"></a>Entity</h3><p>Entity，也有人喜欢叫Model（关于Entity和Model的区别，推荐看看<a href="http://blogsh.de/2011/09/08/models-vs-entities/" target="_blank" rel="external">这篇文章</a>，个人觉得研究研究Entity和Model概念的区别还是很有好处的），就是程序中的“实体”，如一个用户、一条评论、一首歌等等，简单来说就是一个独立“个体”的集合、打包，具体的自己查查吧，网上一大堆的，感觉跟JavaBean的概念比较像。</p>
@@ -274,33 +279,46 @@
 <p>有了BaseEntity后，对应的各个业务中的具体Entity，如UserEntity、CommentEntity，就可以分门别类的建立单独的Group存放。</p>
 <hr>
 <h3 id="Http"><a href="#Http" class="headerlink" title="Http"></a>Http</h3><p>这个Group里面放跟网络请求相关的东西，详细如下：</p>
-<p><strong>Api</strong>:<br>互联网应用少不了跟服务器打交道的各种网络接口，所以我在项目中把所有的API对应的相对URL地址、参数注释要求等等都放在了这里，好统一管理。</p>
-<p><strong>Manager</strong>:<br>定义最基本的网络请求，如GET、POST、PUT等请求的基本封装，获取图片的基本封装。<br>一般来说就是定制统一的基本请求接口，对上层提供一致、稳定的服务，真正的网络请求，可以自己用iOS原生的Api写，也可以用AFNetworking等第三方库做封装，图片也可以灵活的用AFNetworking、SDWebImage这些优秀的库实现。还有就是，可以方便的统一对请求做处理，如错误处理、Http的Code、状态处理等等。还可以统一的增加请求参数，如统一为每个请求都增加用户的ID、token什么的。</p>
-<p><strong>CodeHandler</strong><br>大部分的API设计都会有相应的状态码、Code，为了方便扩展，可以把这些处理Code的类单独放在这里。</p>
-<p><strong>ErrorHandler</strong><br>这个就少不了了，对Http的错误进行单独处理，加Log什么的。</p>
-<p><strong>HttpHandler</strong><br>这个Group里面放的是真正实现接口的类，如什么UserHttpHandler、CommentHttpHandler之类的，就是具体实现了接口调用、处理返回数据、回调的类。</p>
+<p><strong>Api</strong>:</p>
+<p>互联网应用少不了跟服务器打交道的各种网络接口，所以我在项目中把所有的API对应的相对URL地址、参数注释要求等等都放在了这里，好统一管理。</p>
+<p><strong>Manager</strong>:</p>
+<p>定义最基本的网络请求，如GET、POST、PUT等请求的基本封装，获取图片的基本封装。<br>一般来说就是定制统一的基本请求接口，对上层提供一致、稳定的服务，真正的网络请求，可以自己用iOS原生的Api写，也可以用AFNetworking等第三方库做封装，图片也可以灵活的用AFNetworking、SDWebImage这些优秀的库实现。还有就是，可以方便的统一对请求做处理，如错误处理、Http的Code、状态处理等等。还可以统一的增加请求参数，如统一为每个请求都增加用户的ID、token什么的。</p>
+<p><strong>CodeHandler</strong></p>
+<p>大部分的API设计都会有相应的状态码、Code，为了方便扩展，可以把这些处理Code的类单独放在这里。</p>
+<p><strong>ErrorHandler</strong></p>
+<p>这个就少不了了，对Http的错误进行单独处理，加Log什么的。</p>
+<p><strong>HttpHandler</strong></p>
+<p>这个Group里面放的是真正实现接口的类，如什么UserHttpHandler、CommentHttpHandler之类的，就是具体实现了接口调用、处理返回数据、回调的类。</p>
 <p>Http里面的各个Group的类其实都是相互关联的，设计的时候可以定制统一的接口（Protocol），然后创建类实现（conform）这些接口，也就是面向接口的编程，以最大限度的减少接口层的各个职能之间的耦合，方便扩展。</p>
 <hr>
 <h3 id="DB"><a href="#DB" class="headerlink" title="DB"></a>DB</h3><p>介于iOS的SQLite不是那么好用，所以非常有必要为操作数据库的类建立单独的地盘=。=</p>
-<p><strong>DBHelper</strong>:<br>放基础的操作数据库的类，如简单的查找、插入、更新、事务更新等等操作，为负载的数据库业务逻辑封装底层接口。比如对流行的FMDB进行封装等等。</p>
-<p><strong>DBService</strong>:<br>这里放具体的数据库业务实现类，至于为什么叫“Service”，因为我也想不出什么好的名字了=。= 按照自己的业务逻辑组织即可。</p>
+<p><strong>DBHelper</strong>:</p>
+<p>放基础的操作数据库的类，如简单的查找、插入、更新、事务更新等等操作，为负载的数据库业务逻辑封装底层接口。比如对流行的FMDB进行封装等等。</p>
+<p><strong>DBService</strong>:</p>
+<p>这里放具体的数据库业务实现类，至于为什么叫“Service”，因为我也想不出什么好的名字了=。= 按照自己的业务逻辑组织即可。</p>
 <hr>
 <h3 id="Util"><a href="#Util" class="headerlink" title="Util"></a>Util</h3><p>放常用的工具类的地方。如字符串操作的类StringUtil、时间计算格式化类TimeUtil等，按具体需求而定，这个就不用多说了吧。</p>
 <hr>
-<h3 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h3><p>项目的需求多了，业务逻辑的代码就会越来越多，总不能都放在view controller里面吧。一些多处用到的，或者非常独立的业务代码，完全可以抽离出来，实现为单独的、跟界面无关的业务类。因为做的事很杂，所以干脆就叫Service了。<br><strong>AccountService</strong>、<strong>ShareService</strong>就是这种类。而且大部分的Service都应该是单例类，如<strong>AccountService</strong>类可能维护着程序运行期间的账户信息，<strong>ShareService</strong>对程序的分享功能做了统一处理等等，具体怎么用就随各位了。</p>
+<h3 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h3><p>项目的需求多了，业务逻辑的代码就会越来越多，总不能都放在view controller里面吧。一些多处用到的，或者非常独立的业务代码，完全可以抽离出来，实现为单独的、跟界面无关的业务类。因为做的事很杂，所以干脆就叫Service了。</p>
+<p><strong>AccountService</strong>、<strong>ShareService</strong>就是这种类。而且大部分的Service都应该是单例类，如<strong>AccountService</strong>类可能维护着程序运行期间的账户信息，<strong>ShareService</strong>对程序的分享功能做了统一处理等等，具体怎么用就随各位了。</p>
 <hr>
 <h3 id="Lib"><a href="#Lib" class="headerlink" title="Lib"></a>Lib</h3><p>Lib，放各种第三方库，因项目需要修改过的第三方组件等，像什么友盟、QQSDK之类的就可以放这。当然，一些不会做改动的库最好还是用CocoaoPod做统一管理。</p>
 <hr>
-<h3 id="Module"><a href="#Module" class="headerlink" title="Module"></a>Module</h3><p>终于讲到了最重要的地方。<br>iOS工程中最多的文件往往就是各种View、ViewController类，以前总是看到有人只创建两个Group，一个叫Views，另一个叫ViewControllers，然后所有的Views、ViewController都往里面塞，然后随着需求的增加，这两个Group也臃肿不堪。。。</p>
-<p><strong>办法总是有的。就是为工程划分模块-Module</strong><br>如何划分Module？我认为，可以按照以下两点建立：</p>
+<h3 id="Module"><a href="#Module" class="headerlink" title="Module"></a>Module</h3><p>终于讲到了最重要的地方。</p>
+<p>iOS工程中最多的文件往往就是各种View、ViewController类，以前总是看到有人只创建两个Group，一个叫Views，另一个叫ViewControllers，然后所有的Views、ViewController都往里面塞，然后随着需求的增加，这两个Group也臃肿不堪。。。</p>
+<p><strong>办法总是有的。就是为工程划分模块-Module</strong></p>
+<p>如何划分Module？我认为，可以按照以下两点建立：</p>
 <ol>
 <li>以页面跳转分支划分。</li>
 <li>以功能划分。</li>
 </ol>
-<p><strong>以页面跳转分支划分</strong><br>就是按照应用的页面设计与业务逻辑，从最顶级开始，一级一级页面往下跳转，找出其中的独立分支，归为一个Module模块。<br>举例来说，应用主界面有4个Tab页，就先分出四个Module，然后一级一级往下跳转，遇到分支就建立新的Module，如此递归的建立，就能大致划分出各个Module。当然，这么做是最粗糙的，还要根据情况，将不同的分支Module合并成一个Module，简化代码的组成。我在这只是提供个划分Module的方法，具体怎么设计就看各位读者了=。=</p>
-<p><strong>以功能划分</strong><br>这个好理解，无非就是根据前期项目的功能模块划分工程的代码Module组成。如什么用户设置Module、评论Module、登录Module等等。</p>
+<p><strong>以页面跳转分支划分</strong></p>
+<p>就是按照应用的页面设计与业务逻辑，从最顶级开始，一级一级页面往下跳转，找出其中的独立分支，归为一个Module模块。<br>举例来说，应用主界面有4个Tab页，就先分出四个Module，然后一级一级往下跳转，遇到分支就建立新的Module，如此递归的建立，就能大致划分出各个Module。当然，这么做是最粗糙的，还要根据情况，将不同的分支Module合并成一个Module，简化代码的组成。我在这只是提供个划分Module的方法，具体怎么设计就看各位读者了=。=</p>
+<p><strong>以功能划分</strong></p>
+<p>这个好理解，无非就是根据前期项目的功能模块划分工程的代码Module组成。如什么用户设置Module、评论Module、登录Module等等。</p>
 <p>总的来数，就是要用Module将工程的代码分类管理，每个Module具有大致相同的结构，如都可能有本Module用到的View、ViewController，自定义的类Class等等，就是说，按照职能对代码划分，避免将所有的类都堆在一起，也好应对新的需求。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>啰啰嗦嗦说了一大堆，想必各位都看烦了吧=。=刚开始写博客，写到一个地方，又会引出另一块，写着写着容易写偏了。<br>写之前我也大致搜了一下，发现网上相关的资料好少，但是实际的经验告诉我，项目工程的目录结构非常重要，无论是对开发还是对后期的维护，所以想着应该写篇东西，分享我自己的经验给大家，有啥问题，多提意见啊~~~</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>啰啰嗦嗦说了一大堆，想必各位都看烦了吧=。=刚开始写博客，写到一个地方，又会引出另一块，写着写着容易写偏了。</p>
+<p>写之前我也大致搜了一下，发现网上相关的资料好少，但是实际的经验告诉我，项目工程的目录结构非常重要，无论是对开发还是对后期的维护，所以想着应该写篇东西，分享我自己的经验给大家，有啥问题，多提意见啊~~~</p>
 
             </div>
         </div>

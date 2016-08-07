@@ -277,7 +277,8 @@
 <p>上面的代码运行后如下：</p>
 <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">2015<span class="selector-tag">-03-29</span> 20<span class="selector-pseudo">:28</span><span class="selector-pseudo">:16.854</span> <span class="selector-tag">GCDTest</span><span class="selector-attr">[37787:1443423]</span> 1: <span class="selector-tag">context</span> <span class="selector-tag">number</span>: 10</span><br><span class="line">2015<span class="selector-tag">-03-29</span> 20<span class="selector-pseudo">:28</span><span class="selector-pseudo">:16.855</span> <span class="selector-tag">GCDTest</span><span class="selector-attr">[37787:1443423]</span> <span class="selector-tag">In</span> <span class="selector-tag">clean</span>, <span class="selector-tag">context</span> <span class="selector-tag">number</span>: 20</span><br></pre></td></tr></table></figure>
 <p>看，通过为队列设置context，我们就能为队列绑定自定义的数据，然后在合适的时候取出来用。</p>
-<h2 id="NSObject类型的context"><a href="#NSObject类型的context" class="headerlink" title="NSObject类型的context"></a>NSObject类型的context</h2><p>在Mac、iOS的开发过程中，我们大部分用的都是Foundation框架下的类，就是如NSString、NSDictionary这些NSObject类型的类。<br>但是上面的<strong>dispatch_set(get)_context</strong>接受的context参数是C语言类型的，即Core Foundation类型的，我们如何转换呢？</p>
+<h2 id="NSObject类型的context"><a href="#NSObject类型的context" class="headerlink" title="NSObject类型的context"></a>NSObject类型的context</h2><p>在Mac、iOS的开发过程中，我们大部分用的都是Foundation框架下的类，就是如NSString、NSDictionary这些NSObject类型的类。  </p>
+<p>但是上面的<strong>dispatch_set(get)_context</strong>接受的context参数是C语言类型的，即Core Foundation类型的，我们如何转换呢？</p>
 <p><strong>由于ARC不能管理Core Foundation Object的生命周期</strong>，所以我们必须先转换context的“类型”，以便转换内存管理权。</p>
 <h3 id="bridge"><a href="#bridge" class="headerlink" title="__bridge"></a>__bridge</h3><p>Apple已经为我们提供了用于转换的关键字，如下：</p>
 <ul>

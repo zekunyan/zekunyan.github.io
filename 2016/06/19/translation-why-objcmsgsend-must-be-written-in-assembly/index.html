@@ -256,7 +256,8 @@
 
 
             <div class="entry teal-link-context">
-                <h2 id="译者前言"><a href="#译者前言" class="headerlink" title="译者前言"></a>译者前言</h2><p>总是看到有人说用汇编实现<code>objc_msgSend</code>是为了速度快，当然这个不可否认。但是难道没有别的原因？于是就看到了这篇文章，遂翻译之！=。=<br>我自己的理解就是，用汇编实现，是为了应对不同的“<a href="https://en.wikipedia.org/wiki/Calling_convention" target="_blank" rel="external">Calling convention</a>”，把函数调用前的栈和寄存器的参数、状态设置，交给编译器去处理。<br>先看看原文吧。</p>
+                <h2 id="译者前言"><a href="#译者前言" class="headerlink" title="译者前言"></a>译者前言</h2><p>总是看到有人说用汇编实现<code>objc_msgSend</code>是为了速度快，当然这个不可否认。但是难道没有别的原因？于是就看到了这篇文章，遂翻译之！=。=  </p>
+<p>我自己的理解就是，用汇编实现，是为了应对不同的“<a href="https://en.wikipedia.org/wiki/Calling_convention" target="_blank" rel="external">Calling convention</a>”，把函数调用前的栈和寄存器的参数、状态设置，交给编译器去处理。<br>先看看原文吧。</p>
 <blockquote>
 <p>原作者: <a href="https://www.linkedin.com/in/ari-grant-789a1015" target="_blank" rel="external">Ari Grant</a><br>原文链接: <a href="http://arigrant.com/blog/2014/2/12/why-objcmsgsend-must-be-written-in-assembly" target="_blank" rel="external">Why objc_msgSend Must be Written in Assembly</a></p>
 </blockquote>
@@ -274,7 +275,8 @@
 <p>但是实际上这是不可能的，因为没有函数可以同时满足这两个调用。而且它的返回值也不能同时是<code>NSUInteger</code>和<code>id</code>。</p>
 <p>而且，上面的代码也是无法编译通过的。那么，加上类型转换怎么样？</p>
 <figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSUInteger n = (<span class="name">NSUInteger</span> (<span class="name">*</span>)(<span class="name">id</span>, SEL))objc_msgSend(<span class="name">array</span>,  @selector(<span class="name">count</span>))<span class="comment">;</span></span><br><span class="line">id obj = (<span class="name">id</span> (<span class="name">*</span>)(<span class="name">id</span>, SEL, NSUInteger))objc_msgSend(<span class="name">array</span>, @selector(<span class="name">objectAtIndex</span>:), <span class="number">6</span>)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
-<p>这下可以编译通过了，虽然看起来不直观。。。<br><code>objc_msgSend</code>是一个Public的函数，在<code>&lt;objc/message.h&gt;</code>里声明，如果你想直接调用它，就必须按照上面的格式加上强制类型转换，要不然是无法编译通过的。但是<code>objc_msgSend</code>到底是如何实现，来支持各种返回类型的？本文后面会讲到。</p>
+<p>这下可以编译通过了，虽然看起来不直观。。。  </p>
+<p><code>objc_msgSend</code>是一个Public的函数，在<code>&lt;objc/message.h&gt;</code>里声明，如果你想直接调用它，就必须按照上面的格式加上强制类型转换，要不然是无法编译通过的。但是<code>objc_msgSend</code>到底是如何实现，来支持各种返回类型的？本文后面会讲到。</p>
 <h2 id="THE-IMP-方法对应的函数指针"><a href="#THE-IMP-方法对应的函数指针" class="headerlink" title="THE IMP - 方法对应的函数指针"></a>THE IMP - 方法对应的函数指针</h2><p><code>objc_msgSend</code>函数的本质很简单，传入一个接受者对象实例<code>receiver</code>和方法名<code>selector</code>，它就会按照以下步骤执行：（译者注：只是最粗略的步骤=。=）</p>
 <ul>
 <li>获取<code>receiver</code>得类Class</li>
@@ -283,7 +285,9 @@
 <li>找不到就在其父类中找，重复前面的步骤（直到没有父类为止）</li>
 </ul>
 <p>整个流程很简单，沿着继承链，向上找到方法<code>selector</code>对应的函数指针即可，也就是<code>IMP</code>。同时，在每层Class中都有缓存，加快后续的方法查找。但是，这也只是<code>objc_msgSend</code>的实现细节，所以，接着往下看。</p>
-<h2 id="THE-ARG-TYPES-AND-COUNT-参数类型和数量"><a href="#THE-ARG-TYPES-AND-COUNT-参数类型和数量" class="headerlink" title="THE ARG TYPES AND COUNT - 参数类型和数量"></a>THE ARG TYPES AND COUNT - 参数类型和数量</h2><p>简单来说，当<code>objc_msgSend</code>找到对应的函数指针后，只要用传入的参数调用这个函数即可。剩下来的就是找到一种方法，可以调用任意参数类型、数量的任意函数。<br>参数的数量很容易计算。然后我们可以把所有的参数都放入<code>varargs</code>，然后调用函数时传入即可。但是这样的话，每个Objective-C的方法都必须在其<code>prologue</code>（译者注：函数执行具体的“任务”前，所做的准备环节）里面把所有的参数从<code>varargs</code>里面提取出来。<br>这种把参数打包到<code>varargs</code>里面然后又取出来的办法显然是非常糟糕的，同时也是不必要的。</p>
+<h2 id="THE-ARG-TYPES-AND-COUNT-参数类型和数量"><a href="#THE-ARG-TYPES-AND-COUNT-参数类型和数量" class="headerlink" title="THE ARG TYPES AND COUNT - 参数类型和数量"></a>THE ARG TYPES AND COUNT - 参数类型和数量</h2><p>简单来说，当<code>objc_msgSend</code>找到对应的函数指针后，只要用传入的参数调用这个函数即可。剩下来的就是找到一种方法，可以调用任意参数类型、数量的任意函数。  </p>
+<p>参数的数量很容易计算。然后我们可以把所有的参数都放入<code>varargs</code>，然后调用函数时传入即可。但是这样的话，每个Objective-C的方法都必须在其<code>prologue</code>（译者注：函数执行具体的“任务”前，所做的准备环节）里面把所有的参数从<code>varargs</code>里面提取出来。  </p>
+<p>这种把参数打包到<code>varargs</code>里面然后又取出来的办法显然是非常糟糕的，同时也是不必要的。</p>
 <p>在C语言中，调用一个函数会被编译成对应的汇编语言指令，首先是设置参数（把参数放到寄存器、栈上），然后用如<code>jump</code>或者<code>call</code>的指令，跳到具体的函数代码地址处。如果我们想支持任意类型的函数类型，我们就必须写一个<code>switch</code>语句，把所有的参数组合情况都包含起来，这样才能正确的为任何形式的函数设置参数（译者注：即按照某种<strong>“规范”、“约定”</strong>，把参数依次存放到“约定”的寄存器、栈上），这显然是没有扩展性的，更是不可能的。</p>
 <h2 id="UNWINDING-THE-CALL-拆解调用"><a href="#UNWINDING-THE-CALL-拆解调用" class="headerlink" title="UNWINDING THE CALL - 拆解调用"></a>UNWINDING THE CALL - 拆解调用</h2><p><code>objc_msgSend</code>的解决办法，主要依据的是：<strong>当objc_msgSend被调用时，所有的参数已经被设置好了</strong>。  </p>
 <p>换一种方式来说，就是：<strong>在objc_msgSend开始执行时，栈帧（stack frame）的状态、数据，和各个寄存器的组合形式、数据，跟调用具体的函数指针（IMP）时所需的状态、数据，是完全一致的！</strong></p>
