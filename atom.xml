@@ -651,7 +651,7 @@
     <link href="http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/"/>
     <id>http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/</id>
     <published>2015-12-14T13:36:08.000Z</published>
-    <updated>2016-08-07T06:04:25.000Z</updated>
+    <updated>2016-08-09T16:49:51.000Z</updated>
     
     <content type="html">&lt;h2 id=&quot;更新&quot;&gt;&lt;a href=&quot;#更新&quot; class=&quot;headerlink&quot; title=&quot;更新&quot;&gt;&lt;/a&gt;更新&lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;2016-06-02: 感谢&lt;a href=&quot;http://weibo.com/u/2953626141&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;我不是蜡笔小新但是我有小白&lt;/a&gt;，发现了Case 2的最后两个cell展开动画问题，原来是tableView的&lt;code&gt;estimatedRowHeight&lt;/code&gt;会跟展开动画冲突的缘故。  &lt;/li&gt;
@@ -663,7 +663,7 @@
 &lt;ul&gt;
 &lt;li&gt;第一篇：&lt;a href=&quot;http://tutuge.me/2015/05/23/autolayout-example-with-masonry/&quot;&gt;有趣的Autolayout示例-Masonry实现&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;第二篇：&lt;a href=&quot;http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/&quot;&gt;有趣的Autolayout示例2-Masonry实现&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;第四篇：&lt;a href=&quot;http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/&quot;&gt;有趣的Autolayout示例2-Masonry实现&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;第四篇：&lt;a href=&quot;http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/&quot;&gt;有趣的Autolayout示例4-Masonry实现&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Github地址：&lt;br&gt;&lt;a href=&quot;https://github.com/zekunyan/AutolayoutExampleWithMasonry&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/zekunyan/AutolayoutExampleWithMasonry&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry3_1.gif&quot; alt=&quot;Gif示例&quot;&gt;&lt;/p&gt;
@@ -767,7 +767,7 @@
 &lt;ul&gt;
 &lt;li&gt;第一篇：&lt;a href=&quot;http://tutuge.me/2015/05/23/autolayout-example-with-masonry/&quot;&gt;有趣的Autolayout示例-Masonry实现&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;第二篇：&lt;a href=&quot;http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/&quot;&gt;有趣的Autolayout示例2-Masonry实现&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;第四篇：&lt;a href=&quot;http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/&quot;&gt;有趣的Autolayout示例2-Masonry实现&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;第四篇：&lt;a href=&quot;http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/&quot;&gt;有趣的Autolayout示例4-Masonry实现&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Github地址：&lt;br&gt;&lt;a href=&quot;https://github.com/zekunyan/AutolayoutExampleWithMasonry&quot;&gt;https://github.com/zekunyan/AutolayoutExampleWithMasonry&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry3_1.gif&quot; alt=&quot;Gif示例&quot;&gt;&lt;/p&gt;
@@ -963,13 +963,13 @@
     <link href="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/"/>
     <id>http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/</id>
     <published>2015-08-07T16:55:52.000Z</published>
-    <updated>2016-08-07T06:03:08.000Z</updated>
+    <updated>2016-08-09T16:49:36.000Z</updated>
     
     <content type="html">&lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;Masonry写的Autolayout示例又来了，仍然是三个小例子，分别是&lt;strong&gt;变高度的UITableViewCell、topLayoutGuide与bottomLayoutGuide，还有自定义的baseline&lt;/strong&gt;，外加两个基本的知识点讲解，说不上“有趣”=。=，比较基础，写了很多，各位随意看看吧~&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;第一篇: &lt;a href=&quot;http://tutuge.me/2015/05/23/autolayout-example-with-masonry/&quot;&gt;有趣的Autolayout示例-Masonry实现&lt;/a&gt;  &lt;/li&gt;
 &lt;li&gt;第三篇: &lt;a href=&quot;http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/&quot;&gt;有趣的Autolayout示例3-Masonry实现&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;第四篇: &lt;a href=&quot;http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/&quot;&gt;有趣的Autolayout示例2-Masonry实现&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;第四篇: &lt;a href=&quot;http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/&quot;&gt;有趣的Autolayout示例4-Masonry实现&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Github地址：&lt;br&gt;&lt;a href=&quot;https://github.com/zekunyan/AutolayoutExampleWithMasonry&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/zekunyan/AutolayoutExampleWithMasonry&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_1.gif&quot; alt=&quot;Gif示例&quot;&gt;&lt;/p&gt;
@@ -1104,7 +1104,7 @@
 &lt;ul&gt;
 &lt;li&gt;第一篇: &lt;a href=&quot;http://tutuge.me/2015/05/23/autolayout-example-with-masonry/&quot;&gt;有趣的Autolayout示例-Masonry实现&lt;/a&gt;  &lt;/li&gt;
 &lt;li&gt;第三篇: &lt;a href=&quot;http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/&quot;&gt;有趣的Autolayout示例3-Masonry实现&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;第四篇: &lt;a href=&quot;http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/&quot;&gt;有趣的Autolayout示例2-Masonry实现&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;第四篇: &lt;a href=&quot;http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/&quot;&gt;有趣的Autolayout示例4-Masonry实现&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Github地址：&lt;br&gt;&lt;a href=&quot;https://github.com/zekunyan/AutolayoutExampleWithMasonry&quot;&gt;https://github.com/zekunyan/AutolayoutExampleWithMasonry&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_1.gif&quot; alt=&quot;Gif示例&quot;&gt;&lt;/p&gt;
@@ -1279,10 +1279,10 @@
     <link href="http://tutuge.me/2015/05/23/autolayout-example-with-masonry/"/>
     <id>http://tutuge.me/2015/05/23/autolayout-example-with-masonry/</id>
     <published>2015-05-23T11:59:22.000Z</published>
-    <updated>2016-08-07T05:52:00.000Z</updated>
+    <updated>2016-08-09T16:47:34.000Z</updated>
     
     <content type="html">&lt;h2 id=&quot;更新&quot;&gt;&lt;a href=&quot;#更新&quot; class=&quot;headerlink&quot; title=&quot;更新&quot;&gt;&lt;/a&gt;更新&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;2016-08-06: 第四篇: &lt;a href=&quot;http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/&quot;&gt;有趣的Autolayout示例2-Masonry实现&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;2016-08-06: 第四篇: &lt;a href=&quot;http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/&quot;&gt;有趣的Autolayout示例4-Masonry实现&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;2015-12-23: 感谢&lt;a href=&quot;https://github.com/XVXVXXX&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;XVXVXXX&lt;/a&gt;的PR，更新了Case2&lt;/li&gt;
 &lt;li&gt;2015-12-15: 第三篇：&lt;a href=&quot;http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/&quot;&gt;有趣的Autolayout示例3-Masonry实现&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;2015-11-27: 感谢“谢小雷”指出打字错误~&lt;/li&gt;
@@ -1367,7 +1367,7 @@
     <summary type="html">
     
       &lt;h2 id=&quot;更新&quot;&gt;&lt;a href=&quot;#更新&quot; class=&quot;headerlink&quot; title=&quot;更新&quot;&gt;&lt;/a&gt;更新&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;2016-08-06: 第四篇: &lt;a href=&quot;http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/&quot;&gt;有趣的Autolayout示例2-Masonry实现&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;2016-08-06: 第四篇: &lt;a href=&quot;http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/&quot;&gt;有趣的Autolayout示例4-Masonry实现&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;2015-12-23: 感谢&lt;a href=&quot;https://github.com/XVXVXXX&quot;&gt;XVXVXXX&lt;/a&gt;的PR，更新了Case2&lt;/li&gt;
 &lt;li&gt;2015-12-15: 第三篇：&lt;a href=&quot;http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/&quot;&gt;有趣的Autolayout示例3-Masonry实现&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;2015-11-27: 感谢“谢小雷”指出打字错误~&lt;/li&gt;

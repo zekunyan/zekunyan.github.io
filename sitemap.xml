@@ -2,6 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/</loc>
+    
+    <lastmod>2016-08-09T16:49:51.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/</loc>
+    
+    <lastmod>2016-08-09T16:49:36.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://tutuge.me/2015/05/23/autolayout-example-with-masonry/</loc>
+    
+    <lastmod>2016-08-09T16:47:34.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://tutuge.me/2014/11/01/%E7%AC%AC%E4%B8%80%E7%AF%87Blog/</loc>
     
     <lastmod>2016-08-07T06:21:05.000Z</lastmod>
@@ -103,27 +124,6 @@
     <loc>http://tutuge.me/2016/04/30/autoreleasing-meet-autoreleasepool/</loc>
     
     <lastmod>2016-08-07T06:06:35.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/</loc>
-    
-    <lastmod>2016-08-07T06:04:25.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/</loc>
-    
-    <lastmod>2016-08-07T06:03:08.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://tutuge.me/2015/05/23/autolayout-example-with-masonry/</loc>
-    
-    <lastmod>2016-08-07T05:52:00.000Z</lastmod>
     
   </url>
   
