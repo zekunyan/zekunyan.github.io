@@ -171,6 +171,14 @@
         
 
             <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/Mac/">
+                    Mac <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
                 <a class="no-padding" href="/categories/服务端/">
                     服务端 <span class="right">2 篇</span></a>
                 </a>
@@ -213,6 +221,56 @@
 
 
 <div id="article-list" class="container main-container">
+    
+        <article class="simple-article">
+        <div class="card">
+            <div class="card-content">
+                <div class="article-title">
+                    
+    
+        <h1 class="blue-grey-link-context"><a href="/2015/10/09/ttgsnackbar-lib/">Swift写的库-TTGSnackbar</a></h1>
+    
+
+
+                </div>
+
+                <time class="teal-link-context" datetime="2015-10-09T11:49:09.000Z"><a href="/2015/10/09/ttgsnackbar-lib/">2015-10-09</a></time>
+
+                
+    <div class="tags-row">
+        
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
+        
+            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
+        
+            <a href="/tags/开源/" class="chip teal accent-4">开源</a>
+        
+            <a href="/tags/Swift/" class="chip teal accent-4">Swift</a>
+        
+    </div>
+
+
+
+                
+                    <div class="entry teal-link-context">
+                        <h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><ul>
+<li>2016-03-25: 版本更新到了0.5.1，补充些说明、示例</li>
+</ul>
+<h2 id="TTGSnackbar"><a href="#TTGSnackbar" class="headerlink" title="TTGSnackbar"></a>TTGSnackbar</h2><p>用Swift写了个简单的控件库：TTGSnackbar，模仿Android的Snackbar。目前更新到了版本0.5.1。支持多种动画，增强了自定义。</p>
+<p>Github: <a href="https://github.com/zekunyan/TTGSnackbar">https://github.com/zekunyan/TTGSnackbar</a></p>
+<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/TTGSnackbar_8.gif" alt="Screenshot"></p>
+                    </div>
+                
+            </div>
+
+            
+            <div class="card-action teal-link-context">
+                <a href="2015/10/09/ttgsnackbar-lib/">READ MORE</a>
+            </div>
+            
+        </div>
+</article>
+
     
         <article class="simple-article">
         <div class="card">
@@ -645,59 +703,6 @@
             
             <div class="card-action teal-link-context">
                 <a href="2015/03/21/effective-objective-c-5-enum/">READ MORE</a>
-            </div>
-            
-        </div>
-</article>
-
-    
-        <article class="simple-article">
-        <div class="card">
-            <div class="card-content">
-                <div class="article-title">
-                    
-    
-        <h1 class="blue-grey-link-context"><a href="/2015/03/17/what-is-autoreleasepool/">@autoreleasepool-内存的分配与释放</a></h1>
-    
-
-
-                </div>
-
-                <time class="teal-link-context" datetime="2015-03-17T12:21:56.000Z"><a href="/2015/03/17/what-is-autoreleasepool/">2015-03-17</a></time>
-
-                
-    <div class="tags-row">
-        
-            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
-        
-            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
-        
-    </div>
-
-
-
-                
-                    <div class="entry teal-link-context">
-                        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>开发过iOS、Mac的朋友应该对“<strong>@autoreleasepool</strong>”不陌生。只要在Xcode里创建一个工程，就能看到下面这样的代码：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//iOS program</span></span><br><span class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> * argv[]) &#123;</span><br><span class="line">    <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">UIApplicationMain</span>(argc, argv, <span class="literal">nil</span>, <span class="built_in">NSStringFromClass</span>([AppDelegate class]));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Command line program</span></span><br><span class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> *argv[]) &#123;</span><br><span class="line">    <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>看，每个<strong>main</strong>函数的主体都被<strong>@autoreleasepool</strong>的Block块包在里面，也就是说，接下来所有的对象创建都在这个block里面。</p>
-<p>那么，<strong>@autoreleasepool</strong>的作用到底是什么呢？我们开发中可以用它来做什么呢？</p>
-<p>可以在某些情况下，大幅度降低程序的内存占用，如下图:</p>
-<p><img src="https://camo.githubusercontent.com/2c1f07459d33c72de07d8a9305703b2ba40abfc4/687474703a2f2f7a6f72726f6368656e2e71696e6975646e2e636f6d2f626c6f675f776861745f69735f6175746f72656c65617365706f6f6c5f312e706e673f696d61676556696577322f302f682f343030" alt="autoreleasepool测试内存占用图"></p>
-<ul>
-<li>测试的内容：500000次循环，每次循环创建一个NSNumber实例和两个NSString实例。</li>
-<li>图：红线表示没有用<strong>@autoreleasepool</strong>时的内存占用。</li>
-<li>图：绿线表示用了<strong>@autoreleasepool</strong>优化后的内存占用！</li>
-</ul>
-<p>效果是不是很明显！</p>
-<p>代码Github地址：<a href="https://github.com/zekunyan/AutoReleasePoolTestExample">AutoReleasePoolTestExample</a> Xcode 6, iOS 8, iPhone 5模拟器.</p>
-                    </div>
-                
-            </div>
-
-            
-            <div class="card-action teal-link-context">
-                <a href="2015/03/17/what-is-autoreleasepool/">READ MORE</a>
             </div>
             
         </div>

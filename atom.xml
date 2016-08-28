@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://tutuge.me/"/>
-  <updated>2016-08-06T17:32:15.000Z</updated>
+  <updated>2016-08-28T15:04:40.000Z</updated>
   <id>http://tutuge.me/</id>
   
   <author>
@@ -14,6 +14,61 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Swift开源Mac App - BingWallPaper</title>
+    <link href="http://tutuge.me/2016/08/28/TTGBingWallPaper/"/>
+    <id>http://tutuge.me/2016/08/28/TTGBingWallPaper/</id>
+    <published>2016-08-28T14:37:02.000Z</published>
+    <updated>2016-08-28T15:04:40.000Z</updated>
+    
+    <content type="html">&lt;p&gt;&lt;img src=&quot;http://7nj2iz.com1.z0.glb.clouddn.com/BingWallPaper_banner.png&quot; alt=&quot;Banner&quot;&gt;&lt;/p&gt;
+&lt;p&gt;极简的壁纸Mac App，每天&lt;strong&gt;自动&lt;/strong&gt;下载最新微软Bing的每日壁纸并设置为桌面背景。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7nj2iz.com1.z0.glb.clouddn.com/BingWallPaper_screenshot_2.png&quot; alt=&quot;ScreenShot1&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Github: &lt;a href=&quot;https://github.com/zekunyan/TTGBingWallPaper&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/zekunyan/TTGBingWallPaper&lt;/a&gt;&lt;/p&gt;
+&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
+&lt;h2 id=&quot;由来&quot;&gt;&lt;a href=&quot;#由来&quot; class=&quot;headerlink&quot; title=&quot;由来&quot;&gt;&lt;/a&gt;由来&lt;/h2&gt;&lt;p&gt;其实最开始只是很喜欢Bing的首页的壁纸图片，然后手动下载回来做壁纸，后来发现手动太麻烦，作为一个程序员，自己动手丰衣足食！=。= 然后花了个周末写了这个超简单的Mac App。&lt;/p&gt;
+&lt;h2 id=&quot;安装&quot;&gt;&lt;a href=&quot;#安装&quot; class=&quot;headerlink&quot; title=&quot;安装&quot;&gt;&lt;/a&gt;安装&lt;/h2&gt;&lt;p&gt;到Github的项目页面，即&lt;a href=&quot;https://github.com/zekunyan/TTGBingWallPaper&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/zekunyan/TTGBingWallPaper&lt;/a&gt;，从&lt;code&gt;release&lt;/code&gt;里面下载最新的&lt;code&gt;BingWallPaper.app.zip&lt;/code&gt;压缩包，解压出&lt;code&gt;BingWallPaper.app&lt;/code&gt;，拖到&lt;code&gt;Applications&lt;/code&gt;应用程序文件夹里面，打开即可。&lt;/p&gt;
+&lt;h2 id=&quot;开发&quot;&gt;&lt;a href=&quot;#开发&quot; class=&quot;headerlink&quot; title=&quot;开发&quot;&gt;&lt;/a&gt;开发&lt;/h2&gt;&lt;p&gt;用Swift 2.2写的，目前唯一依赖的库是&lt;a href=&quot;https://github.com/SwiftyJSON/SwiftyJSON&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;SwiftyJSON/SwiftyJSON&lt;/a&gt;，需要&lt;a href=&quot;https://github.com/Carthage/Carthage&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Carthage&lt;/a&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;git clone git@github.com:zekunyan/TTGBingWallPaper.git&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;cd TTGBingWallPaper&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;carthage update&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;open BingWallPaper.xcodeproj&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;编译、安装、运行&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;未来&quot;&gt;&lt;a href=&quot;#未来&quot; class=&quot;headerlink&quot; title=&quot;未来&quot;&gt;&lt;/a&gt;未来&lt;/h2&gt;&lt;p&gt;还有很多点可以做，一点一点来吧=。=&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;TODO&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;支持多国地区的Bing每日图片壁纸的获取&lt;/li&gt;
+&lt;li&gt;支持多语言&lt;/li&gt;
+&lt;li&gt;支持浏览历史图片&lt;/li&gt;
+&lt;li&gt;导出图片&lt;/li&gt;
+&lt;li&gt;…&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;img src=&quot;http://7nj2iz.com1.z0.glb.clouddn.com/BingWallPaper_banner.png&quot; alt=&quot;Banner&quot;&gt;&lt;/p&gt;
+&lt;p&gt;极简的壁纸Mac App，每天&lt;strong&gt;自动&lt;/strong&gt;下载最新微软Bing的每日壁纸并设置为桌面背景。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7nj2iz.com1.z0.glb.clouddn.com/BingWallPaper_screenshot_2.png&quot; alt=&quot;ScreenShot1&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Github: &lt;a href=&quot;https://github.com/zekunyan/TTGBingWallPaper&quot;&gt;https://github.com/zekunyan/TTGBingWallPaper&lt;/a&gt;&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Mac" scheme="http://tutuge.me/categories/Mac/"/>
+    
+    
+      <category term="原创" scheme="http://tutuge.me/tags/%E5%8E%9F%E5%88%9B/"/>
+    
+      <category term="开源" scheme="http://tutuge.me/tags/%E5%BC%80%E6%BA%90/"/>
+    
+      <category term="Mac" scheme="http://tutuge.me/tags/Mac/"/>
+    
+      <category term="Swift" scheme="http://tutuge.me/tags/Swift/"/>
+    
+  </entry>
   
   <entry>
     <title>有趣的Autolayout示例4-Masonry实现</title>

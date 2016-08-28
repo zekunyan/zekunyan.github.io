@@ -7,7 +7,7 @@
 
     
 
-    <title>技巧 | iOS，Android程序猿，喜欢Mac、Linux、各种开源技术，各种语言</title>
+    <title>Swift开源Mac App - BingWallPaper | iOS，Android程序猿，喜欢Mac、Linux、各种开源技术，各种语言</title>
     <meta name="author" content="燕泽堃">
     
     <meta name="description" content="程序猿">
@@ -15,7 +15,7 @@
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    
+    <meta property="og:title" content="Swift开源Mac App - BingWallPaper"/>
     <meta property="og:site_name" content="土土哥的技术Blog"/>
 
     
@@ -217,30 +217,117 @@
 
     <main>
         <div class="container main-container">
-    
-
-<nav class="page-nav hide-on-small-only">
+    <nav class="page-nav hide-on-small-only">
     <div class="nav-wrapper blue-grey">
-        <span class="breadcrumb">当前位置（标签）</span>
+        <span class="breadcrumb">当前位置（分类目录）</span>
         
+            
+    
+    
+    <a class="breadcrumb" href="/categories/Mac/">Mac</a>
+
 
         
-            <a class="breadcrumb" href="/tags/技巧/">技巧</a>
+
         
     </div>
 </nav>
 
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Swift开源Mac App - BingWallPaper</h1>
+    
 
 
-    <div class="collection mt-0">
+            </div>
+            <time class="teal-link-context" datetime="2016-08-28T14:37:02.000Z"><a href="/2016/08/28/TTGBingWallPaper/">2016-08-28</a></time>
+
+            
+    <div class="tags-row">
         
-            <a href="/2015/03/15/有关宏定义的经验与技巧-简化代码-增强Log/" class="collection-item grey-text text-darken-1">
-                <time datetime="2015-03-15T07:34:28.000Z">2015-03-15</time>
-                <span>&nbsp;&nbsp;&nbsp;</span>
-                有关宏定义的经验与技巧-简化代码-增强Log
-            </a>
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
+        
+            <a href="/tags/开源/" class="chip teal accent-4">开源</a>
+        
+            <a href="/tags/Mac/" class="chip teal accent-4">Mac</a>
+        
+            <a href="/tags/Swift/" class="chip teal accent-4">Swift</a>
         
     </div>
+
+
+            <div class="toc teal-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#由来"><span class="section table-of-contents-text">由来</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#安装"><span class="section table-of-contents-text">安装</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#开发"><span class="section table-of-contents-text">开发</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#未来"><span class="section table-of-contents-text">未来</span></a></li></ol>
+</div>
+
+
+            <div class="entry teal-link-context">
+                <p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/BingWallPaper_banner.png" alt="Banner"></p>
+<p>极简的壁纸Mac App，每天<strong>自动</strong>下载最新微软Bing的每日壁纸并设置为桌面背景。</p>
+<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/BingWallPaper_screenshot_2.png" alt="ScreenShot1"></p>
+<p>Github: <a href="https://github.com/zekunyan/TTGBingWallPaper" target="_blank" rel="external">https://github.com/zekunyan/TTGBingWallPaper</a></p>
+<a id="more"></a>
+<h2 id="由来"><a href="#由来" class="headerlink" title="由来"></a>由来</h2><p>其实最开始只是很喜欢Bing的首页的壁纸图片，然后手动下载回来做壁纸，后来发现手动太麻烦，作为一个程序员，自己动手丰衣足食！=。= 然后花了个周末写了这个超简单的Mac App。</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>到Github的项目页面，即<a href="https://github.com/zekunyan/TTGBingWallPaper" target="_blank" rel="external">https://github.com/zekunyan/TTGBingWallPaper</a>，从<code>release</code>里面下载最新的<code>BingWallPaper.app.zip</code>压缩包，解压出<code>BingWallPaper.app</code>，拖到<code>Applications</code>应用程序文件夹里面，打开即可。</p>
+<h2 id="开发"><a href="#开发" class="headerlink" title="开发"></a>开发</h2><p>用Swift 2.2写的，目前唯一依赖的库是<a href="https://github.com/SwiftyJSON/SwiftyJSON" target="_blank" rel="external">SwiftyJSON/SwiftyJSON</a>，需要<a href="https://github.com/Carthage/Carthage" target="_blank" rel="external">Carthage</a>。</p>
+<ul>
+<li><code>git clone git@github.com:zekunyan/TTGBingWallPaper.git</code></li>
+<li><code>cd TTGBingWallPaper</code></li>
+<li><code>carthage update</code></li>
+<li><code>open BingWallPaper.xcodeproj</code></li>
+<li>编译、安装、运行</li>
+</ul>
+<h2 id="未来"><a href="#未来" class="headerlink" title="未来"></a>未来</h2><p>还有很多点可以做，一点一点来吧=。=</p>
+<p><strong>TODO</strong></p>
+<ul>
+<li>支持多国地区的Bing每日图片壁纸的获取</li>
+<li>支持多语言</li>
+<li>支持浏览历史图片</li>
+<li>导出图片</li>
+<li>…</li>
+</ul>
+
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comment">
+        <div class="card">
+            <div class="card-content">
+                <!-- Duoshuo Comment BEGIN -->
+                <div class="ds-thread" data-thread-key="2016/08/28/TTGBingWallPaper/" data-title="Swift开源Mac App - BingWallPaper" data-url="http://tutuge.me/2016/08/28/TTGBingWallPaper/"></div>
+
+                <script type="text/javascript">
+                    console.log(document.querySelector('.ds-thread'));
+                    var duoshuoQuery = {
+                        short_name: 'tutuge'
+                    };
+                    (function() {
+                        var ds = document.createElement('script');
+                        ds.type = 'text/javascript';
+                        ds.async = true;
+                        ds.src = (document.location.protocol == 'https:'
+                            ? 'https:'
+                            : 'http:') + '//static.duoshuo.com/embed.js';
+                        ds.charset = 'UTF-8';
+                        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+                    })();
+                </script>
+                <!-- Duoshuo Comment END -->
+            </div>
+        </div>
+    </section>
+
 
 
 </div>
