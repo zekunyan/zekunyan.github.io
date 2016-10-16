@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://tutuge.me/2015/10/09/ttgsnackbar-lib/</loc>
+    
+    <lastmod>2016-10-16T16:38:28.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://tutuge.me/2015/12/31/TTGTagCollectionView/</loc>
+    
+    <lastmod>2016-10-16T16:38:17.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://tutuge.me/2016/08/28/TTGBingWallPaper/</loc>
     
     <lastmod>2016-09-05T14:46:57.000Z</lastmod>
@@ -40,13 +54,6 @@
     <loc>http://tutuge.me/2015/03/07/UITextView%E7%BC%96%E8%BE%91%E6%97%B6%E6%8F%92%E5%85%A5%E8%87%AA%E5%AE%9A%E4%B9%89%E8%A1%A8%E6%83%85-%E7%AE%80%E5%8D%95%E7%9A%84%E5%9B%BE%E6%96%87%E6%B7%B7%E7%BC%96/</loc>
     
     <lastmod>2016-08-07T06:19:54.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://tutuge.me/2015/12/31/TTGTagCollectionView/</loc>
-    
-    <lastmod>2016-08-07T06:19:30.000Z</lastmod>
     
   </url>
   
@@ -159,13 +166,6 @@
     <loc>http://tutuge.me/about/index.html</loc>
     
     <lastmod>2016-05-01T02:41:36.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://tutuge.me/2015/10/09/ttgsnackbar-lib/</loc>
-    
-    <lastmod>2016-03-24T16:23:11.000Z</lastmod>
     
   </url>
   

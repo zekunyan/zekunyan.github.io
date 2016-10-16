@@ -4,6 +4,56 @@
 
     
   <url>
+    <loc>http://tutuge.me/2015/10/09/ttgsnackbar-lib/</loc>
+    <lastmod>2016-10-16T16:38:28.000Z</lastmod>
+    <data>
+        <display>
+        <title>Swift写的库-TTGSnackbar</title>
+        <pubTime>2015-10-09T11:49:09.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+        <tag>开源</tag>
+         
+        <tag>Swift</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://tutuge.me/2015/12/31/TTGTagCollectionView/</loc>
+    <lastmod>2016-10-16T16:38:17.000Z</lastmod>
+    <data>
+        <display>
+        <title>开源项目-TTGTagCollectionView</title>
+        <pubTime>2015-12-31T13:56:04.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+        <tag>开源</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://tutuge.me/2016/08/28/TTGBingWallPaper/</loc>
     <lastmod>2016-09-05T14:46:57.000Z</lastmod>
     <data>
@@ -13,11 +63,11 @@
         
         <tag>原创</tag>
          
+        <tag>开源</tag>
+         
         <tag>Mac</tag>
          
         <tag>Swift</tag>
-         
-        <tag>开源</tag>
          
          
            
@@ -150,30 +200,6 @@
 
     
   <url>
-    <loc>http://tutuge.me/2015/12/31/TTGTagCollectionView/</loc>
-    <lastmod>2016-08-07T06:19:30.000Z</lastmod>
-    <data>
-        <display>
-        <title>开源项目-TTGTagCollectionView</title>
-        <pubTime>2015-12-31T13:56:04.000Z</pubTime>
-        
-        <tag>原创</tag>
-         
-        <tag>iOS</tag>
-         
-        <tag>开源</tag>
-         
-         
-           
-             
-              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://tutuge.me/2015/10/25/ttgemojirate-lib/</loc>
     <lastmod>2016-08-07T06:18:41.000Z</lastmod>
     <data>
@@ -185,9 +211,9 @@
          
         <tag>iOS</tag>
          
-        <tag>Swift</tag>
-         
         <tag>开源</tag>
+         
+        <tag>Swift</tag>
          
          
            
@@ -295,9 +321,9 @@
         
         <tag>原创</tag>
          
-        <tag>开源</tag>
-         
         <tag>Android</tag>
+         
+        <tag>开源</tag>
          
          
            
@@ -521,32 +547,6 @@
     </url>
 
     
-    
-  <url>
-    <loc>http://tutuge.me/2015/10/09/ttgsnackbar-lib/</loc>
-    <lastmod>2016-03-24T16:23:11.000Z</lastmod>
-    <data>
-        <display>
-        <title>Swift写的库-TTGSnackbar</title>
-        <pubTime>2015-10-09T11:49:09.000Z</pubTime>
-        
-        <tag>原创</tag>
-         
-        <tag>iOS</tag>
-         
-        <tag>Swift</tag>
-         
-        <tag>开源</tag>
-         
-         
-           
-             
-              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
-          
-        </display>
-    </data>
-    </url>
-
     
   <url>
     <loc>http://tutuge.me/2015/03/15/%E6%9C%89%E5%85%B3%E5%AE%8F%E5%AE%9A%E4%B9%89%E7%9A%84%E7%BB%8F%E9%AA%8C%E4%B8%8E%E6%8A%80%E5%B7%A7-%E7%AE%80%E5%8C%96%E4%BB%A3%E7%A0%81-%E5%A2%9E%E5%BC%BALog/</loc>

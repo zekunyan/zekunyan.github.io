@@ -779,6 +779,10 @@ article .gallery .next:before {
 article pre {
   padding: 10px 16px;
 }
+article .line:after {
+  content: '';
+  display: inline-block;
+}
 article code,
 article pre {
   font-family: Consolas, "微软雅黑", Monaco, Menlo, Courier New, monospace;

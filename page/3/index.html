@@ -163,16 +163,16 @@
         
 
             <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/Mac/">
-                    Mac <span class="right">1 篇</span></a>
+                <a class="no-padding" href="/categories/Android/">
+                    Android <span class="right">1 篇</span></a>
                 </a>
             </li>
 
         
 
             <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/Android/">
-                    Android <span class="right">1 篇</span></a>
+                <a class="no-padding" href="/categories/Mac/">
+                    Mac <span class="right">1 篇</span></a>
                 </a>
             </li>
 
@@ -223,20 +223,20 @@
 <div id="article-list" class="container main-container">
     
         <article class="simple-article">
-        <div class="card">
-            <div class="card-content">
-                <div class="article-title">
-                    
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
     
         <h1 class="blue-grey-link-context"><a href="/2015/03/17/what-is-autoreleasepool/">@autoreleasepool-内存的分配与释放</a></h1>
     
 
 
-                </div>
+            </div>
 
-                <time class="teal-link-context" datetime="2015-03-17T12:21:56.000Z"><a href="/2015/03/17/what-is-autoreleasepool/">2015-03-17</a></time>
+            <time class="teal-link-context" datetime="2015-03-17T12:21:56.000Z"><a href="/2015/03/17/what-is-autoreleasepool/">2015-03-17</a></time>
 
-                
+            
     <div class="tags-row">
         
             <a href="/tags/原创/" class="chip teal accent-4">原创</a>
@@ -247,9 +247,9 @@
 
 
 
-                
-                    <div class="entry teal-link-context">
-                        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>开发过iOS、Mac的朋友应该对“<strong>@autoreleasepool</strong>”不陌生。只要在Xcode里创建一个工程，就能看到下面这样的代码：</p>
+            
+                <div class="entry teal-link-context">
+                    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>开发过iOS、Mac的朋友应该对“<strong>@autoreleasepool</strong>”不陌生。只要在Xcode里创建一个工程，就能看到下面这样的代码：</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//iOS program</span></span><br><span class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> * argv[]) &#123;</span><br><span class="line">    <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">UIApplicationMain</span>(argc, argv, <span class="literal">nil</span>, <span class="built_in">NSStringFromClass</span>([AppDelegate class]));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Command line program</span></span><br><span class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> *argv[]) &#123;</span><br><span class="line">    <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>看，每个<strong>main</strong>函数的主体都被<strong>@autoreleasepool</strong>的Block块包在里面，也就是说，接下来所有的对象创建都在这个block里面。</p>
 <p>那么，<strong>@autoreleasepool</strong>的作用到底是什么呢？我们开发中可以用它来做什么呢？</p>
@@ -262,34 +262,34 @@
 </ul>
 <p>效果是不是很明显！</p>
 <p>代码Github地址：<a href="https://github.com/zekunyan/AutoReleasePoolTestExample">AutoReleasePoolTestExample</a> Xcode 6, iOS 8, iPhone 5模拟器.</p>
-                    </div>
-                
-            </div>
-
-            
-            <div class="card-action teal-link-context">
-                <a href="2015/03/17/what-is-autoreleasepool/">READ MORE</a>
-            </div>
+                </div>
             
         </div>
+
+        
+        <div class="card-action teal-link-context">
+            <a href="/2015/03/17/what-is-autoreleasepool/">READ MORE</a>
+        </ div>
+        
+    </div>
 </article>
 
     
         <article class="simple-article">
-        <div class="card">
-            <div class="card-content">
-                <div class="article-title">
-                    
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
     
         <h1 class="blue-grey-link-context"><a href="/2015/03/15/有关宏定义的经验与技巧-简化代码-增强Log/">有关宏定义的经验与技巧-简化代码-增强Log</a></h1>
     
 
 
-                </div>
+            </div>
 
-                <time class="teal-link-context" datetime="2015-03-15T07:34:28.000Z"><a href="/2015/03/15/有关宏定义的经验与技巧-简化代码-增强Log/">2015-03-15</a></time>
+            <time class="teal-link-context" datetime="2015-03-15T07:34:28.000Z"><a href="/2015/03/15/有关宏定义的经验与技巧-简化代码-增强Log/">2015-03-15</a></time>
 
-                
+            
     <div class="tags-row">
         
             <a href="/tags/原创/" class="chip teal accent-4">原创</a>
@@ -302,40 +302,40 @@
 
 
 
-                
-                    <div class="entry teal-link-context">
-                        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>宏定义、#define啥的，我们经常遇到。<br>一般来说，最常用的可能就是定义一些常量、简单的“函数”，如下：</p>
+            
+                <div class="entry teal-link-context">
+                    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>宏定义、#define啥的，我们经常遇到。<br>一般来说，最常用的可能就是定义一些常量、简单的“函数”，如下：</p>
 <figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">//定义常量<span class="literal">PI</span></span><br><span class="line"><span class="comment">#define PI 3.1415926</span></span><br><span class="line"><span class="comment"></span><br><span class="line">//定义“函数”MIN</span></span><br><span class="line"><span class="comment">#define MIN(A,B) ((A) &lt; (B) ? (A) : (B))</span></span><br></pre></td></tr></table></figure>
 <p>但是，这样定义常量、函数，有一定的风险。（见：<a href="http://tutuge.me/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/">Effective-Objective-C-读书笔记-Item-4-如何正确定义常量</a>, <a href="http://onevcat.com/2014/01/black-magic-in-macro/">宏定义的黑魔法 - 宏菜鸟起飞手册</a>）</p>
 <p>本文就列出几条我个人在iOS开发当中常用的经验与技巧。</p>
-                    </div>
-                
-            </div>
-
-            
-            <div class="card-action teal-link-context">
-                <a href="2015/03/15/有关宏定义的经验与技巧-简化代码-增强Log/">READ MORE</a>
-            </div>
+                </div>
             
         </div>
+
+        
+        <div class="card-action teal-link-context">
+            <a href="/2015/03/15/有关宏定义的经验与技巧-简化代码-增强Log/">READ MORE</a>
+        </ div>
+        
+    </div>
 </article>
 
     
         <article class="simple-article">
-        <div class="card">
-            <div class="card-content">
-                <div class="article-title">
-                    
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
     
         <h1 class="blue-grey-link-context"><a href="/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/">Effective-Objective-C-读书笔记-Item-4-如何正确定义常量</a></h1>
     
 
 
-                </div>
+            </div>
 
-                <time class="teal-link-context" datetime="2015-03-10T16:07:23.000Z"><a href="/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/">2015-03-11</a></time>
+            <time class="teal-link-context" datetime="2015-03-10T16:07:23.000Z"><a href="/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/">2015-03-11</a></time>
 
-                
+            
     <div class="tags-row">
         
             <a href="/tags/原创/" class="chip teal accent-4">原创</a>
@@ -350,39 +350,39 @@
 
 
 
-                
-                    <div class="entry teal-link-context">
-                        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>写博客果然比光看书要花时间=。=，书都快看完了，才写到第4节。但是总结一遍，的确印象深刻啊~~</p>
+            
+                <div class="entry teal-link-context">
+                    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>写博客果然比光看书要花时间=。=，书都快看完了，才写到第4节。但是总结一遍，的确印象深刻啊~~</p>
 <p>这次的主题是“<strong>常量</strong>”，非常常用，又非常重要的东西~良好的代码规范、设计，少不了各种<strong>常量</strong>。</p>
 <h2 id="Item-4-Prefer-Typed-Constants-to-Preprocessor-define"><a href="#Item-4-Prefer-Typed-Constants-to-Preprocessor-define" class="headerlink" title="Item 4 - Prefer Typed Constants to Preprocessor #define"></a>Item 4 - Prefer Typed Constants to Preprocessor #define</h2><p>本节着重对比了常量的定义形式，类型常量和#define的区别、各自的特点。最后得出，我们应该用带有类型的常量，而不是#define。</p>
-                    </div>
-                
-            </div>
-
-            
-            <div class="card-action teal-link-context">
-                <a href="2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/">READ MORE</a>
-            </div>
+                </div>
             
         </div>
+
+        
+        <div class="card-action teal-link-context">
+            <a href="/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/">READ MORE</a>
+        </ div>
+        
+    </div>
 </article>
 
     
         <article class="simple-article">
-        <div class="card">
-            <div class="card-content">
-                <div class="article-title">
-                    
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
     
         <h1 class="blue-grey-link-context"><a href="/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/">UITextView编辑时插入自定义表情-简单的图文混编</a></h1>
     
 
 
-                </div>
+            </div>
 
-                <time class="teal-link-context" datetime="2015-03-07T03:04:38.000Z"><a href="/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/">2015-03-07</a></time>
+            <time class="teal-link-context" datetime="2015-03-07T03:04:38.000Z"><a href="/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/">2015-03-07</a></time>
 
-                
+            
     <div class="tags-row">
         
             <a href="/tags/原创/" class="chip teal accent-4">原创</a>
@@ -393,9 +393,9 @@
 
 
 
-                
-                    <div class="entry teal-link-context">
-                        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在iOS开发中，经常需要用UITextView作为编辑文本的输入控件。<br>但是如何在编辑时插入自定义表情呢？就是像发微博时那样？</p>
+            
+                <div class="entry teal-link-context">
+                    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在iOS开发中，经常需要用UITextView作为编辑文本的输入控件。<br>但是如何在编辑时插入自定义表情呢？就是像发微博时那样？</p>
 <p>本文简单的用<strong>NSTextAttachment</strong>、<strong>NSAttributedString</strong>的特性，实现了</p>
 <ul>
 <li>在UITextView中编辑文字时插入自定义表情图片</li>
@@ -404,34 +404,34 @@
 <h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>本文代码工程地址：<a href="https://github.com/zekunyan/UITextViewDIYEmojiExample">https://github.com/zekunyan/UITextViewDIYEmojiExample</a></p>
 <p>效果图：</p>
 <p><img src="http://zorrochen.qiniudn.com/inputEmoji_Sample.gif" alt="效果图"></p>
-                    </div>
-                
-            </div>
-
-            
-            <div class="card-action teal-link-context">
-                <a href="2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/">READ MORE</a>
-            </div>
+                </div>
             
         </div>
+
+        
+        <div class="card-action teal-link-context">
+            <a href="/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/">READ MORE</a>
+        </ div>
+        
+    </div>
 </article>
 
     
         <article class="simple-article">
-        <div class="card">
-            <div class="card-content">
-                <div class="article-title">
-                    
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
     
         <h1 class="blue-grey-link-context"><a href="/2015/03/06/关于评论不见了/">关于评论不见了=。=</a></h1>
     
 
 
-                </div>
+            </div>
 
-                <time class="teal-link-context" datetime="2015-03-06T01:09:32.000Z"><a href="/2015/03/06/关于评论不见了/">2015-03-06</a></time>
+            <time class="teal-link-context" datetime="2015-03-06T01:09:32.000Z"><a href="/2015/03/06/关于评论不见了/">2015-03-06</a></time>
 
-                
+            
     <div class="tags-row">
         
             <a href="/tags/杂烩/" class="chip teal accent-4">杂烩</a>
@@ -440,29 +440,29 @@
 
 
 
-                
-            </div>
-
             
         </div>
+
+        
+    </div>
 </article>
 
     
         <article class="simple-article">
-        <div class="card">
-            <div class="card-content">
-                <div class="article-title">
-                    
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
     
         <h1 class="blue-grey-link-context"><a href="/2015/03/01/Entity和Model的不同-关于代码的数据层/">Entity和Model的不同-关于代码的数据层</a></h1>
     
 
 
-                </div>
+            </div>
 
-                <time class="teal-link-context" datetime="2015-03-01T15:03:10.000Z"><a href="/2015/03/01/Entity和Model的不同-关于代码的数据层/">2015-03-01</a></time>
+            <time class="teal-link-context" datetime="2015-03-01T15:03:10.000Z"><a href="/2015/03/01/Entity和Model的不同-关于代码的数据层/">2015-03-01</a></time>
 
-                
+            
     <div class="tags-row">
         
             <a href="/tags/原创/" class="chip teal accent-4">原创</a>
@@ -471,39 +471,39 @@
 
 
 
-                
-                    <div class="entry teal-link-context">
-                        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>经常都能在一些博客、文档中看到“<strong>Model</strong>”、“<strong>Entity</strong>”的字样。如<strong>MVC</strong>模式中的“<strong>M就是Model</strong>”，“<strong>MVVM对应的Model-View-ViewModel</strong>”，数据库抽象层里面的“<strong>Model</strong>“等。</p>
+            
+                <div class="entry teal-link-context">
+                    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>经常都能在一些博客、文档中看到“<strong>Model</strong>”、“<strong>Entity</strong>”的字样。如<strong>MVC</strong>模式中的“<strong>M就是Model</strong>”，“<strong>MVVM对应的Model-View-ViewModel</strong>”，数据库抽象层里面的“<strong>Model</strong>“等。</p>
 <p>它们的区别到底是什么？</p>
 <p>其实没有真正官方的对Entity和Model的定义，在此我只是说说我自己的理解。</p>
-                    </div>
-                
-            </div>
-
-            
-            <div class="card-action teal-link-context">
-                <a href="2015/03/01/Entity和Model的不同-关于代码的数据层/">READ MORE</a>
-            </div>
+                </div>
             
         </div>
+
+        
+        <div class="card-action teal-link-context">
+            <a href="/2015/03/01/Entity和Model的不同-关于代码的数据层/">READ MORE</a>
+        </ div>
+        
+    </div>
 </article>
 
     
         <article class="simple-article">
-        <div class="card">
-            <div class="card-content">
-                <div class="article-title">
-                    
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
     
         <h1 class="blue-grey-link-context"><a href="/2015/02/28/一次审核被拒的经历-关于iCloud到底应该备份什么数据/">一次审核被拒的经历-关于iCloud到底应该备份什么数据</a></h1>
     
 
 
-                </div>
+            </div>
 
-                <time class="teal-link-context" datetime="2015-02-28T10:18:11.000Z"><a href="/2015/02/28/一次审核被拒的经历-关于iCloud到底应该备份什么数据/">2015-02-28</a></time>
+            <time class="teal-link-context" datetime="2015-02-28T10:18:11.000Z"><a href="/2015/02/28/一次审核被拒的经历-关于iCloud到底应该备份什么数据/">2015-02-28</a></time>
 
-                
+            
     <div class="tags-row">
         
             <a href="/tags/原创/" class="chip teal accent-4">原创</a>
@@ -516,40 +516,40 @@
 
 
 
-                
-                    <div class="entry teal-link-context">
-                        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>项目最近一次审核被拒了=。=<br>仔细看了一下后，发现是没有遵守“<strong>iOS Data Storage Guidelines</strong>”。<br>在此总结一下。</p>
+            
+                <div class="entry teal-link-context">
+                    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>项目最近一次审核被拒了=。=<br>仔细看了一下后，发现是没有遵守“<strong>iOS Data Storage Guidelines</strong>”。<br>在此总结一下。</p>
 <h2 id="被拒原因"><a href="#被拒原因" class="headerlink" title="被拒原因"></a>被拒原因</h2><p>先看看被拒的反馈信息：</p>
 <figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Apps must follow the iOS <span class="built_in">Data</span> Storage Guidelines <span class="keyword">or</span> they will be rejected</span><br><span class="line"></span><br><span class="line"><span class="keyword">On</span> launch <span class="keyword">and</span> content download, your app stores <span class="number">12.14</span> MB, which does <span class="keyword">not</span> comply <span class="keyword">with</span> the iOS <span class="built_in">Data</span> Storage Guidelines.</span><br></pre></td></tr></table></figure>
 <p>大致意思就是App下载东西以后，在iCloud里面查看此App需要备份的体积变大了。</p>
-                    </div>
-                
-            </div>
-
-            
-            <div class="card-action teal-link-context">
-                <a href="2015/02/28/一次审核被拒的经历-关于iCloud到底应该备份什么数据/">READ MORE</a>
-            </div>
+                </div>
             
         </div>
+
+        
+        <div class="card-action teal-link-context">
+            <a href="/2015/02/28/一次审核被拒的经历-关于iCloud到底应该备份什么数据/">READ MORE</a>
+        </ div>
+        
+    </div>
 </article>
 
     
         <article class="simple-article">
-        <div class="card">
-            <div class="card-content">
-                <div class="article-title">
-                    
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
     
         <h1 class="blue-grey-link-context"><a href="/2015/02/19/Block类型变量-缓存Http请求与回调/">Block类型变量-缓存Http请求与回调</a></h1>
     
 
 
-                </div>
+            </div>
 
-                <time class="teal-link-context" datetime="2015-02-18T19:18:36.000Z"><a href="/2015/02/19/Block类型变量-缓存Http请求与回调/">2015-02-19</a></time>
+            <time class="teal-link-context" datetime="2015-02-18T19:18:36.000Z"><a href="/2015/02/19/Block类型变量-缓存Http请求与回调/">2015-02-19</a></time>
 
-                
+            
     <div class="tags-row">
         
             <a href="/tags/原创/" class="chip teal accent-4">原创</a>
@@ -560,38 +560,38 @@
 
 
 
-                
-                    <div class="entry teal-link-context">
-                        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Objective-C中的Blocks实在是太好用了，有了它，我们就可以将“代码块”封装起来，当成变量使用、传递，所以，在Objective-C中，iOS中，许多的回调是用Block来完成的。</p>
-<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>我自己在之前的项目中，就遇到过一个问题。因为项目的需要，手机端所有的跟服务器的通信都需要“加密”，在经过一番调研后，我们使用的是类似OAuth机制（至于什么是OAuth，各位Google一下就明白了，大部分的公共API都用到了这种机制）。</p>
-                    </div>
-                
-            </div>
-
             
-            <div class="card-action teal-link-context">
-                <a href="2015/02/19/Block类型变量-缓存Http请求与回调/">READ MORE</a>
-            </div>
+                <div class="entry teal-link-context">
+                    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Objective-C中的Blocks实在是太好用了，有了它，我们就可以将“代码块”封装起来，当成变量使用、传递，所以，在Objective-C中，iOS中，许多的回调是用Block来完成的。</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>我自己在之前的项目中，就遇到过一个问题。因为项目的需要，手机端所有的跟服务器的通信都需要“加密”，在经过一番调研后，我们使用的是类似OAuth机制（至于什么是OAuth，各位Google一下就明白了，大部分的公共API都用到了这种机制）。</p>
+                </div>
             
         </div>
+
+        
+        <div class="card-action teal-link-context">
+            <a href="/2015/02/19/Block类型变量-缓存Http请求与回调/">READ MORE</a>
+        </ div>
+        
+    </div>
 </article>
 
     
         <article class="simple-article">
-        <div class="card">
-            <div class="card-content">
-                <div class="article-title">
-                    
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
     
         <h1 class="blue-grey-link-context"><a href="/2015/02/19/提升UITableView性能-复杂页面的优化/">提升UITableView性能-复杂页面的优化</a></h1>
     
 
 
-                </div>
+            </div>
 
-                <time class="teal-link-context" datetime="2015-02-18T17:28:41.000Z"><a href="/2015/02/19/提升UITableView性能-复杂页面的优化/">2015-02-19</a></time>
+            <time class="teal-link-context" datetime="2015-02-18T17:28:41.000Z"><a href="/2015/02/19/提升UITableView性能-复杂页面的优化/">2015-02-19</a></time>
 
-                
+            
     <div class="tags-row">
         
             <a href="/tags/原创/" class="chip teal accent-4">原创</a>
@@ -604,42 +604,42 @@
 
 
 
-                
-                    <div class="entry teal-link-context">
-                        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。</p>
+            
+                <div class="entry teal-link-context">
+                    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。</p>
 <p>之前的做的项目，<a href="https://itunes.apple.com/us/app/qing-ju-yin-le-quan-guo-zui/id913235479?l=zh&amp;ls=1&amp;mt=8">青桔音乐iOS客户端</a>里面的首页就是一个类似微信朋友圈的“动态”页面，大致如下：</p>
 <p><img src="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_1.png?imageView2/0/h/300" alt="青桔动态页面"></p>
 <p>如果是你，你会怎么实现这个页面呢？</p>
 <p>这还用问，当然是用UITableView+自定义的UITableViewCell。</p>
 <p>UITableView是可以滑动的，为了不让用户在滑动中感到有卡顿，该如何优化？下面，我就写一下我自己在做项目时的“经验”~</p>
-                    </div>
-                
-            </div>
-
-            
-            <div class="card-action teal-link-context">
-                <a href="2015/02/19/提升UITableView性能-复杂页面的优化/">READ MORE</a>
-            </div>
+                </div>
             
         </div>
+
+        
+        <div class="card-action teal-link-context">
+            <a href="/2015/02/19/提升UITableView性能-复杂页面的优化/">READ MORE</a>
+        </ div>
+        
+    </div>
 </article>
 
     
         <article class="simple-article">
-        <div class="card">
-            <div class="card-content">
-                <div class="article-title">
-                    
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
     
         <h1 class="blue-grey-link-context"><a href="/2015/02/18/NSString的Copy与内存分配/">NSString的Copy与内存分配</a></h1>
     
 
 
-                </div>
+            </div>
 
-                <time class="teal-link-context" datetime="2015-02-18T09:00:47.000Z"><a href="/2015/02/18/NSString的Copy与内存分配/">2015-02-18</a></time>
+            <time class="teal-link-context" datetime="2015-02-18T09:00:47.000Z"><a href="/2015/02/18/NSString的Copy与内存分配/">2015-02-18</a></time>
 
-                
+            
     <div class="tags-row">
         
             <a href="/tags/原创/" class="chip teal accent-4">原创</a>
@@ -650,19 +650,19 @@
 
 
 
-                
-                    <div class="entry teal-link-context">
-                        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>不管是用什么语言开发，字符串应该算是用的最多的了。在Objective-C中，字符串类是NSString，以及其子类NSMutableString等。所以，对于字符串类，编程语言、编译器等往往会做特殊处理。下面我就说说我自己在项目中发现的NSString的“奇怪”的地方。</p>
-                    </div>
-                
-            </div>
-
             
-            <div class="card-action teal-link-context">
-                <a href="2015/02/18/NSString的Copy与内存分配/">READ MORE</a>
-            </div>
+                <div class="entry teal-link-context">
+                    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>不管是用什么语言开发，字符串应该算是用的最多的了。在Objective-C中，字符串类是NSString，以及其子类NSMutableString等。所以，对于字符串类，编程语言、编译器等往往会做特殊处理。下面我就说说我自己在项目中发现的NSString的“奇怪”的地方。</p>
+                </div>
             
         </div>
+
+        
+        <div class="card-action teal-link-context">
+            <a href="/2015/02/18/NSString的Copy与内存分配/">READ MORE</a>
+        </ div>
+        
+    </div>
 </article>
 
     
