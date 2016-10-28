@@ -4,6 +4,30 @@
 
     
   <url>
+    <loc>http://tutuge.me/2015/12/31/TTGTagCollectionView/</loc>
+    <lastmod>2016-10-28T18:40:42.000Z</lastmod>
+    <data>
+        <display>
+        <title>开源项目-TTGTagCollectionView</title>
+        <pubTime>2015-12-31T13:56:04.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+        <tag>开源</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://tutuge.me/2015/10/09/ttgsnackbar-lib/</loc>
     <lastmod>2016-10-16T16:38:28.000Z</lastmod>
     <data>
@@ -18,30 +42,6 @@
         <tag>开源</tag>
          
         <tag>Swift</tag>
-         
-         
-           
-             
-              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://tutuge.me/2015/12/31/TTGTagCollectionView/</loc>
-    <lastmod>2016-10-16T16:38:17.000Z</lastmod>
-    <data>
-        <display>
-        <title>开源项目-TTGTagCollectionView</title>
-        <pubTime>2015-12-31T13:56:04.000Z</pubTime>
-        
-        <tag>原创</tag>
-         
-        <tag>iOS</tag>
-         
-        <tag>开源</tag>
          
          
            
