@@ -978,15 +978,18 @@
     <link href="http://tutuge.me/2015/10/09/ttgsnackbar-lib/"/>
     <id>http://tutuge.me/2015/10/09/ttgsnackbar-lib/</id>
     <published>2015-10-09T11:49:09.000Z</published>
-    <updated>2016-10-16T16:38:28.000Z</updated>
+    <updated>2016-10-30T16:30:47.000Z</updated>
     
     <content type="html">&lt;h2 id=&quot;更新&quot;&gt;&lt;a href=&quot;#更新&quot; class=&quot;headerlink&quot; title=&quot;更新&quot;&gt;&lt;/a&gt;更新&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;2016-10-20: 增加ContentInset，也就是Padding的属性；增加自定义内容View&lt;/li&gt;
 &lt;li&gt;2016-10-17: 支持Swift3；增加的顶部Top位置动画；增加同时两个Action按钮；增加带图片icon显示&lt;/li&gt;
 &lt;li&gt;2016-03-25: 版本更新到了0.5.1，补充些说明、示例&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id=&quot;TTGSnackbar&quot;&gt;&lt;a href=&quot;#TTGSnackbar&quot; class=&quot;headerlink&quot; title=&quot;TTGSnackbar&quot;&gt;&lt;/a&gt;TTGSnackbar&lt;/h2&gt;&lt;p&gt;用Swift写了个简单的控件库：TTGSnackbar，模仿Android的Snackbar。目前更新到了版本0.5.1。支持多种动画，增强了自定义。&lt;/p&gt;
 &lt;p&gt;Github: &lt;a href=&quot;https://github.com/zekunyan/TTGSnackbar&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/zekunyan/TTGSnackbar&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://7nj2iz.com1.z0.glb.clouddn.com/TTGSnackbar_example.gif&quot; alt=&quot;Screenshot&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7nj2iz.com1.z0.glb.clouddn.com/TTGSnackbar_screen_shot.png&quot; alt=&quot;Screenshot&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Gif&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7nj2iz.com1.z0.glb.clouddn.com/TTGSnackbar_example.gif?imageView2/2/w/400/q/100&quot; alt=&quot;Screenshot&quot;&gt;&lt;/p&gt;
 &lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
 &lt;h2 id=&quot;安装&quot;&gt;&lt;a href=&quot;#安装&quot; class=&quot;headerlink&quot; title=&quot;安装&quot;&gt;&lt;/a&gt;安装&lt;/h2&gt;&lt;p&gt;需要Swift3, Xcode8, iOS 8+  &lt;/p&gt;
 &lt;h3 id=&quot;CocoaPods&quot;&gt;&lt;a href=&quot;#CocoaPods&quot; class=&quot;headerlink&quot; title=&quot;CocoaPods&quot;&gt;&lt;/a&gt;CocoaPods&lt;/h3&gt;&lt;figure class=&quot;highlight elixir&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;platform &lt;span class=&quot;symbol&quot;&gt;:ios&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;8.0&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;use_frameworks!&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;pod &lt;span class=&quot;string&quot;&gt;&quot;TTGSnackbar&quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
@@ -1008,12 +1011,15 @@
     <summary type="html">
     
       &lt;h2 id=&quot;更新&quot;&gt;&lt;a href=&quot;#更新&quot; class=&quot;headerlink&quot; title=&quot;更新&quot;&gt;&lt;/a&gt;更新&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;2016-10-20: 增加ContentInset，也就是Padding的属性；增加自定义内容View&lt;/li&gt;
 &lt;li&gt;2016-10-17: 支持Swift3；增加的顶部Top位置动画；增加同时两个Action按钮；增加带图片icon显示&lt;/li&gt;
 &lt;li&gt;2016-03-25: 版本更新到了0.5.1，补充些说明、示例&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id=&quot;TTGSnackbar&quot;&gt;&lt;a href=&quot;#TTGSnackbar&quot; class=&quot;headerlink&quot; title=&quot;TTGSnackbar&quot;&gt;&lt;/a&gt;TTGSnackbar&lt;/h2&gt;&lt;p&gt;用Swift写了个简单的控件库：TTGSnackbar，模仿Android的Snackbar。目前更新到了版本0.5.1。支持多种动画，增强了自定义。&lt;/p&gt;
 &lt;p&gt;Github: &lt;a href=&quot;https://github.com/zekunyan/TTGSnackbar&quot;&gt;https://github.com/zekunyan/TTGSnackbar&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://7nj2iz.com1.z0.glb.clouddn.com/TTGSnackbar_example.gif&quot; alt=&quot;Screenshot&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7nj2iz.com1.z0.glb.clouddn.com/TTGSnackbar_screen_shot.png&quot; alt=&quot;Screenshot&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Gif&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7nj2iz.com1.z0.glb.clouddn.com/TTGSnackbar_example.gif?imageView2/2/w/400/q/100&quot; alt=&quot;Screenshot&quot;&gt;&lt;/p&gt;
     
     </summary>
     
