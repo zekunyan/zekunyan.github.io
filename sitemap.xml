@@ -2,16 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://tutuge.me/about/index.html</loc>
+    
+    <lastmod>2016-12-25T14:34:10.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://tutuge.me/2016/12/25/TTGPuzzleVerify/</loc>
+    
+    <lastmod>2016-12-25T14:29:38.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://tutuge.me/2015/10/09/ttgsnackbar-lib/</loc>
     
-    <lastmod>2016-10-30T16:30:47.000Z</lastmod>
+    <lastmod>2016-12-25T14:26:57.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://tutuge.me/2015/12/31/TTGTagCollectionView/</loc>
     
-    <lastmod>2016-10-28T18:40:42.000Z</lastmod>
+    <lastmod>2016-12-25T14:26:04.000Z</lastmod>
     
   </url>
   
@@ -159,13 +173,6 @@
     <loc>http://tutuge.me/2016/05/02/design-json-api-respoense/</loc>
     
     <lastmod>2016-05-03T09:09:07.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://tutuge.me/about/index.html</loc>
-    
-    <lastmod>2016-05-01T02:41:36.000Z</lastmod>
     
   </url>
   

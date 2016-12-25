@@ -3,9 +3,34 @@
 
 
     
+    
+  <url>
+    <loc>http://tutuge.me/2016/12/25/TTGPuzzleVerify/</loc>
+    <lastmod>2016-12-25T14:29:38.000Z</lastmod>
+    <data>
+        <display>
+        <title>开源项目-拼图验证控件TTGPuzzleVerify的实现</title>
+        <pubTime>2016-12-25T10:15:40.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+        <tag>开源</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
   <url>
     <loc>http://tutuge.me/2015/10/09/ttgsnackbar-lib/</loc>
-    <lastmod>2016-10-30T16:30:47.000Z</lastmod>
+    <lastmod>2016-12-25T14:26:57.000Z</lastmod>
     <data>
         <display>
         <title>Swift写的库-TTGSnackbar</title>
@@ -31,7 +56,7 @@
     
   <url>
     <loc>http://tutuge.me/2015/12/31/TTGTagCollectionView/</loc>
-    <lastmod>2016-10-28T18:40:42.000Z</lastmod>
+    <lastmod>2016-12-25T14:26:04.000Z</lastmod>
     <data>
         <display>
         <title>开源项目-TTGTagCollectionView</title>
@@ -546,7 +571,6 @@
     </data>
     </url>
 
-    
     
   <url>
     <loc>http://tutuge.me/2015/03/15/%E6%9C%89%E5%85%B3%E5%AE%8F%E5%AE%9A%E4%B9%89%E7%9A%84%E7%BB%8F%E9%AA%8C%E4%B8%8E%E6%8A%80%E5%B7%A7-%E7%AE%80%E5%8C%96%E4%BB%A3%E7%A0%81-%E5%A2%9E%E5%BC%BALog/</loc>

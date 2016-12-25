@@ -156,7 +156,7 @@
 
             <li class="collapse-level-0" collapse-level="0">
                 <a class="no-padding" href="/categories/iOS/">
-                    iOS <span class="right">31 篇</span></a>
+                    iOS <span class="right">32 篇</span></a>
                 </a>
             </li>
 
@@ -221,6 +221,52 @@
 
 
 <div id="article-list" class="container main-container">
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="blue-grey-link-context"><a href="/2016/12/25/TTGPuzzleVerify/">开源项目-拼图验证控件TTGPuzzleVerify的实现</a></h1>
+    
+
+
+            </div>
+
+            <time class="teal-link-context" datetime="2016-12-25T10:15:40.000Z"><a href="/2016/12/25/TTGPuzzleVerify/">2016-12-25</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
+        
+            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
+        
+            <a href="/tags/开源/" class="chip teal accent-4">开源</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry teal-link-context">
+                    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近抽空写了个拼图验证控件，用户可以通过水平、垂直，或者直接拖动拼图块，完成拼图图案，来完成验证。拼图块的形状可以自定义，默认提供了经典的拼图形状、圆形、正方形，整个拼图的图案也是支持从图片生成的。</p>
+<p><strong>CocoaPods</strong>: <code>pod &quot;TTGPuzzleVerify&quot;</code><br><strong>Github</strong>: <a href="https://github.com/zekunyan/TTGPuzzleVerify">https://github.com/zekunyan/TTGPuzzleVerify</a></p>
+<p><img src="http://zorrochen.qiniudn.com/blog_TTGPuzzleVerify_gif.gif" alt=""></p>
+<p>接下来，说说TTGPuzzleVerify的整体设计思路和实现原理。</p>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action teal-link-context">
+            <a href="/2016/12/25/TTGPuzzleVerify/">READ MORE</a>
+        </ div>
+        
+    </div>
+</article>
+
     
         <article class="simple-article">
     <div class="card">
@@ -570,9 +616,10 @@
             
                 <div class="entry teal-link-context">
                     <h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><ul>
+<li>2016-12-25: 不再依赖UICollectionView，减少了位置刷新次数，提高性能；增加了alignment属性，可以靠左中右排列</li>
 <li>2016-10-29: 增加Tag的阴影和ContentInset的设置，更新了Demo</li>
-<li>2016-10-17: 增加了水平滑动；Autolayout适配；UITableViewCell例子等。</li>
-<li>2016-02-18: 修复了超长标签导致排版错误的Bug。</li>
+<li>2016-10-17: 增加了水平滑动；Autolayout适配；UITableViewCell例子等</li>
+<li>2016-02-18: 修复了超长标签导致排版错误的Bug</li>
 </ul>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这段时间做项目的时候，总是需要显示一些“标签”样式的内容，但是又找不到用的顺手的库，所以琢磨了几天，自己实现了出来，就有了这个库：TTGTagCollectionView。如果只需要显示文字标签的话，直接使用<code>TTGTextTagCollectionView</code>，需要自己定义标签的话，就用<code>TTGTagCollectionView</code>，效果如下:</p>
 <p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/TTGTagCollectionView_screenshot.png" alt="ScreenShot"></p>
@@ -643,53 +690,6 @@
         
         <div class="card-action teal-link-context">
             <a href="/2015/12/14/autolayout-example-with-masonry3/">READ MORE</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="blue-grey-link-context"><a href="/2015/10/25/ttgemojirate-lib/">Swift开源项目: TTGEmojiRate的实现</a></h1>
-    
-
-
-            </div>
-
-            <time class="teal-link-context" datetime="2015-10-25T11:32:42.000Z"><a href="/2015/10/25/ttgemojirate-lib/">2015-10-25</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
-        
-            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
-        
-            <a href="/tags/开源/" class="chip teal accent-4">开源</a>
-        
-            <a href="/tags/Swift/" class="chip teal accent-4">Swift</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry teal-link-context">
-                    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前段时间在Dribbble上发现了一个<a href="https://dribbble.com/shots/2211556-Rating-Version-A">Rating控件</a>的演示动画，控件以Emoji表情为基础，结合了上下滑动手势，正好最近正在深入学习iOS动画、绘图相关的知识，就尝试着用<code>UIBezierPath</code>实现了出来。本文就是TTGEmojiRate的实现过程。</p>
-<p>Github: <a href="https://github.com/zekunyan/TTGEmojiRate">https://github.com/zekunyan/TTGEmojiRate</a></p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/TTGEmojiRate_screenshot2.gif" alt="TTGEmojiRate Example"></p>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action teal-link-context">
-            <a href="/2015/10/25/ttgemojirate-lib/">READ MORE</a>
         </ div>
         
     </div>

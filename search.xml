@@ -4,6 +4,79 @@
   
     
     <entry>
+      <title><![CDATA[开源项目-拼图验证控件TTGPuzzleVerify的实现]]></title>
+      <url>http://tutuge.me/2016/12/25/TTGPuzzleVerify/</url>
+      <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近抽空写了个拼图验证控件，用户可以通过水平、垂直，或者直接拖动拼图块，完成拼图图案，来完成验证。拼图块的形状可以自定义，默认提供了经典的拼图形状、圆形、正方形，整个拼图的图案也是支持从图片生成的。</p>
+<p><strong>CocoaPods</strong>: <code>pod &quot;TTGPuzzleVerify&quot;</code><br><strong>Github</strong>: <a href="https://github.com/zekunyan/TTGPuzzleVerify" target="_blank" rel="external">https://github.com/zekunyan/TTGPuzzleVerify</a></p>
+<p><img src="http://zorrochen.qiniudn.com/blog_TTGPuzzleVerify_gif.gif" alt=""></p>
+<p>接下来，说说TTGPuzzleVerify的整体设计思路和实现原理。</p>
+<a id="more"></a>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><h3 id="组成部分"><a href="#组成部分" class="headerlink" title="组成部分"></a>组成部分</h3><p>先直观上分析一下控件的组成部分：</p>
+<p><img src="http://zorrochen.qiniudn.com/blog_TTGPuzzleVerify_1.png" alt="组成部分"></p>
+<p>可以直观看出，控件应该由三个部分组成：</p>
+<ul>
+<li>拼图块：就是从原图上<strong>“抠”</strong>出来的拼图形状的图片块</li>
+<li>原始图片：拼图整体图案的图片</li>
+<li>镂空背景：从原始图片上抠出拼图块以后，给用户提示用的，透明度更低的拼图块镂空背景</li>
+</ul>
+<h3 id="拆解步骤"><a href="#拆解步骤" class="headerlink" title="拆解步骤"></a>拆解步骤</h3><p>分析完了控件的组成，现在就来梳理一下控件的整个创建、交互流程。</p>
+<p><img src="http://zorrochen.qiniudn.com/blog_TTGPuzzleVerify_2.png" alt="步骤"></p>
+<ul>
+<li>输入：图片、拼图形状、拼图大小、镂空的位置、拼图块的起始位置</li>
+<li>生成拼图路径：根据拼图类型，生成对应的贝塞尔曲线</li>
+<li>从图片抠出拼图块、镂空：有了拼图路径，就可以抠出拼图块和镂空的部分</li>
+<li>设置位置、样式：根据参数设置拼图块的初始位置、样式，如阴影、镂空的透明度等</li>
+<li>用户拖动：响应用户的头动手势，移动拼图块，根据坐标判断是否完成拼图</li>
+<li>回调：用户完成拼图后，要回调，让外部响应拼图完成事件</li>
+</ul>
+<h3 id="关键技术点"><a href="#关键技术点" class="headerlink" title="关键技术点"></a>关键技术点</h3><p>从上面的步骤可以整理出来几个关键的技术点，如下：</p>
+<p><strong>拼图的路径生成</strong><br>普通的形状，如正方形、圆形之类的还好，代码实现比较方便，但是复杂的拼图图案怎么办？</p>
+<p><strong>从图片上“抠出”拼图块、镂空</strong><br>有了拼图的形状路径，如何从图片上抠出拼图块和镂空？</p>
+<p><strong>用户拖动拼图、完成拼图验证</strong><br>抠出了拼图块，如何将用户的手势对应到移动拼图块，最终完成验证？</p>
+<p>下面针对这三个点着重写下实现原理。</p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="拼图的路径生成"><a href="#拼图的路径生成" class="headerlink" title="拼图的路径生成"></a>拼图的路径生成</h3><p>既然手写代码太难，那就从现有的图案生成代码。</p>
+<p><strong>1. 找SVG素材</strong><br>既然要能随意改变大小，就要找矢量的图，Google “free svg”、“free icon”之类的，很容易就能找到免费的矢量图素材，例如TTGPuzzleVerify里面用的拼图形状就是从<a href="http://iconmonstr.com/puzzle-1/" target="_blank" rel="external">iconmonstr.com</a>找来的。</p>
+<p><strong>2. 编辑</strong><br>直接下载回来的SVG还需要调整一下，如去除背景，我是用Sketch来编辑的。</p>
+<p><img src="http://zorrochen.qiniudn.com/blog_TTGPuzzleVerify_3.png" alt="拼图SVG编辑"></p>
+<p><strong>3. 生成代码</strong><br>拼图的路径本质上就是拼图的轮廓，在Sketch里面把拼图SVG的背景色等颜色删除，然后就是将其转换为代码。<br>这里可以用<a href="https://www.paintcodeapp.com/sketch" target="_blank" rel="external">PaintCode plugin for Sketch</a>，将Sketch的拼图矢量路径导出成代码。</p>
+<p><strong>4. 调整代码</strong><br>直接生成的代码有时可能会不适用，可以人工调整下，然后就可以放到自己的类里面了：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">+ (<span class="built_in">UIBezierPath</span> *)classicPuzzlePath &#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="built_in">UIBezierPath</span> *puzzleShape = <span class="literal">nil</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;</span><br><span class="line">    <span class="built_in">dispatch_once</span>(&amp;onceToken, ^&#123;</span><br><span class="line">        puzzleShape = [<span class="built_in">UIBezierPath</span> bezierPath];</span><br><span class="line">        [puzzleShape moveToPoint:<span class="built_in">CGPointMake</span>(<span class="number">17.45</span>, <span class="number">71.16</span>)];</span><br><span class="line">        <span class="comment">// 此处省略很多行=。=，PaintCode生成的</span></span><br><span class="line">        [puzzleShape closePath];</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span> puzzleShape;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>5. UIBezierPath拼图路径的大小、位置调整</strong><br>直接导出的拼图路径的大小、位置是固定的，但是控件是要可以支持改变大小、位置的，所以，要对路径做变换，刚好<code>UIBezierPath</code>支持<code>CGAffineTransform</code>变换。</p>
+<p>大小变换：</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 大小变换，path是生成的原始路径，_puzzleSize是传入的拼图块大小</span></span><br><span class="line">[path applyTransform:CGAffineTransformMakeScale(_puzzleSize.<span class="built_in">width</span> / path.bounds.<span class="built_in">size</span>.<span class="built_in">width</span>,</span><br><span class="line">                                                _puzzleSize.<span class="built_in">height</span> / path.bounds.<span class="built_in">size</span>.<span class="built_in">height</span>)];</span><br></pre></td></tr></table></figure>
+<p>位置变换：</p>
+<figure class="highlight dos"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 位置变换，<span class="built_in">path</span>是生成的原始路径，_puzzleBlankPosition是传入的拼图块、镂空位置</span><br><span class="line">[<span class="built_in">path</span> applyTransform:CGAffineTransformMakeTranslation(</span><br><span class="line">            _puzzleBlankPosition.x - <span class="built_in">path</span>.bounds.origin.x,</span><br><span class="line">            _puzzleBlankPosition.y - <span class="built_in">path</span>.bounds.origin.y)];</span><br></pre></td></tr></table></figure>
+<p>至此，拼图的路径就写好了。</p>
+<h3 id="从图片上“抠出”拼图块、镂空"><a href="#从图片上“抠出”拼图块、镂空" class="headerlink" title="从图片上“抠出”拼图块、镂空"></a>从图片上“抠出”拼图块、镂空</h3><p><strong>1. 拼图块</strong><br>有了UIBezierPath路径，抠出拼图块还是比较容易的，直接用<code>CAShapeLayer</code>来<strong>“mask”</strong>图片即可：</p>
+<figure class="highlight hsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 拼图路径</span></span><br><span class="line">UIBezierPath *puzzlePath = [self getNewScaledPuzzledPath]<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建mask layer</span></span><br><span class="line">CAShapeLayer *puzzleMaskLayer = [CAShapeLayer new]<span class="comment">;</span></span><br><span class="line">puzzleMaskLayer.frame = self.bounds<span class="comment">;</span></span><br><span class="line">puzzleMaskLayer.path = puzzlePath.CGPath<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Mask到图片imageView上</span></span><br><span class="line">_puzzleImageView.layer.mask = puzzleMaskLayer<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<p>效果就是：</p>
+<p><img src="http://zorrochen.qiniudn.com/blog_TTGPuzzleVerify_4.png" alt="拼图块"></p>
+<p><strong>2. 镂空图片</strong><br>抠出拼图块还是很容易的，但是“镂空”怎么办？<br>其实道理是一样的，都是<strong>mask</strong>，只不过mask的区域反过来而已。<br><code>CAShapeLayer</code>的<code>fillRule</code>就可以调整“填充的规则”，此处用<code>kCAFillRuleEvenOdd</code>就可以了，文档的解释如下：</p>
+<blockquote>
+<p>Specifies the even-odd winding rule. Count the total number of path crossings. If the number of crossings is even, the point is outside the path. If the number of crossings is odd, the point is inside the path and the region containing it should be filled.</p>
+</blockquote>
+<p>理解过来就是：区域内一点，往外划一条线，经过奇数个数的交点，则点在区域内，偶数个数的交点，则在区域外。</p>
+<p>所以，只要在拼图路径的基础上，补充最外部的边框的路径即可：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建矩形边框路径</span></span><br><span class="line"><span class="built_in">UIBezierPath</span> *maskPath = [<span class="built_in">UIBezierPath</span> bezierPathWithRect:<span class="keyword">self</span>.bounds];</span><br><span class="line"><span class="comment">// 添加拼图路径</span></span><br><span class="line">[maskPath appendPath:[<span class="built_in">UIBezierPath</span> bezierPathWith<span class="built_in">CGPath</span>:puzzlePath.CGPath]];</span><br><span class="line"><span class="comment">// 设置规则</span></span><br><span class="line">maskPath.usesEvenOddFillRule = <span class="literal">YES</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建mask的layer</span></span><br><span class="line"><span class="built_in">CAShapeLayer</span> *frontMaskLayer = [<span class="built_in">CAShapeLayer</span> new];</span><br><span class="line">frontMaskLayer.frame = <span class="keyword">self</span>.bounds;</span><br><span class="line">frontMaskLayer.path = maskPath.CGPath;</span><br><span class="line">frontMaskLayer.fillRule = k<span class="built_in">CAFillRuleEvenOdd</span>; <span class="comment">// 填充规则</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置mask</span></span><br><span class="line">_frontImageView.layer.mask = frontMaskLayer;</span><br></pre></td></tr></table></figure>
+<p>效果：</p>
+<p><img src="http://zorrochen.qiniudn.com/blog_TTGPuzzleVerify_5.png" alt="镂空"></p>
+<p><strong>3. 镂空背景</strong><br>有了拼图块、镂空，还差一块，就是镂空的“半透明背景”，其实这个“半透明背景”和拼图块是一模一样的，所以不再重复代码，唯一增加的就是设置其透明度。</p>
+<p><strong>4. 组合</strong><br>将上面的组合到一起，就能形成最终的效果，从Reveal里面看到分层结构如下：</p>
+<p><img src="http://zorrochen.qiniudn.com/blog_TTGPuzzleVerify_6.png" alt="分层"></p>
+<p>其实就是三张一样的图片，按照不同的mask规则做了处理，叠加起来。</p>
+<h3 id="用户拖动拼图、完成拼图验证"><a href="#用户拖动拼图、完成拼图验证" class="headerlink" title="用户拖动拼图、完成拼图验证"></a>用户拖动拼图、完成拼图验证</h3><p><strong>1. 拖动图片</strong><br>有了上面的结构，拖动拼图的处理也就容易多了，只要移动最上层的拼图块就行了，这里直接用<code>UIPanGestureRecognizer</code>实现，移动的时候基于拼图的中心移动。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建手势</span></span><br><span class="line"><span class="built_in">UIPanGestureRecognizer</span> *panGestureRecognizer = [<span class="built_in">UIPanGestureRecognizer</span> new];</span><br><span class="line">[panGestureRecognizer addTarget:<span class="keyword">self</span> action:<span class="keyword">@selector</span>(onPanGesture:)];</span><br><span class="line">[<span class="keyword">self</span> addGestureRecognizer:panGestureRecognizer];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 手势处理</span></span><br><span class="line">- (<span class="keyword">void</span>)onPanGesture:(<span class="built_in">UIPanGestureRecognizer</span> *)panGestureRecognizer &#123;</span><br><span class="line">    <span class="comment">// 获取坐标</span></span><br><span class="line">    <span class="built_in">CGPoint</span> panLocation = [panGestureRecognizer locationInView:<span class="keyword">self</span>];</span><br><span class="line">    <span class="comment">// 拼图中心偏移</span></span><br><span class="line">    <span class="built_in">CGPoint</span> position = <span class="built_in">CGPointZero</span>;</span><br><span class="line">    position.x = panLocation.x - _puzzleSize.width / <span class="number">2</span>;</span><br><span class="line">    position.y = panLocation.y - _puzzleSize.height / <span class="number">2</span>;</span><br><span class="line">    <span class="comment">// 设置坐标</span></span><br><span class="line">    [<span class="keyword">self</span> setPuzzlePosition:position];</span><br><span class="line">    <span class="comment">// 判断、回调。。。</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>2. 验证用户的拼图是否完成</strong><br>用户移动拼图时，只要判断拼图的坐标和镂空的位置是否一致就行。但是如果完全精确的判断，用户很难准确的把拼图拼对上，所以还要增加一定的<strong>“tolerance”</strong>，让拼图更加容易，同时暴漏出让外部设置：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">CGFloat</span> verificationTolerance; <span class="comment">// Verification tolerance, default is 8</span></span><br></pre></td></tr></table></figure>
+<p>判断的逻辑如下：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// puzzlePosition是当前拼图块的位置，_puzzleBlankPosition是拼图镂空的位置</span></span><br><span class="line">- (<span class="built_in">BOOL</span>)isVerified &#123;</span><br><span class="line">    <span class="keyword">return</span> fabsf([<span class="keyword">self</span> puzzlePosition].x - _puzzleBlankPosition.x) &lt;= _verificationTolerance &amp;&amp;</span><br><span class="line">           fabsf([<span class="keyword">self</span> puzzlePosition].y - _puzzleBlankPosition.y) &lt;= _verificationTolerance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>3. 完成拼图</strong><br>当用户完成拼图后，外部会得到<code>delegate</code>、<code>block</code>的回调响应，接着就可以“完成拼图验证”，对此向外提供一个方法：<code>- (void)completeVerificationWithAnimation:(BOOL)withAnimation</code>，调用后拼图块将会移动回镂空位置，模拟出拼图完成的效果。</p>
+<p>至此，TTGPuzzleVerify的关键实现技术点就是这些了～</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>嗯，圣诞节快乐！ – 2016-12-25</p>
+]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[Swift开源Mac App - BingWallPaper]]></title>
       <url>http://tutuge.me/2016/08/28/TTGBingWallPaper/</url>
       <content type="html"><![CDATA[<h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><ul>
@@ -485,9 +558,10 @@
       <title><![CDATA[开源项目-TTGTagCollectionView]]></title>
       <url>http://tutuge.me/2015/12/31/TTGTagCollectionView/</url>
       <content type="html"><![CDATA[<h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><ul>
+<li>2016-12-25: 不再依赖UICollectionView，减少了位置刷新次数，提高性能；增加了alignment属性，可以靠左中右排列</li>
 <li>2016-10-29: 增加Tag的阴影和ContentInset的设置，更新了Demo</li>
-<li>2016-10-17: 增加了水平滑动；Autolayout适配；UITableViewCell例子等。</li>
-<li>2016-02-18: 修复了超长标签导致排版错误的Bug。</li>
+<li>2016-10-17: 增加了水平滑动；Autolayout适配；UITableViewCell例子等</li>
+<li>2016-02-18: 修复了超长标签导致排版错误的Bug</li>
 </ul>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这段时间做项目的时候，总是需要显示一些“标签”样式的内容，但是又找不到用的顺手的库，所以琢磨了几天，自己实现了出来，就有了这个库：TTGTagCollectionView。如果只需要显示文字标签的话，直接使用<code>TTGTextTagCollectionView</code>，需要自己定义标签的话，就用<code>TTGTagCollectionView</code>，效果如下:</p>
 <p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/TTGTagCollectionView_screenshot.png" alt="ScreenShot"></p>
@@ -721,11 +795,12 @@
       <title><![CDATA[Swift写的库-TTGSnackbar]]></title>
       <url>http://tutuge.me/2015/10/09/ttgsnackbar-lib/</url>
       <content type="html"><![CDATA[<h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><ul>
-<li>2016-10-20: 增加ContentInset，也就是Padding的属性；增加自定义内容View</li>
+<li>2016-12-25: 增加多行文本的支持，增加阴影</li>
+<li>2016-10-20: 增加ContentInset，也就是Padding的属性；增加自定义内容View; 版本1.3.0</li>
 <li>2016-10-17: 支持Swift3；增加的顶部Top位置动画；增加同时两个Action按钮；增加带图片icon显示</li>
 <li>2016-03-25: 版本更新到了0.5.1，补充些说明、示例</li>
 </ul>
-<h2 id="TTGSnackbar"><a href="#TTGSnackbar" class="headerlink" title="TTGSnackbar"></a>TTGSnackbar</h2><p>用Swift写了个简单的控件库：TTGSnackbar，模仿Android的Snackbar。目前更新到了版本0.5.1。支持多种动画，增强了自定义。</p>
+<h2 id="TTGSnackbar"><a href="#TTGSnackbar" class="headerlink" title="TTGSnackbar"></a>TTGSnackbar</h2><p>用Swift写了个简单的控件库：TTGSnackbar，模仿Android的Snackbar。目前更新到了版本1.3.0。支持多种动画，增强了自定义。</p>
 <p>Github: <a href="https://github.com/zekunyan/TTGSnackbar" target="_blank" rel="external">https://github.com/zekunyan/TTGSnackbar</a></p>
 <p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/TTGSnackbar_screen_shot.png" alt="Screenshot"></p>
 <p><strong>Gif</strong></p>
@@ -2233,7 +2308,7 @@ $(document).ready(function(event) {
 </blockquote>
 <h2 id="教育经历"><a href="#教育经历" class="headerlink" title="教育经历"></a>教育经历</h2><p>华中科技大学 - 本科 - 电子信息工程 -（2010-2014）<br>华中科技大学 - 工程硕士 - 电子与通信工程 -（2014-2016）对=。=，我2016年6月份才毕业。  </p>
 <h2 id="实习经历"><a href="#实习经历" class="headerlink" title="实习经历"></a>实习经历</h2><p>阿里巴巴 - B2B国际事业部 - iOS开发工程师 - (2015-6至2015-9)</p>
-<h2 id="工作经历"><a href="#工作经历" class="headerlink" title="工作经历"></a>工作经历</h2><p>阿里巴巴 - B2B国际事业部 - iOS开发工程师 - (2016-7开始)</p>
+<h2 id="工作经历"><a href="#工作经历" class="headerlink" title="工作经历"></a>工作经历</h2><p>阿里巴巴 - B2B国际事业部 - iOS开发工程师 - (2016-7至现在)</p>
 <h2 id="技能"><a href="#技能" class="headerlink" title="技能"></a>技能</h2><ul>
 <li>熟悉：C, C++, Java, Objective-C, Swift</li>
 <li>了解：PHP, Python, html, js, css, Node.js, Linux Shell脚本</li>
@@ -2272,6 +2347,7 @@ $(document).ready(function(event) {
 <li>维护开发基于Java、Python、 RMI、MySQL、MongoDB、Lucene的简单分布式数据挖掘处理系统。</li>
 </ul>
 <h2 id="Github"><a href="#Github" class="headerlink" title="Github"></a>Github</h2><ul>
+<li>iOS-<a href="https://github.com/zekunyan/TTGPuzzleVerify" target="_blank" rel="external">TTGPuzzleVerify</a>: 体验更友好的拼图验证控件</li>
 <li>iOS-<a href="https://github.com/zekunyan/TTGEmojiRate" target="_blank" rel="external">TTGEmojiRate</a>: Rating组件，以Emoji表情为基础，上下拖动改变Emoji表情，增强交互性</li>
 <li>iOS-<a href="https://github.com/zekunyan/TTGTagCollectionView" target="_blank" rel="external">TTGTagCollectionView</a>: 标签集合组件。同时支持文字标签和自定义View标签，高度可定制</li>
 <li>iOS-<a href="https://github.com/zekunyan/TTGSnackbar" target="_blank" rel="external">TTGSnackbar</a>: 模仿Android的Snackbar的一个HUD组件</li>
@@ -2285,6 +2361,12 @@ $(document).ready(function(event) {
 </ul>
 <h2 id="博客"><a href="#博客" class="headerlink" title="博客"></a>博客</h2><p>日均PV300左右，被收入”<strong><a href="https://github.com/tangqiaoboy/iOSBlogCN" target="_blank" rel="external">中文 iOS/Mac 开发博客列表</a></strong>”。</p>
 ]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[tags]]></title>
+      <url>http://tutuge.me/tags/index.html</url>
+      <content type="html"></content>
     </entry>
     
     <entry>
@@ -3154,12 +3236,6 @@ echo 'Clean done at ' `date`
 </code></pre>
 </body>
 </html>]]></content>
-    </entry>
-    
-    <entry>
-      <title><![CDATA[tags]]></title>
-      <url>http://tutuge.me/tags/index.html</url>
-      <content type="html"></content>
     </entry>
     
   

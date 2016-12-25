@@ -156,7 +156,7 @@
 
             <li class="collapse-level-0" collapse-level="0">
                 <a class="no-padding" href="/categories/iOS/">
-                    iOS <span class="right">31 篇</span></a>
+                    iOS <span class="right">32 篇</span></a>
                 </a>
             </li>
 
@@ -228,6 +228,53 @@
             <div class="article-title">
                 
     
+        <h1 class="blue-grey-link-context"><a href="/2015/10/25/ttgemojirate-lib/">Swift开源项目: TTGEmojiRate的实现</a></h1>
+    
+
+
+            </div>
+
+            <time class="teal-link-context" datetime="2015-10-25T11:32:42.000Z"><a href="/2015/10/25/ttgemojirate-lib/">2015-10-25</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
+        
+            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
+        
+            <a href="/tags/开源/" class="chip teal accent-4">开源</a>
+        
+            <a href="/tags/Swift/" class="chip teal accent-4">Swift</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry teal-link-context">
+                    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前段时间在Dribbble上发现了一个<a href="https://dribbble.com/shots/2211556-Rating-Version-A">Rating控件</a>的演示动画，控件以Emoji表情为基础，结合了上下滑动手势，正好最近正在深入学习iOS动画、绘图相关的知识，就尝试着用<code>UIBezierPath</code>实现了出来。本文就是TTGEmojiRate的实现过程。</p>
+<p>Github: <a href="https://github.com/zekunyan/TTGEmojiRate">https://github.com/zekunyan/TTGEmojiRate</a></p>
+<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/TTGEmojiRate_screenshot2.gif" alt="TTGEmojiRate Example"></p>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action teal-link-context">
+            <a href="/2015/10/25/ttgemojirate-lib/">READ MORE</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
         <h1 class="blue-grey-link-context"><a href="/2015/10/09/ttgsnackbar-lib/">Swift写的库-TTGSnackbar</a></h1>
     
 
@@ -254,11 +301,12 @@
             
                 <div class="entry teal-link-context">
                     <h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><ul>
-<li>2016-10-20: 增加ContentInset，也就是Padding的属性；增加自定义内容View</li>
+<li>2016-12-25: 增加多行文本的支持，增加阴影</li>
+<li>2016-10-20: 增加ContentInset，也就是Padding的属性；增加自定义内容View; 版本1.3.0</li>
 <li>2016-10-17: 支持Swift3；增加的顶部Top位置动画；增加同时两个Action按钮；增加带图片icon显示</li>
 <li>2016-03-25: 版本更新到了0.5.1，补充些说明、示例</li>
 </ul>
-<h2 id="TTGSnackbar"><a href="#TTGSnackbar" class="headerlink" title="TTGSnackbar"></a>TTGSnackbar</h2><p>用Swift写了个简单的控件库：TTGSnackbar，模仿Android的Snackbar。目前更新到了版本0.5.1。支持多种动画，增强了自定义。</p>
+<h2 id="TTGSnackbar"><a href="#TTGSnackbar" class="headerlink" title="TTGSnackbar"></a>TTGSnackbar</h2><p>用Swift写了个简单的控件库：TTGSnackbar，模仿Android的Snackbar。目前更新到了版本1.3.0。支持多种动画，增强了自定义。</p>
 <p>Github: <a href="https://github.com/zekunyan/TTGSnackbar">https://github.com/zekunyan/TTGSnackbar</a></p>
 <p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/TTGSnackbar_screen_shot.png" alt="Screenshot"></p>
 <p><strong>Gif</strong></p>
@@ -662,51 +710,6 @@
         
         <div class="card-action teal-link-context">
             <a href="/2015/03/29/bind-data-to-gcd-queue/">READ MORE</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="blue-grey-link-context"><a href="/2015/03/21/effective-objective-c-5-enum/">Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5</a></h1>
-    
-
-
-            </div>
-
-            <time class="teal-link-context" datetime="2015-03-21T12:52:57.000Z"><a href="/2015/03/21/effective-objective-c-5-enum/">2015-03-21</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
-        
-            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry teal-link-context">
-                    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Enum，也就是枚举，从C语言开始就有了，C++、Java、Objective-C、Swift这些语言，当然都有对应的枚举类型，功能可能有多有少，但是最核心的还是一个—规范的定义代码中的状态、选项等“常量”。</p>
-<h2 id="Item-5-Use-Enumerations-for-States-Options-and-Status-Codes"><a href="#Item-5-Use-Enumerations-for-States-Options-and-Status-Codes" class="headerlink" title="Item 5 - Use Enumerations for States, Options, and Status Codes"></a>Item 5 - Use Enumerations for States, Options, and Status Codes</h2><p>本节的内容就是如何正确的使用枚举。</p>
-<h2 id="状态与选项的区别（states-and-options）"><a href="#状态与选项的区别（states-and-options）" class="headerlink" title="状态与选项的区别（states and options）"></a>状态与选项的区别（states and options）</h2><p>在用<strong>enum</strong>之前，我个人觉得，区分一下状态和选项的概念还是很必要的。</p>
-<p><strong>状态</strong>，同时只能有一种，如“<strong>OK</strong>”，“<strong>Error</strong>”，不可能同时是OK和Error。<br><strong>选项</strong>，同时可以有一种或一种以上，如App可以<strong>同时</strong>支持横屏和竖屏，横屏竖屏在这个时候就是“屏幕方向”的两种不同的选项。</p>
-<p>接下来，我们看看如何用枚举定义状态和选项。</p>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action teal-link-context">
-            <a href="/2015/03/21/effective-objective-c-5-enum/">READ MORE</a>
         </ div>
         
     </div>

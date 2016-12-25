@@ -156,7 +156,7 @@
 
             <li class="collapse-level-0" collapse-level="0">
                 <a class="no-padding" href="/categories/iOS/">
-                    iOS <span class="right">31 篇</span></a>
+                    iOS <span class="right">32 篇</span></a>
                 </a>
             </li>
 
@@ -221,6 +221,51 @@
 
 
 <div id="article-list" class="container main-container">
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="blue-grey-link-context"><a href="/2015/03/21/effective-objective-c-5-enum/">Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5</a></h1>
+    
+
+
+            </div>
+
+            <time class="teal-link-context" datetime="2015-03-21T12:52:57.000Z"><a href="/2015/03/21/effective-objective-c-5-enum/">2015-03-21</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
+        
+            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry teal-link-context">
+                    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Enum，也就是枚举，从C语言开始就有了，C++、Java、Objective-C、Swift这些语言，当然都有对应的枚举类型，功能可能有多有少，但是最核心的还是一个—规范的定义代码中的状态、选项等“常量”。</p>
+<h2 id="Item-5-Use-Enumerations-for-States-Options-and-Status-Codes"><a href="#Item-5-Use-Enumerations-for-States-Options-and-Status-Codes" class="headerlink" title="Item 5 - Use Enumerations for States, Options, and Status Codes"></a>Item 5 - Use Enumerations for States, Options, and Status Codes</h2><p>本节的内容就是如何正确的使用枚举。</p>
+<h2 id="状态与选项的区别（states-and-options）"><a href="#状态与选项的区别（states-and-options）" class="headerlink" title="状态与选项的区别（states and options）"></a>状态与选项的区别（states and options）</h2><p>在用<strong>enum</strong>之前，我个人觉得，区分一下状态和选项的概念还是很必要的。</p>
+<p><strong>状态</strong>，同时只能有一种，如“<strong>OK</strong>”，“<strong>Error</strong>”，不可能同时是OK和Error。<br><strong>选项</strong>，同时可以有一种或一种以上，如App可以<strong>同时</strong>支持横屏和竖屏，横屏竖屏在这个时候就是“屏幕方向”的两种不同的选项。</p>
+<p>接下来，我们看看如何用枚举定义状态和选项。</p>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action teal-link-context">
+            <a href="/2015/03/21/effective-objective-c-5-enum/">READ MORE</a>
+        </ div>
+        
+    </div>
+</article>
+
     
         <article class="simple-article">
     <div class="card">
@@ -619,47 +664,6 @@
         
         <div class="card-action teal-link-context">
             <a href="/2015/02/19/提升UITableView性能-复杂页面的优化/">READ MORE</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="blue-grey-link-context"><a href="/2015/02/18/NSString的Copy与内存分配/">NSString的Copy与内存分配</a></h1>
-    
-
-
-            </div>
-
-            <time class="teal-link-context" datetime="2015-02-18T09:00:47.000Z"><a href="/2015/02/18/NSString的Copy与内存分配/">2015-02-18</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
-        
-            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry teal-link-context">
-                    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>不管是用什么语言开发，字符串应该算是用的最多的了。在Objective-C中，字符串类是NSString，以及其子类NSMutableString等。所以，对于字符串类，编程语言、编译器等往往会做特殊处理。下面我就说说我自己在项目中发现的NSString的“奇怪”的地方。</p>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action teal-link-context">
-            <a href="/2015/02/18/NSString的Copy与内存分配/">READ MORE</a>
         </ div>
         
     </div>
