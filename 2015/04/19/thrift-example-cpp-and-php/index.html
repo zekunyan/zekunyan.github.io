@@ -99,7 +99,7 @@
                 <div class="info col s8 valign-wrapper no-padding">
                     <div class="valign">
                         <p class="name">土土哥</p>
-                        <p class="desc">iOS/技术宅</p>
+                        <p class="desc">iOS/Android/技术宅</p>
                     </div>
                 </div>
             </div>
@@ -248,6 +248,11 @@
             </div>
             <time class="teal-link-context" datetime="2015-04-19T09:04:56.000Z"><a href="/2015/04/19/thrift-example-cpp-and-php/">2015-04-19</a></time>
 
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
             
     <div class="tags-row">
         
@@ -299,7 +304,7 @@
 <li><a href="https://git-wip-us.apache.org/repos/asf?p=thrift.git;a=blob_plain;f=tutorial/tutorial.thrift" target="_blank" rel="external">example.thrift</a></li>
 </ul>
 <p>看看本例子中的定义文件“TTG.thrift”：</p>
-<figure class="highlight thrift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> cpp TTG</span><br><span class="line"><span class="keyword">namespace</span> php TTG</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">ResponseState</span> </span>&#123;</span><br><span class="line">    StateOk = <span class="number">0</span>,</span><br><span class="line">    StateError = <span class="number">1</span>,</span><br><span class="line">    StateEmpty = <span class="number">2</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Request</span> </span>&#123;</span><br><span class="line">    <span class="number">1</span>: <span class="built_in">i32</span> studentID = <span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Response</span> </span>&#123;</span><br><span class="line">    <span class="number">1</span>: <span class="built_in">i32</span> studentID = <span class="number">0</span>,</span><br><span class="line">    <span class="number">2</span>: <span class="built_in">string</span> name,</span><br><span class="line">    <span class="number">3</span>: list&lt;<span class="keyword">string</span>&gt; infos,</span><br><span class="line">    <span class="number">4</span>: ResponseState state</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">service</span> <span class="title">TTGService</span> </span>&#123;</span><br><span class="line">    Response getStudentInfo(<span class="number">1</span>: Request request);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight thrift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">namespace</span> cpp TTG</div><div class="line"><span class="keyword">namespace</span> php TTG</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">enum</span> <span class="title">ResponseState</span> </span>&#123;</div><div class="line">    StateOk = <span class="number">0</span>,</div><div class="line">    StateError = <span class="number">1</span>,</div><div class="line">    StateEmpty = <span class="number">2</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Request</span> </span>&#123;</div><div class="line">    <span class="number">1</span>: <span class="built_in">i32</span> studentID = <span class="number">0</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Response</span> </span>&#123;</div><div class="line">    <span class="number">1</span>: <span class="built_in">i32</span> studentID = <span class="number">0</span>,</div><div class="line">    <span class="number">2</span>: <span class="built_in">string</span> name,</div><div class="line">    <span class="number">3</span>: list&lt;<span class="keyword">string</span>&gt; infos,</div><div class="line">    <span class="number">4</span>: ResponseState state</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">service</span> <span class="title">TTGService</span> </span>&#123;</div><div class="line">    Response getStudentInfo(<span class="number">1</span>: Request request);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <ol>
 <li>先定义命名空间，尽量减少命名冲突。</li>
 <li>Request类型：PHP客户端请求的数据类型。</li>
@@ -309,20 +314,20 @@
 </ol>
 <h2 id="生成对应语言的代码！"><a href="#生成对应语言的代码！" class="headerlink" title="生成对应语言的代码！"></a>生成对应语言的代码！</h2><p>是的，生成代码！这是我觉得Thrift框架最“神奇”的地方。我们只需要执行几条命令，就可以根据接口定义文件“生成”对应语言的代码。然后我们只需要将对应的业务逻辑加入到生成的代码中即可。</p>
 <p>如生成CPP服务端的代码：</p>
-<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">thrift <span class="comment">--gen cpp TTG.thrift</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">thrift <span class="comment">--gen cpp TTG.thrift</span></div></pre></td></tr></table></figure>
 <p>然后就会生成如下代码。</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">TTGService<span class="selector-class">.cpp</span></span><br><span class="line">TTGService<span class="selector-class">.h</span></span><br><span class="line">TTGService_server<span class="selector-class">.skeleton</span><span class="selector-class">.cpp</span></span><br><span class="line">TTG_constants<span class="selector-class">.cpp</span></span><br><span class="line">TTG_constants<span class="selector-class">.h</span></span><br><span class="line">TTG_types<span class="selector-class">.cpp</span></span><br><span class="line">TTG_types.h</span><br></pre></td></tr></table></figure>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">TTGService<span class="selector-class">.cpp</span></div><div class="line">TTGService<span class="selector-class">.h</span></div><div class="line">TTGService_server<span class="selector-class">.skeleton</span><span class="selector-class">.cpp</span></div><div class="line">TTG_constants<span class="selector-class">.cpp</span></div><div class="line">TTG_constants<span class="selector-class">.h</span></div><div class="line">TTG_types<span class="selector-class">.cpp</span></div><div class="line">TTG_types.h</div></pre></td></tr></table></figure>
 <h2 id="根据需要修改生成的代码"><a href="#根据需要修改生成的代码" class="headerlink" title="根据需要修改生成的代码"></a>根据需要修改生成的代码</h2><p>生成CPP、PHP端的代码以后，我们就可以根据需要修改、添加业务代码。</p>
 <h3 id="CPP服务端"><a href="#CPP服务端" class="headerlink" title="CPP服务端"></a>CPP服务端</h3><p>在生成CPP的代码时，会生成一个“TTGService_server.skeleton.cpp”文件，这个就是我们的CPP服务端的代码“架子”。其中重点如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//实现调用的接口</span></span><br><span class="line"><span class="keyword">class</span> TTGServiceHandler : <span class="keyword">virtual</span> <span class="keyword">public</span> TTGServiceIf &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">TTGServiceHandler() &#123;</span><br><span class="line">    <span class="comment">// Your initialization goes here</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//接口实现部分，实现getStudentInfo这个接口的具体细节，如根据request创建、返回对应的response</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getStudentInfo</span><span class="params">(Response&amp; _return, <span class="keyword">const</span> Request&amp; request)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Your implementation goes here</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"getStudentInfo\n"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//...</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//实现调用的接口</span></div><div class="line"><span class="keyword">class</span> TTGServiceHandler : <span class="keyword">virtual</span> <span class="keyword">public</span> TTGServiceIf &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">TTGServiceHandler() &#123;</div><div class="line">    <span class="comment">// Your initialization goes here</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//接口实现部分，实现getStudentInfo这个接口的具体细节，如根据request创建、返回对应的response</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">getStudentInfo</span><span class="params">(Response&amp; _return, <span class="keyword">const</span> Request&amp; request)</span> </span>&#123;</div><div class="line">    <span class="comment">// Your implementation goes here</span></div><div class="line">    <span class="built_in">printf</span>(<span class="string">"getStudentInfo\n"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line">&#125;;</div><div class="line"><span class="comment">//...</span></div></pre></td></tr></table></figure>
 <p>我们将其改成：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> getStudentInfo(Response &amp;_<span class="keyword">return</span>, <span class="keyword">const</span> Request &amp;request) &#123;</span><br><span class="line">    <span class="comment">// 输出请求参数</span></span><br><span class="line">    cout&lt;&lt;<span class="string">"Request: "</span>&lt;&lt;request.studentID&lt;&lt;endl;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//填充数据，Response对象不用主动创建，进入函数时已经创建好了</span></span><br><span class="line">    _<span class="keyword">return</span>.studentID = request.studentID;</span><br><span class="line">    _<span class="keyword">return</span>.name = <span class="string">"tutuge"</span>;</span><br><span class="line">    _<span class="keyword">return</span>.infos.push_back(<span class="string">"Info 1"</span>);</span><br><span class="line">    _<span class="keyword">return</span>.infos.push_back(<span class="string">"Info 2"</span>);</span><br><span class="line">    _<span class="keyword">return</span>.state = ResponseState::StateOk;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> getStudentInfo(Response &amp;_<span class="keyword">return</span>, <span class="keyword">const</span> Request &amp;request) &#123;</div><div class="line">    <span class="comment">// 输出请求参数</span></div><div class="line">    cout&lt;&lt;<span class="string">"Request: "</span>&lt;&lt;request.studentID&lt;&lt;endl;</div><div class="line"></div><div class="line">    <span class="comment">//填充数据，Response对象不用主动创建，进入函数时已经创建好了</span></div><div class="line">    _<span class="keyword">return</span>.studentID = request.studentID;</div><div class="line">    _<span class="keyword">return</span>.name = <span class="string">"tutuge"</span>;</div><div class="line">    _<span class="keyword">return</span>.infos.push_back(<span class="string">"Info 1"</span>);</div><div class="line">    _<span class="keyword">return</span>.infos.push_back(<span class="string">"Info 2"</span>);</div><div class="line">    _<span class="keyword">return</span>.state = ResponseState::StateOk;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>至此，CPP服务端的编写就完成了，接下来我们只需要编译、链接，执行最终生成的可执行文件即可。</p>
 <h3 id="PHP客户端"><a href="#PHP客户端" class="headerlink" title="PHP客户端"></a>PHP客户端</h3><p>PHP客户端的编写比较简单，直接参考代码吧：<a href="https://github.com/zekunyan/ThriftDemo_PHP_CPP/blob/master/PHP/client.php" target="_blank" rel="external">https://github.com/zekunyan/ThriftDemo_PHP_CPP/blob/master/PHP/client.php</a></p>
 <h2 id="编译、链接，运行"><a href="#编译、链接，运行" class="headerlink" title="编译、链接，运行"></a>编译、链接，运行</h2><p>用CMake，或者直接编写makefile均可，保证Thrift装好就行了。</p>
 <p>直接运行最后生成的可执行文件TTG.run即可。</p>
 <p>从浏览器，或者直接运行client.php，即可看到如下输出：</p>
-<figure class="highlight zephir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">object(TTG\Response)[<span class="number">9</span>]</span><br><span class="line">  <span class="keyword">public</span> <span class="string">'studentID'</span> =&gt; <span class="keyword">int</span> <span class="number">100</span></span><br><span class="line">  <span class="keyword">public</span> <span class="string">'name'</span> =&gt; string <span class="string">'tutuge'</span> (length=<span class="number">6</span>)</span><br><span class="line">  <span class="keyword">public</span> <span class="string">'infos'</span> =&gt;</span><br><span class="line">    <span class="keyword">array</span> (size=<span class="number">2</span>)</span><br><span class="line">      <span class="number">0</span> =&gt; string <span class="string">'Info 1'</span> (length=<span class="number">6</span>)</span><br><span class="line">      <span class="number">1</span> =&gt; string <span class="string">'Info 2'</span> (length=<span class="number">6</span>)</span><br><span class="line">  <span class="keyword">public</span> <span class="string">'state'</span> =&gt; <span class="keyword">int</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight zephir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">object(TTG\Response)[<span class="number">9</span>]</div><div class="line">  <span class="keyword">public</span> <span class="string">'studentID'</span> =&gt; <span class="keyword">int</span> <span class="number">100</span></div><div class="line">  <span class="keyword">public</span> <span class="string">'name'</span> =&gt; string <span class="string">'tutuge'</span> (length=<span class="number">6</span>)</div><div class="line">  <span class="keyword">public</span> <span class="string">'infos'</span> =&gt;</div><div class="line">    <span class="keyword">array</span> (size=<span class="number">2</span>)</div><div class="line">      <span class="number">0</span> =&gt; string <span class="string">'Info 1'</span> (length=<span class="number">6</span>)</div><div class="line">      <span class="number">1</span> =&gt; string <span class="string">'Info 2'</span> (length=<span class="number">6</span>)</div><div class="line">  <span class="keyword">public</span> <span class="string">'state'</span> =&gt; <span class="keyword">int</span> <span class="number">0</span></div></pre></td></tr></table></figure>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Thrift是个好东西！就是文档好少=。=</p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a href="http://thrift.apache.org/" target="_blank" rel="external">Apache Thrift</a></li>
@@ -332,7 +337,24 @@
 <li><a href="https://www.ibm.com/developerworks/cn/java/j-lo-apachethrift/" target="_blank" rel="external">Apache Thrift - 可伸缩的跨语言服务开发框架</a></li>
 </ul>
 
+                
+<p class="teal-link-context">
+    <a href="/2015/04/21/resizable-nstextattachment/" rel="next" title="UITextView编辑时插入自定义表情-续-自定义表情图片的大小">
+    上一篇：UITextView编辑时插入自定义表情-续-自定义表情图片的大小
+  </a>
+</p>
+
+
+
+<p class="teal-link-context">
+    <a href="/2015/04/03/something-about-gcd/" rel="next" title="GCD使用经验与技巧浅谈">
+    下一篇：GCD使用经验与技巧浅谈
+  </a>
+</p>
+
+
             </div>
+			
         </div>
     </div>
 </article>
@@ -387,7 +409,7 @@
     <div class="container">
         <div class="row">
             
-            <div class="social-group col m3 s12">
+            <div class="social-group col m4 s12">
                 <h5 class="white-text">社交</h5>
                 
                     <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
@@ -402,11 +424,22 @@
                         <i class="fa fa-2x fa-rss"></i>
                     </a>
                 
+                <div class="site-visitors-container white-text">
+                    <span>
+                        <i class="fa fa-user"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+                    </span>
+                    <span>&nbsp;|&nbsp;</span>
+                    <span>
+                        <i class="fa fa-eye"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+                    </span>
+                </div>
             </div>
             
 
             
-            <div class="col m9 s12">
+            <div class="col m8 s12">
                 <h5 class="white-text">友情链接</h5>
                 
                     <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
@@ -427,7 +460,7 @@
 
     <div class="footer-copyright teal-link-context">
         <div class="container">
-            © 2016 tutuge.me, All rights reserved.
+            © 2017 tutuge.me, All rights reserved.
             <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
         </div>
     </div>
@@ -446,6 +479,8 @@
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/materialize.min.js"></script>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
 
 <script>
     (function($) {
@@ -487,6 +522,22 @@
 
             // 文章目录
             $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
             // 修正文章目录的left-border颜色
             var color = $('.table-of-contents-text').css('color');
             $('.table-of-contents-link').css('border-left-color', color);
@@ -510,7 +561,7 @@
 
             
             // 添加new标签
-            $('.menu-reading, .menu-about').append('<span class="new badge teal accent-4"></span>');
+            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
             
 
             // 搜索功能

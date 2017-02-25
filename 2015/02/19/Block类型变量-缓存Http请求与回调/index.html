@@ -99,7 +99,7 @@
                 <div class="info col s8 valign-wrapper no-padding">
                     <div class="valign">
                         <p class="name">土土哥</p>
-                        <p class="desc">iOS/技术宅</p>
+                        <p class="desc">iOS/Android/技术宅</p>
                     </div>
                 </div>
             </div>
@@ -248,6 +248,11 @@
             </div>
             <time class="teal-link-context" datetime="2015-02-18T19:18:36.000Z"><a href="/2015/02/19/Block类型变量-缓存Http请求与回调/">2015-02-19</a></time>
 
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
             
     <div class="tags-row">
         
@@ -270,12 +275,12 @@
 <h3 id="缓存Http请求后的回调代码块"><a href="#缓存Http请求后的回调代码块" class="headerlink" title="缓存Http请求后的回调代码块"></a>缓存Http请求后的回调代码块</h3><p>既然是OAuth机制，就是说我们每次向服务器发起的请求，除了跟业务相关的参数，还需要带上AccessToken、UserToken这类的授权参数，而AccessToken在本次请求中是否会过期，在结果返回前是不知道的，所以，为了更好地用户体验，不至于让用户在某个时刻的操作，因为授权过期了而“没有响应”，我们的每次Http请求都必须缓存起来。</p>
 <p>这里的缓存可不是单单指缓存请求的参数、URL，更重要的是缓存Http请求成功或者失败时的“<strong>回调代码块</strong>”。</p>
 <h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="AFNetworking的Get方法"><a href="#AFNetworking的Get方法" class="headerlink" title="AFNetworking的Get方法"></a>AFNetworking的Get方法</h3><p>在iOS的项目中，AFNetworking应该算是使用的最多的网络库了，它的Get请求的方法接口如下：</p>
-<figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- <span class="params">(AFHTTPRequestOperation *)</span>GET:<span class="params">(NSString *)</span>URLString</span><br><span class="line">                     parameters:<span class="params">(id)</span>parameters</span><br><span class="line">                        success:<span class="params">(void (^)</span><span class="params">(AFHTTPRequestOperation *operation, id responseObject)</span>)success</span><br><span class="line">                        failure:<span class="params">(void (^)</span><span class="params">(AFHTTPRequestOperation *operation, NSError *error)</span>)failure</span><br></pre></td></tr></table></figure>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">-</span> (AFHTTPRequestOperation *)<span class="selector-tag">GET</span><span class="selector-pseudo">:(NSString</span> *)<span class="selector-tag">URLString</span></div><div class="line">                     <span class="selector-tag">parameters</span><span class="selector-pseudo">:(id)parameters</span></div><div class="line">                        <span class="selector-tag">success</span><span class="selector-pseudo">:(void</span> (^)(AFHTTPRequestOperation *operation, id responseObject))<span class="selector-tag">success</span></div><div class="line">                        <span class="selector-tag">failure</span><span class="selector-pseudo">:(void</span> (^)(AFHTTPRequestOperation *operation, NSError *error))<span class="selector-tag">failure</span></div></pre></td></tr></table></figure>
 <p>只有四个参数，分别是Url、参数、成功的回调Block，失败的回调Block，看，这里，回调的代码块就被封装到了Block里面，并当成参数传入。</p>
 <h3 id="再次封装"><a href="#再次封装" class="headerlink" title="再次封装"></a>再次封装</h3><p>介于AFNetworking只提供了最基本的Get、Post、Put这些方法，所以，我们往往根据业务的接口做了封装，如先定义了请求的类型枚举：</p>
-<figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">typedef <span class="type">NS_ENUM</span>(<span class="type">NSUInteger</span>, <span class="type">HTTP_REQUEST_TYPE</span>) &#123;</span><br><span class="line">	<span class="type">ICG_GET</span>,</span><br><span class="line">	<span class="type">ICG_POST</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">typedef <span class="type">NS_ENUM</span>(<span class="type">NSUInteger</span>, <span class="type">HTTP_REQUEST_TYPE</span>) &#123;</div><div class="line">	<span class="type">ICG_GET</span>,</div><div class="line">	<span class="type">ICG_POST</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
 <p>然后定义了统一的请求入口与回调参数Block：</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//请求成功后的回调</span></span><br><span class="line">typedef <span class="keyword">void</span> (^http_success)(id result);</span><br><span class="line"><span class="comment">//请求失败后的回调</span></span><br><span class="line">typedef <span class="keyword">void</span> (^http_fail)();</span><br><span class="line"></span><br><span class="line"><span class="comment">//统一的请求入口</span></span><br><span class="line">+ (<span class="keyword">void</span>)<span class="string">executeWithType:</span>(HTTP_REQUEST_TYPE)type <span class="string">api:</span>(NSString *)api</span><br><span class="line"><span class="symbol">             parameters:</span>(NSDictionary *)parameters <span class="string">success:</span>(http_success)success <span class="string">fail:</span>(http_fail)fail &#123;</span><br><span class="line">    <span class="comment">//为每个请求增加AccessToken、UserToken等公共参数</span></span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    <span class="comment">//缓存Http请求</span></span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//根据type区分具体是哪一种Http请求。</span></span><br><span class="line">    <span class="keyword">switch</span> (type) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">ICG_GET:</span></span><br><span class="line">            [HttpUtil <span class="string">get:</span>url <span class="string">parameters:</span>paras <span class="string">success:</span>success <span class="string">fail:</span>fail];</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">ICG_POST:</span></span><br><span class="line">            [HttpUtil <span class="string">post:</span>url <span class="string">parameters:</span>paras <span class="string">success:</span>success <span class="string">fail:</span>fail];</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line"><span class="symbol">        default:</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//请求成功后的回调</span></div><div class="line">typedef <span class="keyword">void</span> (^http_success)(id result);</div><div class="line"><span class="comment">//请求失败后的回调</span></div><div class="line">typedef <span class="keyword">void</span> (^http_fail)();</div><div class="line"></div><div class="line"><span class="comment">//统一的请求入口</span></div><div class="line">+ (<span class="keyword">void</span>)<span class="string">executeWithType:</span>(HTTP_REQUEST_TYPE)type <span class="string">api:</span>(NSString *)api</div><div class="line"><span class="symbol">             parameters:</span>(NSDictionary *)parameters <span class="string">success:</span>(http_success)success <span class="string">fail:</span>(http_fail)fail &#123;</div><div class="line">    <span class="comment">//为每个请求增加AccessToken、UserToken等公共参数</span></div><div class="line">    <span class="comment">//...</span></div><div class="line">    <span class="comment">//缓存Http请求</span></div><div class="line">    <span class="comment">//...</span></div><div class="line"></div><div class="line">    <span class="comment">//根据type区分具体是哪一种Http请求。</span></div><div class="line">    <span class="keyword">switch</span> (type) &#123;</div><div class="line">        <span class="keyword">case</span> <span class="string">ICG_GET:</span></div><div class="line">            [HttpUtil <span class="string">get:</span>url <span class="string">parameters:</span>paras <span class="string">success:</span>success <span class="string">fail:</span>fail];</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> <span class="string">ICG_POST:</span></div><div class="line">            [HttpUtil <span class="string">post:</span>url <span class="string">parameters:</span>paras <span class="string">success:</span>success <span class="string">fail:</span>fail];</div><div class="line">            <span class="keyword">break</span>;</div><div class="line"><span class="symbol">        default:</span></div><div class="line">            <span class="keyword">break</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h3 id="再次封装的好处"><a href="#再次封装的好处" class="headerlink" title="再次封装的好处"></a>再次封装的好处</h3><p>为什么要再次做封装，将基本的Http请求统一入口？道理很简单，就是为了能方便的对每次请求增加额外的处理，并且对上层调用透明。如:</p>
 <ul>
 <li>统一为每个请求增加Log。</li>
@@ -283,23 +288,40 @@
 <li>方便对Http请求做缓存！</li>
 </ul>
 <h3 id="缓存Http请求的数据结构"><a href="#缓存Http请求的数据结构" class="headerlink" title="缓存Http请求的数据结构"></a>缓存Http请求的数据结构</h3><p>既然我们已经有了统一的请求入口，为了缓存，所需要做的就是将能代表一次请求的所有参数缓存起来就行了，如URL、请求参数等，如下数据结构：</p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">@interface</span> <span class="attribute">RequestHolder </span>: NSObject</span><br><span class="line"><span class="comment">//URL地址</span></span><br><span class="line"><span class="variable">@property</span>(strong, nonatomic) NSString *url;</span><br><span class="line"><span class="comment">//请求参数</span></span><br><span class="line"><span class="variable">@property</span>(strong, nonatomic) NSMutableDictionary *paras;</span><br><span class="line"><span class="comment">//请求类型，如Get、Post</span></span><br><span class="line"><span class="variable">@property</span>(assign, nonatomic) HTTP_REQUEST_TYPE type;</span><br><span class="line"><span class="comment">//请求成功回调</span></span><br><span class="line"><span class="variable">@property</span>(copy) http_success success;</span><br><span class="line"><span class="comment">//请求失败回调</span></span><br><span class="line"><span class="variable">@property</span>(copy) http_fail fail;</span><br><span class="line"><span class="variable">@end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="variable">@interface</span> <span class="attribute">RequestHolder </span>: NSObject</div><div class="line"><span class="comment">//URL地址</span></div><div class="line"><span class="variable">@property</span>(strong, nonatomic) NSString *url;</div><div class="line"><span class="comment">//请求参数</span></div><div class="line"><span class="variable">@property</span>(strong, nonatomic) NSMutableDictionary *paras;</div><div class="line"><span class="comment">//请求类型，如Get、Post</span></div><div class="line"><span class="variable">@property</span>(assign, nonatomic) HTTP_REQUEST_TYPE type;</div><div class="line"><span class="comment">//请求成功回调</span></div><div class="line"><span class="variable">@property</span>(copy) http_success success;</div><div class="line"><span class="comment">//请求失败回调</span></div><div class="line"><span class="variable">@property</span>(copy) http_fail fail;</div><div class="line"><span class="variable">@end</span></div></pre></td></tr></table></figure>
 <p>这几个参数，就可以完整的“代表、重现”一次具体的Http请求。</p>
 <h3 id="如何缓存"><a href="#如何缓存" class="headerlink" title="如何缓存"></a>如何缓存</h3><p>只要App开启，Http请求就会不停地产生，会有源源不断的请求，难道我们把每次请求都缓存起来？</p>
 <p>全部都缓存肯定是不行的，所以我们需要一个缓存策略。</p>
 <p>一个App中，所有的Http请求的路径，也就是Url，不包括参数，应该是数量固定的，如“/user, /comment”，并且，一个请求往往对应的操作、功能也是唯一的，所以，完全可以以请求的<strong>Url</strong>为<strong>Key</strong>，以本次请求的“<strong>RequestHolder</strong>”为<strong>Value</strong>，用Objective-C中的NSDictionary来缓存Http请求。</p>
 <p>所以，缓存请求的方法大致如下：</p>
-<figure class="highlight qml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//缓存Http请求</span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)<span class="attribute">cacheHttpRequest</span>:(HTTP_REQUEST_TYPE)type <span class="attribute">url</span>:(NSString *)<span class="built_in">url</span></span><br><span class="line">            <span class="attribute">parameters</span>:(NSMutableDictionary *)parameters <span class="attribute">success</span>:(http_success)success <span class="attribute">fail</span>:(http_fail)<span class="decorator">fail</span> &#123;</span><br><span class="line">    <span class="comment">//创建缓存数据结构，保存本次请求的参数、回调</span></span><br><span class="line">    ICGRequestHolder *requestHolder = [ICGRequestHolder <span class="keyword">new</span>];</span><br><span class="line">    requestHolder.url = <span class="built_in">url</span>;</span><br><span class="line">    requestHolder.paras = parameters;</span><br><span class="line">    requestHolder.success = [success copy];</span><br><span class="line">    requestHolder.fail = [fail copy];</span><br><span class="line">    requestHolder.type = type;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//保存本次请求</span></span><br><span class="line">    [_operationQueue <span class="attribute">addOperationWithBlock</span>:^&#123;</span><br><span class="line">        _cachedRequests[<span class="built_in">url</span>] = requestHolder;</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight fsharp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//缓存Http请求</span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)cacheHttpRequest:(HTTP_REQUEST_TYPE)<span class="class"><span class="keyword">type</span> <span class="title">url</span>:</span>(NSString *)url</div><div class="line">            parameters:(NSMutableDictionary *)parameters success:(http_success)success fail:(http_fail)fail &#123;</div><div class="line">    <span class="comment">//创建缓存数据结构，保存本次请求的参数、回调</span></div><div class="line">    ICGRequestHolder *requestHolder = [ICGRequestHolder <span class="keyword">new</span>];</div><div class="line">    requestHolder.url = url;</div><div class="line">    requestHolder.paras = parameters;</div><div class="line">    requestHolder.success = [success copy];</div><div class="line">    requestHolder.fail = [fail copy];</div><div class="line">    requestHolder.<span class="keyword">type</span> = <span class="class"><span class="keyword">type</span>;</span></div><div class="line"></div><div class="line">    <span class="comment">//保存本次请求</span></div><div class="line">    [_operationQueue addOperationWithBlock:^&#123;</div><div class="line">        _cachedRequests[url] = requestHolder;</div><div class="line">    &#125;];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>这样，就能完整的缓存Http请求了。</p>
 <h3 id="从缓存中恢复Http请求"><a href="#从缓存中恢复Http请求" class="headerlink" title="从缓存中恢复Http请求"></a>从缓存中恢复Http请求</h3><p>恢复请求很简单，直接遍历所有缓存的请求，再次发起Http请求即可，就不再贴代码了。</p>
 <h3 id="删除成功的Http请求"><a href="#删除成功的Http请求" class="headerlink" title="删除成功的Http请求"></a>删除成功的Http请求</h3><p>缓存的目的是在请求失败时，如AccessToken超时时，我们可以在重新获取AccessToken后重现上次失败的请求，所以，一旦请求成功时，我们还需要将成功的请求删除，当然，也是利用Url，如下：</p>
-<figure class="highlight qml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)<span class="attribute">removeRequestForKey</span>:(NSString *)<span class="decorator"><span class="built_in">url</span></span> &#123;</span><br><span class="line">    <span class="comment">//放入队列执行</span></span><br><span class="line">    [_operationQueue <span class="attribute">addOperationWithBlock</span>:^&#123;</span><br><span class="line">        <span class="comment">//删除Url对应的请求</span></span><br><span class="line">        [_cachedRequests <span class="attribute">removeObjectForKey</span>:<span class="attribute">url];</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)<span class="string">removeRequestForKey:</span>(NSString *)url &#123;</div><div class="line">    <span class="comment">//放入队列执行</span></div><div class="line">    [_operationQueue <span class="string">addOperationWithBlock:</span>^&#123;</div><div class="line">        <span class="comment">//删除Url对应的请求</span></div><div class="line">        [_cachedRequests <span class="string">removeObjectForKey:</span>url];</div><div class="line">    &#125;];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文只是简单地利用Objective-C中的Block特性，实现了Http请求的缓存。目的不是介绍Block，是为了分享我自己在项目中运用Block的例子，如果读者有更好的方法，欢迎留言啊~~</p>
 <h2 id="参考、推荐阅读"><a href="#参考、推荐阅读" class="headerlink" title="参考、推荐阅读"></a>参考、推荐阅读</h2><ul>
 <li><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/WorkingwithBlocks/WorkingwithBlocks.html" target="_blank" rel="external">Working with Blocks</a></li>
 </ul>
 
+                
+<p class="teal-link-context">
+    <a href="/2015/02/28/一次审核被拒的经历-关于iCloud到底应该备份什么数据/" rel="next" title="一次审核被拒的经历-关于iCloud到底应该备份什么数据">
+    上一篇：一次审核被拒的经历-关于iCloud到底应该备份什么数据
+  </a>
+</p>
+
+
+
+<p class="teal-link-context">
+    <a href="/2015/02/19/提升UITableView性能-复杂页面的优化/" rel="next" title="提升UITableView性能-复杂页面的优化">
+    下一篇：提升UITableView性能-复杂页面的优化
+  </a>
+</p>
+
+
             </div>
+			
         </div>
     </div>
 </article>
@@ -354,7 +376,7 @@
     <div class="container">
         <div class="row">
             
-            <div class="social-group col m3 s12">
+            <div class="social-group col m4 s12">
                 <h5 class="white-text">社交</h5>
                 
                     <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
@@ -369,11 +391,22 @@
                         <i class="fa fa-2x fa-rss"></i>
                     </a>
                 
+                <div class="site-visitors-container white-text">
+                    <span>
+                        <i class="fa fa-user"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+                    </span>
+                    <span>&nbsp;|&nbsp;</span>
+                    <span>
+                        <i class="fa fa-eye"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+                    </span>
+                </div>
             </div>
             
 
             
-            <div class="col m9 s12">
+            <div class="col m8 s12">
                 <h5 class="white-text">友情链接</h5>
                 
                     <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
@@ -394,7 +427,7 @@
 
     <div class="footer-copyright teal-link-context">
         <div class="container">
-            © 2016 tutuge.me, All rights reserved.
+            © 2017 tutuge.me, All rights reserved.
             <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
         </div>
     </div>
@@ -413,6 +446,8 @@
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/materialize.min.js"></script>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
 
 <script>
     (function($) {
@@ -454,6 +489,22 @@
 
             // 文章目录
             $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
             // 修正文章目录的left-border颜色
             var color = $('.table-of-contents-text').css('color');
             $('.table-of-contents-link').css('border-left-color', color);
@@ -477,7 +528,7 @@
 
             
             // 添加new标签
-            $('.menu-reading, .menu-about').append('<span class="new badge teal accent-4"></span>');
+            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
             
 
             // 搜索功能

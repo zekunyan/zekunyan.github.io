@@ -99,7 +99,7 @@
                 <div class="info col s8 valign-wrapper no-padding">
                     <div class="valign">
                         <p class="name">土土哥</p>
-                        <p class="desc">iOS/技术宅</p>
+                        <p class="desc">iOS/Android/技术宅</p>
                     </div>
                 </div>
             </div>
@@ -248,6 +248,11 @@
             </div>
             <time class="teal-link-context" datetime="2015-02-18T17:28:41.000Z"><a href="/2015/02/19/提升UITableView性能-复杂页面的优化/">2015-02-19</a></time>
 
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
             
     <div class="tags-row">
         
@@ -297,12 +302,12 @@
 <p>首先要确定的是，在iOS中，系统会先调用“<strong>tableView:heightForRowAtIndexPath:</strong>”获取每个Cell即将显示的高度，从而确定整个UITableView的布局。然后才调用“<strong>tableView:cellForRowAtIndexPath</strong>”获取每个Cell，我们也是在这里填充、设置Cell的。</p>
 <p><strong>所以，既然高度总会被用到，那就早早的在获取数据时就计算好吧！</strong></p>
 <h4 id="在Model（Entity）中计算并保存Cell的高度"><a href="#在Model（Entity）中计算并保存Cell的高度" class="headerlink" title="在Model（Entity）中计算并保存Cell的高度"></a>在Model（Entity）中计算并保存Cell的高度</h4><p>其实，在Model（Entity）中保存UI的参数是很奇怪的=。=（最好放在ViewModel中，就是MVVM模式的），我们的Entity可能就是下面的样子：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">DataEntity</span> : <span class="title">NSObject</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//原始数据</span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *content;</span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *title;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Cell 高度</span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> cellHeight;</span><br><span class="line"></span><br><span class="line"><span class="comment">//计算高度</span></span><br><span class="line">- (<span class="keyword">void</span>)calculateCellHeight;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="variable">@interface</span> <span class="attribute">DataEntity </span>: NSObject</div><div class="line"></div><div class="line"><span class="comment">//原始数据</span></div><div class="line"><span class="variable">@property</span>(copy, nonatomic) NSString *content;</div><div class="line"><span class="variable">@property</span>(copy, nonatomic) NSString *title;</div><div class="line"></div><div class="line"><span class="comment">//Cell 高度</span></div><div class="line"><span class="variable">@property</span>(assign, nonatomic) CGFloat cellHeight;</div><div class="line"></div><div class="line"><span class="comment">//计算高度</span></div><div class="line"><span class="selector-tag">-</span> (void)<span class="selector-tag">calculateCellHeight</span>;</div><div class="line"></div><div class="line">@<span class="selector-tag">end</span></div></pre></td></tr></table></figure>
 <p>这样，就不用在“<strong>tableView:heightForRowAtIndexPath:</strong>”中每次都计算了。</p>
 <h3 id="提前创建真正显示的、需要加工的数据并缓存"><a href="#提前创建真正显示的、需要加工的数据并缓存" class="headerlink" title="提前创建真正显示的、需要加工的数据并缓存"></a>提前创建真正显示的、需要加工的数据并缓存</h3><p>Cell中显示的内容，很多时候可能并不是直接从服务器拿到的数据，而是经过“加工”的数据。如本文中的“动态”也，每个Cell的标题、正文都有可点击的连接Link、表情图片等富文本内容，而我们一般用NSAttributeString类来显示。</p>
 <p>既然每次都会用到，倒不如在获取到数据的时候就创建、加工好这些内容，等到需要现实的时候，直接拿来用不就行了。</p>
 <p>所以，我们的Entity类可能变成下面这个样子:</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">DataEntity</span> : <span class="title">NSObject</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//原始数据</span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *content;</span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *title;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Cell 高度</span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> cellHeight;</span><br><span class="line"></span><br><span class="line"><span class="comment">//真正显示的内容</span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSAttributedString</span> *showTitle;</span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSAttributedString</span> *showContent;</span><br><span class="line"></span><br><span class="line"><span class="comment">//计算高度</span></span><br><span class="line">- (<span class="keyword">void</span>)calculateCellHeight;</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建、加工真正显示的内容</span></span><br><span class="line">- (<span class="keyword">void</span>)setupShowTitileAndContent;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">DataEntity</span> : <span class="title">NSObject</span></span></div><div class="line"></div><div class="line"><span class="comment">//原始数据</span></div><div class="line"><span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *content;</div><div class="line"><span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *title;</div><div class="line"></div><div class="line"><span class="comment">//Cell 高度</span></div><div class="line"><span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> cellHeight;</div><div class="line"></div><div class="line"><span class="comment">//真正显示的内容</span></div><div class="line"><span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSAttributedString</span> *showTitle;</div><div class="line"><span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSAttributedString</span> *showContent;</div><div class="line"></div><div class="line"><span class="comment">//计算高度</span></div><div class="line">- (<span class="keyword">void</span>)calculateCellHeight;</div><div class="line"></div><div class="line"><span class="comment">//创建、加工真正显示的内容</span></div><div class="line">- (<span class="keyword">void</span>)setupShowTitileAndContent;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
 <p>这样，在“<strong>tableView:cellForRowAtIndexPath</strong>”中，我们直接拿showTitle、showContent来显示就好，不用再创建。</p>
 <h3 id="缓存View"><a href="#缓存View" class="headerlink" title="缓存View!"></a>缓存View!</h3><p>什么？缓存View？！</p>
 <p>是的，当Cell中的部分View是非常独立的，并且不便于重用的，而且“体积”非常小，在内存可控的前提下，我们完全可以将这些view缓存起来！</p>
@@ -325,7 +330,24 @@
 <li><a href="http://stackoverflow.com/questions/6172158/how-can-i-speed-up-a-uitableview" target="_blank" rel="external">How can I speed up a UITableView?</a></li>
 </ul>
 
+                
+<p class="teal-link-context">
+    <a href="/2015/02/19/Block类型变量-缓存Http请求与回调/" rel="next" title="Block类型变量-缓存Http请求与回调">
+    上一篇：Block类型变量-缓存Http请求与回调
+  </a>
+</p>
+
+
+
+<p class="teal-link-context">
+    <a href="/2015/02/18/NSString的Copy与内存分配/" rel="next" title="NSString的Copy与内存分配">
+    下一篇：NSString的Copy与内存分配
+  </a>
+</p>
+
+
             </div>
+			
         </div>
     </div>
 </article>
@@ -380,7 +402,7 @@
     <div class="container">
         <div class="row">
             
-            <div class="social-group col m3 s12">
+            <div class="social-group col m4 s12">
                 <h5 class="white-text">社交</h5>
                 
                     <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
@@ -395,11 +417,22 @@
                         <i class="fa fa-2x fa-rss"></i>
                     </a>
                 
+                <div class="site-visitors-container white-text">
+                    <span>
+                        <i class="fa fa-user"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+                    </span>
+                    <span>&nbsp;|&nbsp;</span>
+                    <span>
+                        <i class="fa fa-eye"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+                    </span>
+                </div>
             </div>
             
 
             
-            <div class="col m9 s12">
+            <div class="col m8 s12">
                 <h5 class="white-text">友情链接</h5>
                 
                     <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
@@ -420,7 +453,7 @@
 
     <div class="footer-copyright teal-link-context">
         <div class="container">
-            © 2016 tutuge.me, All rights reserved.
+            © 2017 tutuge.me, All rights reserved.
             <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
         </div>
     </div>
@@ -439,6 +472,8 @@
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/materialize.min.js"></script>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
 
 <script>
     (function($) {
@@ -480,6 +515,22 @@
 
             // 文章目录
             $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
             // 修正文章目录的left-border颜色
             var color = $('.table-of-contents-text').css('color');
             $('.table-of-contents-link').css('border-left-color', color);
@@ -503,7 +554,7 @@
 
             
             // 添加new标签
-            $('.menu-reading, .menu-about').append('<span class="new badge teal accent-4"></span>');
+            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
             
 
             // 搜索功能

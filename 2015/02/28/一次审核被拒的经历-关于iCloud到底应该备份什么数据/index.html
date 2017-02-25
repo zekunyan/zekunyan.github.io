@@ -99,7 +99,7 @@
                 <div class="info col s8 valign-wrapper no-padding">
                     <div class="valign">
                         <p class="name">土土哥</p>
-                        <p class="desc">iOS/技术宅</p>
+                        <p class="desc">iOS/Android/技术宅</p>
                     </div>
                 </div>
             </div>
@@ -248,6 +248,11 @@
             </div>
             <time class="teal-link-context" datetime="2015-02-28T10:18:11.000Z"><a href="/2015/02/28/一次审核被拒的经历-关于iCloud到底应该备份什么数据/">2015-02-28</a></time>
 
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
             
     <div class="tags-row">
         
@@ -268,7 +273,7 @@
             <div class="entry teal-link-context">
                 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>项目最近一次审核被拒了=。=<br>仔细看了一下后，发现是没有遵守“<strong>iOS Data Storage Guidelines</strong>”。<br>在此总结一下。</p>
 <h2 id="被拒原因"><a href="#被拒原因" class="headerlink" title="被拒原因"></a>被拒原因</h2><p>先看看被拒的反馈信息：</p>
-<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Apps must follow the iOS <span class="built_in">Data</span> Storage Guidelines <span class="keyword">or</span> they will be rejected</span><br><span class="line"></span><br><span class="line"><span class="keyword">On</span> launch <span class="keyword">and</span> content download, your app stores <span class="number">12.14</span> MB, which does <span class="keyword">not</span> comply <span class="keyword">with</span> the iOS <span class="built_in">Data</span> Storage Guidelines.</span><br></pre></td></tr></table></figure>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Apps must follow the iOS <span class="built_in">Data</span> Storage Guidelines <span class="literal">or</span> they will be rejected</div><div class="line"></div><div class="line"><span class="keyword">On</span> launch <span class="literal">and</span> content download, your app stores <span class="number">12.14</span> MB, which does <span class="literal">not</span> comply <span class="keyword">with</span> the iOS <span class="built_in">Data</span> Storage Guidelines.</div></pre></td></tr></table></figure>
 <p>大致意思就是App下载东西以后，在iCloud里面查看此App需要备份的体积变大了。</p>
 <a id="more"></a>
 <p>再根据 <a href="https://developer.apple.com/icloud/documentation/data-storage/index.html" target="_blank" rel="external"><strong>iOS Data Storage Guidelines</strong></a>的说明，得出几点重要信息：</p>
@@ -291,7 +296,7 @@
 <p>所以，像App下载的歌曲等资源文件是不能放在上面两个目录中的。</p>
 <h2 id="解决："><a href="#解决：" class="headerlink" title="解决："></a>解决：</h2><p>所以，为了保险起见，最靠谱的还是放在<strong><application_home>/Documents</application_home></strong>中，并且通过设置，不让iCloud备份。</p>
 <p>Apple已经提供了相应的函数，如下（iOS 5.1及以后的版本）：</p>
-<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL)addSkipBackupAttributeToItemAtURL:(NSURL *)URL &#123;</span><br><span class="line">    <span class="built_in">assert</span>(<span class="string">[[NSFileManager defaultManager] fileExistsAtPath: [URL path]]</span>);</span><br><span class="line"></span><br><span class="line">    NSError *<span class="built_in">error</span> = <span class="keyword">nil</span>;</span><br><span class="line">    BOOL success = [URL setResourceValue: [NSNumber numberWithBool: YES]</span><br><span class="line">                                  forKey: NSURLIsExcludedFromBackupKey <span class="built_in">error</span>: &amp;<span class="built_in">error</span>];</span><br><span class="line">    <span class="keyword">if</span>(!success)&#123;</span><br><span class="line">        NSLog(@<span class="string">"Error excluding %@ from backup %@"</span>, [URL lastPathComponent], <span class="built_in">error</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> success;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">- (BOOL)addSkipBackupAttributeToItemAtURL:(NSURL *)URL &#123;</div><div class="line">    <span class="built_in">assert</span>(<span class="string">[[NSFileManager defaultManager] fileExistsAtPath: [URL path]]</span>);</div><div class="line"></div><div class="line">    NSError *<span class="built_in">error</span> = <span class="keyword">nil</span>;</div><div class="line">    BOOL success = [URL setResourceValue: [NSNumber numberWithBool: YES]</div><div class="line">                                  forKey: NSURLIsExcludedFromBackupKey <span class="built_in">error</span>: &amp;<span class="built_in">error</span>];</div><div class="line">    <span class="keyword">if</span>(!success)&#123;</div><div class="line">        NSLog(@<span class="string">"Error excluding %@ from backup %@"</span>, [URL lastPathComponent], <span class="built_in">error</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> success;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h3 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h3><ul>
 <li><strong><application_home>/Documents</application_home></strong>根目录也可以通过上面的函数设置成不备份。（如应用AVPlayer）</li>
 <li>设置是递归的，所以其所有子目录和文件都不用再设置一次，都会自动不被备份。（测试有效，但是不确定=。=，参考：<a href="http://stackoverflow.com/questions/14376883/is-nsurlisexcludedfrombackupkey-recursive" target="_blank" rel="external">is-nsurlisexcludedfrombackupkey-recursive</a>）</li>
@@ -303,7 +308,24 @@
 <li><a href="https://developer.apple.com/library/mac/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/FileSystemOverview/FileSystemOverview.html#//apple_ref/doc/uid/TP40010672-CH2-SW4" target="_blank" rel="external">File System Programming Guide</a></li>
 </ul>
 
+                
+<p class="teal-link-context">
+    <a href="/2015/03/01/Entity和Model的不同-关于代码的数据层/" rel="next" title="Entity和Model的不同-关于代码的数据层">
+    上一篇：Entity和Model的不同-关于代码的数据层
+  </a>
+</p>
+
+
+
+<p class="teal-link-context">
+    <a href="/2015/02/19/Block类型变量-缓存Http请求与回调/" rel="next" title="Block类型变量-缓存Http请求与回调">
+    下一篇：Block类型变量-缓存Http请求与回调
+  </a>
+</p>
+
+
             </div>
+			
         </div>
     </div>
 </article>
@@ -358,7 +380,7 @@
     <div class="container">
         <div class="row">
             
-            <div class="social-group col m3 s12">
+            <div class="social-group col m4 s12">
                 <h5 class="white-text">社交</h5>
                 
                     <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
@@ -373,11 +395,22 @@
                         <i class="fa fa-2x fa-rss"></i>
                     </a>
                 
+                <div class="site-visitors-container white-text">
+                    <span>
+                        <i class="fa fa-user"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+                    </span>
+                    <span>&nbsp;|&nbsp;</span>
+                    <span>
+                        <i class="fa fa-eye"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+                    </span>
+                </div>
             </div>
             
 
             
-            <div class="col m9 s12">
+            <div class="col m8 s12">
                 <h5 class="white-text">友情链接</h5>
                 
                     <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
@@ -398,7 +431,7 @@
 
     <div class="footer-copyright teal-link-context">
         <div class="container">
-            © 2016 tutuge.me, All rights reserved.
+            © 2017 tutuge.me, All rights reserved.
             <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
         </div>
     </div>
@@ -417,6 +450,8 @@
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/materialize.min.js"></script>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
 
 <script>
     (function($) {
@@ -458,6 +493,22 @@
 
             // 文章目录
             $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
             // 修正文章目录的left-border颜色
             var color = $('.table-of-contents-text').css('color');
             $('.table-of-contents-link').css('border-left-color', color);
@@ -481,7 +532,7 @@
 
             
             // 添加new标签
-            $('.menu-reading, .menu-about').append('<span class="new badge teal accent-4"></span>');
+            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
             
 
             // 搜索功能

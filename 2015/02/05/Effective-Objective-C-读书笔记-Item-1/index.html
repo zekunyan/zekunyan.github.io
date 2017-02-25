@@ -99,7 +99,7 @@
                 <div class="info col s8 valign-wrapper no-padding">
                     <div class="valign">
                         <p class="name">土土哥</p>
-                        <p class="desc">iOS/技术宅</p>
+                        <p class="desc">iOS/Android/技术宅</p>
                     </div>
                 </div>
             </div>
@@ -248,6 +248,11 @@
             </div>
             <time class="teal-link-context" datetime="2015-02-04T17:17:08.000Z"><a href="/2015/02/05/Effective-Objective-C-读书笔记-Item-1/">2015-02-05</a></time>
 
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
             
     <div class="tags-row">
         
@@ -272,7 +277,7 @@
 <h2 id="Item-1-Familiarize-Yourself-with-Objective-C’s-Roots"><a href="#Item-1-Familiarize-Yourself-with-Objective-C’s-Roots" class="headerlink" title="Item 1 - Familiarize Yourself with Objective-C’s Roots"></a>Item 1 - Familiarize Yourself with Objective-C’s Roots</h2><p>第一章的目的，就是让大家熟悉Objective-C，自然，标题的意思也就是“了解Objective-C的基本概念”，不多说，开写。</p>
 <a id="more"></a>
 <h2 id="消息与运行时"><a href="#消息与运行时" class="headerlink" title="消息与运行时"></a>消息与运行时</h2><p>总的来说，Objective-C跟C++、Java这些面向对象的语言是非常相似的，但是还是有许多不同的地方。如果你是第一次看到Objective-C的语法，一定觉得非常奇怪，因为Objective-C使用的是基于消息（Message）的框架，而不是传统的方法、函数调用。如下：</p>
-<figure class="highlight hsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Objective-C</span></span><br><span class="line">Person *person = [Person new]<span class="comment">;</span></span><br><span class="line">[person setName:@<span class="string">"tutuge"</span> age:<span class="number">24</span>]<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//Java</span></span><br><span class="line">Person person = new Person()<span class="comment">;</span></span><br><span class="line">person.setNameAndAge(<span class="string">"tutuge"</span>, <span class="number">24</span>)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//C++</span></span><br><span class="line">Person *person = new Person<span class="comment">;</span></span><br><span class="line">person-&gt;setNameAndAge(<span class="string">"tutuge"</span>, <span class="number">24</span>)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//Objective-C</span></div><div class="line">Person *person = [Person <span class="keyword">new</span><span class="type"></span>];</div><div class="line">[person setName:<span class="type"></span>@<span class="string">"tutuge"</span> age:<span class="type">24</span>];</div><div class="line"></div><div class="line"><span class="comment">//Java</span></div><div class="line">Person person = <span class="keyword">new</span> <span class="type">Person</span>();</div><div class="line">person.setNameAndAge(<span class="string">"tutuge"</span>, <span class="number">24</span>);</div><div class="line"></div><div class="line"><span class="comment">//C++</span></div><div class="line">Person *person = <span class="keyword">new</span> <span class="type">Person</span>;</div><div class="line">person-&gt;setNameAndAge(<span class="string">"tutuge"</span>, <span class="number">24</span>);</div></pre></td></tr></table></figure>
 <p>很奇怪是不是，各种中括号。但是我觉得，Objective—C这么设计就是为了时刻提醒你，“我是基于消息机制的！”。消息，的确是Objective-C与Java、C++这种语言最大的不同，而且，这种不同远不止在语法上面。简单来说如下两点：</p>
 <ul>
 <li><strong>基于消息的调用：</strong> 所有的函数调用都是在“运行时”决定的。</li>
@@ -280,11 +285,11 @@
 </ul>
 <p>其实，连被调方法的对象类型，都是在运行时决定的。所以说，Objective-C的运行时系统，担负了绝大部分的工作。这么设计的优点，举个例子，就是当运行时系统升级时，原有的代码不用重新编译即可“享受”升级带来的好处。</p>
 <h2 id="C的超集"><a href="#C的超集" class="headerlink" title="C的超集"></a>C的超集</h2><p>Objective-C是C语言的超集，所以C语言所具有的一切特性，Objective-C都可以兼容，充分理解C语言的内存模型，对理解Objective-C很有帮助。如下：</p>
-<figure class="highlight hsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSString *<span class="keyword">str</span> = @<span class="string">"a string"</span><span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">NSString</span> *<span class="keyword">str </span>= <span class="comment">@"a string";</span></div></pre></td></tr></table></figure>
 <p>这一行代码跟C语言没有什么不同，（忽略@符号=。=），原理跟C语言也是一致的，就是str指针是NSString类型的指针，指向了一块存着字符串“a string”的内存区域。不同的是，在Objective-C里，所有的对象只可以声明为指针类型，所以如下代码是不合理的：</p>
-<figure class="highlight hsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSString <span class="keyword">str</span><span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">NSString str<span class="comment">;</span></div></pre></td></tr></table></figure>
 <p>为了更充分的理解，咱们看看如下例子：</p>
-<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">NSString</span> *<span class="keyword">str1 </span>= <span class="comment">@"a string";</span></span><br><span class="line"><span class="symbol">NSString</span> *<span class="keyword">str2 </span>= <span class="keyword">str1;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">NSString</span> *<span class="keyword">str1 </span>= <span class="comment">@"a string";</span></div><div class="line"><span class="symbol">NSString</span> *<span class="keyword">str2 </span>= <span class="keyword">str1;</span></div></pre></td></tr></table></figure>
 <p>熟悉C语言的朋友应该知道这是怎么回事，内存当中只有一块区域储存着“a string”这个字符串，str1、str2都是指向着这个区域的字符串指针。如下图：</p>
 <p><img src="http://zorrochen.qiniudn.com/blog_effective_objective_c_item_1_1.jpg" alt="image"></p>
 <ul>
@@ -294,11 +299,28 @@
 </ul>
 <p>此处的栈内存、堆内存跟C语言中的概念也是一样的，不同的是，在Objective-C中，我们不用手动去malloc、free内存，Objective-C使用内存计数计数帮我们管理内存。</p>
 <h2 id="结构体，基本类型"><a href="#结构体，基本类型" class="headerlink" title="结构体，基本类型"></a>结构体，基本类型</h2><p>在Objective-C中，并不是所有的变量都是指针类型的，像int、float、double这些依旧是传统的“栈上分配”的，当然，还有结构体struct、枚举enum、联合union等。如：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">CGPoint</span> point = <span class="built_in">CGPointMake</span>(<span class="number">10</span>, <span class="number">10</span>);</span><br><span class="line"><span class="built_in">CGRect</span> frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">10</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">CGPoint point = CGPointMake(<span class="number">10</span>, <span class="number">10</span>);</div><div class="line">CGRect frame = CGRectMake(<span class="number">0</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">10</span>);</div></pre></td></tr></table></figure>
 <p>这的CGPoint、CGRect都是结构体，但是都是直接在栈上分配内存的，以减少过度使用Objective-C类型的类（减少运行时的压力），各位读者使用的时候要注意。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>零散的说了一些Objective-C的特点，远远不足以讲明白Objective-C，我这只是根据Effective Objective-C这本书给个引子，还是推荐Apple的官方教程、文档，要想掌握扎实，还是要一步一步来~</p>
 
+                
+<p class="teal-link-context">
+    <a href="/2015/02/06/Effective-Objective-C-读书笔记-Item-2/" rel="next" title="Effective-Objective-C-读书笔记-Item-2">
+    上一篇：Effective-Objective-C-读书笔记-Item-2
+  </a>
+</p>
+
+
+
+<p class="teal-link-context">
+    <a href="/2015/02/01/iOS项目的目录结构-原创/" rel="next" title="iOS项目的目录结构-原创">
+    下一篇：iOS项目的目录结构-原创
+  </a>
+</p>
+
+
             </div>
+			
         </div>
     </div>
 </article>
@@ -353,7 +375,7 @@
     <div class="container">
         <div class="row">
             
-            <div class="social-group col m3 s12">
+            <div class="social-group col m4 s12">
                 <h5 class="white-text">社交</h5>
                 
                     <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
@@ -368,11 +390,22 @@
                         <i class="fa fa-2x fa-rss"></i>
                     </a>
                 
+                <div class="site-visitors-container white-text">
+                    <span>
+                        <i class="fa fa-user"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+                    </span>
+                    <span>&nbsp;|&nbsp;</span>
+                    <span>
+                        <i class="fa fa-eye"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+                    </span>
+                </div>
             </div>
             
 
             
-            <div class="col m9 s12">
+            <div class="col m8 s12">
                 <h5 class="white-text">友情链接</h5>
                 
                     <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
@@ -393,7 +426,7 @@
 
     <div class="footer-copyright teal-link-context">
         <div class="container">
-            © 2016 tutuge.me, All rights reserved.
+            © 2017 tutuge.me, All rights reserved.
             <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
         </div>
     </div>
@@ -412,6 +445,8 @@
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/materialize.min.js"></script>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
 
 <script>
     (function($) {
@@ -453,6 +488,22 @@
 
             // 文章目录
             $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
             // 修正文章目录的left-border颜色
             var color = $('.table-of-contents-text').css('color');
             $('.table-of-contents-link').css('border-left-color', color);
@@ -476,7 +527,7 @@
 
             
             // 添加new标签
-            $('.menu-reading, .menu-about').append('<span class="new badge teal accent-4"></span>');
+            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
             
 
             // 搜索功能

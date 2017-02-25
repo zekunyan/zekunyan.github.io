@@ -99,7 +99,7 @@
                 <div class="info col s8 valign-wrapper no-padding">
                     <div class="valign">
                         <p class="name">土土哥</p>
-                        <p class="desc">iOS/技术宅</p>
+                        <p class="desc">iOS/Android/技术宅</p>
                     </div>
                 </div>
             </div>
@@ -248,6 +248,11 @@
             </div>
             <time class="teal-link-context" datetime="2015-01-31T18:27:21.000Z"><a href="/2015/02/01/iOS项目的目录结构-原创/">2015-02-01</a></time>
 
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
             
     <div class="tags-row">
         
@@ -267,7 +272,7 @@
                 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这段时间一直在做iOS的项目（<a href="https://itunes.apple.com/cn/app/qing-ju-yin-le-quan-guo-zui/id913235479?mt=8" target="_blank" rel="external">青桔音乐App</a>），随着代码量的上升，逐渐意识到项目的整体目录结构划分是多么重要，清晰的目录结构，能够更好的应对新的需求，更容易重构。虽然一直都是一个人在做=。=，但是还是深深地体会到目录结构的重要性。</p>
 <a id="more"></a>
 <h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>说再多都不如来个例子实在，如下：(VC指的是viewController)</p>
-<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">|---General</span></span><br><span class="line">    <span class="string">|---AppDelegate</span></span><br><span class="line">    <span class="string">|---Application</span></span><br><span class="line">    <span class="string">|---Constant</span></span><br><span class="line">    <span class="string">|---UI</span></span><br><span class="line">        <span class="string">|---View</span></span><br><span class="line">        <span class="string">|---VC</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="string">|---Category</span></span><br><span class="line">    ...</span><br><span class="line"><span class="string">|---Entity</span></span><br><span class="line">    <span class="string">|---BaseEntity</span></span><br><span class="line">    <span class="string">|---UserEntity</span></span><br><span class="line">    <span class="string">|---CommentEntity</span></span><br><span class="line">    ...</span><br><span class="line"><span class="string">|---Http</span></span><br><span class="line">    <span class="string">|---Api</span></span><br><span class="line">    <span class="string">|---Manager</span></span><br><span class="line">    <span class="string">|---CodeHandler</span></span><br><span class="line">    <span class="string">|---ErrorHandler</span></span><br><span class="line">    <span class="string">|---HttpHandler</span></span><br><span class="line">        <span class="string">|---UserHttpHandler</span></span><br><span class="line">        <span class="string">|---CommentHttpHandler</span></span><br><span class="line">        ...</span><br><span class="line"><span class="string">|---DB</span></span><br><span class="line">    <span class="string">|---DBHelper</span></span><br><span class="line">    <span class="string">|---DBService</span></span><br><span class="line">    ...</span><br><span class="line"><span class="string">|---Util</span></span><br><span class="line">    <span class="string">|---StringUtil</span></span><br><span class="line">    <span class="string">|---NumberUtil</span></span><br><span class="line">    <span class="string">|---TimeUtil</span></span><br><span class="line">    ...</span><br><span class="line"><span class="string">|---Service</span></span><br><span class="line">    <span class="string">|---AccountService</span></span><br><span class="line">    <span class="string">|---ShareService</span></span><br><span class="line">    ...</span><br><span class="line"><span class="string">|---Lib</span></span><br><span class="line">    <span class="string">|---Umeng</span></span><br><span class="line">    <span class="string">|---QQSDK</span></span><br><span class="line">    <span class="string">|---SVProgressHUD</span></span><br><span class="line">    ...</span><br><span class="line"><span class="string">|---Module</span></span><br><span class="line">    <span class="string">|---Login</span></span><br><span class="line">        <span class="string">|---View</span></span><br><span class="line">        <span class="string">|---VC</span></span><br><span class="line">        <span class="string">|---XIB</span></span><br><span class="line">    <span class="string">|---Comment</span></span><br><span class="line">        <span class="string">|---View</span></span><br><span class="line">        <span class="string">|---VC</span></span><br><span class="line">        <span class="string">|---XIB</span></span><br><span class="line">        <span class="string">|---Business</span></span><br><span class="line">    <span class="string">|---Feeds</span></span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line"><span class="string">|---General</span></div><div class="line">    <span class="string">|---AppDelegate</span></div><div class="line">    <span class="string">|---Application</span></div><div class="line">    <span class="string">|---Constant</span></div><div class="line">    <span class="string">|---UI</span></div><div class="line">        <span class="string">|---View</span></div><div class="line">        <span class="string">|---VC</span></div><div class="line">        ...</div><div class="line">    <span class="string">|---Category</span></div><div class="line">    ...</div><div class="line"><span class="string">|---Entity</span></div><div class="line">    <span class="string">|---BaseEntity</span></div><div class="line">    <span class="string">|---UserEntity</span></div><div class="line">    <span class="string">|---CommentEntity</span></div><div class="line">    ...</div><div class="line"><span class="string">|---Http</span></div><div class="line">    <span class="string">|---Api</span></div><div class="line">    <span class="string">|---Manager</span></div><div class="line">    <span class="string">|---CodeHandler</span></div><div class="line">    <span class="string">|---ErrorHandler</span></div><div class="line">    <span class="string">|---HttpHandler</span></div><div class="line">        <span class="string">|---UserHttpHandler</span></div><div class="line">        <span class="string">|---CommentHttpHandler</span></div><div class="line">        ...</div><div class="line"><span class="string">|---DB</span></div><div class="line">    <span class="string">|---DBHelper</span></div><div class="line">    <span class="string">|---DBService</span></div><div class="line">    ...</div><div class="line"><span class="string">|---Util</span></div><div class="line">    <span class="string">|---StringUtil</span></div><div class="line">    <span class="string">|---NumberUtil</span></div><div class="line">    <span class="string">|---TimeUtil</span></div><div class="line">    ...</div><div class="line"><span class="string">|---Service</span></div><div class="line">    <span class="string">|---AccountService</span></div><div class="line">    <span class="string">|---ShareService</span></div><div class="line">    ...</div><div class="line"><span class="string">|---Lib</span></div><div class="line">    <span class="string">|---Umeng</span></div><div class="line">    <span class="string">|---QQSDK</span></div><div class="line">    <span class="string">|---SVProgressHUD</span></div><div class="line">    ...</div><div class="line"><span class="string">|---Module</span></div><div class="line">    <span class="string">|---Login</span></div><div class="line">        <span class="string">|---View</span></div><div class="line">        <span class="string">|---VC</span></div><div class="line">        <span class="string">|---XIB</span></div><div class="line">    <span class="string">|---Comment</span></div><div class="line">        <span class="string">|---View</span></div><div class="line">        <span class="string">|---VC</span></div><div class="line">        <span class="string">|---XIB</span></div><div class="line">        <span class="string">|---Business</span></div><div class="line">    <span class="string">|---Feeds</span></div><div class="line">    ...</div></pre></td></tr></table></figure>
 <p>乍一看好多，别被吓到=。=，容我细细讲解。</p>
 <h2 id="详细讲解"><a href="#详细讲解" class="headerlink" title="详细讲解"></a>详细讲解</h2><h3 id="General"><a href="#General" class="headerlink" title="General"></a>General</h3><p>General好理解，放的就是如AppDelegate之类的、项目中最普通的、最常用的组件。</p>
 <p><strong>AppDelegate</strong>:</p>
@@ -328,7 +333,24 @@
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>啰啰嗦嗦说了一大堆，想必各位都看烦了吧=。=刚开始写博客，写到一个地方，又会引出另一块，写着写着容易写偏了。</p>
 <p>写之前我也大致搜了一下，发现网上相关的资料好少，但是实际的经验告诉我，项目工程的目录结构非常重要，无论是对开发还是对后期的维护，所以想着应该写篇东西，分享我自己的经验给大家，有啥问题，多提意见啊~~~</p>
 
+                
+<p class="teal-link-context">
+    <a href="/2015/02/05/Effective-Objective-C-读书笔记-Item-1/" rel="next" title="Effective-Objective-C-读书笔记-Item-1">
+    上一篇：Effective-Objective-C-读书笔记-Item-1
+  </a>
+</p>
+
+
+
+<p class="teal-link-context">
+    <a href="/2014/11/02/LinkTextView-Android开源库-原创/" rel="next" title="Android开源库-LinkTextView-原创">
+    下一篇：Android开源库-LinkTextView-原创
+  </a>
+</p>
+
+
             </div>
+			
         </div>
     </div>
 </article>
@@ -383,7 +405,7 @@
     <div class="container">
         <div class="row">
             
-            <div class="social-group col m3 s12">
+            <div class="social-group col m4 s12">
                 <h5 class="white-text">社交</h5>
                 
                     <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
@@ -398,11 +420,22 @@
                         <i class="fa fa-2x fa-rss"></i>
                     </a>
                 
+                <div class="site-visitors-container white-text">
+                    <span>
+                        <i class="fa fa-user"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+                    </span>
+                    <span>&nbsp;|&nbsp;</span>
+                    <span>
+                        <i class="fa fa-eye"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+                    </span>
+                </div>
             </div>
             
 
             
-            <div class="col m9 s12">
+            <div class="col m8 s12">
                 <h5 class="white-text">友情链接</h5>
                 
                     <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
@@ -423,7 +456,7 @@
 
     <div class="footer-copyright teal-link-context">
         <div class="container">
-            © 2016 tutuge.me, All rights reserved.
+            © 2017 tutuge.me, All rights reserved.
             <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
         </div>
     </div>
@@ -442,6 +475,8 @@
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/materialize.min.js"></script>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
 
 <script>
     (function($) {
@@ -483,6 +518,22 @@
 
             // 文章目录
             $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
             // 修正文章目录的left-border颜色
             var color = $('.table-of-contents-text').css('color');
             $('.table-of-contents-link').css('border-left-color', color);
@@ -506,7 +557,7 @@
 
             
             // 添加new标签
-            $('.menu-reading, .menu-about').append('<span class="new badge teal accent-4"></span>');
+            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
             
 
             // 搜索功能

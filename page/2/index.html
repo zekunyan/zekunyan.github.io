@@ -99,7 +99,7 @@
                 <div class="info col s8 valign-wrapper no-padding">
                     <div class="valign">
                         <p class="name">土土哥</p>
-                        <p class="desc">iOS/技术宅</p>
+                        <p class="desc">iOS/Android/技术宅</p>
                     </div>
                 </div>
             </div>
@@ -262,7 +262,7 @@
 
         
         <div class="card-action teal-link-context">
-            <a href="/2015/10/25/ttgemojirate-lib/">READ MORE</a>
+            <a href="/2015/10/25/ttgemojirate-lib/">阅读全文</a>
         </ div>
         
     </div>
@@ -317,7 +317,7 @@
 
         
         <div class="card-action teal-link-context">
-            <a href="/2015/10/09/ttgsnackbar-lib/">READ MORE</a>
+            <a href="/2015/10/09/ttgsnackbar-lib/">阅读全文</a>
         </ div>
         
     </div>
@@ -369,7 +369,7 @@
 
         
         <div class="card-action teal-link-context">
-            <a href="/2015/08/08/autolayout-example-with-masonry2/">READ MORE</a>
+            <a href="/2015/08/08/autolayout-example-with-masonry2/">阅读全文</a>
         </ div>
         
     </div>
@@ -414,7 +414,7 @@
 
         
         <div class="card-action teal-link-context">
-            <a href="/2015/07/25/compatibility-with-macro-category-and-runtime/">READ MORE</a>
+            <a href="/2015/07/25/compatibility-with-macro-category-and-runtime/">阅读全文</a>
         </ div>
         
     </div>
@@ -459,7 +459,7 @@
 
         
         <div class="card-action teal-link-context">
-            <a href="/2015/07/08/fill-nil-property-of-object/">READ MORE</a>
+            <a href="/2015/07/08/fill-nil-property-of-object/">阅读全文</a>
         </ div>
         
     </div>
@@ -514,7 +514,7 @@
 
         
         <div class="card-action teal-link-context">
-            <a href="/2015/05/23/autolayout-example-with-masonry/">READ MORE</a>
+            <a href="/2015/05/23/autolayout-example-with-masonry/">阅读全文</a>
         </ div>
         
     </div>
@@ -560,7 +560,7 @@
 
         
         <div class="card-action teal-link-context">
-            <a href="/2015/04/21/resizable-nstextattachment/">READ MORE</a>
+            <a href="/2015/04/21/resizable-nstextattachment/">阅读全文</a>
         </ div>
         
     </div>
@@ -616,7 +616,7 @@
 
         
         <div class="card-action teal-link-context">
-            <a href="/2015/04/19/thrift-example-cpp-and-php/">READ MORE</a>
+            <a href="/2015/04/19/thrift-example-cpp-and-php/">阅读全文</a>
         </ div>
         
     </div>
@@ -652,7 +652,7 @@
                 <div class="entry teal-link-context">
                     <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>GCD(Grand Central Dispatch)可以说是Mac、iOS开发中的一大“利器”，本文就总结一些有关使用GCD的经验与技巧。</p>
 <h2 id="dispatch-once-t必须是全局或static变量"><a href="#dispatch-once-t必须是全局或static变量" class="headerlink" title="dispatch_once_t必须是全局或static变量"></a>dispatch_once_t必须是全局或static变量</h2><p>这一条算是“老生常谈”了，但我认为还是有必要强调一次，毕竟非全局或非static的dispatch_once_t变量在使用时会导致非常不好排查的bug，正确的如下：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//静态变量，保证只有一份实例，才能确保只执行一次</span></span><br><span class="line"><span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;</span><br><span class="line"><span class="built_in">dispatch_once</span>(&amp;onceToken, ^&#123;</span><br><span class="line">   <span class="comment">//单例代码</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//静态变量，保证只有一份实例，才能确保只执行一次</span></div><div class="line"><span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;</div><div class="line"><span class="built_in">dispatch_once</span>(&amp;onceToken, ^&#123;</div><div class="line">   <span class="comment">//单例代码</span></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
 <p>其实就是保证<strong>dispatch_once_t</strong>只有一份实例。</p>
                 </div>
             
@@ -660,7 +660,7 @@
 
         
         <div class="card-action teal-link-context">
-            <a href="/2015/04/03/something-about-gcd/">READ MORE</a>
+            <a href="/2015/04/03/something-about-gcd/">阅读全文</a>
         </ div>
         
     </div>
@@ -695,7 +695,7 @@
             
                 <div class="entry teal-link-context">
                     <h2 id="2015-5-28更新"><a href="#2015-5-28更新" class="headerlink" title="2015-5-28更新"></a>2015-5-28更新</h2><p>下面评论的好友“@Jim”给了种新的思路，就是在清除context的函数里面，用“<strong>_bridge_transfer</strong>”转换context，把context的内存管理权限重新交给ARC，这样，就不用显式调用“<strong>CFRelease</strong>”了。如下：</p>
-<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">void</span> cleanStaff(<span class="literal">void</span> *context) &#123;</span><br><span class="line">    <span class="comment">//这里用_bridge_transfer转换，将内存管理权限交还给ARC</span></span><br><span class="line">    <span class="built_in">Data</span> *<span class="built_in">data</span> = (_bridge_transfer <span class="built_in">Data</span> *)(context);</span><br><span class="line">    NSLog(@<span class="string">"In clean, context number: %d"</span>, <span class="built_in">data</span>.number);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//不用显式释放context的内存！</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="literal">void</span> cleanStaff(<span class="literal">void</span> *context) &#123;</div><div class="line">    <span class="comment">//这里用_bridge_transfer转换，将内存管理权限交还给ARC</span></div><div class="line">    <span class="built_in">Data</span> *<span class="built_in">data</span> = (_bridge_transfer <span class="built_in">Data</span> *)(context);</div><div class="line">    NSLog(@<span class="string">"In clean, context number: %d"</span>, <span class="built_in">data</span>.number);</div><div class="line"></div><div class="line">    <span class="comment">//不用显式释放context的内存！</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>看过GCD（Grand Central Dispatch）的Apple<a href="https://developer.apple.com/library/prerelease/mac/documentation/Performance/Reference/GCD_libdispatch_Ref/index.html">官方文档</a>的朋友一定见过“<strong>dispatch_set_context</strong>”和“<strong>dispatch_get_context</strong>”这两个函数，那么这两个函数该怎么用呢？</p>
 <p>我们都知道，GCD的接口参数都是“C语言类型“的，那么，我们如何将NSObject类型（Foundation框架）的数据，传入GCD的接口呢？（即：Core Foundation和Foundation对象的转换）</p>
 <h2 id="本文关键字"><a href="#本文关键字" class="headerlink" title="本文关键字"></a>本文关键字</h2><ul>
@@ -709,7 +709,7 @@
 
         
         <div class="card-action teal-link-context">
-            <a href="/2015/03/29/bind-data-to-gcd-queue/">READ MORE</a>
+            <a href="/2015/03/29/bind-data-to-gcd-queue/">阅读全文</a>
         </ div>
         
     </div>
@@ -755,7 +755,7 @@
     <div class="container">
         <div class="row">
             
-            <div class="social-group col m3 s12">
+            <div class="social-group col m4 s12">
                 <h5 class="white-text">社交</h5>
                 
                     <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
@@ -770,11 +770,22 @@
                         <i class="fa fa-2x fa-rss"></i>
                     </a>
                 
+                <div class="site-visitors-container white-text">
+                    <span>
+                        <i class="fa fa-user"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+                    </span>
+                    <span>&nbsp;|&nbsp;</span>
+                    <span>
+                        <i class="fa fa-eye"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+                    </span>
+                </div>
             </div>
             
 
             
-            <div class="col m9 s12">
+            <div class="col m8 s12">
                 <h5 class="white-text">友情链接</h5>
                 
                     <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
@@ -795,7 +806,7 @@
 
     <div class="footer-copyright teal-link-context">
         <div class="container">
-            © 2016 tutuge.me, All rights reserved.
+            © 2017 tutuge.me, All rights reserved.
             <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
         </div>
     </div>
@@ -814,6 +825,8 @@
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/materialize.min.js"></script>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
 
 <script>
     (function($) {
@@ -855,6 +868,22 @@
 
             // 文章目录
             $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
             // 修正文章目录的left-border颜色
             var color = $('.table-of-contents-text').css('color');
             $('.table-of-contents-link').css('border-left-color', color);
@@ -878,7 +907,7 @@
 
             
             // 添加new标签
-            $('.menu-reading, .menu-about').append('<span class="new badge teal accent-4"></span>');
+            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
             
 
             // 搜索功能

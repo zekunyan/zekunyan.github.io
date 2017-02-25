@@ -99,7 +99,7 @@
                 <div class="info col s8 valign-wrapper no-padding">
                     <div class="valign">
                         <p class="name">土土哥</p>
-                        <p class="desc">iOS/技术宅</p>
+                        <p class="desc">iOS/Android/技术宅</p>
                     </div>
                 </div>
             </div>
@@ -248,6 +248,11 @@
             </div>
             <time class="teal-link-context" datetime="2015-03-17T12:21:56.000Z"><a href="/2015/03/17/what-is-autoreleasepool/">2015-03-17</a></time>
 
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
             
     <div class="tags-row">
         
@@ -265,7 +270,7 @@
 
             <div class="entry teal-link-context">
                 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>开发过iOS、Mac的朋友应该对“<strong>@autoreleasepool</strong>”不陌生。只要在Xcode里创建一个工程，就能看到下面这样的代码：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//iOS program</span></span><br><span class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> * argv[]) &#123;</span><br><span class="line">    <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">UIApplicationMain</span>(argc, argv, <span class="literal">nil</span>, <span class="built_in">NSStringFromClass</span>([AppDelegate class]));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Command line program</span></span><br><span class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> *argv[]) &#123;</span><br><span class="line">    <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//iOS program</span></div><div class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> * argv[]) &#123;</div><div class="line">    <span class="keyword">@autoreleasepool</span> &#123;</div><div class="line">        <span class="keyword">return</span> <span class="built_in">UIApplicationMain</span>(argc, argv, <span class="literal">nil</span>, <span class="built_in">NSStringFromClass</span>([AppDelegate <span class="keyword">class</span>]));</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//Command line program</span></div><div class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> *argv[]) &#123;</div><div class="line">    <span class="keyword">@autoreleasepool</span> &#123;</div><div class="line">        <span class="comment">//...</span></div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>看，每个<strong>main</strong>函数的主体都被<strong>@autoreleasepool</strong>的Block块包在里面，也就是说，接下来所有的对象创建都在这个block里面。</p>
 <p>那么，<strong>@autoreleasepool</strong>的作用到底是什么呢？我们开发中可以用它来做什么呢？</p>
 <p>可以在某些情况下，大幅度降低程序的内存占用，如下图:</p>
@@ -282,7 +287,7 @@
 <p>对！是计数，不是“<strong>GC、垃圾回收</strong>”什么的，就是说，在Objective-C的开发中，ARC不代表像Java那样有GC做垃圾回收，所以本质上还是要“手动”管理内存的。也就是说，我们在ARC环境下写的代码，不用自己手动插入“<strong>retain、release这些消息</strong>”，ARC会在编译时为我们在合适的位置插入，释放不必要的内存。</p>
 <p>而<strong>@autoreleasepool</strong>就跟对象的<strong>release</strong>密切相关。</p>
 <h2 id="autoreleasepool-干了啥"><a href="#autoreleasepool-干了啥" class="headerlink" title="@autoreleasepool 干了啥"></a>@autoreleasepool 干了啥</h2><p>在MRC时代，如果我们想先retain一个对象，但是并不知道在什么时候可以release它，我们可以像下面这么做：</p>
-<figure class="highlight hsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">NSAutoreleasePool *pool = [[NSAutoreleasePool <span class="keyword">alloc</span>] init]<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">NSString* <span class="keyword">str</span> = [[[NSString <span class="keyword">alloc</span>] initWithString:@<span class="string">"tutuge"</span>] autorelease]<span class="comment">;</span></span><br><span class="line"><span class="comment">//use str...</span></span><br><span class="line"></span><br><span class="line">[pool release]<span class="comment">;</span></span><br><span class="line"><span class="comment">//str is released</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">NSAutoreleasePool</span> *pool = [[<span class="symbol">NSAutoreleasePool</span> alloc] init];</div><div class="line"></div><div class="line"><span class="symbol">NSString</span>* str = [[[<span class="symbol">NSString</span> alloc] initWithString:@<span class="string">"tutuge"</span>] autorelease];</div><div class="line">//use str...</div><div class="line"></div><div class="line">[pool release];</div><div class="line">//str is released</div></pre></td></tr></table></figure>
 <p>就是说，我们可以在创建对象的时候给对象发送“<strong>autorelease</strong>”消息，然后当<strong>NSAutoreleasePool</strong>结束的时候，“标记过”autorelease的对象都会被“<strong>release</strong>”掉，也就是会被释放掉。</p>
 <p>但是在ARC时代，我们不用手动发送<strong>autorelease</strong>消息，ARC会自动帮我们加。而这个时候，<strong>@autoreleasepool</strong>做的事情，跟<strong>NSAutoreleasePool</strong>就一模一样了。</p>
 <h2 id="什么时候用-autoreleasepool"><a href="#什么时候用-autoreleasepool" class="headerlink" title="什么时候用@autoreleasepool"></a>什么时候用@autoreleasepool</h2><p>根据<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/mmAutoreleasePools.html" target="_blank" rel="external">Apple的文档</a>，使用场景如下：</p>
@@ -293,7 +298,7 @@
 <li>长时间在后台运行的任务。</li>
 </ul>
 <h2 id="利用-autoreleasepool优化循环"><a href="#利用-autoreleasepool优化循环" class="headerlink" title="利用@autoreleasepool优化循环"></a>利用@autoreleasepool优化循环</h2><p>利用@autoreleasepool优化循环的内存占用，我觉得最有用的一点，下面就说说这个点。<br>如下面的循环，次数非常多，而且循环体里面的对象都是临时创建使用的，就可以用<strong>@autoreleasepool</strong>包起来，让每次循环结束时，可以及时的释放临时对象的内存。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//来自Apple文档，见参考</span></span><br><span class="line"><span class="built_in">NSArray</span> *urls = &lt;<span class="meta"># An array of file URLs #&gt;;</span></span><br><span class="line"><span class="keyword">for</span> (<span class="built_in">NSURL</span> *url <span class="keyword">in</span> urls) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">        <span class="built_in">NSError</span> *error;</span><br><span class="line">        <span class="built_in">NSString</span> *fileContents = [<span class="built_in">NSString</span> stringWithContentsOfURL:url</span><br><span class="line">                                        encoding:<span class="built_in">NSUTF8StringEncoding</span> error:&amp;error];</span><br><span class="line">        <span class="comment">/* Process the string, creating and autoreleasing more objects. */</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//来自Apple文档，见参考</span></div><div class="line"><span class="built_in">NSArray</span> *urls = &lt;<span class="meta"># An array of file URLs #&gt;;</span></div><div class="line"><span class="keyword">for</span> (<span class="built_in">NSURL</span> *url <span class="keyword">in</span> urls) &#123;</div><div class="line"></div><div class="line">    <span class="keyword">@autoreleasepool</span> &#123;</div><div class="line">        <span class="built_in">NSError</span> *error;</div><div class="line">        <span class="built_in">NSString</span> *fileContents = [<span class="built_in">NSString</span> stringWithContentsOfURL:url</div><div class="line">                                        encoding:<span class="built_in">NSUTF8StringEncoding</span> error:&amp;error];</div><div class="line">        <span class="comment">/* Process the string, creating and autoreleasing more objects. */</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>这么做的效果是极其显著地，就如本文最开始的图一样，可以自己把示例工程下回来运行下试试~</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><strong>@autoreleasepool</strong>看起来很不“起眼”，平常开发很容易就忽略它了，但是仔细一看，确如此有用~</p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
@@ -306,7 +311,24 @@
 <h3 id="示例中的第三方库"><a href="#示例中的第三方库" class="headerlink" title="示例中的第三方库"></a>示例中的第三方库</h3><p><a href="https://github.com/kevinzhow/PNChart" target="_blank" rel="external">PNChart</a></p>
 <h3 id="运行中用代码获取App运行消耗内存"><a href="#运行中用代码获取App运行消耗内存" class="headerlink" title="运行中用代码获取App运行消耗内存"></a>运行中用代码获取App运行消耗内存</h3><p><a href="http://stackoverflow.com/questions/787160/programmatically-retrieve-memory-usage-on-iphone" target="_blank" rel="external">Programmatically retrieve memory usage on iPhone</a></p>
 
+                
+<p class="teal-link-context">
+    <a href="/2015/03/21/effective-objective-c-5-enum/" rel="next" title="Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5">
+    上一篇：Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5
+  </a>
+</p>
+
+
+
+<p class="teal-link-context">
+    <a href="/2015/03/15/有关宏定义的经验与技巧-简化代码-增强Log/" rel="next" title="有关宏定义的经验与技巧-简化代码-增强Log">
+    下一篇：有关宏定义的经验与技巧-简化代码-增强Log
+  </a>
+</p>
+
+
             </div>
+			
         </div>
     </div>
 </article>
@@ -361,7 +383,7 @@
     <div class="container">
         <div class="row">
             
-            <div class="social-group col m3 s12">
+            <div class="social-group col m4 s12">
                 <h5 class="white-text">社交</h5>
                 
                     <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
@@ -376,11 +398,22 @@
                         <i class="fa fa-2x fa-rss"></i>
                     </a>
                 
+                <div class="site-visitors-container white-text">
+                    <span>
+                        <i class="fa fa-user"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+                    </span>
+                    <span>&nbsp;|&nbsp;</span>
+                    <span>
+                        <i class="fa fa-eye"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+                    </span>
+                </div>
             </div>
             
 
             
-            <div class="col m9 s12">
+            <div class="col m8 s12">
                 <h5 class="white-text">友情链接</h5>
                 
                     <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
@@ -401,7 +434,7 @@
 
     <div class="footer-copyright teal-link-context">
         <div class="container">
-            © 2016 tutuge.me, All rights reserved.
+            © 2017 tutuge.me, All rights reserved.
             <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
         </div>
     </div>
@@ -420,6 +453,8 @@
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/materialize.min.js"></script>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
 
 <script>
     (function($) {
@@ -461,6 +496,22 @@
 
             // 文章目录
             $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
             // 修正文章目录的left-border颜色
             var color = $('.table-of-contents-text').css('color');
             $('.table-of-contents-link').css('border-left-color', color);
@@ -484,7 +535,7 @@
 
             
             // 添加new标签
-            $('.menu-reading, .menu-about').append('<span class="new badge teal accent-4"></span>');
+            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
             
 
             // 搜索功能

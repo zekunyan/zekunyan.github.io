@@ -99,7 +99,7 @@
                 <div class="info col s8 valign-wrapper no-padding">
                     <div class="valign">
                         <p class="name">土土哥</p>
-                        <p class="desc">iOS/技术宅</p>
+                        <p class="desc">iOS/Android/技术宅</p>
                     </div>
                 </div>
             </div>
@@ -248,6 +248,11 @@
             </div>
             <time class="teal-link-context" datetime="2015-02-14T08:51:51.000Z"><a href="/2015/02/14/Effective-Objective-C-读书笔记-Item-3/">2015-02-14</a></time>
 
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
             
     <div class="tags-row">
         
@@ -272,36 +277,53 @@
 <h2 id="Item-3-Prefer-Literal-Syntax-over-the-Equivalent-Methods"><a href="#Item-3-Prefer-Literal-Syntax-over-the-Equivalent-Methods" class="headerlink" title="Item 3 - Prefer Literal Syntax over the Equivalent Methods"></a>Item 3 - Prefer Literal Syntax over the Equivalent Methods</h2><p>本节讲了Objective-C中的“字面量语法”，并且建议我们更多的使用这种语法，而不是使用传统的等价的函数方法。</p>
 <a id="more"></a>
 <h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>当我们使用Objective-C编程的时候，总会经常使用到几种Foundation框架中的基本类，如NSString、NSNumber、NSArray、NSDictionary，或者是它们的子类。例如，当我们想创建一个字符串的时候，会这么写：</p>
-<figure class="highlight hsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSString *<span class="keyword">str</span> = @<span class="string">"a string"</span><span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">NSString</span> *<span class="keyword">str </span>= <span class="comment">@"a string";</span></div></pre></td></tr></table></figure>
 <p>不知道各位写这句的时候有没有觉得奇怪？为什么不用先“alloc”，再“initWithXXX”这么来创建呢。是的，这里创建字符串，就用到了Objective-C提供的“字面量语法”-“Literal Syntax”，而这种语法的“标志”就是“@”符号。<br>有了字面量语法，我们就不用每次创建一些基本类型的时候，写一大堆alloc、init了。</p>
 <h2 id="NSNumber"><a href="#NSNumber" class="headerlink" title="NSNumber"></a>NSNumber</h2><p>字符串可以用字面量语法创建，数字类NSNumber肯定也可以，如下：</p>
-<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">NSNumber <span class="keyword">*</span>intNum = <span class="meta">@1;</span></span><br><span class="line">NSNumber <span class="keyword">*</span>floatNum = <span class="meta">@1.1f;</span></span><br><span class="line">NSNumber <span class="keyword">*</span>doubleNum = <span class="meta">@1.1;</span></span><br><span class="line">NSNumber <span class="keyword">*</span>boolNum = <span class="meta">@YES;</span></span><br><span class="line">NSNumber <span class="keyword">*</span>charNum = <span class="meta">@'a';</span></span><br><span class="line"></span><br><span class="line">//不用字面量语法</span><br><span class="line">NSNumber <span class="keyword">*</span>intNumber = [[NSNumber alloc] initWithInt:1];</span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">NSNumber</span> *intNum = @<span class="number">1</span>;</div><div class="line"><span class="built_in">NSNumber</span> *floatNum = @<span class="number">1.1</span>f;</div><div class="line"><span class="built_in">NSNumber</span> *doubleNum = @<span class="number">1.1</span>;</div><div class="line"><span class="built_in">NSNumber</span> *boolNum = @YES;</div><div class="line"><span class="built_in">NSNumber</span> *charNum = @<span class="string">'a'</span>;</div><div class="line"></div><div class="line"><span class="comment">//不用字面量语法</span></div><div class="line"><span class="built_in">NSNumber</span> *intNumber = [[<span class="built_in">NSNumber</span> alloc] initWithInt:<span class="number">1</span>];</div></pre></td></tr></table></figure>
 <p>看，是不是很方便~</p>
 <h2 id="NSArray"><a href="#NSArray" class="headerlink" title="NSArray"></a>NSArray</h2><h3 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h3><p>数组算是最常用的一种数据结构了，如果没有字面量语法，创建数组可能是这样：</p>
-<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSArray *numbers = [[NSArray alloc] <span class="symbol">initWithObjects:</span><span class="variable">@1</span>, <span class="variable">@1</span>.<span class="number">1</span>, <span class="variable">@2</span>.0f, <span class="variable">@YES</span>, <span class="keyword">nil</span>];</span><br></pre></td></tr></table></figure>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">NSArray *numbers = [[NSArray alloc] <span class="symbol">initWithObjects:</span><span class="variable">@1</span>, <span class="variable">@1</span>.<span class="number">1</span>, <span class="variable">@2</span>.0f, <span class="variable">@YES</span>, <span class="keyword">nil</span>];</div></pre></td></tr></table></figure>
 <p>用字面量语法的话，就是这样：</p>
-<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSArray <span class="keyword">*</span>numbers = <span class="meta">@[</span><span class="meta">@1,</span> <span class="meta">@1.1,</span> <span class="meta">@2.0f,</span> <span class="meta">@YES];</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">NSArray *numbers = <span class="symbol">@[</span><span class="symbol">@1</span>, <span class="symbol">@1</span><span class="number">.1</span>, <span class="symbol">@2</span><span class="number">.0</span>f, <span class="symbol">@YES]</span><span class="comment">;</span></div></pre></td></tr></table></figure>
 <h3 id="存取值"><a href="#存取值" class="headerlink" title="存取值"></a>存取值</h3><p>创建了数组，肯定要从数组里面取值，用NSArray的方法就是这样：</p>
-<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">//取</span><br><span class="line">NSNumber <span class="keyword">*</span>aNumber = [numbers objectAtIndex:2];</span><br><span class="line">//存</span><br><span class="line">NSMutableArray <span class="keyword">*</span>mutableArray = [[NSMutableArray alloc] initWithArray:<span class="meta">@[</span><span class="meta">@1,</span> <span class="meta">@2,</span> <span class="meta">@3]];</span></span><br><span class="line">[mutableArray replaceObjectAtIndex:1 withObject:<span class="meta">@4];</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//取</span></div><div class="line">NSNumber *aNumber = [numbers objectAtIndex:<span class="number">2</span>];</div><div class="line"><span class="comment">//存</span></div><div class="line">NSMutableArray *mutableArray = [[NSMutableArray alloc] initWithArray:@[@1, @2, @3]];</div><div class="line">[mutableArray replaceObjectAtIndex:<span class="number">1</span> withObject:@4];</div></pre></td></tr></table></figure>
 <p>跟C语言、Java这些语法很不一样啊，人家都是通过中括号“[]”直接用下标取值就可以。有了字面量同语法，Objective-C也可以这样:</p>
-<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">//取</span><br><span class="line">NSNumber <span class="keyword">*</span>aNumber = numbers[2];</span><br><span class="line">//存</span><br><span class="line">NSMutableArray <span class="keyword">*</span>mutableArray = [[NSMutableArray alloc] initWithArray:<span class="meta">@[</span><span class="meta">@1,</span> <span class="meta">@2,</span> <span class="meta">@3]];</span></span><br><span class="line">mutableArray[1] = <span class="meta">@4;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//取</span></div><div class="line">NSNumber *aNumber = numbers[<span class="number">2</span>];</div><div class="line"><span class="comment">//存</span></div><div class="line">NSMutableArray *mutableArray = [[NSMutableArray alloc] initWithArray:@[@1, @2, @3]];</div><div class="line">mutableArray[<span class="number">1</span>] = @4;</div></pre></td></tr></table></figure>
 <h3 id="要注意的地方"><a href="#要注意的地方" class="headerlink" title="要注意的地方"></a>要注意的地方</h3><p>传统的通过“initWithObjects”方法创建数组的时候，是根据最后的“nil”判断数组是否结束的，也就是说，用于初始化数组的元素中有“nil”值也不会导致异常（Exception），如下语句：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSNumber</span> *number1 = @<span class="number">1</span>;</span><br><span class="line"><span class="built_in">NSNumber</span> *number2 = <span class="literal">nil</span>; <span class="comment">//空指针</span></span><br><span class="line"><span class="built_in">NSNumber</span> *number3 = @<span class="number">3</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建</span></span><br><span class="line"><span class="built_in">NSArray</span> *numbers = [[<span class="built_in">NSArray</span> alloc] initWithObjects:</span><br><span class="line">  number1, number2, number3, <span class="literal">nil</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//输出为1，因为number2，创建到number2就截止了</span></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"numbers count: %d"</span>, numbers.count);</span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">NSNumber</span> *number1 = @<span class="number">1</span>;</div><div class="line"><span class="built_in">NSNumber</span> *number2 = <span class="literal">nil</span>; <span class="comment">//空指针</span></div><div class="line"><span class="built_in">NSNumber</span> *number3 = @<span class="number">3</span>;</div><div class="line"></div><div class="line"><span class="comment">//创建</span></div><div class="line"><span class="built_in">NSArray</span> *numbers = [[<span class="built_in">NSArray</span> alloc] initWithObjects:</div><div class="line">  number1, number2, number3, <span class="literal">nil</span>];</div><div class="line"></div><div class="line"><span class="comment">//输出为1，因为number2，创建到number2就截止了</span></div><div class="line"><span class="built_in">NSLog</span>(<span class="string">@"numbers count: %d"</span>, numbers.count);</div></pre></td></tr></table></figure>
 <p>但是，如果用字面量语法创建，就是出问题：</p>
-<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">NSNumber <span class="keyword">*</span>number1 = <span class="meta">@1;</span></span><br><span class="line">NSNumber <span class="keyword">*</span>number2 = nil;</span><br><span class="line">NSNumber <span class="keyword">*</span>number3 = <span class="meta">@3;</span></span><br><span class="line"></span><br><span class="line">//创建出现异常！！！</span><br><span class="line">NSArray <span class="keyword">*</span>numbers = <span class="meta">@[number1,</span> number2, number3];</span><br><span class="line"></span><br><span class="line">NSLog(<span class="meta">@"numbers</span> count: %d<span class="string">", numbers.count);</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">NSNumber</span> *number1 = @<span class="number">1</span>;</div><div class="line"><span class="built_in">NSNumber</span> *number2 = <span class="literal">nil</span>;</div><div class="line"><span class="built_in">NSNumber</span> *number3 = @<span class="number">3</span>;</div><div class="line"></div><div class="line"><span class="comment">//创建出现异常！！！</span></div><div class="line"><span class="built_in">NSArray</span> *numbers = @[number1, number2, number3];</div><div class="line"></div><div class="line"><span class="built_in">NSLog</span>(<span class="string">@"numbers count: %d"</span>, numbers.count);</div></pre></td></tr></table></figure>
 <p>因为字面量语法只是单纯的将中括号中的元素全部加到数组中，但是，Objective-C中的数组是不可以存放nil值的，所以程序会运行时抛出异常。</p>
 <h2 id="NSDictionary"><a href="#NSDictionary" class="headerlink" title="NSDictionary"></a>NSDictionary</h2><h3 id="创建-1"><a href="#创建-1" class="headerlink" title="创建"></a>创建</h3><p>如果不用字面量语法创建字典，传统的创建函数简直令人匪夷所思：</p>
-<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// number1-&gt;<span class="meta">@1</span></span><br><span class="line">// number2-&gt;<span class="meta">@2</span></span><br><span class="line">NSDictionary <span class="keyword">*</span>dict = [[NSDictionary alloc] initWithObjectsAndKeys:<span class="meta">@1,</span> <span class="meta">@"number1",</span> <span class="meta">@2,</span> <span class="meta">@"number2",</span> nil];</span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// number1-&gt;@1</span></div><div class="line"><span class="comment">// number2-&gt;@2</span></div><div class="line"><span class="built_in">NSDictionary</span> *dict = [[<span class="built_in">NSDictionary</span> alloc] initWithObjectsAndKeys:@<span class="number">1</span>, <span class="string">@"number1"</span>, @<span class="number">2</span>, <span class="string">@"number2"</span>, <span class="literal">nil</span>];</div></pre></td></tr></table></figure>
 <p>是不是很奇怪，<strong>value在前面，key在后面</strong></p>
 <p>所以，还是用新的语法吧：</p>
-<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSDictionary <span class="keyword">*</span>dict = <span class="meta">@&#123;</span><span class="meta">@"number1"</span> : <span class="meta">@1,</span> <span class="meta">@"number2"</span> : <span class="meta">@2&#125;;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">NSDictionary <span class="symbol">*</span>dict = <span class="meta">@&#123;</span><span class="meta">@"number1"</span> : <span class="meta">@1,</span> <span class="meta">@"number2"</span> : <span class="meta">@2&#125;;</span></div></pre></td></tr></table></figure>
 <p>这样才符合“常识”嘛，key在前，value在后面，跟JSON的定义一样。</p>
 <h3 id="存取值-1"><a href="#存取值-1" class="headerlink" title="存取值"></a>存取值</h3><p>取值的语法跟NSArray的语法很想，只不过是将下标数字变成了key：</p>
-<figure class="highlight hsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//传统</span></span><br><span class="line">NSNumber *number1 = [dict objectForKey:@<span class="string">"number1"</span>]<span class="comment">;</span></span><br><span class="line">[dict setValue:@<span class="number">5</span> forKey:@<span class="string">"number1"</span>]<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//字面量语法</span></span><br><span class="line">NSNumber *number2 = dict[@<span class="string">"number1"</span>]<span class="comment">;</span></span><br><span class="line">dict[@<span class="string">"number1"</span>] = @<span class="number">6</span><span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//传统</span></div><div class="line">NSNumber *number1 = [dict <span class="string">objectForKey:</span>@<span class="string">"number1"</span>];</div><div class="line">[dict <span class="string">setValue:</span>@<span class="number">5</span> <span class="string">forKey:</span>@<span class="string">"number1"</span>];</div><div class="line"></div><div class="line"><span class="comment">//字面量语法</span></div><div class="line">NSNumber *number2 = dict[@<span class="string">"number1"</span>];</div><div class="line">dict[@<span class="string">"number1"</span>] = @<span class="number">6</span>;</div></pre></td></tr></table></figure>
 <h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>需要注意的地方，跟创建数组一样，NSDictionary的value不能为nil值，否则会抛出异常。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>总的来说，使用字面量语法可以让代码更加清晰、简单，毕竟，更少的代码，有时候意味着更少的错误。</p>
 
+                
+<p class="teal-link-context">
+    <a href="/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/" rel="next" title="利用NSProxy实现消息转发-模块化的网络接口层设计-原创">
+    上一篇：利用NSProxy实现消息转发-模块化的网络接口层设计-原创
+  </a>
+</p>
+
+
+
+<p class="teal-link-context">
+    <a href="/2015/02/06/Effective-Objective-C-读书笔记-Item-2/" rel="next" title="Effective-Objective-C-读书笔记-Item-2">
+    下一篇：Effective-Objective-C-读书笔记-Item-2
+  </a>
+</p>
+
+
             </div>
+			
         </div>
     </div>
 </article>
@@ -356,7 +378,7 @@
     <div class="container">
         <div class="row">
             
-            <div class="social-group col m3 s12">
+            <div class="social-group col m4 s12">
                 <h5 class="white-text">社交</h5>
                 
                     <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
@@ -371,11 +393,22 @@
                         <i class="fa fa-2x fa-rss"></i>
                     </a>
                 
+                <div class="site-visitors-container white-text">
+                    <span>
+                        <i class="fa fa-user"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+                    </span>
+                    <span>&nbsp;|&nbsp;</span>
+                    <span>
+                        <i class="fa fa-eye"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+                    </span>
+                </div>
             </div>
             
 
             
-            <div class="col m9 s12">
+            <div class="col m8 s12">
                 <h5 class="white-text">友情链接</h5>
                 
                     <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
@@ -396,7 +429,7 @@
 
     <div class="footer-copyright teal-link-context">
         <div class="container">
-            © 2016 tutuge.me, All rights reserved.
+            © 2017 tutuge.me, All rights reserved.
             <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
         </div>
     </div>
@@ -415,6 +448,8 @@
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/materialize.min.js"></script>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
 
 <script>
     (function($) {
@@ -456,6 +491,22 @@
 
             // 文章目录
             $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
             // 修正文章目录的left-border颜色
             var color = $('.table-of-contents-text').css('color');
             $('.table-of-contents-link').css('border-left-color', color);
@@ -479,7 +530,7 @@
 
             
             // 添加new标签
-            $('.menu-reading, .menu-about').append('<span class="new badge teal accent-4"></span>');
+            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
             
 
             // 搜索功能

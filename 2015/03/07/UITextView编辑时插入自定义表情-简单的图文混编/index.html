@@ -99,7 +99,7 @@
                 <div class="info col s8 valign-wrapper no-padding">
                     <div class="valign">
                         <p class="name">土土哥</p>
-                        <p class="desc">iOS/技术宅</p>
+                        <p class="desc">iOS/Android/技术宅</p>
                     </div>
                 </div>
             </div>
@@ -248,6 +248,11 @@
             </div>
             <time class="teal-link-context" datetime="2015-03-07T03:04:38.000Z"><a href="/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/">2015-03-07</a></time>
 
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
             
     <div class="tags-row">
         
@@ -287,7 +292,7 @@
 <p><strong>tutuge.me[/emoji_1]</strong></p>
 <h2 id="插入并显示表情图片"><a href="#插入并显示表情图片" class="headerlink" title="插入并显示表情图片"></a>插入并显示表情图片</h2><p>插入表情很简单，直接实例化<strong>NSTextAttachment</strong>类，将需要的表情的UIImage实例赋值给NSTextAttachment的image属性，然后用“<strong>[NSAttributedString attributedStringWithAttachment:]</strong>”方法实例化一个NSAttributedString的对象，插入到UITextView的textStorage对应的位置即可。</p>
 <p>如下：</p>
-<figure class="highlight qml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">NSTextAttachment *emojiTextAttachment = [NSTextAttachment <span class="keyword">new</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//设置表情图片</span></span><br><span class="line">emojiTextAttachment.image = emojiImage;</span><br><span class="line"></span><br><span class="line"><span class="comment">//插入表情</span></span><br><span class="line">[textView.textStorage <span class="attribute">insertAttributedString</span>:[NSAttributedString <span class="attribute">attributedStringWithAttachment</span>:<span class="attribute">emojiTextAttachment]</span><br><span class="line">                                     atIndex</span>:<span class="attribute">textView.selectedRange.location];</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">NSTextAttachment *emojiTextAttachment = [NSTextAttachment <span class="keyword">new</span>];</div><div class="line"></div><div class="line"><span class="comment">//设置表情图片</span></div><div class="line">emojiTextAttachment.image = emojiImage;</div><div class="line"></div><div class="line"><span class="comment">//插入表情</span></div><div class="line">[textView.textStorage <span class="string">insertAttributedString:</span>[NSAttributedString <span class="string">attributedStringWithAttachment:</span>emojiTextAttachment]</div><div class="line"><span class="symbol">                                     atIndex:</span>textView.selectedRange.location];</div></pre></td></tr></table></figure>
 <p>这样，就能在UITextView当前光标位置插入表情图片了。</p>
 <h2 id="获取带有表情标志的文本字符串"><a href="#获取带有表情标志的文本字符串" class="headerlink" title="获取带有表情标志的文本字符串"></a>获取带有表情标志的文本字符串</h2><h3 id="难点"><a href="#难点" class="headerlink" title="难点"></a>难点</h3><p>NSTextAttachment被插入到NSAttributedString中的时候，<strong>就被当成了一个字符处理！！！</strong>。<br>就是说，只从UITextView的text中，是找不回文本里面不同的表情所对应的标志的！</p>
 <h3 id="解决点"><a href="#解决点" class="headerlink" title="解决点"></a>解决点</h3><ol>
@@ -295,17 +300,17 @@
 <li>我们要能知道遍历出的表情，对应的标志是什么。</li>
 </ol>
 <h3 id="遍历所有的NSTextAttachment类属性"><a href="#遍历所有的NSTextAttachment类属性" class="headerlink" title="遍历所有的NSTextAttachment类属性"></a>遍历所有的NSTextAttachment类属性</h3><p>遍历，嗯，先看看Apple有没有提供相应的方法，能遍历NSAttributedString（及其子类）的属性的。查阅文档：<a href="https://developer.apple.com/library/prerelease/ios/documentation/Cocoa/Reference/Foundation/Classes/NSAttributedString_Class/index.html#//apple_ref/occ/instm/NSAttributedString" target="_blank" rel="external">NSAttributedString Class Reference</a>，可以找到这么一个方法：“<strong>- enumerateAttribute:inRange:options:usingBlock:</strong>”，其原型如下：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)enumerateAttribute:(<span class="built_in">NSString</span> *)attrName</span><br><span class="line">                   inRange:(<span class="built_in">NSRange</span>)enumerationRange</span><br><span class="line">                   options:(<span class="built_in">NSAttributedStringEnumerationOptions</span>)opts</span><br><span class="line">                usingBlock:(<span class="keyword">void</span> (^)(<span class="keyword">id</span> value, <span class="built_in">NSRange</span> range, <span class="built_in">BOOL</span> *stop))block</span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)enumerateAttribute:(<span class="built_in">NSString</span> *)attrName</div><div class="line">                   inRange:(<span class="built_in">NSRange</span>)enumerationRange</div><div class="line">                   options:(<span class="built_in">NSAttributedStringEnumerationOptions</span>)opts</div><div class="line">                usingBlock:(<span class="keyword">void</span> (^)(<span class="keyword">id</span> value, <span class="built_in">NSRange</span> range, <span class="built_in">BOOL</span> *stop))block</div></pre></td></tr></table></figure>
 <p>用处：</p>
-<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Executes <span class="keyword">the</span> Block <span class="keyword">for</span> <span class="keyword">the</span> specified attribute run <span class="keyword">in</span> <span class="keyword">the</span> specified range.</span><br></pre></td></tr></table></figure>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Executes <span class="keyword">the</span> Block <span class="keyword">for</span> <span class="keyword">the</span> specified attribute run <span class="keyword">in</span> <span class="keyword">the</span> specified range.</div></pre></td></tr></table></figure>
 <p>看，就是这个方法~就能遍历出NSTextAttachment对象了~</p>
 <h3 id="创建NSTextAttachment的子类"><a href="#创建NSTextAttachment的子类" class="headerlink" title="创建NSTextAttachment的子类"></a>创建NSTextAttachment的子类</h3><p>如何绑定NSTextAttachment所表示的表情和与其对应的标志？创建子类嘛~直接在子类中增加属性，保存标志不就行了。<br>如下：</p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">@interface</span> <span class="attribute">EmojiTextAttachment </span>: NSTextAttachment</span><br><span class="line"><span class="variable">@property</span>(strong, nonatomic) NSString *emojiTag;</span><br><span class="line"><span class="variable">@end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="variable">@interface</span> <span class="attribute">EmojiTextAttachment </span>: NSTextAttachment</div><div class="line"><span class="variable">@property</span>(strong, nonatomic) NSString *emojiTag;</div><div class="line"><span class="variable">@end</span></div></pre></td></tr></table></figure>
 <p>所以，这个时候，插入表情的代码应该就是下面这样：</p>
-<figure class="highlight hsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">EmojiTextAttachment *emojiTextAttachment = [EmojiTextAttachment new]<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//保存表情标志</span></span><br><span class="line">emojiTextAttachment.emojiTag = emojiTag<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//设置表情图片</span></span><br><span class="line">emojiTextAttachment.image = emojiImage<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//插入表情</span></span><br><span class="line">[textView.textStorage insertAttributedString:[NSAttributedString attributedStringWithAttachment:emojiTextAttachment]</span><br><span class="line">                                      atIndex:textView.selectedRange.location]<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">EmojiTextAttachment *emojiTextAttachment = [EmojiTextAttachment <span class="keyword">new</span>];</div><div class="line"></div><div class="line"><span class="comment">//保存表情标志</span></div><div class="line">emojiTextAttachment.emojiTag = emojiTag;</div><div class="line"></div><div class="line"><span class="comment">//设置表情图片</span></div><div class="line">emojiTextAttachment.image = emojiImage;</div><div class="line"></div><div class="line"><span class="comment">//插入表情</span></div><div class="line">[textView.textStorage <span class="string">insertAttributedString:</span>[NSAttributedString <span class="string">attributedStringWithAttachment:</span>emojiTextAttachment]</div><div class="line"><span class="symbol">                                      atIndex:</span>textView.selectedRange.location];</div></pre></td></tr></table></figure>
 <h3 id="创建NSAttributedString的Category"><a href="#创建NSAttributedString的Category" class="headerlink" title="创建NSAttributedString的Category"></a>创建NSAttributedString的Category</h3><p>最后，就是将这个遍历表情、拼接最终文本字符串的方法设置成NSAttributedString的自定义Category方法，以方便直接调用。<br>当然，这里面有些细节的处理，如替换表情标志时的字符串偏移量计算等，看代码吧。</p>
 <p>如下：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//NSAttributedString+EmojiExtension.h</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">NSAttributedString</span> (<span class="title">EmojiExtension</span>)</span></span><br><span class="line">- (<span class="built_in">NSString</span> *)getPlainString;</span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//NSAttributedString+EmojiExtension.m</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">NSAttributedString</span> (<span class="title">EmojiExtension</span>)</span></span><br><span class="line"></span><br><span class="line">- (<span class="built_in">NSString</span> *)getPlainString &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//最终纯文本</span></span><br><span class="line">    <span class="built_in">NSMutableString</span> *plainString = [<span class="built_in">NSMutableString</span> stringWithString:<span class="keyword">self</span>.string];</span><br><span class="line"></span><br><span class="line">    <span class="comment">//替换下标的偏移量</span></span><br><span class="line">    __block <span class="built_in">NSUInteger</span> base = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//遍历</span></span><br><span class="line">    [<span class="keyword">self</span> enumerateAttribute:<span class="built_in">NSAttachmentAttributeName</span> inRange:<span class="built_in">NSMakeRange</span>(<span class="number">0</span>, <span class="keyword">self</span>.length)</span><br><span class="line">                    options:<span class="number">0</span></span><br><span class="line">                 usingBlock:^(<span class="keyword">id</span> value, <span class="built_in">NSRange</span> range, <span class="built_in">BOOL</span> *stop) &#123;</span><br><span class="line"></span><br><span class="line">                    <span class="comment">//检查类型是否是自定义NSTextAttachment类</span></span><br><span class="line">                    <span class="keyword">if</span> (value &amp;&amp; [value isKindOfClass:[EmojiTextAttachment class]]) &#123;</span><br><span class="line">                        <span class="comment">//替换</span></span><br><span class="line">                        [plainString replaceCharactersInRange:<span class="built_in">NSMakeRange</span>(range.location + base, range.length)</span><br><span class="line">                                                    withString:((EmojiTextAttachment *) value).emojiTag];</span><br><span class="line"></span><br><span class="line">                       <span class="comment">//增加偏移量</span></span><br><span class="line">                        base += ((EmojiTextAttachment *) value).emojiTag.length - <span class="number">1</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> plainString;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//NSAttributedString+EmojiExtension.h</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">NSAttributedString</span> (<span class="title">EmojiExtension</span>)</span></div><div class="line">- (<span class="built_in">NSString</span> *)getPlainString;</div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">//NSAttributedString+EmojiExtension.m</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">NSAttributedString</span> (<span class="title">EmojiExtension</span>)</span></div><div class="line"></div><div class="line">- (<span class="built_in">NSString</span> *)getPlainString &#123;</div><div class="line"></div><div class="line">    <span class="comment">//最终纯文本</span></div><div class="line">    <span class="built_in">NSMutableString</span> *plainString = [<span class="built_in">NSMutableString</span> stringWithString:<span class="keyword">self</span>.string];</div><div class="line"></div><div class="line">    <span class="comment">//替换下标的偏移量</span></div><div class="line">    __block <span class="built_in">NSUInteger</span> base = <span class="number">0</span>;</div><div class="line"></div><div class="line">    <span class="comment">//遍历</span></div><div class="line">    [<span class="keyword">self</span> enumerateAttribute:<span class="built_in">NSAttachmentAttributeName</span> inRange:<span class="built_in">NSMakeRange</span>(<span class="number">0</span>, <span class="keyword">self</span>.length)</div><div class="line">                    options:<span class="number">0</span></div><div class="line">                 usingBlock:^(<span class="keyword">id</span> value, <span class="built_in">NSRange</span> range, <span class="built_in">BOOL</span> *stop) &#123;</div><div class="line"></div><div class="line">                    <span class="comment">//检查类型是否是自定义NSTextAttachment类</span></div><div class="line">                    <span class="keyword">if</span> (value &amp;&amp; [value isKindOfClass:[EmojiTextAttachment <span class="keyword">class</span>]]) &#123;</div><div class="line">                        <span class="comment">//替换</span></div><div class="line">                        [plainString replaceCharactersInRange:<span class="built_in">NSMakeRange</span>(range.location + base, range.length)</div><div class="line">                                                    withString:((EmojiTextAttachment *) value).emojiTag];</div><div class="line"></div><div class="line">                       <span class="comment">//增加偏移量</span></div><div class="line">                        base += ((EmojiTextAttachment *) value).emojiTag.length - <span class="number">1</span>;</div><div class="line">                    &#125;</div><div class="line">                &#125;];</div><div class="line"></div><div class="line">    <span class="keyword">return</span> plainString;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
 <h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>直接调用getPlainString方法即可。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>其实本文也是来源于最近的项目需求，在网上一直找不到比较好的解决方案，就自己摸索出来一个。至于复杂的图文混合编辑，当然还是Core Text来的强大（自己也在学习中）~</p>
 <p>如果有更好地办法，一定要告诉我啊~~~</p>
@@ -314,7 +319,24 @@
 <li><a href="https://developer.apple.com/library/prerelease/ios/documentation/Cocoa/Reference/Foundation/Classes/NSAttributedString_Class/index.html#//apple_ref/occ/instm/NSAttributedString/enumerateAttribute:inRange:options:usingBlock:" target="_blank" rel="external">NSAttributedString Class Reference</a></li>
 </ul>
 
+                
+<p class="teal-link-context">
+    <a href="/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/" rel="next" title="Effective-Objective-C-读书笔记-Item-4-如何正确定义常量">
+    上一篇：Effective-Objective-C-读书笔记-Item-4-如何正确定义常量
+  </a>
+</p>
+
+
+
+<p class="teal-link-context">
+    <a href="/2015/03/06/关于评论不见了/" rel="next" title="关于评论不见了=。=">
+    下一篇：关于评论不见了=。=
+  </a>
+</p>
+
+
             </div>
+			
         </div>
     </div>
 </article>
@@ -369,7 +391,7 @@
     <div class="container">
         <div class="row">
             
-            <div class="social-group col m3 s12">
+            <div class="social-group col m4 s12">
                 <h5 class="white-text">社交</h5>
                 
                     <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
@@ -384,11 +406,22 @@
                         <i class="fa fa-2x fa-rss"></i>
                     </a>
                 
+                <div class="site-visitors-container white-text">
+                    <span>
+                        <i class="fa fa-user"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+                    </span>
+                    <span>&nbsp;|&nbsp;</span>
+                    <span>
+                        <i class="fa fa-eye"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+                    </span>
+                </div>
             </div>
             
 
             
-            <div class="col m9 s12">
+            <div class="col m8 s12">
                 <h5 class="white-text">友情链接</h5>
                 
                     <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
@@ -409,7 +442,7 @@
 
     <div class="footer-copyright teal-link-context">
         <div class="container">
-            © 2016 tutuge.me, All rights reserved.
+            © 2017 tutuge.me, All rights reserved.
             <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
         </div>
     </div>
@@ -428,6 +461,8 @@
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/materialize.min.js"></script>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
 
 <script>
     (function($) {
@@ -469,6 +504,22 @@
 
             // 文章目录
             $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
             // 修正文章目录的left-border颜色
             var color = $('.table-of-contents-text').css('color');
             $('.table-of-contents-link').css('border-left-color', color);
@@ -492,7 +543,7 @@
 
             
             // 添加new标签
-            $('.menu-reading, .menu-about').append('<span class="new badge teal accent-4"></span>');
+            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
             
 
             // 搜索功能

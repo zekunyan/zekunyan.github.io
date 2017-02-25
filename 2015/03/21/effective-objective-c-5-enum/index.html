@@ -99,7 +99,7 @@
                 <div class="info col s8 valign-wrapper no-padding">
                     <div class="valign">
                         <p class="name">土土哥</p>
-                        <p class="desc">iOS/技术宅</p>
+                        <p class="desc">iOS/Android/技术宅</p>
                     </div>
                 </div>
             </div>
@@ -248,6 +248,11 @@
             </div>
             <time class="teal-link-context" datetime="2015-03-21T12:52:57.000Z"><a href="/2015/03/21/effective-objective-c-5-enum/">2015-03-21</a></time>
 
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
             
     <div class="tags-row">
         
@@ -271,30 +276,47 @@
 <p>接下来，我们看看如何用枚举定义状态和选项。</p>
 <a id="more"></a>
 <h2 id="enum与状态（states）"><a href="#enum与状态（states）" class="headerlink" title="enum与状态（states）"></a>enum与状态（states）</h2><h4 id="不好的做法"><a href="#不好的做法" class="headerlink" title="不好的做法"></a>不好的做法</h4><p>经常看到这样的写法：</p>
-<figure class="highlight hsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> STATE_OK <span class="number">0</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> STATE_ERROR <span class="number">1</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> STATE_UNKNOW <span class="number">2</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//直接用int型变量接收</span></span><br><span class="line"><span class="keyword">int</span> STATE = STATE_UNKNOW<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> STATE_OK 0</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> STATE_ERROR 1</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> STATE_UNKNOW 2</span></div><div class="line"></div><div class="line"><span class="comment">//直接用int型变量接收</span></div><div class="line"><span class="keyword">int</span> STATE = STATE_UNKNOW;</div></pre></td></tr></table></figure>
 <p>这样做有如下“不恰当”：</p>
 <ul>
 <li>宏定义没有类型约束，只是单纯的替换。</li>
 <li>无法限制状态的所有情况，如，认为的将STATE赋值成3，程序可能就会出错，找不到匹配的状态，因为编译器不会对“<strong>STATE = 3;</strong>”提出警告。</li>
 </ul>
-<h4 id="正确的做法"><a href="#正确的做法" class="headerlink" title="正确的做法"></a>正确的做法</h4><figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">typedef <span class="class"><span class="keyword">enum</span> <span class="title">_TTGState</span> &#123;</span></span><br><span class="line">    TTGStateOK  = <span class="number">0</span>,</span><br><span class="line">    TTGStateError,</span><br><span class="line">    TTGStateUnknow</span><br><span class="line">&#125; TTGState;</span><br><span class="line"></span><br><span class="line"><span class="regexp">//</span>指明枚举类型</span><br><span class="line">TTGState state = TTGStateOK;</span><br></pre></td></tr></table></figure>
+<h4 id="正确的做法"><a href="#正确的做法" class="headerlink" title="正确的做法"></a>正确的做法</h4><figure class="highlight crystal"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">typedef <span class="class"><span class="keyword">enum</span> <span class="title">_TTGState</span> &#123;</span></div><div class="line">    TTGStateOK  = <span class="number">0</span>,</div><div class="line">    TTGStateError,</div><div class="line">    TTGStateUnknow</div><div class="line">&#125; TTGState;</div><div class="line"></div><div class="line"><span class="regexp">//</span>指明枚举类型</div><div class="line">TTGState state = TTGStateOK;</div></pre></td></tr></table></figure>
 <p>用的时候就如下：</p>
-<figure class="highlight qml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)<span class="attribute">dealWithState</span>:(TTGState)<span class="decorator">state</span> &#123;</span><br><span class="line">    <span class="keyword">switch</span> (state) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="attribute">TTGStateOK</span>:</span><br><span class="line">            <span class="comment">//...</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="attribute">TTGStateError</span>:</span><br><span class="line">            <span class="comment">//...</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="attribute">TTGStateUnknow</span>:</span><br><span class="line">            <span class="comment">//...</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)<span class="string">dealWithState:</span>(TTGState)state &#123;</div><div class="line">    <span class="keyword">switch</span> (state) &#123;</div><div class="line">        <span class="keyword">case</span> <span class="string">TTGStateOK:</span></div><div class="line">            <span class="comment">//...</span></div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> <span class="string">TTGStateError:</span></div><div class="line">            <span class="comment">//...</span></div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> <span class="string">TTGStateUnknow:</span></div><div class="line">            <span class="comment">//...</span></div><div class="line">            <span class="keyword">break</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="enum与选项-options"><a href="#enum与选项-options" class="headerlink" title="enum与选项 (options)"></a>enum与选项 (options)</h2><p>选项，就是说一个“选项变量”的类型要能够同时表示一个或多个组合的选择，如下例子：</p>
-<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//方向，可同时支持一个或多个方向</span></span><br><span class="line">typedef <span class="class"><span class="keyword">enum</span> _<span class="title">TTGDirection</span> </span>&#123;</span><br><span class="line">    TTGDirectionNone = <span class="number">0</span>,</span><br><span class="line">    TTGDirectionTop = <span class="number">1</span> &lt;&lt; <span class="number">0</span>,</span><br><span class="line">    TTGDirectionLeft = <span class="number">1</span> &lt;&lt; <span class="number">1</span>,</span><br><span class="line">    TTGDirectionRight = <span class="number">1</span> &lt;&lt; <span class="number">2</span>,</span><br><span class="line">    TTGDirectionBottom = <span class="number">1</span> &lt;&lt; <span class="number">3</span></span><br><span class="line">&#125; TTGDirection;</span><br></pre></td></tr></table></figure>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//方向，可同时支持一个或多个方向</span></div><div class="line">typedef enum _TTGDirection &#123;</div><div class="line">    TTGDirectionNone = <span class="number">0</span>,</div><div class="line">    TTGDirectionTop = <span class="number">1</span> &lt;&lt; <span class="number">0</span>,</div><div class="line">    TTGDirectionLeft = <span class="number">1</span> &lt;&lt; <span class="number">1</span>,</div><div class="line">    TTGDirectionRight = <span class="number">1</span> &lt;&lt; <span class="number">2</span>,</div><div class="line">    TTGDirectionBottom = <span class="number">1</span> &lt;&lt; <span class="number">3</span></div><div class="line">&#125; TTGDirection;</div></pre></td></tr></table></figure>
 <p>看，这里的选项是用<strong>位运算</strong>的方式定义的，这样的好处就是，我们的选项变量可以如下表示：</p>
-<figure class="highlight hsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//用“或”运算同时赋值多个选项</span></span><br><span class="line">TTGDirection direction = TTGDirectionTop | TTGDirectionLeft | TTGDirectionBottom<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//用“与”运算取出对应位</span></span><br><span class="line"><span class="keyword">if</span> (direction &amp; TTGDirectionTop) &#123;</span><br><span class="line">    NSLog(@<span class="string">"top"</span>)<span class="comment">;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (direction &amp; TTGDirectionLeft) &#123;</span><br><span class="line">    NSLog(@<span class="string">"left"</span>)<span class="comment">;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (direction &amp; TTGDirectionRight) &#123;</span><br><span class="line">    NSLog(@<span class="string">"right"</span>)<span class="comment">;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (direction &amp; TTGDirectionBottom) &#123;</span><br><span class="line">    NSLog(@<span class="string">"bottom"</span>)<span class="comment">;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sqf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//用“或”运算同时赋值多个选项</span></div><div class="line">TTGDirection <span class="built_in">direction</span> = TTGDirectionTop | TTGDirectionLeft | TTGDirectionBottom;</div><div class="line"></div><div class="line"><span class="comment">//用“与”运算取出对应位</span></div><div class="line"><span class="keyword">if</span> (<span class="built_in">direction</span> &amp; TTGDirectionTop) &#123;</div><div class="line">    NSLog(@<span class="string">"top"</span>);</div><div class="line">&#125;</div><div class="line"><span class="keyword">if</span> (<span class="built_in">direction</span> &amp; TTGDirectionLeft) &#123;</div><div class="line">    NSLog(@<span class="string">"left"</span>);</div><div class="line">&#125;</div><div class="line"><span class="keyword">if</span> (<span class="built_in">direction</span> &amp; TTGDirectionRight) &#123;</div><div class="line">    NSLog(@<span class="string">"right"</span>);</div><div class="line">&#125;</div><div class="line"><span class="keyword">if</span> (<span class="built_in">direction</span> &amp; TTGDirectionBottom) &#123;</div><div class="line">    NSLog(@<span class="string">"bottom"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p><strong>direction</strong>变量的实际内存如下：</p>
 <p><img src="http://zorrochen.qiniudn.com/blog_effective_objective_c_5_enum_2.jpg" alt="内存示意图"></p>
 <p>这样，用位运算，就可以同时支持多个值。</p>
 <h2 id="enum在Objective-C中的“升级版”"><a href="#enum在Objective-C中的“升级版”" class="headerlink" title="enum在Objective-C中的“升级版”"></a>enum在Objective-C中的“升级版”</h2><p>一般来说，我们不能指定枚举变量的实际类型是什么，就是说，我们不知道枚举最后是int型，还是其他的什么类型。但是从C++ 11开始，我们可以为枚举指定其实际的存储类型，如下语法：</p>
-<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">TTGState</span> : <span class="title">NSInteger</span> &#123;/*...*/&#125;;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">enum</span> <span class="title">TTGState</span> : <span class="title">NSInteger</span> &#123;/*...*/&#125;;</span></div></pre></td></tr></table></figure>
 <p>但是，我们在定义枚举的时候如何保证兼容性呢？Foundation框架已经为我们提供了更加“统一、便捷”的枚举定义方法，我们重新定义上面的例子：</p>
-<figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">//<span class="type">NS_ENUM</span>，定义状态等普通枚举</span><br><span class="line">typedef <span class="type">NS_ENUM</span>(<span class="type">NSUInteger</span>, <span class="type">TTGState</span>) &#123;</span><br><span class="line">    <span class="type">TTGStateOK</span> = 0,</span><br><span class="line">    <span class="type">TTGStateError</span>,</span><br><span class="line">    <span class="type">TTGStateUnknow</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">//<span class="type">NS_OPTIONS</span>，定义选项</span><br><span class="line">typedef <span class="type">NS_OPTIONS</span>(<span class="type">NSUInteger</span>, <span class="type">TTGDirection</span>) &#123;</span><br><span class="line">    <span class="type">TTGDirectionNone</span> = 0,</span><br><span class="line">    <span class="type">TTGDirectionTop</span> = 1 &lt;&lt; 0,</span><br><span class="line">    <span class="type">TTGDirectionLeft</span> = 1 &lt;&lt; 1,</span><br><span class="line">    <span class="type">TTGDirectionRight</span> = 1 &lt;&lt; 2,</span><br><span class="line">    <span class="type">TTGDirectionBottom</span> = 1 &lt;&lt; 3</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">//<span class="type">NS_ENUM</span>，定义状态等普通枚举</div><div class="line">typedef <span class="type">NS_ENUM</span>(<span class="type">NSUInteger</span>, <span class="type">TTGState</span>) &#123;</div><div class="line">    <span class="type">TTGStateOK</span> = 0,</div><div class="line">    <span class="type">TTGStateError</span>,</div><div class="line">    <span class="type">TTGStateUnknow</span></div><div class="line">&#125;;</div><div class="line"></div><div class="line">//<span class="type">NS_OPTIONS</span>，定义选项</div><div class="line">typedef <span class="type">NS_OPTIONS</span>(<span class="type">NSUInteger</span>, <span class="type">TTGDirection</span>) &#123;</div><div class="line">    <span class="type">TTGDirectionNone</span> = 0,</div><div class="line">    <span class="type">TTGDirectionTop</span> = 1 &lt;&lt; 0,</div><div class="line">    <span class="type">TTGDirectionLeft</span> = 1 &lt;&lt; 1,</div><div class="line">    <span class="type">TTGDirectionRight</span> = 1 &lt;&lt; 2,</div><div class="line">    <span class="type">TTGDirectionBottom</span> = 1 &lt;&lt; 3</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
 <p>所以，在开发Mac、iOS程序中，最好所有的枚举都用“<strong>NS_ENUM</strong>”和“<strong>NS_OPTIONS</strong>”定义，保证统一。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>充分的用好枚举，可以增强代码的可读性，减少各种“错误”，让代码更加的规范。</p>
 
+                
+<p class="teal-link-context">
+    <a href="/2015/03/29/bind-data-to-gcd-queue/" rel="next" title="为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权">
+    上一篇：为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权
+  </a>
+</p>
+
+
+
+<p class="teal-link-context">
+    <a href="/2015/03/17/what-is-autoreleasepool/" rel="next" title="@autoreleasepool-内存的分配与释放">
+    下一篇：@autoreleasepool-内存的分配与释放
+  </a>
+</p>
+
+
             </div>
+			
         </div>
     </div>
 </article>
@@ -349,7 +371,7 @@
     <div class="container">
         <div class="row">
             
-            <div class="social-group col m3 s12">
+            <div class="social-group col m4 s12">
                 <h5 class="white-text">社交</h5>
                 
                     <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
@@ -364,11 +386,22 @@
                         <i class="fa fa-2x fa-rss"></i>
                     </a>
                 
+                <div class="site-visitors-container white-text">
+                    <span>
+                        <i class="fa fa-user"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+                    </span>
+                    <span>&nbsp;|&nbsp;</span>
+                    <span>
+                        <i class="fa fa-eye"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+                    </span>
+                </div>
             </div>
             
 
             
-            <div class="col m9 s12">
+            <div class="col m8 s12">
                 <h5 class="white-text">友情链接</h5>
                 
                     <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
@@ -389,7 +422,7 @@
 
     <div class="footer-copyright teal-link-context">
         <div class="container">
-            © 2016 tutuge.me, All rights reserved.
+            © 2017 tutuge.me, All rights reserved.
             <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
         </div>
     </div>
@@ -408,6 +441,8 @@
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/materialize.min.js"></script>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
 
 <script>
     (function($) {
@@ -449,6 +484,22 @@
 
             // 文章目录
             $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
             // 修正文章目录的left-border颜色
             var color = $('.table-of-contents-text').css('color');
             $('.table-of-contents-link').css('border-left-color', color);
@@ -472,7 +523,7 @@
 
             
             // 添加new标签
-            $('.menu-reading, .menu-about').append('<span class="new badge teal accent-4"></span>');
+            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
             
 
             // 搜索功能

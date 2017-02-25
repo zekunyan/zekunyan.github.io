@@ -99,7 +99,7 @@
                 <div class="info col s8 valign-wrapper no-padding">
                     <div class="valign">
                         <p class="name">土土哥</p>
-                        <p class="desc">iOS/技术宅</p>
+                        <p class="desc">iOS/Android/技术宅</p>
                     </div>
                 </div>
             </div>
@@ -248,6 +248,11 @@
             </div>
             <time class="teal-link-context" datetime="2015-04-21T12:26:17.000Z"><a href="/2015/04/21/resizable-nstextattachment/">2015-04-21</a></time>
 
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
             
     <div class="tags-row">
         
@@ -274,16 +279,16 @@
 <h2 id="关键点"><a href="#关键点" class="headerlink" title="关键点"></a>关键点</h2><p>首先要明确我们要什么，很简单，就是<strong>指定NSTextAttachment在被绘制时的大小</strong>。</p>
 <p>所以，按照这个思路，就可以去找找NSTextAttachment类的相关方法，看能不能通过继承或其他的方式改变大小。</p>
 <h3 id="方法1-NSTextAttachmentContainer"><a href="#方法1-NSTextAttachmentContainer" class="headerlink" title="方法1 - NSTextAttachmentContainer"></a>方法1 - NSTextAttachmentContainer</h3><p>NSTextAttachment实现了“<strong>NSTextAttachmentContainer</strong>”这个Protocol，而这个Protocol里面有如下方法：</p>
-<figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- <span class="params">(CGRect)</span>attachmentBoundsForTextContainer:<span class="params">(NSTextContainer *)</span>textContainer</span><br><span class="line">                      proposedLineFragment:<span class="params">(CGRect)</span>lineFrag</span><br><span class="line">                             glyphPosition:<span class="params">(CGPoint)</span>position</span><br><span class="line">                            characterIndex:<span class="params">(NSUInteger)</span>charIndex</span><br></pre></td></tr></table></figure>
-<p>再看看其解释：<br><figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Returns <span class="keyword">the</span> layout bounds <span class="keyword">of</span> <span class="keyword">the</span> <span class="keyword">text</span> attachment <span class="built_in">to</span> <span class="keyword">the</span> layout manager. (required)</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">- <span class="params">(CGRect)</span>attachmentBoundsForTextContainer:<span class="params">(NSTextContainer *)</span>textContainer</div><div class="line">                      proposedLineFragment:<span class="params">(CGRect)</span>lineFrag</div><div class="line">                             glyphPosition:<span class="params">(CGPoint)</span>position</div><div class="line">                            characterIndex:<span class="params">(NSUInteger)</span>charIndex</div></pre></td></tr></table></figure>
+<p>再看看其解释：<br><figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Returns <span class="keyword">the</span> layout bounds <span class="keyword">of</span> <span class="keyword">the</span> <span class="keyword">text</span> attachment <span class="built_in">to</span> <span class="keyword">the</span> layout manager. (required)</div></pre></td></tr></table></figure></p>
 <p>也就是说，在绘制NSTextAttachment的内容的时候，内容的“Bounds”是通过这个方法获得的。所以，可以重写这个方法，来达到我们的目的。</p>
-<h3 id="方法2-直接修改bounds"><a href="#方法2-直接修改bounds" class="headerlink" title="方法2 - 直接修改bounds"></a>方法2 - 直接修改bounds</h3><p>NSTextAttachment还有一个属性<code>@property(nonatomic) CGRect bounds</code>，其解释如下：<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Defines <span class="keyword">the</span> layout bounds <span class="keyword">of</span> <span class="keyword">the</span> receiver's graphical representation <span class="keyword">in</span> <span class="keyword">the</span> <span class="built_in">text</span> coordinate system.</span><br></pre></td></tr></table></figure></p>
+<h3 id="方法2-直接修改bounds"><a href="#方法2-直接修改bounds" class="headerlink" title="方法2 - 直接修改bounds"></a>方法2 - 直接修改bounds</h3><p>NSTextAttachment还有一个属性<code>@property(nonatomic) CGRect bounds</code>，其解释如下：<br><figure class="highlight vhdl"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Defines the layout bounds <span class="keyword">of</span> the receiver<span class="symbol">'s</span> graphical representation <span class="keyword">in</span> the <span class="literal">text</span> coordinate system.</div></pre></td></tr></table></figure></p>
 <p>所以，修改这个也可以达到目的。</p>
 <h2 id="实现方法1-继续扩展NSTextAttachment类"><a href="#实现方法1-继续扩展NSTextAttachment类" class="headerlink" title="实现方法1 - 继续扩展NSTextAttachment类"></a>实现方法1 - 继续扩展NSTextAttachment类</h2><h3 id="保存自定义Size"><a href="#保存自定义Size" class="headerlink" title="保存自定义Size"></a>保存自定义Size</h3><p>根据之前的定义，我们在自定义的类“EmojiTextAttachment”中再加一个保存大小的属性，如下：</p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//EmojiTextAttachment类定义</span></span><br><span class="line"></span><br><span class="line"><span class="variable">@interface</span> <span class="attribute">EmojiTextAttachment </span>: NSTextAttachment</span><br><span class="line"><span class="comment">//表情的字符串表示，见前文</span></span><br><span class="line"><span class="variable">@property</span>(strong, nonatomic) NSString *emojiTag;</span><br><span class="line"></span><br><span class="line"><span class="comment">//新增：保存当前表情图片的大小</span></span><br><span class="line"><span class="variable">@property</span>(assign, nonatomic) CGSize emojiSize;</span><br><span class="line"><span class="variable">@end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//EmojiTextAttachment类定义</span></div><div class="line"></div><div class="line"><span class="variable">@interface</span> <span class="attribute">EmojiTextAttachment </span>: NSTextAttachment</div><div class="line"><span class="comment">//表情的字符串表示，见前文</span></div><div class="line"><span class="variable">@property</span>(strong, nonatomic) NSString *emojiTag;</div><div class="line"></div><div class="line"><span class="comment">//新增：保存当前表情图片的大小</span></div><div class="line"><span class="variable">@property</span>(assign, nonatomic) CGSize emojiSize;</div><div class="line"><span class="variable">@end</span></div></pre></td></tr></table></figure>
 <p>有了“<strong>emojiSize</strong>”这个属性，我们就可以在自由的指定每个NSTextAttachment的大小。</p>
 <h3 id="重写"><a href="#重写" class="headerlink" title="重写"></a>重写</h3><p>接下来就是重写方法，不多说，见代码：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//EmojiTextAttachment实现</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">EmojiTextAttachment</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//重点！重写NSTextAttachmentContainer Protocol的方法</span></span><br><span class="line">- (<span class="built_in">CGRect</span>)attachmentBoundsForTextContainer:(<span class="built_in">NSTextContainer</span> *)textContainer proposedLineFragment:(<span class="built_in">CGRect</span>)lineFrag glyphPosition:(<span class="built_in">CGPoint</span>)position characterIndex:(<span class="built_in">NSUInteger</span>)charIndex &#123;</span><br><span class="line">	<span class="comment">// 返回我们指定的size</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, _emojiSize.width, _emojiSize.height);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//EmojiTextAttachment实现</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">EmojiTextAttachment</span></span></div><div class="line"></div><div class="line"><span class="comment">//重点！重写NSTextAttachmentContainer Protocol的方法</span></div><div class="line">- (<span class="built_in">CGRect</span>)attachmentBoundsForTextContainer:(<span class="built_in">NSTextContainer</span> *)textContainer proposedLineFragment:(<span class="built_in">CGRect</span>)lineFrag glyphPosition:(<span class="built_in">CGPoint</span>)position characterIndex:(<span class="built_in">NSUInteger</span>)charIndex &#123;</div><div class="line">	<span class="comment">// 返回我们指定的size</span></div><div class="line">    <span class="keyword">return</span> <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, _emojiSize.width, _emojiSize.height);</div><div class="line">&#125;</div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
 <h2 id="实现方法2"><a href="#实现方法2" class="headerlink" title="实现方法2"></a>实现方法2</h2><p>直接在创建表情NSTextAttachment的时候设置<code>bounds</code>属性即可。</p>
 <h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>增加了emojiSize属性后，我们就可以在创建表情，甚至创建后，自由的调整每个NSTextAttachment的大小。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>一共只增加了十几行代码，但是效果还是不错哒~</p>
@@ -292,7 +297,24 @@
 <li><a href="https://developer.apple.com/library/prerelease/ios/documentation/UIKit/Reference/NSTextAttachmentContainer_Protocol/index.html#//apple_ref/occ/intfm/NSTextAttachmentContainer/attachmentBoundsForTextContainer:proposedLineFragment:glyphPosition:characterIndex:" target="_blank" rel="external">NSTextAttachmentContainer</a></li>
 </ul>
 
+                
+<p class="teal-link-context">
+    <a href="/2015/05/23/autolayout-example-with-masonry/" rel="next" title="有趣的Autolayout示例-Masonry实现">
+    上一篇：有趣的Autolayout示例-Masonry实现
+  </a>
+</p>
+
+
+
+<p class="teal-link-context">
+    <a href="/2015/04/19/thrift-example-cpp-and-php/" rel="next" title="RPC框架Thrift例子-PHP调用C++后端程序">
+    下一篇：RPC框架Thrift例子-PHP调用C++后端程序
+  </a>
+</p>
+
+
             </div>
+			
         </div>
     </div>
 </article>
@@ -347,7 +369,7 @@
     <div class="container">
         <div class="row">
             
-            <div class="social-group col m3 s12">
+            <div class="social-group col m4 s12">
                 <h5 class="white-text">社交</h5>
                 
                     <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
@@ -362,11 +384,22 @@
                         <i class="fa fa-2x fa-rss"></i>
                     </a>
                 
+                <div class="site-visitors-container white-text">
+                    <span>
+                        <i class="fa fa-user"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+                    </span>
+                    <span>&nbsp;|&nbsp;</span>
+                    <span>
+                        <i class="fa fa-eye"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+                    </span>
+                </div>
             </div>
             
 
             
-            <div class="col m9 s12">
+            <div class="col m8 s12">
                 <h5 class="white-text">友情链接</h5>
                 
                     <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
@@ -387,7 +420,7 @@
 
     <div class="footer-copyright teal-link-context">
         <div class="container">
-            © 2016 tutuge.me, All rights reserved.
+            © 2017 tutuge.me, All rights reserved.
             <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
         </div>
     </div>
@@ -406,6 +439,8 @@
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/materialize.min.js"></script>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
 
 <script>
     (function($) {
@@ -447,6 +482,22 @@
 
             // 文章目录
             $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
             // 修正文章目录的left-border颜色
             var color = $('.table-of-contents-text').css('color');
             $('.table-of-contents-link').css('border-left-color', color);
@@ -470,7 +521,7 @@
 
             
             // 添加new标签
-            $('.menu-reading, .menu-about').append('<span class="new badge teal accent-4"></span>');
+            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
             
 
             // 搜索功能

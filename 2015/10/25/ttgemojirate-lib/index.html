@@ -99,7 +99,7 @@
                 <div class="info col s8 valign-wrapper no-padding">
                     <div class="valign">
                         <p class="name">土土哥</p>
-                        <p class="desc">iOS/技术宅</p>
+                        <p class="desc">iOS/Android/技术宅</p>
                     </div>
                 </div>
             </div>
@@ -248,6 +248,11 @@
             </div>
             <time class="teal-link-context" datetime="2015-10-25T11:32:42.000Z"><a href="/2015/10/25/ttgemojirate-lib/">2015-10-25</a></time>
 
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
             
     <div class="tags-row">
         
@@ -285,9 +290,9 @@
 <p>拖动的时候，直接影响的应该是Rate值，然后在Rate值改变的时候刷新整个控件，刷新的时候重绘。重绘的时候，嘴、眼睛的弧度，颜色的值都要根据Rate值重新计算，如下图：</p>
 <p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_ttgemojirate_1.png" alt="Image"></p>
 <h3 id="拖动改变Rate值"><a href="#拖动改变Rate值" class="headerlink" title="拖动改变Rate值"></a>拖动改变Rate值</h3><p>这个还是很容易实现的，直接重写<code>UIView</code>的touch相关的三个方法，在里面记录拖动在Y轴上的变化值，然后映射到Rate值上就可以了。</p>
-<p>先声明一个CGPoint属性，用来保存手指按下时的点位置：<br><figure class="highlight delphi"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> touchPoint: CGPoint? = <span class="keyword">nil</span></span><br></pre></td></tr></table></figure></p>
+<p>先声明一个CGPoint属性，用来保存手指按下时的点位置：<br><figure class="highlight delphi"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">var</span> touchPoint: CGPoint? = <span class="keyword">nil</span></div></pre></td></tr></table></figure></p>
 <p>在手指移动的时候，在<code>touchesMoved</code>方法里面计算当前点跟上一次触摸点的Y轴上的<strong>差值</strong>，然后映射到Rate值上。</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">touchesMoved</span><span class="params">(touches: Set&lt;UITouch&gt;, withEvent event: UIEvent?)</span></span> &#123;</span><br><span class="line">    <span class="comment">// 获取当前触摸点</span></span><br><span class="line">    <span class="keyword">let</span> currentPoint = touches.first?.locationInView(<span class="keyword">self</span>)</span><br><span class="line">    <span class="comment">// 改变Rate值</span></span><br><span class="line">    rateValue = rateValue + <span class="type">Float</span>((currentPoint!.y - touchPoint!.y) / <span class="type">CGRectGetHeight</span>(<span class="keyword">self</span>.bounds) * rateDragSensitivity)</span><br><span class="line">    <span class="comment">// 保存当前触摸点</span></span><br><span class="line">    touchPoint = currentPoint</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">touchesMoved</span><span class="params">(touches: Set&lt;UITouch&gt;, withEvent event: UIEvent?)</span></span> &#123;</div><div class="line">    <span class="comment">// 获取当前触摸点</span></div><div class="line">    <span class="keyword">let</span> currentPoint = touches.first?.locationInView(<span class="keyword">self</span>)</div><div class="line">    <span class="comment">// 改变Rate值</span></div><div class="line">    rateValue = rateValue + <span class="type">Float</span>((currentPoint!.y - touchPoint!.y) / <span class="type">CGRectGetHeight</span>(<span class="keyword">self</span>.bounds) * rateDragSensitivity)</div><div class="line">    <span class="comment">// 保存当前触摸点</span></div><div class="line">    touchPoint = currentPoint</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>注意：</p>
 <ul>
 <li>计算Y轴差值的时候，除以了当前控件的高度，这是为了保证Rate值按比例增减。</li>
@@ -297,7 +302,7 @@
 <p>简单来说，<code>UIBezierPath</code>用来绘制矢量路径，是一种参数曲线，在使用的时候，只需要先设定好锚点、控制点，系统就可以根据贝塞尔曲线的算法，绘制出对应的线，并且保证锚点和对应的控制点的连线与曲线相切。</p>
 <p>这里有一个演示绘制贝塞尔曲线过程的网站：<a href="http://myst729.github.io/bezier-curve/" target="_blank" rel="external">Bézier curve</a></p>
 <h3 id="脸"><a href="#脸" class="headerlink" title="脸"></a>脸</h3><p>脸是最简单的，就是一个圆，直接用一个方法就可以：</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">func</span> <span class="title">drawFaceWithRect</span><span class="params">(rect: CGRect)</span></span> &#123;</span><br><span class="line">    <span class="keyword">let</span> facePath = <span class="type">UIBezierPath</span>(ovalInRect: rect)</span><br><span class="line">    rateColor.setStroke()</span><br><span class="line">    facePath.lineWidth = rateLineWidth <span class="comment">// 线粗细</span></span><br><span class="line">    facePath.stroke()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">func</span> <span class="title">drawFaceWithRect</span><span class="params">(rect: CGRect)</span></span> &#123;</div><div class="line">    <span class="keyword">let</span> facePath = <span class="type">UIBezierPath</span>(ovalInRect: rect)</div><div class="line">    rateColor.setStroke()</div><div class="line">    facePath.lineWidth = rateLineWidth <span class="comment">// 线粗细</span></div><div class="line">    facePath.stroke()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>实际实现的时候可以加上Margin，防止线画到View的边界之外。</p>
 <h3 id="嘴、眼睛"><a href="#嘴、眼睛" class="headerlink" title="嘴、眼睛"></a>嘴、眼睛</h3><p>先看看<code>UIBezierPath</code>提供的可以用来绘制曲线的方法：<br><code>addCurveToPoint(_:controlPoint1:controlPoint2:)</code>和<code>addQuadCurveToPoint(_:controlPoint:)</code>，如下图:</p>
 <p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_ttgemojirate_2.png" alt="UIBezierPath"></p>
@@ -305,7 +310,7 @@
 <p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_ttgemojirate_3.png" alt="Curve拼接"></p>
 <p>这样的话，就可以通过调整两个控制点，来控制嘴、眼睛的弯曲宽度、形状。</p>
 <p>以绘制嘴为例：</p>
-<figure class="highlight qml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">private func drawMouthWithRect(<span class="attribute">rect</span>: CGRect) &#123;</span><br><span class="line">    <span class="keyword">let</span> width = CGRectGetWidth(<span class="built_in">rect</span>)</span><br><span class="line">    <span class="keyword">let</span> height = CGRectGetWidth(<span class="built_in">rect</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 左端点</span></span><br><span class="line">    <span class="keyword">let</span> leftPoint = CGPointMake(</span><br><span class="line">        width * (<span class="number">1</span> - rateMouthWidth) / <span class="number">2</span>,</span><br><span class="line">        height * (<span class="number">1</span> - rateMouthVerticalPosition))</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 右端点</span></span><br><span class="line">    <span class="keyword">let</span> rightPoint = CGPointMake(</span><br><span class="line">        width - leftPoint.x,</span><br><span class="line">        leftPoint.y)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 中间点 - Y值根据当前的Rate值计算，0.3为系数</span></span><br><span class="line">    <span class="keyword">let</span> centerPoint = CGPointMake(</span><br><span class="line">        width / <span class="number">2</span>,</span><br><span class="line">        leftPoint.y + height * <span class="number">0.3</span> * (CGFloat(rateValue) - <span class="number">2.5</span>) / <span class="number">5</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 控制点跟中间点在X轴上的距离</span></span><br><span class="line">    <span class="keyword">let</span> halfLipWidth = width * rateMouthWidth * rateLipWidth / <span class="number">2</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建贝塞尔曲线</span></span><br><span class="line">    <span class="keyword">let</span> mouthPath = UIBezierPath()</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 移动到起始点</span></span><br><span class="line">    mouthPath.moveToPoint(leftPoint)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 添加左半边曲线路径</span></span><br><span class="line">    mouthPath.addCurveToPoint(</span><br><span class="line">        centerPoint,</span><br><span class="line">        <span class="attribute">controlPoint1</span>: leftPoint,</span><br><span class="line">        <span class="attribute">controlPoint2</span>: CGPointMake(centerPoint.x - halfLipWidth, centerPoint.y))</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 添加右半边曲线路径</span></span><br><span class="line">    mouthPath.addCurveToPoint(</span><br><span class="line">        rightPoint,</span><br><span class="line">        <span class="attribute">controlPoint1</span>: CGPointMake(centerPoint.x + halfLipWidth, centerPoint.y),</span><br><span class="line">        <span class="attribute">controlPoint2</span>: rightPoint)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设定样式</span></span><br><span class="line">    mouthPath.lineCapStyle = CGLineCap.Round;</span><br><span class="line">    rateColor.setStroke()</span><br><span class="line">    mouthPath.lineWidth = rateLineWidth</span><br><span class="line">    mouthPath.stroke()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> func drawMouthWithRect(<span class="built_in">rect</span>: CGRect) &#123;</div><div class="line">    let <span class="built_in">width</span> = CGRectGetWidth(<span class="built_in">rect</span>)</div><div class="line">    let <span class="built_in">height</span> = CGRectGetWidth(<span class="built_in">rect</span>)</div><div class="line"></div><div class="line">    <span class="comment">// 左端点</span></div><div class="line">    let leftPoint = CGPointMake(</div><div class="line">        <span class="built_in">width</span> * (<span class="number">1</span> - rateMouthWidth) / <span class="number">2</span>,</div><div class="line">        <span class="built_in">height</span> * (<span class="number">1</span> - rateMouthVerticalPosition))</div><div class="line"></div><div class="line">    <span class="comment">// 右端点</span></div><div class="line">    let rightPoint = CGPointMake(</div><div class="line">        <span class="built_in">width</span> - leftPoint.x,</div><div class="line">        leftPoint.y)</div><div class="line"></div><div class="line">    <span class="comment">// 中间点 - Y值根据当前的Rate值计算，0.3为系数</span></div><div class="line">    let centerPoint = CGPointMake(</div><div class="line">        <span class="built_in">width</span> / <span class="number">2</span>,</div><div class="line">        leftPoint.y + <span class="built_in">height</span> * <span class="number">0.3</span> * (CGFloat(rateValue) - <span class="number">2.5</span>) / <span class="number">5</span>)</div><div class="line"></div><div class="line">    <span class="comment">// 控制点跟中间点在X轴上的距离</span></div><div class="line">    let halfLipWidth = <span class="built_in">width</span> * rateMouthWidth * rateLipWidth / <span class="number">2</span></div><div class="line"></div><div class="line">    <span class="comment">// 创建贝塞尔曲线</span></div><div class="line">    let mouthPath = UIBezierPath()</div><div class="line"></div><div class="line">    <span class="comment">// 移动到起始点</span></div><div class="line">    mouthPath.moveToPoint(leftPoint)</div><div class="line"></div><div class="line">    <span class="comment">// 添加左半边曲线路径</span></div><div class="line">    mouthPath.addCurveToPoint(</div><div class="line">        centerPoint,</div><div class="line">        controlPoint1: leftPoint,</div><div class="line">        controlPoint2: CGPointMake(centerPoint.x - halfLipWidth, centerPoint.y))</div><div class="line"></div><div class="line">    <span class="comment">// 添加右半边曲线路径</span></div><div class="line">    mouthPath.addCurveToPoint(</div><div class="line">        rightPoint,</div><div class="line">        controlPoint1: CGPointMake(centerPoint.x + halfLipWidth, centerPoint.y),</div><div class="line">        controlPoint2: rightPoint)</div><div class="line"></div><div class="line">    <span class="comment">// 设定样式</span></div><div class="line">    mouthPath.lineCapStyle = CGLineCap.Round;</div><div class="line">    rateColor.setStroke()</div><div class="line">    mouthPath.lineWidth = rateLineWidth</div><div class="line">    mouthPath.<span class="built_in">stroke</span>()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>说明：</p>
 <ul>
 <li>所有的距离、坐标都是根据当前控件的大小计算出来的。</li>
@@ -321,11 +326,11 @@
 </blockquote>
 <p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_ttgemojirate_4.jpg?imageView2/1/w/240/h/192" alt="HSB色彩模式"></p>
 <p>对应到<code>UIColor</code>类，就是下面两个方法：</p>
-<figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建UIColor</span></span><br><span class="line">init(<span class="built_in">hue</span> <span class="built_in">hue</span>: CGFloat, <span class="built_in">saturation</span> <span class="built_in">saturation</span>: CGFloat, <span class="built_in">brightness</span> <span class="built_in">brightness</span>: CGFloat, <span class="built_in">alpha</span> <span class="built_in">alpha</span>: CGFloat)</span><br><span class="line"><span class="comment">// 获取HSB值，注意参数</span></span><br><span class="line">func getHue(_ <span class="built_in">hue</span>: UnsafeMutablePointer&lt;CGFloat&gt;, <span class="built_in">saturation</span> <span class="built_in">saturation</span>: UnsafeMutablePointer&lt;CGFloat&gt;, <span class="built_in">brightness</span> <span class="built_in">brightness</span>: UnsafeMutablePointer&lt;CGFloat&gt;, <span class="built_in">alpha</span> <span class="built_in">alpha</span>: UnsafeMutablePointer&lt;CGFloat&gt;) -&gt; Bool</span><br></pre></td></tr></table></figure>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 创建UIColor</span></div><div class="line">init(<span class="built_in">hue</span> <span class="built_in">hue</span>: CGFloat, <span class="built_in">saturation</span> <span class="built_in">saturation</span>: CGFloat, <span class="built_in">brightness</span> <span class="built_in">brightness</span>: CGFloat, <span class="built_in">alpha</span> <span class="built_in">alpha</span>: CGFloat)</div><div class="line"><span class="comment">// 获取HSB值，注意参数</span></div><div class="line">func getHue(_ <span class="built_in">hue</span>: UnsafeMutablePointer&lt;CGFloat&gt;, <span class="built_in">saturation</span> <span class="built_in">saturation</span>: UnsafeMutablePointer&lt;CGFloat&gt;, <span class="built_in">brightness</span> <span class="built_in">brightness</span>: UnsafeMutablePointer&lt;CGFloat&gt;, <span class="built_in">alpha</span> <span class="built_in">alpha</span>: UnsafeMutablePointer&lt;CGFloat&gt;) -&gt; Bool</div></pre></td></tr></table></figure>
 <p>实现的时候，为了增加可定制性，控件颜色的变化范围是可以设置的，用以下属性保存：</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> var <span class="string">rateColorRange:</span> (<span class="string">from:</span> UIColor, <span class="string">to:</span> UIColor)</span><br></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> var <span class="string">rateColorRange:</span> (<span class="string">from:</span> UIColor, <span class="string">to:</span> UIColor)</div></pre></td></tr></table></figure>
 <p>刷新时，就可以根据当前的Rate值，重新计算颜色的HSB和alpha值：</p>
-<figure class="highlight qml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="attribute">rate</span>: CGFloat = CGFloat(rateValue / <span class="number">5</span>) <span class="comment">// Rate值归一化</span></span><br><span class="line"></span><br><span class="line">self.rateColor = UIColor.init(</span><br><span class="line">    <span class="attribute">hue</span>: hueFrom + hueDelta * rate, <span class="comment">// 色相</span></span><br><span class="line">    <span class="attribute">saturation</span>: saturationFrom + saturationDelta * rate, <span class="comment">// 饱和度</span></span><br><span class="line">    <span class="attribute">brightness</span>: brightnessFrom + brightnessDelta * rate, <span class="comment">// 亮度</span></span><br><span class="line">    <span class="attribute">alpha</span>: alphaFrom + alphaDelta * rate <span class="comment">// 透明度</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">let rate: CGFloat = CGFloat(rateValue / <span class="number">5</span>) <span class="comment">// Rate值归一化</span></div><div class="line"></div><div class="line">self.rateColor = UIColor.init(</div><div class="line"><span class="symbol">    hue:</span> hueFrom + hueDelta * rate, <span class="comment">// 色相</span></div><div class="line"><span class="symbol">    saturation:</span> saturationFrom + saturationDelta * rate, <span class="comment">// 饱和度</span></div><div class="line"><span class="symbol">    brightness:</span> brightnessFrom + brightnessDelta * rate, <span class="comment">// 亮度</span></div><div class="line"><span class="symbol">    alpha:</span> alphaFrom + alphaDelta * rate <span class="comment">// 透明度</span></div><div class="line">)</div></pre></td></tr></table></figure>
 <p>说明：</p>
 <ul>
 <li>所有的颜色参数都是根据Rate值做线性增减。</li>
@@ -335,19 +340,19 @@
 <h3 id="善于使用didSet"><a href="#善于使用didSet" class="headerlink" title="善于使用didSet"></a>善于使用didSet</h3><p>实现控件的时候，对外暴露了很多属性，如线的宽度<code>rateLineWidth</code>、嘴的宽度<code>rateMouthWidth</code>等。为了对这些属性做校验，并且在设置后刷新控件，就要用到<code>didSet</code>。</p>
 <p><code>didSet</code>在Swift里面，跟类的属性是一一绑定的，在对属性赋值后会被调用。</p>
 <p>控件的大部分属性都做了校验、刷新，如下：</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// Mouth width. From 0.2 to 0.7.</span></span><br><span class="line"><span class="meta">@IBInspectable</span> <span class="keyword">public</span> <span class="keyword">var</span> rateMouthWidth: <span class="type">CGFloat</span> = <span class="number">0.6</span> &#123;</span><br><span class="line">    <span class="keyword">didSet</span> &#123;</span><br><span class="line">        <span class="comment">// 判断上限</span></span><br><span class="line">        <span class="keyword">if</span> rateMouthWidth &gt; <span class="number">0.7</span> &#123;</span><br><span class="line">            rateMouthWidth = <span class="number">0.7</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 判断下限</span></span><br><span class="line">        <span class="keyword">if</span> rateMouthWidth &lt; <span class="number">0.2</span> &#123;</span><br><span class="line">            rateMouthWidth = <span class="number">0.2</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 刷新、重绘</span></span><br><span class="line">        <span class="keyword">self</span>.setNeedsDisplay()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/// Mouth width. From 0.2 to 0.7.</span></div><div class="line"><span class="meta">@IBInspectable</span> <span class="keyword">public</span> <span class="keyword">var</span> rateMouthWidth: <span class="type">CGFloat</span> = <span class="number">0.6</span> &#123;</div><div class="line">    <span class="keyword">didSet</span> &#123;</div><div class="line">        <span class="comment">// 判断上限</span></div><div class="line">        <span class="keyword">if</span> rateMouthWidth &gt; <span class="number">0.7</span> &#123;</div><div class="line">            rateMouthWidth = <span class="number">0.7</span></div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 判断下限</span></div><div class="line">        <span class="keyword">if</span> rateMouthWidth &lt; <span class="number">0.2</span> &#123;</div><div class="line">            rateMouthWidth = <span class="number">0.2</span></div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 刷新、重绘</span></div><div class="line">        <span class="keyword">self</span>.setNeedsDisplay()</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h3 id="IBDesignable、-IBInspectable"><a href="#IBDesignable、-IBInspectable" class="headerlink" title="@IBDesignable、@IBInspectable"></a>@IBDesignable、@IBInspectable</h3><p>为了能在XIB、StoryBoard里面使用、编辑控件，就要用到<code>@IBDesignable</code>和<code>@IBInspectable</code>这两个关键字。</p>
 <p>在类的前面加上<code>@IBDesignable</code>关键字，使IB可以预览控件：</p>
-<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@IBDesignable</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EmojiRateView</span>: <span class="type">UIView &#123;</span></span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@IBDesignable</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EmojiRateView</span>: <span class="type">UIView &#123;</span></span></div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>在属性前面加上<code>@IBInspectable</code>，就可以在IB里面编辑属性，实时预览：</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@IBInspectable</span> <span class="keyword">public</span> var <span class="string">rateLineWidth:</span> CGFloat = <span class="number">14</span> &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@IBInspectable</span> <span class="keyword">public</span> var <span class="string">rateLineWidth:</span> CGFloat = <span class="number">14</span> &#123;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>详细的使用可以参考NSHipster上的文章：<a href="http://nshipster.cn/ibinspectable-ibdesignable/" target="_blank" rel="external">IBInspectable / IBDesignable</a></p>
 <p>最后，在IB里面就是下面这样：<br><img src="http://7nj2iz.com1.z0.glb.clouddn.com/TTGEmojiRate_IBExample.png?imageView2/0/w/640" alt="IB example"></p>
 <p><strong>By the way =。=</strong><br>属性名字太长，在IB里面显示不完整，咋办。。。</p>
 <h3 id="回调"><a href="#回调" class="headerlink" title="回调"></a>回调</h3><p>拖动改变Rate值的时候，肯定要有回调，如下定义：</p>
-<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="variable"><span class="keyword">var</span> rateValueChangeCallback</span>: ((newRateValue: <span class="keyword">Float</span>) -&gt; <span class="keyword">Void</span>)? = nil</span><br></pre></td></tr></table></figure>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">var</span> rateValueChangeCallback: <span class="type"></span>((<span class="keyword">new</span><span class="type">RateValue</span>: <span class="keyword">Float</span>) -&gt; <span class="keyword">Void</span>)? = nil</div></pre></td></tr></table></figure>
 <p>在<code>rateValue</code>的<code>didSet</code>里面回调：</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@IBInspectable</span> <span class="keyword">public</span> <span class="keyword">var</span> rateValue: <span class="type">Float</span> = <span class="number">2.5</span> &#123;</span><br><span class="line">    <span class="keyword">didSet</span> &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="comment">// 回调</span></span><br><span class="line">        <span class="keyword">self</span>.rateValueChangeCallback?(newRateValue: rateValue)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@IBInspectable</span> <span class="keyword">public</span> <span class="keyword">var</span> rateValue: <span class="type">Float</span> = <span class="number">2.5</span> &#123;</div><div class="line">    <span class="keyword">didSet</span> &#123;</div><div class="line">        <span class="comment">// ...</span></div><div class="line">        <span class="comment">// 回调</span></div><div class="line">        <span class="keyword">self</span>.rateValueChangeCallback?(newRateValue: rateValue)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>看似简单的一个Rating控件，从构思到实现，再到完善，一点一点朝着完美去做，收获不少~</p>
 <p>最后，Dribbble是个好地方，贝塞尔曲线好强大，XCode 7.1写Swift还是有点卡=。=</p>
 <p>以上。</p>
@@ -358,7 +363,24 @@
 <li><a href="http://nshipster.cn/ibinspectable-ibdesignable/" target="_blank" rel="external">IBInspectable / IBDesignable</a></li>
 </ul>
 
+                
+<p class="teal-link-context">
+    <a href="/2015/12/14/autolayout-example-with-masonry3/" rel="next" title="有趣的Autolayout示例3-Masonry实现">
+    上一篇：有趣的Autolayout示例3-Masonry实现
+  </a>
+</p>
+
+
+
+<p class="teal-link-context">
+    <a href="/2015/10/09/ttgsnackbar-lib/" rel="next" title="Swift写的库-TTGSnackbar">
+    下一篇：Swift写的库-TTGSnackbar
+  </a>
+</p>
+
+
             </div>
+			
         </div>
     </div>
 </article>
@@ -413,7 +435,7 @@
     <div class="container">
         <div class="row">
             
-            <div class="social-group col m3 s12">
+            <div class="social-group col m4 s12">
                 <h5 class="white-text">社交</h5>
                 
                     <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
@@ -428,11 +450,22 @@
                         <i class="fa fa-2x fa-rss"></i>
                     </a>
                 
+                <div class="site-visitors-container white-text">
+                    <span>
+                        <i class="fa fa-user"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+                    </span>
+                    <span>&nbsp;|&nbsp;</span>
+                    <span>
+                        <i class="fa fa-eye"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+                    </span>
+                </div>
             </div>
             
 
             
-            <div class="col m9 s12">
+            <div class="col m8 s12">
                 <h5 class="white-text">友情链接</h5>
                 
                     <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
@@ -453,7 +486,7 @@
 
     <div class="footer-copyright teal-link-context">
         <div class="container">
-            © 2016 tutuge.me, All rights reserved.
+            © 2017 tutuge.me, All rights reserved.
             <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
         </div>
     </div>
@@ -472,6 +505,8 @@
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/materialize.min.js"></script>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
 
 <script>
     (function($) {
@@ -513,6 +548,22 @@
 
             // 文章目录
             $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
             // 修正文章目录的left-border颜色
             var color = $('.table-of-contents-text').css('color');
             $('.table-of-contents-link').css('border-left-color', color);
@@ -536,7 +587,7 @@
 
             
             // 添加new标签
-            $('.menu-reading, .menu-about').append('<span class="new badge teal accent-4"></span>');
+            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
             
 
             // 搜索功能

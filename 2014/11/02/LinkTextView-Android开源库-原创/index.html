@@ -99,7 +99,7 @@
                 <div class="info col s8 valign-wrapper no-padding">
                     <div class="valign">
                         <p class="name">土土哥</p>
-                        <p class="desc">iOS/技术宅</p>
+                        <p class="desc">iOS/Android/技术宅</p>
                     </div>
                 </div>
             </div>
@@ -248,6 +248,11 @@
             </div>
             <time class="teal-link-context" datetime="2014-11-01T18:34:46.000Z"><a href="/2014/11/02/LinkTextView-Android开源库-原创/">2014-11-02</a></time>
 
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
             
     <div class="tags-row">
         
@@ -279,39 +284,56 @@
 <h2 id="讲解"><a href="#讲解" class="headerlink" title="讲解"></a>讲解</h2><p>下面分重点讲解一下。</p>
 <h3 id="1-为文字增加可点击链接，绑定回调。"><a href="#1-为文字增加可点击链接，绑定回调。" class="headerlink" title="1. 为文字增加可点击链接，绑定回调。"></a>1. 为文字增加可点击链接，绑定回调。</h3><p>为文字增加链接，已经是老生常谈了，真是一搜一大把，不过在这里还是简单讲一下。</p>
 <p>用过TextView应该都知道这个接口：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">setText</span> <span class="params">(CharSequence text)</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">setText</span> <span class="params">(CharSequence text)</span></span></div></pre></td></tr></table></figure>
 <p>其中CharSequence接口的子接口里面有Spannable，而由这个接口派生出来的类SpannableString，就是我们可以对TextView里面的文字做附加效果的原因。如改变颜色、增加超链接等，有兴趣的各位可以去仔细查查。下面简单的说说怎么加可点击的链接。</p>
 <p><strong>首先创建SpannableString</strong>：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SpannableString text = <span class="keyword">new</span> SpannableString(<span class="string">"LinkTextView dadada"</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SpannableString text = <span class="keyword">new</span> SpannableString(<span class="string">"LinkTextView dadada"</span>);</div></pre></td></tr></table></figure>
 <p><strong>绑定ClickableSpan回调</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ClickableSpan clickableSpan = <span class="keyword">new</span> ClickableSpan() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//点击了链接，做你想干的事吧=。=</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">text.setSpan(clickableSpan, <span class="number">0</span>, <span class="number">5</span>, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">ClickableSpan clickableSpan = <span class="keyword">new</span> ClickableSpan() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">        <span class="comment">//点击了链接，做你想干的事吧=。=</span></div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line">text.setSpan(clickableSpan, <span class="number">0</span>, <span class="number">5</span>, <span class="number">0</span>);</div></pre></td></tr></table></figure>
 <p><strong>最后再setText</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">textView.setText(text);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">textView.setText(text);</div></pre></td></tr></table></figure>
 <p>看，绑定可以点击的链接就是这么简单。</p>
 <h3 id="2-改变正常、按下时的文字、链接背景颜色。"><a href="#2-改变正常、按下时的文字、链接背景颜色。" class="headerlink" title="2. 改变正常、按下时的文字、链接背景颜色。"></a>2. 改变正常、按下时的文字、链接背景颜色。</h3><p>往往系统默认的链接颜色是不能满足我们的需求的，所以最好能对链接的文字、背景的按下、松开时的颜色做定制。</p>
 <p><strong><em>但是好坑=。=，Google居然没有为ClickableSpan增加按下时的回调</em></strong></p>
 <p>那就只好自己造轮子了。</p>
 <h4 id="首先"><a href="#首先" class="headerlink" title="首先"></a>首先</h4><p>必须要能获取到链接按下时的回调，应该是onTouch什么的，于是，就查到了类：LinkMovementMethod。<br>在TextView中可以用方法：public final void setMovementMethod (MovementMethod movement)设定监听，而LinkMovementMethod类里面就可以监听到链接的onTouch！</p>
 <p><strong>LinkMovementMethod的onTouch就是介个样子的</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">boolean</span>	 <span class="title">onTouchEvent</span><span class="params">(TextView textView, Spannable spannable, MotionEvent event)</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">boolean</span>	 <span class="title">onTouchEvent</span><span class="params">(TextView textView, Spannable spannable, MotionEvent event)</span></span></div></pre></td></tr></table></figure>
 <p>于是，我们可以通过event来判断是按下还是移动等等操作。<br>但是问题是，这里的spannable是整个TextView全部的文字，所以，只能通过event里面的x、y坐标，找到具体点击的是哪个链接。这里，要感谢stack overflow上的大神的<a href="http://stackoverflow.com/questions/20856105/change-the-text-color-of-a-clickablespan-when-pressed" target="_blank" rel="external">帖子</a>。</p>
 <p>具体的找点击链接的方法如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> TouchableSpan <span class="title">getPressedSpan</span><span class="params">(TextView textView, Spannable spannable, MotionEvent event)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//获取点击的x、y坐标</span></span><br><span class="line">    <span class="keyword">int</span> x = (<span class="keyword">int</span>) event.getX();</span><br><span class="line">    <span class="keyword">int</span> y = (<span class="keyword">int</span>) event.getY();</span><br><span class="line">    <span class="comment">//减去Padding</span></span><br><span class="line">    x -= textView.getTotalPaddingLeft();</span><br><span class="line">    y -= textView.getTotalPaddingTop();</span><br><span class="line">    <span class="comment">//加上滚动的偏移</span></span><br><span class="line">    x += textView.getScrollX();</span><br><span class="line">    y += textView.getScrollY();</span><br><span class="line">    <span class="comment">//获取第几行、以及偏移</span></span><br><span class="line">    Layout layout = textView.getLayout();</span><br><span class="line">    <span class="keyword">int</span> line = layout.getLineForVertical(y);</span><br><span class="line">    <span class="keyword">int</span> off = layout.getOffsetForHorizontal(line, x);</span><br><span class="line">    <span class="comment">//获取真正点击的链接</span></span><br><span class="line">    TouchableSpan[] link = spannable.getSpans(off, off, TouchableSpan.class);</span><br><span class="line">    TouchableSpan touchedSpan = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (link.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        touchedSpan = link[<span class="number">0</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> touchedSpan;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> TouchableSpan <span class="title">getPressedSpan</span><span class="params">(TextView textView, Spannable spannable, MotionEvent event)</span> </span>&#123;</div><div class="line">    <span class="comment">//获取点击的x、y坐标</span></div><div class="line">    <span class="keyword">int</span> x = (<span class="keyword">int</span>) event.getX();</div><div class="line">    <span class="keyword">int</span> y = (<span class="keyword">int</span>) event.getY();</div><div class="line">    <span class="comment">//减去Padding</span></div><div class="line">    x -= textView.getTotalPaddingLeft();</div><div class="line">    y -= textView.getTotalPaddingTop();</div><div class="line">    <span class="comment">//加上滚动的偏移</span></div><div class="line">    x += textView.getScrollX();</div><div class="line">    y += textView.getScrollY();</div><div class="line">    <span class="comment">//获取第几行、以及偏移</span></div><div class="line">    Layout layout = textView.getLayout();</div><div class="line">    <span class="keyword">int</span> line = layout.getLineForVertical(y);</div><div class="line">    <span class="keyword">int</span> off = layout.getOffsetForHorizontal(line, x);</div><div class="line">    <span class="comment">//获取真正点击的链接</span></div><div class="line">    TouchableSpan[] link = spannable.getSpans(off, off, TouchableSpan.class);</div><div class="line">    TouchableSpan touchedSpan = <span class="keyword">null</span>;</div><div class="line">    <span class="keyword">if</span> (link.length &gt; <span class="number">0</span>) &#123;</div><div class="line">        touchedSpan = link[<span class="number">0</span>];</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> touchedSpan;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>到此，我们已经能获取到链接的点击状态，并且捕捉到具体点击的ClickableSpan。</p>
 <h4 id="接着"><a href="#接着" class="headerlink" title="接着"></a>接着</h4><p>就是改变链接的文字、背景颜色。</p>
 <p>ClickableSpan的方法里面，除了</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View widget)</span></span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View widget)</span></span>;</div></pre></td></tr></table></figure>
 <p>还有就是：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateDrawState</span><span class="params">(TextPaint textPaint)</span></span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateDrawState</span><span class="params">(TextPaint textPaint)</span></span>;</div></pre></td></tr></table></figure>
 <p>很明显，就是更新文字渲染效果的。我们用如下两个方法，就能实现：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setColor</span> <span class="params">(<span class="keyword">int</span> color)</span></span>;</span><br><span class="line">bgColor属性</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setColor</span> <span class="params">(<span class="keyword">int</span> color)</span></span>;</div><div class="line">bgColor属性</div></pre></td></tr></table></figure>
 <h4 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h4><p>到目前为止，我们已经可以捕捉到链接的点击状态，能获取到真正的点击的链接，还有能刷新链接的颜色了，相信聪明的你一定能自己琢磨出来，怎么样实现文章开头的效果。=v=</p>
 <h4 id="本文参考"><a href="#本文参考" class="headerlink" title="本文参考"></a>本文参考</h4><ol>
 <li>Android官方文档。</li>
 <li>StackOverFlow的：<a href="http://stackoverflow.com/questions/20856105/change-the-text-color-of-a-clickablespan-when-pressed" target="_blank" rel="external">Change the text color of a ClickableSpan when pressed。</a></li>
 </ol>
 
+                
+<p class="teal-link-context">
+    <a href="/2015/02/01/iOS项目的目录结构-原创/" rel="next" title="iOS项目的目录结构-原创">
+    上一篇：iOS项目的目录结构-原创
+  </a>
+</p>
+
+
+
+<p class="teal-link-context">
+    <a href="/2014/11/01/第一篇Blog/" rel="next" title="第一篇Blog">
+    下一篇：第一篇Blog
+  </a>
+</p>
+
+
             </div>
+			
         </div>
     </div>
 </article>
@@ -366,7 +388,7 @@
     <div class="container">
         <div class="row">
             
-            <div class="social-group col m3 s12">
+            <div class="social-group col m4 s12">
                 <h5 class="white-text">社交</h5>
                 
                     <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
@@ -381,11 +403,22 @@
                         <i class="fa fa-2x fa-rss"></i>
                     </a>
                 
+                <div class="site-visitors-container white-text">
+                    <span>
+                        <i class="fa fa-user"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+                    </span>
+                    <span>&nbsp;|&nbsp;</span>
+                    <span>
+                        <i class="fa fa-eye"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+                    </span>
+                </div>
             </div>
             
 
             
-            <div class="col m9 s12">
+            <div class="col m8 s12">
                 <h5 class="white-text">友情链接</h5>
                 
                     <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
@@ -406,7 +439,7 @@
 
     <div class="footer-copyright teal-link-context">
         <div class="container">
-            © 2016 tutuge.me, All rights reserved.
+            © 2017 tutuge.me, All rights reserved.
             <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
         </div>
     </div>
@@ -425,6 +458,8 @@
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/materialize.min.js"></script>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
 
 <script>
     (function($) {
@@ -466,6 +501,22 @@
 
             // 文章目录
             $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
             // 修正文章目录的left-border颜色
             var color = $('.table-of-contents-text').css('color');
             $('.table-of-contents-link').css('border-left-color', color);
@@ -489,7 +540,7 @@
 
             
             // 添加new标签
-            $('.menu-reading, .menu-about').append('<span class="new badge teal accent-4"></span>');
+            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
             
 
             // 搜索功能

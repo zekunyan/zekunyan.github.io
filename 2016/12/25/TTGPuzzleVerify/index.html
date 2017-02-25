@@ -99,7 +99,7 @@
                 <div class="info col s8 valign-wrapper no-padding">
                     <div class="valign">
                         <p class="name">土土哥</p>
-                        <p class="desc">iOS/技术宅</p>
+                        <p class="desc">iOS/Android/技术宅</p>
                     </div>
                 </div>
             </div>
@@ -248,6 +248,11 @@
             </div>
             <time class="teal-link-context" datetime="2016-12-25T10:15:40.000Z"><a href="/2016/12/25/TTGPuzzleVerify/">2016-12-25</a></time>
 
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
             
     <div class="tags-row">
         
@@ -300,15 +305,15 @@
 <p><img src="http://zorrochen.qiniudn.com/blog_TTGPuzzleVerify_3.png" alt="拼图SVG编辑"></p>
 <p><strong>3. 生成代码</strong><br>拼图的路径本质上就是拼图的轮廓，在Sketch里面把拼图SVG的背景色等颜色删除，然后就是将其转换为代码。<br>这里可以用<a href="https://www.paintcodeapp.com/sketch" target="_blank" rel="external">PaintCode plugin for Sketch</a>，将Sketch的拼图矢量路径导出成代码。</p>
 <p><strong>4. 调整代码</strong><br>直接生成的代码有时可能会不适用，可以人工调整下，然后就可以放到自己的类里面了：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">+ (<span class="built_in">UIBezierPath</span> *)classicPuzzlePath &#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="built_in">UIBezierPath</span> *puzzleShape = <span class="literal">nil</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;</span><br><span class="line">    <span class="built_in">dispatch_once</span>(&amp;onceToken, ^&#123;</span><br><span class="line">        puzzleShape = [<span class="built_in">UIBezierPath</span> bezierPath];</span><br><span class="line">        [puzzleShape moveToPoint:<span class="built_in">CGPointMake</span>(<span class="number">17.45</span>, <span class="number">71.16</span>)];</span><br><span class="line">        <span class="comment">// 此处省略很多行=。=，PaintCode生成的</span></span><br><span class="line">        [puzzleShape closePath];</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span> puzzleShape;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">+ (<span class="built_in">UIBezierPath</span> *)classicPuzzlePath &#123;</div><div class="line">    <span class="keyword">static</span> <span class="built_in">UIBezierPath</span> *puzzleShape = <span class="literal">nil</span>;</div><div class="line"></div><div class="line">    <span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;</div><div class="line">    <span class="built_in">dispatch_once</span>(&amp;onceToken, ^&#123;</div><div class="line">        puzzleShape = [<span class="built_in">UIBezierPath</span> bezierPath];</div><div class="line">        [puzzleShape moveToPoint:<span class="built_in">CGPointMake</span>(<span class="number">17.45</span>, <span class="number">71.16</span>)];</div><div class="line">        <span class="comment">// 此处省略很多行=。=，PaintCode生成的</span></div><div class="line">        [puzzleShape closePath];</div><div class="line">    &#125;);</div><div class="line">    <span class="keyword">return</span> puzzleShape;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p><strong>5. UIBezierPath拼图路径的大小、位置调整</strong><br>直接导出的拼图路径的大小、位置是固定的，但是控件是要可以支持改变大小、位置的，所以，要对路径做变换，刚好<code>UIBezierPath</code>支持<code>CGAffineTransform</code>变换。</p>
 <p>大小变换：</p>
-<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 大小变换，path是生成的原始路径，_puzzleSize是传入的拼图块大小</span></span><br><span class="line">[path applyTransform:CGAffineTransformMakeScale(_puzzleSize.<span class="built_in">width</span> / path.bounds.<span class="built_in">size</span>.<span class="built_in">width</span>,</span><br><span class="line">                                                _puzzleSize.<span class="built_in">height</span> / path.bounds.<span class="built_in">size</span>.<span class="built_in">height</span>)];</span><br></pre></td></tr></table></figure>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 大小变换，path是生成的原始路径，_puzzleSize是传入的拼图块大小</span></div><div class="line">[path applyTransform:CGAffineTransformMakeScale(_puzzleSize.<span class="built_in">width</span> / path.bounds.<span class="built_in">size</span>.<span class="built_in">width</span>,</div><div class="line">                                                _puzzleSize.<span class="built_in">height</span> / path.bounds.<span class="built_in">size</span>.<span class="built_in">height</span>)];</div></pre></td></tr></table></figure>
 <p>位置变换：</p>
-<figure class="highlight dos"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 位置变换，<span class="built_in">path</span>是生成的原始路径，_puzzleBlankPosition是传入的拼图块、镂空位置</span><br><span class="line">[<span class="built_in">path</span> applyTransform:CGAffineTransformMakeTranslation(</span><br><span class="line">            _puzzleBlankPosition.x - <span class="built_in">path</span>.bounds.origin.x,</span><br><span class="line">            _puzzleBlankPosition.y - <span class="built_in">path</span>.bounds.origin.y)];</span><br></pre></td></tr></table></figure>
+<figure class="highlight dos"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">// 位置变换，<span class="built_in">path</span>是生成的原始路径，_puzzleBlankPosition是传入的拼图块、镂空位置</div><div class="line">[<span class="built_in">path</span> applyTransform:CGAffineTransformMakeTranslation(</div><div class="line">            _puzzleBlankPosition.x - <span class="built_in">path</span>.bounds.origin.x,</div><div class="line">            _puzzleBlankPosition.y - <span class="built_in">path</span>.bounds.origin.y)];</div></pre></td></tr></table></figure>
 <p>至此，拼图的路径就写好了。</p>
 <h3 id="从图片上“抠出”拼图块、镂空"><a href="#从图片上“抠出”拼图块、镂空" class="headerlink" title="从图片上“抠出”拼图块、镂空"></a>从图片上“抠出”拼图块、镂空</h3><p><strong>1. 拼图块</strong><br>有了UIBezierPath路径，抠出拼图块还是比较容易的，直接用<code>CAShapeLayer</code>来<strong>“mask”</strong>图片即可：</p>
-<figure class="highlight hsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 拼图路径</span></span><br><span class="line">UIBezierPath *puzzlePath = [self getNewScaledPuzzledPath]<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建mask layer</span></span><br><span class="line">CAShapeLayer *puzzleMaskLayer = [CAShapeLayer new]<span class="comment">;</span></span><br><span class="line">puzzleMaskLayer.frame = self.bounds<span class="comment">;</span></span><br><span class="line">puzzleMaskLayer.path = puzzlePath.CGPath<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Mask到图片imageView上</span></span><br><span class="line">_puzzleImageView.layer.mask = puzzleMaskLayer<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 拼图路径</span></div><div class="line"><span class="built_in">UIBezierPath</span> *puzzlePath = [<span class="keyword">self</span> getNewScaledPuzzledPath];</div><div class="line"></div><div class="line"><span class="comment">// 创建mask layer</span></div><div class="line"><span class="built_in">CAShapeLayer</span> *puzzleMaskLayer = [<span class="built_in">CAShapeLayer</span> new];</div><div class="line">puzzleMaskLayer.frame = <span class="keyword">self</span>.bounds;</div><div class="line">puzzleMaskLayer.path = puzzlePath.CGPath;</div><div class="line"></div><div class="line"><span class="comment">// Mask到图片imageView上</span></div><div class="line">_puzzleImageView.layer.mask = puzzleMaskLayer;</div></pre></td></tr></table></figure>
 <p>效果就是：</p>
 <p><img src="http://zorrochen.qiniudn.com/blog_TTGPuzzleVerify_4.png" alt="拼图块"></p>
 <p><strong>2. 镂空图片</strong><br>抠出拼图块还是很容易的，但是“镂空”怎么办？<br>其实道理是一样的，都是<strong>mask</strong>，只不过mask的区域反过来而已。<br><code>CAShapeLayer</code>的<code>fillRule</code>就可以调整“填充的规则”，此处用<code>kCAFillRuleEvenOdd</code>就可以了，文档的解释如下：</p>
@@ -317,7 +322,7 @@
 </blockquote>
 <p>理解过来就是：区域内一点，往外划一条线，经过奇数个数的交点，则点在区域内，偶数个数的交点，则在区域外。</p>
 <p>所以，只要在拼图路径的基础上，补充最外部的边框的路径即可：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建矩形边框路径</span></span><br><span class="line"><span class="built_in">UIBezierPath</span> *maskPath = [<span class="built_in">UIBezierPath</span> bezierPathWithRect:<span class="keyword">self</span>.bounds];</span><br><span class="line"><span class="comment">// 添加拼图路径</span></span><br><span class="line">[maskPath appendPath:[<span class="built_in">UIBezierPath</span> bezierPathWith<span class="built_in">CGPath</span>:puzzlePath.CGPath]];</span><br><span class="line"><span class="comment">// 设置规则</span></span><br><span class="line">maskPath.usesEvenOddFillRule = <span class="literal">YES</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建mask的layer</span></span><br><span class="line"><span class="built_in">CAShapeLayer</span> *frontMaskLayer = [<span class="built_in">CAShapeLayer</span> new];</span><br><span class="line">frontMaskLayer.frame = <span class="keyword">self</span>.bounds;</span><br><span class="line">frontMaskLayer.path = maskPath.CGPath;</span><br><span class="line">frontMaskLayer.fillRule = k<span class="built_in">CAFillRuleEvenOdd</span>; <span class="comment">// 填充规则</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置mask</span></span><br><span class="line">_frontImageView.layer.mask = frontMaskLayer;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 创建矩形边框路径</span></div><div class="line"><span class="built_in">UIBezierPath</span> *maskPath = [<span class="built_in">UIBezierPath</span> bezierPathWithRect:<span class="keyword">self</span>.bounds];</div><div class="line"><span class="comment">// 添加拼图路径</span></div><div class="line">[maskPath appendPath:[<span class="built_in">UIBezierPath</span> bezierPathWithCGPath:puzzlePath.CGPath]];</div><div class="line"><span class="comment">// 设置规则</span></div><div class="line">maskPath.usesEvenOddFillRule = <span class="literal">YES</span>;</div><div class="line"></div><div class="line"><span class="comment">// 创建mask的layer</span></div><div class="line"><span class="built_in">CAShapeLayer</span> *frontMaskLayer = [<span class="built_in">CAShapeLayer</span> new];</div><div class="line">frontMaskLayer.frame = <span class="keyword">self</span>.bounds;</div><div class="line">frontMaskLayer.path = maskPath.CGPath;</div><div class="line">frontMaskLayer.fillRule = kCAFillRuleEvenOdd; <span class="comment">// 填充规则</span></div><div class="line"></div><div class="line"><span class="comment">// 设置mask</span></div><div class="line">_frontImageView.layer.mask = frontMaskLayer;</div></pre></td></tr></table></figure>
 <p>效果：</p>
 <p><img src="http://zorrochen.qiniudn.com/blog_TTGPuzzleVerify_5.png" alt="镂空"></p>
 <p><strong>3. 镂空背景</strong><br>有了拼图块、镂空，还差一块，就是镂空的“半透明背景”，其实这个“半透明背景”和拼图块是一模一样的，所以不再重复代码，唯一增加的就是设置其透明度。</p>
@@ -325,16 +330,27 @@
 <p><img src="http://zorrochen.qiniudn.com/blog_TTGPuzzleVerify_6.png" alt="分层"></p>
 <p>其实就是三张一样的图片，按照不同的mask规则做了处理，叠加起来。</p>
 <h3 id="用户拖动拼图、完成拼图验证"><a href="#用户拖动拼图、完成拼图验证" class="headerlink" title="用户拖动拼图、完成拼图验证"></a>用户拖动拼图、完成拼图验证</h3><p><strong>1. 拖动图片</strong><br>有了上面的结构，拖动拼图的处理也就容易多了，只要移动最上层的拼图块就行了，这里直接用<code>UIPanGestureRecognizer</code>实现，移动的时候基于拼图的中心移动。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建手势</span></span><br><span class="line"><span class="built_in">UIPanGestureRecognizer</span> *panGestureRecognizer = [<span class="built_in">UIPanGestureRecognizer</span> new];</span><br><span class="line">[panGestureRecognizer addTarget:<span class="keyword">self</span> action:<span class="keyword">@selector</span>(onPanGesture:)];</span><br><span class="line">[<span class="keyword">self</span> addGestureRecognizer:panGestureRecognizer];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 手势处理</span></span><br><span class="line">- (<span class="keyword">void</span>)onPanGesture:(<span class="built_in">UIPanGestureRecognizer</span> *)panGestureRecognizer &#123;</span><br><span class="line">    <span class="comment">// 获取坐标</span></span><br><span class="line">    <span class="built_in">CGPoint</span> panLocation = [panGestureRecognizer locationInView:<span class="keyword">self</span>];</span><br><span class="line">    <span class="comment">// 拼图中心偏移</span></span><br><span class="line">    <span class="built_in">CGPoint</span> position = <span class="built_in">CGPointZero</span>;</span><br><span class="line">    position.x = panLocation.x - _puzzleSize.width / <span class="number">2</span>;</span><br><span class="line">    position.y = panLocation.y - _puzzleSize.height / <span class="number">2</span>;</span><br><span class="line">    <span class="comment">// 设置坐标</span></span><br><span class="line">    [<span class="keyword">self</span> setPuzzlePosition:position];</span><br><span class="line">    <span class="comment">// 判断、回调。。。</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 创建手势</span></div><div class="line"><span class="built_in">UIPanGestureRecognizer</span> *panGestureRecognizer = [<span class="built_in">UIPanGestureRecognizer</span> new];</div><div class="line">[panGestureRecognizer addTarget:<span class="keyword">self</span> action:<span class="keyword">@selector</span>(onPanGesture:)];</div><div class="line">[<span class="keyword">self</span> addGestureRecognizer:panGestureRecognizer];</div><div class="line"></div><div class="line"><span class="comment">// 手势处理</span></div><div class="line">- (<span class="keyword">void</span>)onPanGesture:(<span class="built_in">UIPanGestureRecognizer</span> *)panGestureRecognizer &#123;</div><div class="line">    <span class="comment">// 获取坐标</span></div><div class="line">    <span class="built_in">CGPoint</span> panLocation = [panGestureRecognizer locationInView:<span class="keyword">self</span>];</div><div class="line">    <span class="comment">// 拼图中心偏移</span></div><div class="line">    <span class="built_in">CGPoint</span> position = <span class="built_in">CGPointZero</span>;</div><div class="line">    position.x = panLocation.x - _puzzleSize.width / <span class="number">2</span>;</div><div class="line">    position.y = panLocation.y - _puzzleSize.height / <span class="number">2</span>;</div><div class="line">    <span class="comment">// 设置坐标</span></div><div class="line">    [<span class="keyword">self</span> setPuzzlePosition:position];</div><div class="line">    <span class="comment">// 判断、回调。。。</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p><strong>2. 验证用户的拼图是否完成</strong><br>用户移动拼图时，只要判断拼图的坐标和镂空的位置是否一致就行。但是如果完全精确的判断，用户很难准确的把拼图拼对上，所以还要增加一定的<strong>“tolerance”</strong>，让拼图更加容易，同时暴漏出让外部设置：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">CGFloat</span> verificationTolerance; <span class="comment">// Verification tolerance, default is 8</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">CGFloat</span> verificationTolerance; <span class="comment">// Verification tolerance, default is 8</span></div></pre></td></tr></table></figure>
 <p>判断的逻辑如下：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// puzzlePosition是当前拼图块的位置，_puzzleBlankPosition是拼图镂空的位置</span></span><br><span class="line">- (<span class="built_in">BOOL</span>)isVerified &#123;</span><br><span class="line">    <span class="keyword">return</span> fabsf([<span class="keyword">self</span> puzzlePosition].x - _puzzleBlankPosition.x) &lt;= _verificationTolerance &amp;&amp;</span><br><span class="line">           fabsf([<span class="keyword">self</span> puzzlePosition].y - _puzzleBlankPosition.y) &lt;= _verificationTolerance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// puzzlePosition是当前拼图块的位置，_puzzleBlankPosition是拼图镂空的位置</span></div><div class="line">- (<span class="built_in">BOOL</span>)isVerified &#123;</div><div class="line">    <span class="keyword">return</span> fabsf([<span class="keyword">self</span> puzzlePosition].x - _puzzleBlankPosition.x) &lt;= _verificationTolerance &amp;&amp;</div><div class="line">           fabsf([<span class="keyword">self</span> puzzlePosition].y - _puzzleBlankPosition.y) &lt;= _verificationTolerance;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p><strong>3. 完成拼图</strong><br>当用户完成拼图后，外部会得到<code>delegate</code>、<code>block</code>的回调响应，接着就可以“完成拼图验证”，对此向外提供一个方法：<code>- (void)completeVerificationWithAnimation:(BOOL)withAnimation</code>，调用后拼图块将会移动回镂空位置，模拟出拼图完成的效果。</p>
 <p>至此，TTGPuzzleVerify的关键实现技术点就是这些了～</p>
 <h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>嗯，圣诞节快乐！ – 2016-12-25</p>
 
+                
+
+
+<p class="teal-link-context">
+    <a href="/2016/08/28/TTGBingWallPaper/" rel="next" title="Swift开源Mac App - BingWallPaper">
+    下一篇：Swift开源Mac App - BingWallPaper
+  </a>
+</p>
+
+
             </div>
+			
         </div>
     </div>
 </article>
@@ -389,7 +405,7 @@
     <div class="container">
         <div class="row">
             
-            <div class="social-group col m3 s12">
+            <div class="social-group col m4 s12">
                 <h5 class="white-text">社交</h5>
                 
                     <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
@@ -404,11 +420,22 @@
                         <i class="fa fa-2x fa-rss"></i>
                     </a>
                 
+                <div class="site-visitors-container white-text">
+                    <span>
+                        <i class="fa fa-user"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+                    </span>
+                    <span>&nbsp;|&nbsp;</span>
+                    <span>
+                        <i class="fa fa-eye"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+                    </span>
+                </div>
             </div>
             
 
             
-            <div class="col m9 s12">
+            <div class="col m8 s12">
                 <h5 class="white-text">友情链接</h5>
                 
                     <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
@@ -429,7 +456,7 @@
 
     <div class="footer-copyright teal-link-context">
         <div class="container">
-            © 2016 tutuge.me, All rights reserved.
+            © 2017 tutuge.me, All rights reserved.
             <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
         </div>
     </div>
@@ -448,6 +475,8 @@
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/materialize.min.js"></script>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
 
 <script>
     (function($) {
@@ -489,6 +518,22 @@
 
             // 文章目录
             $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
             // 修正文章目录的left-border颜色
             var color = $('.table-of-contents-text').css('color');
             $('.table-of-contents-link').css('border-left-color', color);
@@ -512,7 +557,7 @@
 
             
             // 添加new标签
-            $('.menu-reading, .menu-about').append('<span class="new badge teal accent-4"></span>');
+            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
             
 
             // 搜索功能

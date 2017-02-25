@@ -99,7 +99,7 @@
                 <div class="info col s8 valign-wrapper no-padding">
                     <div class="valign">
                         <p class="name">土土哥</p>
-                        <p class="desc">iOS/技术宅</p>
+                        <p class="desc">iOS/Android/技术宅</p>
                     </div>
                 </div>
             </div>
@@ -248,6 +248,11 @@
             </div>
             <time class="teal-link-context" datetime="2015-02-18T09:00:47.000Z"><a href="/2015/02/18/NSString的Copy与内存分配/">2015-02-18</a></time>
 
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
             
     <div class="tags-row">
         
@@ -267,9 +272,9 @@
                 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>不管是用什么语言开发，字符串应该算是用的最多的了。在Objective-C中，字符串类是NSString，以及其子类NSMutableString等。所以，对于字符串类，编程语言、编译器等往往会做特殊处理。下面我就说说我自己在项目中发现的NSString的“奇怪”的地方。</p>
 <a id="more"></a>
 <h2 id="字符串常量，copy，mutableCopy"><a href="#字符串常量，copy，mutableCopy" class="headerlink" title="字符串常量，copy，mutableCopy"></a>字符串常量，copy，mutableCopy</h2><h3 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h3><p>先看看如下面的代码，猜猜会输出什么：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSString</span> *str1 = <span class="string">@"abc"</span>;</span><br><span class="line"><span class="built_in">NSString</span> *str2 = <span class="string">@"abc"</span>;</span><br><span class="line"><span class="built_in">NSString</span> *str3 = [[<span class="built_in">NSString</span> alloc] initWithString:<span class="string">@"abc"</span>];</span><br><span class="line"><span class="built_in">NSString</span> *str4 = [str1 <span class="keyword">copy</span>];</span><br><span class="line"><span class="built_in">NSString</span> *str5 = [str1 mutableCopy];</span><br><span class="line"></span><br><span class="line"><span class="comment">//输出内存中的地址</span></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"str1: %p"</span>, str1);</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"str2: %p"</span>, str2);</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"str3: %p"</span>, str3);</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"str4: %p"</span>, str4);</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"str5: %p"</span>, str5);</span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">NSString</span> *str1 = <span class="string">@"abc"</span>;</div><div class="line"><span class="built_in">NSString</span> *str2 = <span class="string">@"abc"</span>;</div><div class="line"><span class="built_in">NSString</span> *str3 = [[<span class="built_in">NSString</span> alloc] initWithString:<span class="string">@"abc"</span>];</div><div class="line"><span class="built_in">NSString</span> *str4 = [str1 <span class="keyword">copy</span>];</div><div class="line"><span class="built_in">NSString</span> *str5 = [str1 mutableCopy];</div><div class="line"></div><div class="line"><span class="comment">//输出内存中的地址</span></div><div class="line"><span class="built_in">NSLog</span>(<span class="string">@"str1: %p"</span>, str1);</div><div class="line"><span class="built_in">NSLog</span>(<span class="string">@"str2: %p"</span>, str2);</div><div class="line"><span class="built_in">NSLog</span>(<span class="string">@"str3: %p"</span>, str3);</div><div class="line"><span class="built_in">NSLog</span>(<span class="string">@"str4: %p"</span>, str4);</div><div class="line"><span class="built_in">NSLog</span>(<span class="string">@"str5: %p"</span>, str5);</div></pre></td></tr></table></figure>
 <p>直接给出结果：</p>
-<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//地址值由运行时决定，不唯一</span></span><br><span class="line"><span class="symbol">str1:</span> <span class="number">0x10cd12040</span></span><br><span class="line"><span class="symbol">str2:</span> <span class="number">0x10cd12040</span></span><br><span class="line"><span class="symbol">str3:</span> <span class="number">0x10cd12040</span></span><br><span class="line"><span class="symbol">str4:</span> <span class="number">0x10cd12040</span></span><br><span class="line"><span class="symbol">str5:</span> <span class="number">0x7f874b508350</span> <span class="comment">//mutable copy</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//地址值由运行时决定，不唯一</span></div><div class="line"><span class="symbol">str1:</span> <span class="number">0x10cd12040</span></div><div class="line"><span class="symbol">str2:</span> <span class="number">0x10cd12040</span></div><div class="line"><span class="symbol">str3:</span> <span class="number">0x10cd12040</span></div><div class="line"><span class="symbol">str4:</span> <span class="number">0x10cd12040</span></div><div class="line"><span class="symbol">str5:</span> <span class="number">0x7f874b508350</span> <span class="comment">//mutable copy</span></div></pre></td></tr></table></figure>
 <p>看，是不是很“神奇”。</p>
 <h3 id="简单解释"><a href="#简单解释" class="headerlink" title="简单解释"></a>简单解释</h3><p>NSString是“不可变（immutable）”的类型，这个是关键。<br>代码中的“@”开头的字符串，其实就是一个字符串常量，运行时会检测这个字符串是否已经存在，存在的话，就直接将这个字符串的地址赋给变量；不存在的话，则创建，再赋值。</p>
 <p><strong>第一行</strong>: “abc”字符串不存在，创建，取得字符串地址“0x10cd12040”，赋给str1.</p>
@@ -279,23 +284,40 @@
 <p><strong>第五行</strong>: mutableCopy其实就是创建一个NSMutableString的实例，既然是“可变（mutable）”的类型了，当然要分配新的内存，所以，字符串的地址也变成新的“0x7f874b508350”。</p>
 <p>可以这么说，编译器、runtime充分利用了NSString是“<strong>不可变（immutable）</strong>”类型这个特点，只要字符串内容一致，就不会分配新的内存储存，字符串在程序中使用量非常大，这么做无疑可以大大节省内存，提升性能。</p>
 <h2 id="Property-和-NSString"><a href="#Property-和-NSString" class="headerlink" title="Property 和 NSString"></a>Property 和 NSString</h2><p>先来看看一个UserEntity类：</p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//UserEntity.h</span></span><br><span class="line"></span><br><span class="line"><span class="variable">@interface</span> <span class="attribute">UserEntity </span>: NSObject &lt;NSCopying&gt;</span><br><span class="line"><span class="variable">@property</span>(strong, nonatomic) NSString *name;</span><br><span class="line"><span class="variable">@end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//UserEntity.h</span></div><div class="line"></div><div class="line"><span class="variable">@interface</span> <span class="attribute">UserEntity </span>: NSObject &lt;NSCopying&gt;</div><div class="line"><span class="variable">@property</span>(strong, nonatomic) NSString *name;</div><div class="line"><span class="variable">@end</span></div></pre></td></tr></table></figure>
 <p>只有一个名为name的NSString类型Property。<br>相信大家对这个不陌生吧。一般我们的应用中会有很多Entity类型，每个Entity类里面肯定避免不了有许多NSString的字符串类型。这里的name的属性是：strong和nonatomic，strong表明name要“持有”一份name所指的字符串的引用，nonatomic表示property类型不用加锁。</p>
 <p>接着咱们看看下面的代码：</p>
-<figure class="highlight hsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">UserEntity *userEntity = [UserEntity new]<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//创建mutable类型的字符串</span></span><br><span class="line">NSMutableString *showName = [[NSMutableString <span class="keyword">alloc</span>] initWithString:@<span class="string">"tutuge"</span>]<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//先保存“tutuge”字符串到userEntity的name</span></span><br><span class="line">userEntity.name = showName<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//修改showName</span></span><br><span class="line">[showName appendString:@<span class="string">" blog"</span>]<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//输出userEntity的name属性</span></span><br><span class="line">NSLog(@<span class="string">"Name: %@"</span>, userEntity.name)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">UserEntity *userEntity = [UserEntity <span class="keyword">new</span>];</div><div class="line"></div><div class="line"><span class="comment">//创建mutable类型的字符串</span></div><div class="line">NSMutableString *showName = [[NSMutableString alloc] <span class="string">initWithString:</span>@<span class="string">"tutuge"</span>];</div><div class="line"></div><div class="line"><span class="comment">//先保存“tutuge”字符串到userEntity的name</span></div><div class="line">userEntity.name = showName;</div><div class="line"></div><div class="line"><span class="comment">//修改showName</span></div><div class="line">[showName <span class="string">appendString:</span>@<span class="string">" blog"</span>];</div><div class="line"></div><div class="line"><span class="comment">//输出userEntity的name属性</span></div><div class="line">NSLog(@<span class="string">"Name: %@"</span>, userEntity.name);</div></pre></td></tr></table></figure>
 <p>猜猜会输出什么？</p>
-<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">Name:</span> tutuge blog</span><br></pre></td></tr></table></figure>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">Name:</span> tutuge blog</div></pre></td></tr></table></figure>
 <p>看，我们明明是保存的“tutuge”，怎么到后面输出的是“tutuge blog”？</p>
 <h3 id="让NSString类型的Property为Copy型"><a href="#让NSString类型的Property为Copy型" class="headerlink" title="让NSString类型的Property为Copy型"></a>让NSString类型的Property为Copy型</h3><p>因为name的Property属性是strong的，所以赋值后，它跟showName均指向同一个NSMutableString实例，如下：</p>
 <p><img src="http://zorrochen.qiniudn.com/blog_ios_nsstring_copy_1_1.jpg" alt="内存示意图"></p>
 <p>所以改变了showName，当然name输出的值也就变了。<br>这个时候，name的property属性就不能是strong了，应该是copy，如下：</p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//UserEntity.h</span></span><br><span class="line"></span><br><span class="line"><span class="variable">@interface</span> <span class="attribute">UserEntity </span>: NSObject &lt;NSCopying&gt;</span><br><span class="line"><span class="variable">@property</span>(copy, nonatomic) NSString *name;</span><br><span class="line"><span class="variable">@end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//UserEntity.h</span></div><div class="line"></div><div class="line"><span class="variable">@interface</span> <span class="attribute">UserEntity </span>: NSObject &lt;NSCopying&gt;</div><div class="line"><span class="variable">@property</span>(copy, nonatomic) NSString *name;</div><div class="line"><span class="variable">@end</span></div></pre></td></tr></table></figure>
 <p>这样的话，当“<strong>userEntity.name = showName;</strong>”这句运行后，内存布局如下：</p>
 <p><img src="http://zorrochen.qiniudn.com/blog_ios_nsstring_copy_1_2.jpg" alt="内存示意图"></p>
 <p>这样，就避免了这个问题。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>很所时候，代码并不是看上去那样“运行”的，多试试，多查阅资料，就能了解其中的奥秘了~</p>
 
+                
+<p class="teal-link-context">
+    <a href="/2015/02/19/提升UITableView性能-复杂页面的优化/" rel="next" title="提升UITableView性能-复杂页面的优化">
+    上一篇：提升UITableView性能-复杂页面的优化
+  </a>
+</p>
+
+
+
+<p class="teal-link-context">
+    <a href="/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/" rel="next" title="利用NSProxy实现消息转发-模块化的网络接口层设计-原创">
+    下一篇：利用NSProxy实现消息转发-模块化的网络接口层设计-原创
+  </a>
+</p>
+
+
             </div>
+			
         </div>
     </div>
 </article>
@@ -350,7 +372,7 @@
     <div class="container">
         <div class="row">
             
-            <div class="social-group col m3 s12">
+            <div class="social-group col m4 s12">
                 <h5 class="white-text">社交</h5>
                 
                     <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
@@ -365,11 +387,22 @@
                         <i class="fa fa-2x fa-rss"></i>
                     </a>
                 
+                <div class="site-visitors-container white-text">
+                    <span>
+                        <i class="fa fa-user"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+                    </span>
+                    <span>&nbsp;|&nbsp;</span>
+                    <span>
+                        <i class="fa fa-eye"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+                    </span>
+                </div>
             </div>
             
 
             
-            <div class="col m9 s12">
+            <div class="col m8 s12">
                 <h5 class="white-text">友情链接</h5>
                 
                     <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
@@ -390,7 +423,7 @@
 
     <div class="footer-copyright teal-link-context">
         <div class="container">
-            © 2016 tutuge.me, All rights reserved.
+            © 2017 tutuge.me, All rights reserved.
             <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
         </div>
     </div>
@@ -409,6 +442,8 @@
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/materialize.min.js"></script>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
 
 <script>
     (function($) {
@@ -450,6 +485,22 @@
 
             // 文章目录
             $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
             // 修正文章目录的left-border颜色
             var color = $('.table-of-contents-text').css('color');
             $('.table-of-contents-link').css('border-left-color', color);
@@ -473,7 +524,7 @@
 
             
             // 添加new标签
-            $('.menu-reading, .menu-about').append('<span class="new badge teal accent-4"></span>');
+            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
             
 
             // 搜索功能

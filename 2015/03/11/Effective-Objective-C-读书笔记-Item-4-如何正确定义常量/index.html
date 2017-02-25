@@ -99,7 +99,7 @@
                 <div class="info col s8 valign-wrapper no-padding">
                     <div class="valign">
                         <p class="name">土土哥</p>
-                        <p class="desc">iOS/技术宅</p>
+                        <p class="desc">iOS/Android/技术宅</p>
                     </div>
                 </div>
             </div>
@@ -248,6 +248,11 @@
             </div>
             <time class="teal-link-context" datetime="2015-03-10T16:07:23.000Z"><a href="/2015/03/11/Effective-Objective-C-读书笔记-Item-4-如何正确定义常量/">2015-03-11</a></time>
 
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
             
     <div class="tags-row">
         
@@ -273,7 +278,7 @@
 <h2 id="Item-4-Prefer-Typed-Constants-to-Preprocessor-define"><a href="#Item-4-Prefer-Typed-Constants-to-Preprocessor-define" class="headerlink" title="Item 4 - Prefer Typed Constants to Preprocessor #define"></a>Item 4 - Prefer Typed Constants to Preprocessor #define</h2><p>本节着重对比了常量的定义形式，类型常量和#define的区别、各自的特点。最后得出，我们应该用带有类型的常量，而不是#define。</p>
 <a id="more"></a>
 <h2 id="一个简单的示例"><a href="#一个简单的示例" class="headerlink" title="一个简单的示例"></a>一个简单的示例</h2><p>应用中，少不了各种动画，也就少不了设定动画的时间长度，一般来说，我们会设定短、中、长几种时间常量，用于不同的场合，了解C语言的童鞋估计对“<strong>#define</strong>”宏定义不陌生，于是，可能就会如下这么定义：</p>
-<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ANIMATION_DURATION_SHORT 0.3</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ANIMATION_DURATION_MIDDLE 0.6</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ANIMATION_DURATION_LONG 1.0</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> ANIMATION_DURATION_SHORT 0.3</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> ANIMATION_DURATION_MIDDLE 0.6</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> ANIMATION_DURATION_LONG 1.0</span></div></pre></td></tr></table></figure>
 <p>于是，所有用到动画时长的地方，直接用这几个宏定义就行了。</p>
 <p>乍一看，似乎没什么问题。</p>
 <h3 id="类型-不可变"><a href="#类型-不可变" class="headerlink" title="类型+不可变"></a>类型+不可变</h3><p>先来看看宏定义干了什么。<br>总的来说，#define就是“替换”，在编译时，将一切宏定义替换成定义后面的内容。（参考<a href="http://baike.baidu.com/view/2076445.htm" target="_blank" rel="external">百度百科</a>）</p>
@@ -285,14 +290,14 @@
 <p>所以，用宏定义定义常量，很“危险”。</p>
 <h2 id="正确的做法"><a href="#正确的做法" class="headerlink" title="正确的做法"></a>正确的做法</h2><p>恰当的常量，应该具备合适的常量名字、正确的类型，还有const、extern等关键字的修饰，当然，还要根据常量适用的“<strong>范围</strong>”，做出恰当的处理。一下举例说明。</p>
 <h3 id="只在函数中用的常量"><a href="#只在函数中用的常量" class="headerlink" title="只在函数中用的常量"></a>只在函数中用的常量</h3><p>只在函数中用的常量：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)runAnimation &#123;</span><br><span class="line">    <span class="comment">//动画时间长度常量</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="built_in">NSTimeInterval</span> kAnimationDurationLong = <span class="number">1.0</span>f;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)runAnimation &#123;</div><div class="line">    <span class="comment">//动画时间长度常量</span></div><div class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="built_in">NSTimeInterval</span> kAnimationDurationLong = <span class="number">1.0</span>f;</div><div class="line">    <span class="comment">//...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>static、const定义了它是静态不可变的；<strong>NSTimeInterval</strong>则“精确”指定了常量的类型。</p>
 <h3 id="只在一个“-m”文件中使用的常量"><a href="#只在一个“-m”文件中使用的常量" class="headerlink" title="只在一个“.m”文件中使用的常量"></a>只在一个“<strong>.m</strong>”文件中使用的常量</h3><p>在类的实现文件“xxx.m”文件中定义常量，也是很常见的。</p>
 <p>你可能会觉得，既然是一个类使用的，那就放在类的头文件里面定义不就好了。</p>
 <p><strong>但是这么想是错的=。=</strong></p>
 <p><strong>因为所有要用到这个类的文件，都会无形当中包含了这些常量声明，将不必要的数据暴露在外面，这样是违反设计原则的，并且，如果常量名字取得不恰当，还有可能造成冲突。</strong></p>
 <p>所以，应该如下:</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//XXX.m</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//必须要static</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="built_in">NSTimeInterval</span> kAnimationDurationLong = <span class="number">1.0</span>f;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">XXX</span></span></span><br><span class="line"><span class="comment">//...</span></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//XXX.m</span></div><div class="line"></div><div class="line"><span class="comment">//必须要static</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="built_in">NSTimeInterval</span> kAnimationDurationLong = <span class="number">1.0</span>f;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">XXX</span></span></div><div class="line"><span class="comment">//...</span></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
 <p>需要注意的点：</p>
 <ul>
 <li>一定要放在.m文件中。</li>
@@ -303,7 +308,7 @@
 </ul>
 <h3 id="全局常量"><a href="#全局常量" class="headerlink" title="全局常量"></a>全局常量</h3><p>一般来说，最常见的全局常量就是发广播Notification时用的Notification的名字，往往都是一些字符串，下面就以这个为例子：</p>
 <p>假设我们的类叫“<strong>TTGClass</strong>”，我们的类会向外发送Notification，所以需要定义一个Notification的名字常量供外界注册，如下：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//TTGClass.h</span></span><br><span class="line"><span class="keyword">extern</span> <span class="built_in">NSString</span> * <span class="keyword">const</span> TTGClassWorkBeginNotification;</span><br><span class="line"></span><br><span class="line"><span class="comment">//TTGClass.m</span></span><br><span class="line"><span class="built_in">NSString</span> * <span class="keyword">const</span> TTGClassWorkBeginNotification = <span class="string">@"TTGClassWorkBeginNotification"</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//TTGClass.h</span></div><div class="line"><span class="keyword">extern</span> <span class="built_in">NSString</span> * <span class="keyword">const</span> TTGClassWorkBeginNotification;</div><div class="line"></div><div class="line"><span class="comment">//TTGClass.m</span></div><div class="line"><span class="built_in">NSString</span> * <span class="keyword">const</span> TTGClassWorkBeginNotification = <span class="string">@"TTGClassWorkBeginNotification"</span>;</div></pre></td></tr></table></figure>
 <p>关键：</p>
 <ul>
 <li>头文件中只是做声明，不做定义。所以用extern表示常量在别处定义的，尽量隐藏细节。</li>
@@ -313,7 +318,24 @@
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>良好的代码，总是少不了定义各种常量，以避免“魔鬼数字、魔鬼字符串”。所以我们应该尽量避免少用#define定义常量，而是用带有类型的、const的常量，并且尽可能的缩小常量的作用域。</p>
 <p>暴露的细节越少，出错的机会也就越小（忘了从哪里看到的=。=）</p>
 
+                
+<p class="teal-link-context">
+    <a href="/2015/03/15/有关宏定义的经验与技巧-简化代码-增强Log/" rel="next" title="有关宏定义的经验与技巧-简化代码-增强Log">
+    上一篇：有关宏定义的经验与技巧-简化代码-增强Log
+  </a>
+</p>
+
+
+
+<p class="teal-link-context">
+    <a href="/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/" rel="next" title="UITextView编辑时插入自定义表情-简单的图文混编">
+    下一篇：UITextView编辑时插入自定义表情-简单的图文混编
+  </a>
+</p>
+
+
             </div>
+			
         </div>
     </div>
 </article>
@@ -368,7 +390,7 @@
     <div class="container">
         <div class="row">
             
-            <div class="social-group col m3 s12">
+            <div class="social-group col m4 s12">
                 <h5 class="white-text">社交</h5>
                 
                     <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
@@ -383,11 +405,22 @@
                         <i class="fa fa-2x fa-rss"></i>
                     </a>
                 
+                <div class="site-visitors-container white-text">
+                    <span>
+                        <i class="fa fa-user"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+                    </span>
+                    <span>&nbsp;|&nbsp;</span>
+                    <span>
+                        <i class="fa fa-eye"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+                    </span>
+                </div>
             </div>
             
 
             
-            <div class="col m9 s12">
+            <div class="col m8 s12">
                 <h5 class="white-text">友情链接</h5>
                 
                     <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
@@ -408,7 +441,7 @@
 
     <div class="footer-copyright teal-link-context">
         <div class="container">
-            © 2016 tutuge.me, All rights reserved.
+            © 2017 tutuge.me, All rights reserved.
             <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
         </div>
     </div>
@@ -427,6 +460,8 @@
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/materialize.min.js"></script>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
 
 <script>
     (function($) {
@@ -468,6 +503,22 @@
 
             // 文章目录
             $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
             // 修正文章目录的left-border颜色
             var color = $('.table-of-contents-text').css('color');
             $('.table-of-contents-link').css('border-left-color', color);
@@ -491,7 +542,7 @@
 
             
             // 添加new标签
-            $('.menu-reading, .menu-about').append('<span class="new badge teal accent-4"></span>');
+            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
             
 
             // 搜索功能

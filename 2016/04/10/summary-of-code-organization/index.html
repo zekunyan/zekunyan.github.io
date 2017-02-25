@@ -99,7 +99,7 @@
                 <div class="info col s8 valign-wrapper no-padding">
                     <div class="valign">
                         <p class="name">土土哥</p>
-                        <p class="desc">iOS/技术宅</p>
+                        <p class="desc">iOS/Android/技术宅</p>
                     </div>
                 </div>
             </div>
@@ -248,6 +248,11 @@
             </div>
             <time class="teal-link-context" datetime="2016-04-10T12:10:56.000Z"><a href="/2016/04/10/summary-of-code-organization/">2016-04-10</a></time>
 
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
             
     <div class="tags-row">
         
@@ -268,7 +273,7 @@
 <a id="more"></a>
 <h2 id="多个子项目-CocoaPods加私有仓库"><a href="#多个子项目-CocoaPods加私有仓库" class="headerlink" title="多个子项目 - CocoaPods加私有仓库"></a>多个子项目 - CocoaPods加私有仓库</h2><p>感觉目前CocoaPods已经成了搞iOS开发的标配了，基本上所有的第三方库和组件都可以通过CocoaPods来集成管理。但是CocoaPods的功能其实不止管理第三方库和组件，团队内部的拆分出来的子项目和子模块，同样可以用CocoaPods来集成管理。</p>
 <p>先看看如下Podfile的示例：</p>
-<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 源配置 #</span></span><br><span class="line">source <span class="string">'git@gitlab.xxx.com:cocoapods/specs.git'</span> <span class="comment"># 团队内部Gitlab源</span></span><br><span class="line">source <span class="string">'https://git.coding.net/xxx/specs.git'</span> <span class="comment"># Coding等私有Git托管平台</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># iOS版本支持 #</span></span><br><span class="line">platform <span class="symbol">:ios</span>, <span class="string">'7.0'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发中的子项目 #</span></span><br><span class="line">pod <span class="string">'XXXCommonUI'</span>, <span class="symbol">:path=&gt;</span> <span class="string">'/Users/tutuge/projects/Xcode/XXXCommonUI'</span> <span class="comment"># 本地路径</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 依赖的内部子项目 #</span></span><br><span class="line">pod <span class="string">'XXXModuleA'</span>, <span class="symbol">:git=&gt;</span> <span class="string">'git@gitlab.xxx.com:cocoapods/XXXModuleA'</span>, <span class="symbol">:branch=&gt;<span class="string">'develop'</span></span></span><br><span class="line">pod <span class="string">'XXXModuleB'</span>, <span class="string">'1.0.1'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 依赖的开源第三方库 #</span></span><br><span class="line">pod <span class="string">'AFNetworking'</span>,<span class="string">'3.0.0'</span></span><br><span class="line">pod <span class="string">'DTCoreText'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 额外的脚本 #</span></span><br><span class="line"><span class="comment"># ...</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"># 源配置 #</div><div class="line">source <span class="string">'git@gitlab.xxx.com:cocoapods/specs.git'</span> # 团队内部Gitlab源</div><div class="line">source <span class="string">'https://git.coding.net/xxx/specs.git'</span> # Coding等私有Git托管平台</div><div class="line"></div><div class="line"># iOS版本支持 #</div><div class="line">platform :ios, <span class="string">'7.0'</span></div><div class="line"></div><div class="line"># 开发中的子项目 #</div><div class="line">pod <span class="string">'XXXCommonUI'</span>, :path=&gt; <span class="string">'/Users/tutuge/projects/Xcode/XXXCommonUI'</span> # 本地路径</div><div class="line"></div><div class="line"># 依赖的内部子项目 #</div><div class="line">pod <span class="string">'XXXModuleA'</span>, :git=&gt; <span class="string">'git@gitlab.xxx.com:cocoapods/XXXModuleA'</span>, :branch=&gt;<span class="string">'develop'</span></div><div class="line">pod <span class="string">'XXXModuleB'</span>, <span class="string">'1.0.1'</span></div><div class="line"></div><div class="line"># 依赖的开源第三方库 #</div><div class="line">pod <span class="string">'AFNetworking'</span>,<span class="string">'3.0.0'</span></div><div class="line">pod <span class="string">'DTCoreText'</span></div><div class="line"></div><div class="line"># 额外的脚本 #</div><div class="line"># ...</div></pre></td></tr></table></figure>
 <p><strong>私有Git仓库</strong>  </p>
 <p>虽然我们有万能的Github了，但是还是有些代码是不能公开的=。=，所以需要一个私有的Git仓库。  </p>
 <p>有自己服务器的，完全可以用<a href="https://about.gitlab.com/" target="_blank" rel="external">Gitlab</a>(或者<a href="https://gogs.io/" target="_blank" rel="external">Gogs</a>)搭建一个功能强大的私有Git仓库，管理项目代码，搭建CocoaPods私有源都很不错。  </p>
@@ -276,9 +281,9 @@
 <p><strong>私有CocoaPods源</strong></p>
 <p>搭建一个私有CocoaPods源其实就是创建一个私有的<code>Spec Repo</code>，说白了就是一个存放了所有私有Pods的<code>Podspec</code>文件的，按照特定结构组织的目录，然后把这个目录推到私有Git仓库就成了一个私有的CocoaPods源。  </p>
 <p><code>Spec Repo</code>的目录结构示例如下：  </p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">├── <span class="selector-tag">Specs</span></span><br><span class="line">    └── <span class="selector-attr">[XXXModuleA]</span></span><br><span class="line">        └── <span class="selector-attr">[0.0.1]</span></span><br><span class="line">            └── <span class="selector-attr">[XXXModuleA]</span><span class="selector-class">.podspec</span><span class="selector-class">.json</span></span><br><span class="line">        └── <span class="selector-attr">[0.0.2]</span></span><br><span class="line">            └── <span class="selector-attr">[XXXModuleA]</span><span class="selector-class">.podspec</span><span class="selector-class">.json</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">├── <span class="selector-tag">Specs</span></div><div class="line">    └── <span class="selector-attr">[XXXModuleA]</span></div><div class="line">        └── <span class="selector-attr">[0.0.1]</span></div><div class="line">            └── <span class="selector-attr">[XXXModuleA]</span><span class="selector-class">.podspec</span><span class="selector-class">.json</span></div><div class="line">        └── <span class="selector-attr">[0.0.2]</span></div><div class="line">            └── <span class="selector-attr">[XXXModuleA]</span><span class="selector-class">.podspec</span><span class="selector-class">.json</span></div></pre></td></tr></table></figure>
 <p>然后添加私有源即可：  </p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod repo add XXXSpecRepo <span class="string">https:</span><span class="comment">//git.coding.net/xxx/specs.git</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pod repo add XXXSpecRepo https:<span class="regexp">//gi</span>t.coding.net<span class="regexp">/xxx/</span>specs.git</div></pre></td></tr></table></figure>
 <p><strong>创建私有CocoaPods项目的具体步骤</strong>  </p>
 <p>至于具体的创建步骤，CocoaPods的官方文档和一些优秀的博客已经说得很清楚了，我就不再重复了。推荐阅读：<a href="https://guides.cocoapods.org/" target="_blank" rel="external">CocoaPods Guides</a>，还有<a href="http://blog.wtlucky.com/blog/2015/02/26/create-private-podspec/" target="_blank" rel="external">使用Cocoapods创建私有podspec</a>，这篇很详细！</p>
 <p><strong>引用正在本地开发的子项目</strong></p>
@@ -300,7 +305,7 @@
 <p>然后就可以在一个测试工程中创建一个<code>Cartfile</code>文件，输入Framework的Git路径，按照官方文档设置一下”Run Script”，运行<code>carthage update</code>生成对应的Framework，就可以集成测试。</p>
 <p><strong>最终的Cartfile</strong></p>
 <p>由于Carthage的去中心化，用Carthage管理项目的Framework依赖就非常灵活，一个简单的示例如下：</p>
-<figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># 开发中的本地Framework</span></span><br><span class="line">git <span class="string">"file:///directory/to/project"</span> <span class="string">"develop"</span></span><br><span class="line"></span><br><span class="line"><span class="meta"># 依赖的私有Framework</span></span><br><span class="line">git <span class="string">"git@gitlab.xxx.com:cocoapods/XXXFramework.git"</span> <span class="string">"development"</span></span><br><span class="line"></span><br><span class="line"><span class="meta"># 第三方开源库</span></span><br><span class="line">github <span class="string">"Mantle/Mantle"</span> ~&gt; <span class="number">1.0</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight vala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta"># 开发中的本地Framework</span></div><div class="line">git <span class="string">"file:///directory/to/project"</span> <span class="string">"develop"</span></div><div class="line"></div><div class="line"><span class="meta"># 依赖的私有Framework</span></div><div class="line">git <span class="string">"git@gitlab.xxx.com:cocoapods/XXXFramework.git"</span> <span class="string">"development"</span></div><div class="line"></div><div class="line"><span class="meta"># 第三方开源库</span></div><div class="line">github <span class="string">"Mantle/Mantle"</span> ~&gt; <span class="number">1.0</span></div></pre></td></tr></table></figure>
 <p>所以，Carthage可以方便的管理构建本地、私有、第三方的Framework库，而且更加方便~  </p>
 <p>详细的创建流程Google一下就有很多，如<a href="https://medium.com/@PyBaig/build-your-own-cocoa-touch-frameworks-in-swift-d4ea3d1f9ca3#.z38fy8psd" target="_blank" rel="external">Build your own Cocoa Touch Frameworks, in pure Swift</a>、<a href="https://robots.thoughtbot.com/creating-your-first-ios-framework" target="_blank" rel="external">Creating your first iOS Framework</a>、<a href="http://blog.mat.tc/how-to-make-a-carthage-compatible-framework/" target="_blank" rel="external">How to Make a Carthage-compatible Framework in Swift</a>。 </p>
 <p><strong>和CocoaPods混用</strong></p>
@@ -325,13 +330,13 @@
 <h2 id="类内代码组织-Category"><a href="#类内代码组织-Category" class="headerlink" title="类内代码组织 - Category"></a>类内代码组织 - Category</h2><p>Objective-C中的Category实在是太方便了，可以灵活的为现有的类增加方法，甚至是系统的类。  </p>
 <p>但是其实Category也可以拿来组织一个类的实现，将类的Property、方法按照业务、功能拆分到不同的Category里面，使类的结构更加清晰。 </p>
 <p>系统API本身就有大量的例子，如UIViewController的：</p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">@interface</span> UIViewController (UIContainerViewControllerCallbacks)</span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"><span class="variable">@end</span></span><br><span class="line"></span><br><span class="line"><span class="variable">@interface</span> UIViewController(UIViewControllerTransitioning)</span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"><span class="variable">@end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="variable">@interface</span> UIViewController (UIContainerViewControllerCallbacks)</div><div class="line"><span class="comment">// ...</span></div><div class="line"><span class="variable">@end</span></div><div class="line"></div><div class="line"><span class="variable">@interface</span> UIViewController(UIViewControllerTransitioning)</div><div class="line"><span class="comment">// ...</span></div><div class="line"><span class="variable">@end</span></div></pre></td></tr></table></figure>
 <p>实现的时候还可以每个Category对应一个头文件和.m文件，类的结构更加清晰：</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">XXXClass<span class="selector-class">.h</span></span><br><span class="line">XXXClass<span class="selector-class">.m</span></span><br><span class="line">XXXClass+XXXModuleA<span class="selector-class">.h</span></span><br><span class="line">XXXClass+XXXModuleA<span class="selector-class">.m</span></span><br><span class="line">XXXClass+XXXModuleB<span class="selector-class">.h</span></span><br><span class="line">XXXClass+XXXModuleB.m</span><br></pre></td></tr></table></figure>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">XXXClass<span class="selector-class">.h</span></div><div class="line">XXXClass<span class="selector-class">.m</span></div><div class="line">XXXClass+XXXModuleA<span class="selector-class">.h</span></div><div class="line">XXXClass+XXXModuleA<span class="selector-class">.m</span></div><div class="line">XXXClass+XXXModuleB<span class="selector-class">.h</span></div><div class="line">XXXClass+XXXModuleB.m</div></pre></td></tr></table></figure>
 <h2 id="文件内代码组织-pragam-mark、-MARK"><a href="#文件内代码组织-pragam-mark、-MARK" class="headerlink" title="文件内代码组织 - #pragam mark、// MARK -"></a>文件内代码组织 - #pragam mark、// MARK -</h2><p>整理文件内的代码时，最好的手段就是用<code>#pragam mark</code>宏定义，Swift的话就是<code>// MARK -</code>。  </p>
 <p>Objective-C冗长的语法注定了一个代码文件的行数不会少=。=，如果没有一定的规范，实在是难以迭代，所以最好就是开发前约定一种规则，对主要的类的实现都约定出一套规范，如UIViewController的子类、UIView的子类、UITableViewCell的子类等，然后开发人员按照这个规范写代码，这样才能使代码更好维护。</p>
 <p>如，UIViewController的子类实现时，可以按照如下顺序组织代码：</p>
-<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">@implementation XXXViewController</span><br><span class="line"></span><br><span class="line"><span class="comment">// 内存相关</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - Memory manager</span></span><br><span class="line"></span><br><span class="line">- (instancetype)init</span><br><span class="line">- (<span class="keyword">void</span>)dealloc</span><br><span class="line"></span><br><span class="line"><span class="comment">// 类生命周期相关的</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - Life cycle</span></span><br><span class="line"></span><br><span class="line">(<span class="keyword">void</span>)viewDidLoad</span><br><span class="line"></span><br><span class="line"><span class="comment">// 类的Public方法</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - Public methods</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 所有的Actions</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - Actions</span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)didTapCancelButton:(UIButton *button)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 通知回调，具体可以细分</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - Notifications - XXX</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 系统的Delegate</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - UITableViewDelegate</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 自定义类的Delegate</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - XXXDelegate</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 自定义View、初始化等</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - Custom views</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 类私有方法</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - Private methods</span></span><br><span class="line"></span><br><span class="line">@<span class="built_in">end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">@implementation XXXViewController</div><div class="line"></div><div class="line"><span class="comment">// 内存相关</span></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - Memory manager</span></div><div class="line"></div><div class="line">- (instancetype)init</div><div class="line">- (<span class="keyword">void</span>)dealloc</div><div class="line"></div><div class="line"><span class="comment">// 类生命周期相关的</span></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - Life cycle</span></div><div class="line"></div><div class="line">(<span class="keyword">void</span>)viewDidLoad</div><div class="line"></div><div class="line"><span class="comment">// 类的Public方法</span></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - Public methods</span></div><div class="line"></div><div class="line"><span class="comment">// 所有的Actions</span></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - Actions</span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)didTapCancelButton:(UIButton *button)</div><div class="line"></div><div class="line"><span class="comment">// 通知回调，具体可以细分</span></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - Notifications - XXX</span></div><div class="line"></div><div class="line"><span class="comment">// 系统的Delegate</span></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - UITableViewDelegate</span></div><div class="line"></div><div class="line"><span class="comment">// 自定义类的Delegate</span></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - XXXDelegate</span></div><div class="line"></div><div class="line"><span class="comment">// 自定义View、初始化等</span></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - Custom views</span></div><div class="line"></div><div class="line"><span class="comment">// 类私有方法</span></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - Private methods</span></div><div class="line"></div><div class="line">@<span class="built_in">end</span></div></pre></td></tr></table></figure>
 <p>当然，具体的组织方法还要根据项目本身的架构、模式决定，上面的只是参考。</p>
 <p><strong>进一步：创建项目专属文件模板</strong></p>
 <p>既然定下了文件内的组织顺序，每次写代码手工输入也还是有点麻烦，所以更进一步的话就是创建自定义的Xcode文件模板，把不同类的<code>#pragma mark</code>顺序规则直接写到模板里面，以后开发人员创建文件时直接用项目专属的模板就可以了~</p>
@@ -345,7 +350,24 @@
 <li><a href="https://onevcat.com/2016/01/create-framework/" target="_blank" rel="external">onevcat-如何打造一个让人愉快的框架</a></li>
 </ul>
 
+                
+<p class="teal-link-context">
+    <a href="/2016/04/30/autoreleasing-meet-autoreleasepool/" rel="next" title="结合访问Out Parameters出现EXC_BAD_ACCESS的例子，反编译汇编解读__autoreleasing">
+    上一篇：结合访问Out Parameters出现EXC_BAD_ACCESS的例子，反编译汇编解读__autoreleasing
+  </a>
+</p>
+
+
+
+<p class="teal-link-context">
+    <a href="/2016/03/29/modular-and-component-summary/" rel="next" title="对组件化与模块化的思考与总结">
+    下一篇：对组件化与模块化的思考与总结
+  </a>
+</p>
+
+
             </div>
+			
         </div>
     </div>
 </article>
@@ -400,7 +422,7 @@
     <div class="container">
         <div class="row">
             
-            <div class="social-group col m3 s12">
+            <div class="social-group col m4 s12">
                 <h5 class="white-text">社交</h5>
                 
                     <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
@@ -415,11 +437,22 @@
                         <i class="fa fa-2x fa-rss"></i>
                     </a>
                 
+                <div class="site-visitors-container white-text">
+                    <span>
+                        <i class="fa fa-user"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+                    </span>
+                    <span>&nbsp;|&nbsp;</span>
+                    <span>
+                        <i class="fa fa-eye"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+                    </span>
+                </div>
             </div>
             
 
             
-            <div class="col m9 s12">
+            <div class="col m8 s12">
                 <h5 class="white-text">友情链接</h5>
                 
                     <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
@@ -440,7 +473,7 @@
 
     <div class="footer-copyright teal-link-context">
         <div class="container">
-            © 2016 tutuge.me, All rights reserved.
+            © 2017 tutuge.me, All rights reserved.
             <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
         </div>
     </div>
@@ -459,6 +492,8 @@
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/materialize.min.js"></script>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
 
 <script>
     (function($) {
@@ -500,6 +535,22 @@
 
             // 文章目录
             $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
             // 修正文章目录的left-border颜色
             var color = $('.table-of-contents-text').css('color');
             $('.table-of-contents-link').css('border-left-color', color);
@@ -523,7 +574,7 @@
 
             
             // 添加new标签
-            $('.menu-reading, .menu-about').append('<span class="new badge teal accent-4"></span>');
+            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
             
 
             // 搜索功能

@@ -99,7 +99,7 @@
                 <div class="info col s8 valign-wrapper no-padding">
                     <div class="valign">
                         <p class="name">土土哥</p>
-                        <p class="desc">iOS/技术宅</p>
+                        <p class="desc">iOS/Android/技术宅</p>
                     </div>
                 </div>
             </div>
@@ -248,6 +248,11 @@
             </div>
             <time class="teal-link-context" datetime="2015-02-06T08:43:46.000Z"><a href="/2015/02/06/Effective-Objective-C-读书笔记-Item-2/">2015-02-06</a></time>
 
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
             
     <div class="tags-row">
         
@@ -272,30 +277,47 @@
 <h2 id="Item-2-Minimize-Importing-Headers-in-Headers"><a href="#Item-2-Minimize-Importing-Headers-in-Headers" class="headerlink" title="Item 2 - Minimize Importing Headers in Headers"></a>Item 2 - Minimize Importing Headers in Headers</h2><p>这一节讲的是尽量在一个头文件中减少其它头文件的引入。</p>
 <a id="more"></a>
 <h2 id="头文件"><a href="#头文件" class="headerlink" title="头文件"></a>头文件</h2><p>Objective-C和C语言、C++很像，都将类的实现与声明分开，用.h后缀名文件表示声明文件，用.m文件实现类。当要用到这个类的时候，只需要引入头文件即可，至于编译器、运行时是如何知道头文件里面的类对应的实现在哪里，在这了不做说明。一下用例子说明，先看看下面的类：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Wheel.h</span></span><br><span class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//车轮类</span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Wheel</span> : <span class="title">NSObject</span></span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *manufacturer;</span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSUInteger</span> radius;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//Wheel.h</span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="comment">//车轮类</span></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Wheel</span> : <span class="title">NSObject</span></span></div><div class="line"><span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *manufacturer;</div><div class="line"><span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSUInteger</span> radius;</div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
 <p>第二个类</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Engine.h</span></span><br><span class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//发动机类</span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Engine</span> : <span class="title">NSObject</span></span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *manufacturer;</span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSUInteger</span> power;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//Engine.h</span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="comment">//发动机类</span></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Engine</span> : <span class="title">NSObject</span></span></div><div class="line"><span class="keyword">@property</span>(<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *manufacturer;</div><div class="line"><span class="keyword">@property</span>(<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSUInteger</span> power;</div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
 <p>然后就是车类Car：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Car.h</span></span><br><span class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//汽车类，只有一个轮子，不要奇怪=。=</span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Car</span> : <span class="title">NSObject</span></span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Wheel *wheel;</span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Engine *engine;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//Car.h</span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="comment">//汽车类，只有一个轮子，不要奇怪=。=</span></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Car</span> : <span class="title">NSObject</span></span></div><div class="line"><span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Wheel *wheel;</div><div class="line"><span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Engine *engine;</div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
 <p>注意到少了什么东西没有？<br>是的，写过C语言、C++的童鞋一下就能发现，Car类没有引入Engine和Wheel的头文件，肯定会编译出错的，因为编译器不知道Engine、Wheel类是啥。<br>那好，我们加上下面两行：</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-id">#import</span> <span class="string">"Wheel.h"</span></span><br><span class="line"><span class="selector-id">#import</span> <span class="string">"Engine.h"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#<span class="keyword">import</span> <span class="string">"Wheel.h"</span></div><div class="line">#<span class="keyword">import</span> <span class="string">"Engine.h"</span></div></pre></td></tr></table></figure>
 <p>嗯。这样就不会出错了。但是这样真的好吗？Objective-C给我们提供了@class关键字，就是来解决这个问题的。</p>
 <h2 id="前置声明（forward-declaration）"><a href="#前置声明（forward-declaration）" class="headerlink" title="前置声明（forward declaration）"></a>前置声明（forward declaration）</h2><p>何为前置声明？看看下面的Car类的头文件例子。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Car.h</span></span><br><span class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//前置声明</span></span><br><span class="line"><span class="class"><span class="keyword">@class</span> <span class="title">Wheel</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">@class</span> <span class="title">Engine</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Car</span> : <span class="title">NSObject</span></span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Wheel *wheel;</span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Engine *engine;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//Car.h</span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="comment">//前置声明</span></div><div class="line"><span class="class"><span class="keyword">@class</span> <span class="title">Wheel</span>;</span></div><div class="line"><span class="class"><span class="keyword">@class</span> <span class="title">Engine</span>;</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Car</span> : <span class="title">NSObject</span></span></div><div class="line"><span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Wheel *wheel;</div><div class="line"><span class="keyword">@property</span>(<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) Engine *engine;</div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
 <p>@class就是类的前置声明（forward declaration），就是告诉编译器“嗨，不用找了，Wheel类和Engine类是肯定存在的，用到的时候再找”。有了前置声明，我们就不用显式的引入Wheel类和Engine类了。</p>
 <p>当然，在Car类的实现文件.m文件中，我们还是要显式的引入Wheel和Engine类的，因为在这里我们要具体用到这两个类了，当然要知道类的细节。</p>
 <h3 id="为何不要import？"><a href="#为何不要import？" class="headerlink" title="为何不要import？"></a>为何不要import？</h3><p>为什么不直接import呢？因为如果直接用import引入Wheel和Engine的声明，那么任何import引入了Car类的文件，也同时会引入Wheel、Engine类的声明，而且最终我们可能并不一定会直接跟Wheel、Engine类打交道，这样不就引入了“没有用”的类了吗？而且这样做很可能造成文件引入成“环”。</p>
 <p>虽然import可以避免重复声明造成编译出错，传统的C语言、C++在声明的时候也可以通过如下方式避免重复声明：</p>
-<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _WHEEL_H_</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _WHEEL_H_</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//声明内容...</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _WHEEL_H_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> _WHEEL_H_</span></div><div class="line"></div><div class="line"><span class="comment">//声明内容...</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
 <p>但是既然Objective-C有@class这种前置声明的办法，为何不用呢。</p>
 <h2 id="必须用import的时候"><a href="#必须用import的时候" class="headerlink" title="必须用import的时候"></a>必须用import的时候</h2><p>当然，@class这样的前置声明并不能解决一切头文件引入的问题，如下这样的类，就必须要用import：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//Car 的声明</span></span><br><span class="line"><span class="meta">#import <span class="meta-string">"Car.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//Driver protocol的定义</span></span><br><span class="line"><span class="meta">#import <span class="meta-string">"Driver.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">BigCar</span> : <span class="title">Car</span> &lt;<span class="title">Driver</span>&gt;</span></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="comment">//Car 的声明</span></div><div class="line"><span class="meta">#import <span class="meta-string">"Car.h"</span></span></div><div class="line"></div><div class="line"><span class="comment">//Driver protocol的定义</span></div><div class="line"><span class="meta">#import <span class="meta-string">"Driver.h"</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">BigCar</span> : <span class="title">Car</span> &lt;<span class="title">Driver</span>&gt;</span></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
 <p>是的，当类需要被继承、定义的protocol需要实现的时候，就需要import相关的头文件了（protocol的实现如果跟类的使用者没有关联，可以定义在类的实现文件中的“扩展category”中）,当然，还有@protocol这样的protocol的前置声明，怎么用就留给读者自己查阅相关资料了。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>大费周章的讲了这么多，其实目的就是一个：尽量少在头文件里面引入其他头文件。</p>
 <p>最终的目的就是<strong>只暴露最少的细节</strong>。</p>
 <p>写代码有段时间了，一直都在琢磨这句话，希望读者也能好好体会~</p>
 
+                
+<p class="teal-link-context">
+    <a href="/2015/02/14/Effective-Objective-C-读书笔记-Item-3/" rel="next" title="Effective-Objective-C-读书笔记-Item-3">
+    上一篇：Effective-Objective-C-读书笔记-Item-3
+  </a>
+</p>
+
+
+
+<p class="teal-link-context">
+    <a href="/2015/02/05/Effective-Objective-C-读书笔记-Item-1/" rel="next" title="Effective-Objective-C-读书笔记-Item-1">
+    下一篇：Effective-Objective-C-读书笔记-Item-1
+  </a>
+</p>
+
+
             </div>
+			
         </div>
     </div>
 </article>
@@ -350,7 +372,7 @@
     <div class="container">
         <div class="row">
             
-            <div class="social-group col m3 s12">
+            <div class="social-group col m4 s12">
                 <h5 class="white-text">社交</h5>
                 
                     <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
@@ -365,11 +387,22 @@
                         <i class="fa fa-2x fa-rss"></i>
                     </a>
                 
+                <div class="site-visitors-container white-text">
+                    <span>
+                        <i class="fa fa-user"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+                    </span>
+                    <span>&nbsp;|&nbsp;</span>
+                    <span>
+                        <i class="fa fa-eye"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+                    </span>
+                </div>
             </div>
             
 
             
-            <div class="col m9 s12">
+            <div class="col m8 s12">
                 <h5 class="white-text">友情链接</h5>
                 
                     <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
@@ -390,7 +423,7 @@
 
     <div class="footer-copyright teal-link-context">
         <div class="container">
-            © 2016 tutuge.me, All rights reserved.
+            © 2017 tutuge.me, All rights reserved.
             <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
         </div>
     </div>
@@ -409,6 +442,8 @@
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/materialize.min.js"></script>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
 
 <script>
     (function($) {
@@ -450,6 +485,22 @@
 
             // 文章目录
             $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
             // 修正文章目录的left-border颜色
             var color = $('.table-of-contents-text').css('color');
             $('.table-of-contents-link').css('border-left-color', color);
@@ -473,7 +524,7 @@
 
             
             // 添加new标签
-            $('.menu-reading, .menu-about').append('<span class="new badge teal accent-4"></span>');
+            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
             
 
             // 搜索功能
