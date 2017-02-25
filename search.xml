@@ -3030,12 +3030,6 @@ $(document).ready(function(event) {
     </entry>
     
     <entry>
-      <title><![CDATA[tags]]></title>
-      <url>http://tutuge.me/tags/index.html</url>
-      <content type="html"></content>
-    </entry>
-    
-    <entry>
       <title></title>
       <url>http://tutuge.me/share/rcpr_api.html</url>
       <content type="html"><![CDATA[<!doctype html>
@@ -3375,6 +3369,12 @@ sup {
 
 </body>
 </html>]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[tags]]></title>
+      <url>http://tutuge.me/tags/index.html</url>
+      <content type="html"></content>
     </entry>
     
     <entry>
