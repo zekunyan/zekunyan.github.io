@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://tutuge.me/2015/12/31/TTGTagCollectionView/</loc>
+    
+    <lastmod>2017-02-26T18:05:28.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://tutuge.me/2015/05/23/autolayout-example-with-masonry/</loc>
     
     <lastmod>2017-02-19T13:26:31.000Z</lastmod>
@@ -26,13 +33,6 @@
     <loc>http://tutuge.me/2015/10/09/ttgsnackbar-lib/</loc>
     
     <lastmod>2016-12-25T14:26:57.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://tutuge.me/2015/12/31/TTGTagCollectionView/</loc>
-    
-    <lastmod>2016-12-25T14:26:04.000Z</lastmod>
     
   </url>
   
