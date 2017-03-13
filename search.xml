@@ -4,6 +4,382 @@
   
     
     <entry>
+      <title><![CDATA[反编译分析Xcode8的Bug, release下连续两次调用有二级指针参数的空方法会Crash]]></title>
+      <url>http://tutuge.me/2017/03/14/xcode8-crash-on-out-parameter/</url>
+      <content type="html"><![CDATA[<h2 id="二级指针"><a href="#二级指针" class="headerlink" title="二级指针"></a>二级指针</h2><p>二级指针，也叫指针的指针，或者Out Parameters，可以用来改变一个指针的地址值，由于在Objective-C里面方法、函数不支持返回多个值，所以经常用二级指针实现这个功能，比如<code>NSFileManager</code>的<code>- (BOOL)removeItemAtURL:(NSURL *)URL error:(NSError **)error</code>方法，就可以让方法在内部创建error后传出。</p>
+<a id="more"></a>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>最近在Debug代码的时候，注释掉了一个带有二级指针参数的方法内部所有代码，然后在Release环境下安装运行，结果居然Crash了，猛然想起好像以前同事也遇到过，仔细检查了下，感觉代码是没有问题的，所以继续深究，新建了一个空的工程，重现了这个EXC_BAD_ACCESS的Crash，代码非常简单，如下：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// main.m</span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;CoreFoundation/CoreFoundation.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">TestClass</span> : <span class="title">NSObject</span></span></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">TestClass</span></span></div><div class="line"></div><div class="line">+ (<span class="keyword">void</span>)runTest &#123;</div><div class="line">    <span class="built_in">NSMutableArray</span> *array = [<span class="built_in">NSMutableArray</span> new];</div><div class="line">    [TestClass testFunc:&amp;array];</div><div class="line">    [TestClass testFunc:&amp;array];</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"array: %@"</span>, array);</div><div class="line">&#125;</div><div class="line"></div><div class="line">+ (<span class="keyword">void</span>)testFunc:(<span class="built_in">NSMutableArray</span> **)array &#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[]) &#123;</div><div class="line">    <span class="keyword">@autoreleasepool</span> &#123;</div><div class="line">        [TestClass runTest];</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>经测试，在Xcode 8.0、以及最新的8.2.1稳定版下，Release环境中，都会Crash，放到iOS工程里面，模拟器、真机也会。但是，在Xcode7下就没有问题。</p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><h3 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h3><p>首先，从代码本身上来看，是没有问题的，带有二级指针的方法<code>testFunc:</code>是空的方法，虽然传进来了<code>NSMutableArray **array</code>，但是没有对其赋值。</p>
+<p><code>runTest</code>方法也只是创建了一个<code>NSMutableArray</code>对象，然后取了指针的指针，调用了两次<code>testFunc:</code>，然后打印，按理来说是没有任何副作用的。</p>
+<p>所以，直接从代码上看，发现不了问题的原因。</p>
+<h3 id="clang-rewrite-objc分析"><a href="#clang-rewrite-objc分析" class="headerlink" title="clang -rewrite-objc分析"></a>clang -rewrite-objc分析</h3><p>直接看代码没有用，那就用clang重写出C++代码分析，命令行对<code>main.m</code>执行<code>clang -rewrite-objc main.m</code>，得到C++重写后的代码，在文件的最后，就能找到<code>testFunc:</code>和<code>runTest</code>的C++代码，如下：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// runTest的C++代码</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> _C_TestClass_runTest(Class <span class="keyword">self</span>, SEL _cmd) &#123;</div><div class="line">    <span class="built_in">NSMutableArray</span> *array = ((<span class="built_in">NSMutableArray</span> *(*)(<span class="keyword">id</span>, SEL))(<span class="keyword">void</span> *)objc_msgSend)((<span class="keyword">id</span>)objc_getClass(<span class="string">"NSMutableArray"</span>), sel_registerName(<span class="string">"new"</span>));</div><div class="line">    ((<span class="keyword">void</span> (*)(<span class="keyword">id</span>, SEL, <span class="built_in">NSMutableArray</span> **))(<span class="keyword">void</span> *)objc_msgSend)((<span class="keyword">id</span>)objc_getClass(<span class="string">"TestClass"</span>), sel_registerName(<span class="string">"testFunc:"</span>), &amp;array);</div><div class="line">    ((<span class="keyword">void</span> (*)(<span class="keyword">id</span>, SEL, <span class="built_in">NSMutableArray</span> **))(<span class="keyword">void</span> *)objc_msgSend)((<span class="keyword">id</span>)objc_getClass(<span class="string">"TestClass"</span>), sel_registerName(<span class="string">"testFunc:"</span>), &amp;array);</div><div class="line">    <span class="built_in">NSLog</span>((<span class="built_in">NSString</span> *)&amp;__NSConstantStringImpl__var_folders__5_6lqsnn195jj6pw61j66npcnm0000gn_T_main_5a7341_mi_0, array);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// testFunc:的C++代码</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> _C_TestClass_testFunc_(Class <span class="keyword">self</span>, SEL _cmd, <span class="built_in">NSMutableArray</span> **array) &#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>从C++代码来看，也没有可能会导致EXC_BAD_ACCESS问题的释放、dealloc之类的代码，继续！</p>
+<h3 id="Hopper-Disassembler反编译分析"><a href="#Hopper-Disassembler反编译分析" class="headerlink" title="Hopper Disassembler反编译分析"></a>Hopper Disassembler反编译分析</h3><p>重写出C++代码无法解决，就只能让Hopper出马了，毕竟“汇编面前，没有秘密”=。=，以x86_64架构二进制为例。</p>
+<p>先来看<code>testFunc:</code>的：</p>
+<p><img src="http://zorrochen.qiniudn.com/xcode8_crash_on_out_parameter_1.jpg" alt=""></p>
+<p>跟预想的一致，没有任何“有效代码”。</p>
+<p>再看<code>runTest</code>方法：</p>
+<p><img src="http://zorrochen.qiniudn.com/xcode8_crash_on_out_parameter_2.jpg" alt=""></p>
+<p>为了方便分析，把反编译出来的汇编代码分了段：</p>
+<ol>
+<li>调用<code>NSMutableArray new</code>创建array变量，保存在r15寄存器上</li>
+<li>第一次调用<code>testFunc:</code></li>
+<li>先<code>retain</code>，然后<code>release</code>，rbx保存array，r15释放</li>
+<li>第二次调用<code>testFunc:</code></li>
+<li><strong>先<code>release</code>，再<code>retain</code>，即释放了rbx，然后又retain，这里明显有问题</strong></li>
+<li>调用<code>NSlog</code>打印</li>
+<li>最后release释放array变量</li>
+</ol>
+<p>为了进一步验证，用Hopper的反汇编生成Objective-C代码功能进行验证，生成的代码如下：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Xcode8 Release环境编译的x86_64二进制反编译后生成的代码</span></div><div class="line"><span class="keyword">void</span> +[TestClass runTest](<span class="keyword">void</span> * <span class="keyword">self</span>, <span class="keyword">void</span> * _cmd) &#123;</div><div class="line">    <span class="comment">// 创建</span></div><div class="line">    r15 = [<span class="built_in">NSMutableArray</span> new];</div><div class="line">    <span class="comment">// 第一次testFunc:</span></div><div class="line">    [TestClass testFunc:r15];</div><div class="line">    <span class="comment">// retain然后release</span></div><div class="line">    rbx = [r15 <span class="keyword">retain</span>];</div><div class="line">    [r15 release];</div><div class="line">    <span class="comment">// 第二次testFunc:</span></div><div class="line">    [TestClass testFunc:rbx];</div><div class="line">    <span class="comment">// 先release !!!</span></div><div class="line">    [rbx release];</div><div class="line">    <span class="comment">// 然后retain</span></div><div class="line">    rbx = [rbx <span class="keyword">retain</span>];</div><div class="line">    <span class="comment">// NSLog打印</span></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"array: %@"</span>, rbx);</div><div class="line">    <span class="comment">// 释放</span></div><div class="line">    [rbx release];</div><div class="line">    <span class="keyword">return</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>release和retain的顺序错误</strong><br>Hopper生成的代码跟汇编分析基本一致，至此，可以看出，唯一“不正常”的代码就是第5段的<strong>“先release，再retain”</strong>，这会导致array变量提前释放，以至于后面再次retain无效，NSLog的时候，出现访问已被释放的变量，于是出现EXC_BAD_ACCESS崩溃。</p>
+<h3 id="对比Xcode7"><a href="#对比Xcode7" class="headerlink" title="对比Xcode7"></a>对比Xcode7</h3><p>现在已经基本可以确定问题了，但是为什么Xcode7就不会Crash？反编译一探究竟。</p>
+<p>相同的代码，Xcode7 Release环境编译出可执行二进制文件，反编译后，用Hopper生成Objective-C代码，然后跟Xcode8的做对比，如下：</p>
+<p><img src="http://zorrochen.qiniudn.com/xcode8_crash_on_out_parameter_3.jpg" alt=""></p>
+<p>可以看出，Xcode8编译后，release和retain的顺序错了，导致了array变量提前被释放，继而EXC_BAD_ACCESS错误。而Xcode7编译的一切正常。</p>
+<h2 id="问题原因小结"><a href="#问题原因小结" class="headerlink" title="问题原因小结"></a>问题原因小结</h2><p>现在可以大胆猜测，EXC_BAD_ACCESS的原因就是<strong>Xcode8的编译错误</strong>。<br>在编译上面的代码时，Xcode8不能正确的处理array变量作为二级指针传入testFunc空函数后的<strong>release、retain顺序</strong>，导致array被<strong>提前释放</strong>，最终产生EXC_BAD_ACCESS错误。  </p>
+<p>目前已经给Xcode提了Bug report，等待苹果的回复～</p>
+<p>所有的代码、Xcode7和8编译出的二进制可执行文件、Hopper的文件，打包放在了Github上：<a href="https://github.com/zekunyan/OutParameterPointerCrashOnXcode8" target="_blank" rel="external">https://github.com/zekunyan/OutParameterPointerCrashOnXcode8</a></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>汇编面前，没有秘密！=。=</p>
+]]></content>
+      
+        <categories>
+            
+            <category> iOS </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 原创 </tag>
+            
+            <tag> iOS </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[有趣的Autolayout示例5-Masonry实现]]></title>
+      <url>http://tutuge.me/2017/03/12/autolayout-example-with-masonry5/</url>
+      <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>第五篇来了！<br>还是3个小例子，仍然是主要部分用Masonry手写代码实现，其它的约束在storyboard里面直接拖拽搭建。三个例子分别是：  </p>
+<ol>
+<li>UITableViewCell中多个变高的Label</li>
+<li>StairView自定义View的<code>intrinsicContentSize</code>，并支持在UITableViewCell中自动计算高度</li>
+<li>给同一个属性添加<strong>多重约束</strong>，实现复杂关系</li>
+</ol>
+<p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry5_1.png" alt=""></p>
+<p>前四篇：  </p>
+<ul>
+<li>第一篇：<a href="http://tutuge.me/2015/05/23/autolayout-example-with-masonry/">有趣的Autolayout示例-Masonry实现</a>  </li>
+<li>第二篇：<a href="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/">有趣的Autolayout示例2-Masonry实现</a>  </li>
+<li>第三篇：<a href="http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/">有趣的Autolayout示例3-Masonry实现</a></li>
+<li>第四篇：<a href="http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/">有趣的Autolayout示例4-Masonry实现</a></li>
+</ul>
+<p>Github地址：<br><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="external">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
+<a id="more"></a>
+<h2 id="Case1-UITableViewCell中多个变高的Label"><a href="#Case1-UITableViewCell中多个变高的Label" class="headerlink" title="Case1: UITableViewCell中多个变高的Label"></a>Case1: UITableViewCell中多个变高的Label</h2><h3 id="实现功能"><a href="#实现功能" class="headerlink" title="实现功能"></a>实现功能</h3><p>功能就是Cell整体变高，内部水平三个Label，宽度一样，高度由内容决定。</p>
+<p>在本例子中，Label的宽度定为80，避免多行Label的<code>preferredMaxLayoutWidth</code>的设置干扰。</p>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>原理一句话就是：Cell的高度由三个Label中最高的得出。</p>
+<p>但是，实际设置Autolayout的时候，不存在什么<code>cell.height = MAX(labels.height)</code>这样的关系。</p>
+<p>所以要转换一下，改为<strong><code>ANY(label.bottom) &lt;= cell.bottom</code></strong>，即<strong>每个Label的底部bottom都是在cell的底部bottom上面的</strong>，换算到坐标系里面，就是在Y轴上，<strong><code>label.bottom &lt;= cell.bottom</code></strong>。</p>
+<p>所以，cell的约束如下图所示：</p>
+<p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry5_2.png" alt=""></p>
+<h3 id="代码细节"><a href="#代码细节" class="headerlink" title="代码细节"></a>代码细节</h3><p>对应的代码如下：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)setupLayout &#123;</div><div class="line">    <span class="comment">// label1的约束    </span></div><div class="line">    [_label1 mas_makeConstraints:^(MASConstraintMaker *make) &#123;</div><div class="line">        make.width.equalTo(@<span class="number">80</span>); <span class="comment">// 宽度80</span></div><div class="line">        make.top.equalTo(<span class="keyword">self</span>.contentView.mas_topMargin); <span class="comment">// 上</span></div><div class="line">        make.left.equalTo(<span class="keyword">self</span>.contentView.mas_leftMargin); <span class="comment">// 左</span></div><div class="line">        <span class="comment">// label.bottom &lt;= cell.contentView.bottom，注意是在Y轴上对比</span></div><div class="line">        make.bottom.lessThanOrEqualTo(<span class="keyword">self</span>.contentView.mas_bottomMargin); </div><div class="line">    &#125;];</div><div class="line">    </div><div class="line">    <span class="comment">// label2的约束 </span></div><div class="line">    <span class="comment">// 类似...</span></div><div class="line">    <span class="comment">// label3的约束 </span></div><div class="line">    <span class="comment">// 类似...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Case2-StairView自定义View实现intrinsicContentSize"><a href="#Case2-StairView自定义View实现intrinsicContentSize" class="headerlink" title="Case2: StairView自定义View实现intrinsicContentSize"></a>Case2: StairView自定义View实现<code>intrinsicContentSize</code></h2><h3 id="实现功能-1"><a href="#实现功能-1" class="headerlink" title="实现功能"></a>实现功能</h3><p>实现一个自定义布局的View - StairView，阶梯布局View。<br>StairView支持设置Label成阶梯状从上到下、从左到右分布，如下图：</p>
+<p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry5_3.jpg" alt=""></p>
+<p>同时，StairView要支持Autolayout，支持大小由内容决定，可以在Cell里面用，并自动计算高度。</p>
+<p>接下来，看看如何实现这个StairView。</p>
+<h3 id="intrinsicContentSize是什么"><a href="#intrinsicContentSize是什么" class="headerlink" title="intrinsicContentSize是什么"></a>intrinsicContentSize是什么</h3><p>如果说到Autolayout的内容决定大小，就会遇到<code>intrinsicContentSize</code>方法，这个方法是什么呢？</p>
+<p>intrinsic单词的意思：</p>
+<blockquote>
+<p>adj.固有的，内在的，本质的； [解剖]体内的； 本征； 先天性</p>
+</blockquote>
+<p>而<code>intrinsicContentSize</code>方法的官方解释是：</p>
+<blockquote>
+<p>Returns the natural size for the receiving view, considering only properties of the view itself.</p>
+</blockquote>
+<p>所以，UIView的<code>intrinsicContentSize</code>，就是获取这个View的<strong>固有的，内在的，本质的</strong>的<strong>内容大小</strong>。</p>
+<p>在看Discussion部分：</p>
+<blockquote>
+<p>Custom views typically have content that they display of which the layout system is unaware. Overriding this method allows a custom view to communicate to the layout system what size it would like to be based on its content. This intrinsic size must be independent of the content frame, because there’s no way to dynamically communicate a changed width to the layout system based on a changed height, for example.</p>
+</blockquote>
+<p>比较长，简单说，就是Autolayout布局系统是不知道自定义View的内容大小的，所以自定义View可以重写这个方法，返回自己的<strong>内容大小</strong>，交由Autolayout布局系统去计算布局。并且，这个大小是不能依赖外部的大小的。</p>
+<p>所以，如果我们的View的大小是固定的时候，最简单，直接返回即可：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">CGSize</span>)intrinsicContentSize &#123;</div><div class="line">    <span class="keyword">return</span> <span class="built_in">CGSizeMake</span>(<span class="number">100</span>, <span class="number">100</span>); <span class="comment">// 固定100x100大小</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果大小需要计算，就要先计算，然后返回：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">CGSize</span>)intrinsicContentSize &#123;</div><div class="line">    <span class="comment">// 先计算内容大小，可以按情况缓存，减少计算量</span></div><div class="line">    <span class="built_in">CGSize</span> contentSize = [<span class="keyword">self</span> calculateContentSize];</div><div class="line">    <span class="comment">// 返回</span></div><div class="line">    <span class="keyword">return</span> contentSize;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>有了<code>intrinsicContentSize</code>的返回大小，Autolayout的布局系统才能正确的布局。</p>
+<h3 id="StairView的实现"><a href="#StairView的实现" class="headerlink" title="StairView的实现"></a>StairView的实现</h3><p>清楚了<code>intrinsicContentSize</code>的作用以后，就可以着手实现StairView了。</p>
+<h4 id="API设计"><a href="#API设计" class="headerlink" title="API设计"></a>API设计</h4><p>为了尽量简单，StairView的方法只有一个：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> *  设置阶梯title</div><div class="line"> *  @param titles 标题数组</div><div class="line"> */</div><div class="line">- (<span class="keyword">void</span>)setStairTitles:(<span class="built_in">NSArray</span> &lt;<span class="built_in">NSString</span> *&gt; *)titles;</div></pre></td></tr></table></figure>
+<p>直接传入字符串数组即可。</p>
+<h4 id="内部属性"><a href="#内部属性" class="headerlink" title="内部属性"></a>内部属性</h4><p>StairView内部由UILabel组成实现，所以需要一个数组保存所有的Label，还要一个CGSize类型的变量，保存当前的内容大小：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">StairView</span> ()</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSMutableArray</span> &lt;<span class="built_in">UILabel</span> *&gt; *itemViews; <span class="comment">// Label数组</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">CGSize</span> contentSize; <span class="comment">// 内容大小，随时更新</span></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<h4 id="设置阶梯标题-setStairTitles-的实现"><a href="#设置阶梯标题-setStairTitles-的实现" class="headerlink" title="设置阶梯标题: setStairTitles:的实现"></a>设置阶梯标题: setStairTitles:的实现</h4><p>接着就是实现<code>setStairTitles:</code>方法。<br>基本逻辑就是: <code>删除旧的Label-&gt;循环创建新的Label-&gt;重新布局</code>：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)setStairTitles:(<span class="built_in">NSArray</span>&lt;<span class="built_in">NSString</span> *&gt; *)titles &#123;</div><div class="line">    <span class="comment">// 批量从superView删除旧的Label</span></div><div class="line">    [_itemViews makeObjectsPerformSelector:<span class="keyword">@selector</span>(removeFromSuperview)];</div><div class="line">    </div><div class="line">    <span class="comment">// 重新创建</span></div><div class="line">    _itemViews = [<span class="built_in">NSMutableArray</span> new];</div><div class="line">    </div><div class="line">    <span class="comment">// 循环创建新的Label</span></div><div class="line">    <span class="keyword">for</span> (<span class="built_in">NSString</span> *title <span class="keyword">in</span> titles) &#123;</div><div class="line">        <span class="built_in">UILabel</span> *label = [<span class="built_in">UILabel</span> new];</div><div class="line">        <span class="comment">// 设置样式</span></div><div class="line">        label.text = title;</div><div class="line">        label.font = [<span class="built_in">UIFont</span> systemFontOfSize:<span class="number">12</span>];</div><div class="line">        label.layer.borderColor = [<span class="built_in">UIColor</span> lightGrayColor].CGColor;</div><div class="line">        label.layer.borderWidth = <span class="number">1.0</span>f / [<span class="built_in">UIScreen</span> mainScreen].scale;</div><div class="line">        label.numberOfLines = <span class="number">0</span>;</div><div class="line">        [<span class="keyword">self</span> addSubview:label];</div><div class="line">        <span class="comment">// 添加Label</span></div><div class="line">        [_itemViews addObject:label];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 重新布局</span></div><div class="line">    _contentSize = <span class="built_in">CGSizeZero</span>;</div><div class="line">    </div><div class="line">    <span class="comment">// 重点！</span></div><div class="line">    [<span class="keyword">self</span> updateStairLayout];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="内部阶梯Label的布局-intrinsicContentSize的计算-updateStairLayout的实现"><a href="#内部阶梯Label的布局-intrinsicContentSize的计算-updateStairLayout的实现" class="headerlink" title="内部阶梯Label的布局+intrinsicContentSize的计算: updateStairLayout的实现"></a>内部阶梯Label的布局+intrinsicContentSize的计算: updateStairLayout的实现</h4><p>从上面的设置代码可看出，重点是对内部Label布局的<code>updateStairLayout</code>方法，按照前面所说的功能要求，基本的原理就是:<br><code>根据当前阶梯数量计算每个Label的平均width-&gt;遍历所有Label计算当前width下的高度-&gt;设置每个Label的frame-&gt;更新contentSize</code></p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)updateStairLayout &#123;</div><div class="line">    <span class="keyword">if</span> (_itemViews.count == <span class="number">0</span>) &#123;</div><div class="line">        <span class="comment">// 没有设置内容，内容大小为零</span></div><div class="line">        _contentSize = <span class="built_in">CGSizeZero</span>;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 计算每个Label的平均宽度</span></div><div class="line">    <span class="built_in">CGFloat</span> eachLabelWidth = <span class="built_in">CGRectGetWidth</span>(<span class="keyword">self</span>.bounds) / (<span class="built_in">CGFloat</span>)_itemViews.count;</div><div class="line">    <span class="built_in">CGFloat</span> lastY = <span class="number">0</span>;</div><div class="line">    <span class="built_in">CGFloat</span> lastX = <span class="number">0</span>;</div><div class="line">    </div><div class="line">    <span class="keyword">for</span> (<span class="built_in">UILabel</span> *label <span class="keyword">in</span> _itemViews) &#123;</div><div class="line">        <span class="comment">// 根据内容、当前width计算高度</span></div><div class="line">        label.preferredMaxLayoutWidth = eachLabelWidth;</div><div class="line">        <span class="built_in">CGFloat</span> height = [label sizeThatFits:<span class="built_in">CGSizeMake</span>(eachLabelWidth, <span class="number">0</span>)].height;</div><div class="line">        </div><div class="line">        <span class="comment">// 设置frame</span></div><div class="line">        <span class="built_in">CGRect</span> frame = <span class="built_in">CGRectMake</span>(lastX, lastY, eachLabelWidth, height);</div><div class="line">        label.frame = frame;</div><div class="line">        </div><div class="line">        <span class="comment">// 更新下一轮</span></div><div class="line">        lastX += eachLabelWidth;</div><div class="line">        lastY += height;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 更新contentSize</span></div><div class="line">    <span class="built_in">CGSize</span> newContentSize = <span class="built_in">CGSizeMake</span>(<span class="built_in">CGRectGetWidth</span>(<span class="keyword">self</span>.bounds), lastY);</div><div class="line">    </div><div class="line">    <span class="comment">// 判断内容大小是否有变化</span></div><div class="line">    <span class="keyword">if</span> (!<span class="built_in">CGSizeEqualToSize</span>(newContentSize, _contentSize)) &#123;</div><div class="line">        <span class="comment">// 更新contentSize</span></div><div class="line">        _contentSize = newContentSize;</div><div class="line">        </div><div class="line">        <span class="comment">// 通知外部IntrinsicContentSize失效</span></div><div class="line">        [<span class="keyword">self</span> invalidateIntrinsicContentSize];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>要先判断设置的阶梯title数量是否为零，否则计算平均宽度时会导致除数为零的Crash</li>
+<li>每个Label的高度，根据当前的平均宽度，用<code>sizeThatFits:</code>计算得出</li>
+<li>最后更新<code>_contentSize</code>的值</li>
+<li>重点！<code>[self invalidateIntrinsicContentSize]</code>通知外界，StairView的内容大小发生变化</li>
+</ul>
+<p>计算内部Label布局的原理还是很简单的，重点就是最后的更新<code>_contentSize</code>和调用<code>[self invalidateIntrinsicContentSize]</code>。</p>
+<h4 id="通知外界内容大小发生变化-invalidateIntrinsicContentSize方法"><a href="#通知外界内容大小发生变化-invalidateIntrinsicContentSize方法" class="headerlink" title="通知外界内容大小发生变化-invalidateIntrinsicContentSize方法"></a>通知外界内容大小发生变化-invalidateIntrinsicContentSize方法</h4><p>先看看官方文档的解释：</p>
+<blockquote>
+<p>Call this when something changes in your custom view that invalidates its intrinsic content size. This allows the constraint-based layout system to take the new intrinsic content size into account in its next layout pass.</p>
+</blockquote>
+<p>意思就是，当自定义View的内容大小发生变化时，调用此方法通知布局系统，在下一次布局更新中刷新。</p>
+<p>所以，对照上面的代码:</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 判断内容大小是否有变化</span></div><div class="line"><span class="keyword">if</span> (!<span class="built_in">CGSizeEqualToSize</span>(newContentSize, _contentSize)) &#123;</div><div class="line">    <span class="comment">// 更新contentSize</span></div><div class="line">    _contentSize = newContentSize;</div><div class="line">    </div><div class="line">    <span class="comment">// 通知外部IntrinsicContentSize失效</span></div><div class="line">    [<span class="keyword">self</span> invalidateIntrinsicContentSize];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>就很明显了，就是按照文档的说明做的。</p>
+<h4 id="关键：何时调用updateStairLayout更新布局、刷新contentSize"><a href="#关键：何时调用updateStairLayout更新布局、刷新contentSize" class="headerlink" title="关键：何时调用updateStairLayout更新布局、刷新contentSize"></a>关键：何时调用updateStairLayout更新布局、刷新contentSize</h4><p>有了<code>updateStairLayout</code>方法来布局、计算contentSize，也用了<code>invalidateIntrinsicContentSize</code>通知系统刷新，那么剩下来的关键就是<strong>何时何地调用更新布局、contentSize</strong></p>
+<p><strong>在<code>layoutSubviews</code>的时候</strong><br>这里很明显，<code>layoutSubviews</code>就是刷新自定义view的地方，系统会在布局的过程中，多次调用，如frame改变。</p>
+<p><strong>在<code>intrinsicContentSize</code>的时候</strong><br>这里比较容易忽视，有时候，系统调用<code>intrinsicContentSize</code>方法的时候，可能在自定义View的布局之前，所以这个时候要“强制”刷新布局、计算出当前状态下正确的contentSize</p>
+<p>所以，有两处地方要加上：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">CGSize</span>)intrinsicContentSize &#123;</div><div class="line">    [<span class="keyword">self</span> updateStairLayout];</div><div class="line">    <span class="keyword">return</span> _contentSize;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)layoutSubviews &#123;</div><div class="line">    [<span class="keyword">super</span> layoutSubviews];</div><div class="line">    [<span class="keyword">self</span> updateStairLayout];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="自定义View小结"><a href="#自定义View小结" class="headerlink" title="自定义View小结"></a>自定义View小结</h3><p>StairView的原理、代码都讲完了，算是一个典型的自定义的、根据内容决定高度的View案例，主要要注意的就是<strong>更新布局、contentSize的时机</strong>，以及<strong>及时invalidateIntrinsicContentSize通知布局系统更新</strong></p>
+<h2 id="Case3-给同一个属性添加多重约束，实现复杂关系"><a href="#Case3-给同一个属性添加多重约束，实现复杂关系" class="headerlink" title="Case3: 给同一个属性添加多重约束，实现复杂关系"></a>Case3: 给同一个属性添加<strong>多重约束</strong>，实现复杂关系</h2><p>这个Case主要是为了纠正一个可能的误区：<strong>Autolayout里面，同一个属性，是可以加上多重约束的</strong>，或者说，同一个View的同一个属性，可以参与到多个约束里面的。</p>
+<p>先看看Case的功能：</p>
+<p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry5_4.jpg" alt=""></p>
+<p>注意到，右边绿色label的左边，不仅要大于左边蓝色label的右边，还要大于整体宽度的1/3，所以，是要<strong>同时满足多条约束条件的</strong>。</p>
+<h3 id="区分观念：Frame布局和Autolayout的不同"><a href="#区分观念：Frame布局和Autolayout的不同" class="headerlink" title="区分观念：Frame布局和Autolayout的不同"></a>区分观念：Frame布局和Autolayout的不同</h3><p><strong>按照Frame布局</strong></p>
+<p>按照传统的用Frame布局的方式，label的左边，其实就是<code>label.frame.origin.x</code>这个属性，所以，要左边满足条件的话，首先想到的可能就是：</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">// 满足大于蓝色<span class="built_in">label</span>的右边</div><div class="line"><span class="built_in">label</span>.frame.<span class="built_in">origin</span>.x &gt; blueLabel1.frame.<span class="built_in">origin</span>.x + blueLabel1.frame.size.<span class="built_in">width</span>;</div><div class="line"><span class="built_in">label</span>.frame.<span class="built_in">origin</span>.x &gt; blueLabel2.frame.<span class="built_in">origin</span>.x + blueLabel2.frame.size.<span class="built_in">width</span>;</div><div class="line"><span class="built_in">label</span>.frame.<span class="built_in">origin</span>.x &gt; blueLabel3.frame.<span class="built_in">origin</span>.x + blueLabel3.frame.size.<span class="built_in">width</span>;</div><div class="line">// 满足大于整体的<span class="number">1</span>/<span class="number">3</span></div><div class="line"><span class="built_in">label</span>.frame.<span class="built_in">origin</span>.x &gt; (superView.frame.<span class="built_in">origin</span>.x + superView.frame.size.<span class="built_in">width</span>) / <span class="number">3</span></div></pre></td></tr></table></figure>
+<p>这，乍一看，就是不停的在<code>layoutSubView</code>的时候做判断、处理。</p>
+<p><strong>按照Autolayout布局</strong></p>
+<p>而Autolayout是什么，是<strong>约束</strong>，是一种布局关系，只是对具体View的相关属性的一种关系设置，我们设置了约束，系统就会在需要的时候，按照约束，计算出每个View的frame，自动更新。</p>
+<p>所以，同一个属性，完全是可以加多个约束条件的。</p>
+<h3 id="代码细节-1"><a href="#代码细节-1" class="headerlink" title="代码细节"></a>代码细节</h3><p>一旦没有了一个属性一个约束的<strong>观念限制</strong>，这个Case的功能就很好实现了，关键代码如下：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 创建绿色label</span></div><div class="line">_greenLabel = [<span class="built_in">UILabel</span> new];</div><div class="line">[_containerView addSubview:_greenLabel];</div><div class="line"></div><div class="line"><span class="comment">// 设置内容抗压优先级最高</span></div><div class="line">[_greenLabel setContentCompressionResistancePriority:<span class="built_in">UILayoutPriorityRequired</span> forAxis:<span class="built_in">UILayoutConstraintAxisHorizontal</span>];</div><div class="line"></div><div class="line">[_greenLabel mas_makeConstraints:^(MASConstraintMaker *make) &#123;</div><div class="line">    <span class="comment">// 垂直居中</span></div><div class="line">    make.centerY.equalTo(_containerView);</div><div class="line">    </div><div class="line">    <span class="comment">// 右边不超出</span></div><div class="line">    make.right.lessThanOrEqualTo(_containerView);</div><div class="line">    </div><div class="line">    <span class="comment">// 左边大于等于父View宽度的1/3，注意不是width属性</span></div><div class="line">    make.left.greaterThanOrEqualTo(_containerView.mas_right).multipliedBy((<span class="built_in">CGFloat</span>)(<span class="number">1.0</span>f / <span class="number">3.0</span>f));</div><div class="line">    </div><div class="line">    <span class="comment">// 循环，左边大于所有左边label的右边+8</span></div><div class="line">    <span class="keyword">for</span> (<span class="built_in">UILabel</span> *label <span class="keyword">in</span> _leftLabels) &#123;</div><div class="line">        make.left.greaterThanOrEqualTo(label.mas_right).offset(<span class="number">8</span>);</div><div class="line">    &#125;</div><div class="line">&#125;];</div></pre></td></tr></table></figure>
+<p>只要约束没有冲突，我们设置的约束，就可以在各种情况下，按照需要生效。<br>对于这种内容动态变化，View之间关系复杂的情况，用Autolayout就非常有效了。</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>这个系列居然已经出到了第五篇了，自己都觉得不可思议=。=<br>所有的例子都是日常工作中遇到、想到的，觉得算是一个点，就把它记录了下来，以后会一直坚持下去～</p>
+]]></content>
+      
+        <categories>
+            
+            <category> iOS </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 原创 </tag>
+            
+            <tag> iOS </tag>
+            
+            <tag> Autolayout </tag>
+            
+            <tag> Masonry </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper]]></title>
+      <url>http://tutuge.me/2017/03/11/TTGDeallocTaskHelper/</url>
+      <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近更新了下以前写的TTGDeallocTaskHelper库，功能非常简单，就是<strong>在不改变原有代码的情况下，不用Runtime的Method Swizzling给任意对象添加任务Block，在对象dealloc的后期执行Block。</strong>使用时：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 给object对象添加dealloc后期要执行的任务Block</span></div><div class="line">[object ttg_addDeallocTask:^(__<span class="keyword">unsafe_unretained</span> <span class="keyword">id</span> target, <span class="built_in">NSUInteger</span> identifier) &#123;</div><div class="line">    <span class="comment">// 执行任务</span></div><div class="line">&#125;];</div></pre></td></tr></table></figure>
+<p>Github地址：<a href="https://github.com/zekunyan/TTGDeallocTaskHelper/" target="_blank" rel="external">https://github.com/zekunyan/TTGDeallocTaskHelper</a></p>
+<p>一张图说明原理：</p>
+<p><img src="http://zorrochen.qiniudn.com/TTGDeallocTaskHelper_1.jpg" alt="总体结构"></p>
+<p>库的详细原理、限制、注意事项，为什么说“<strong>后期</strong>”执行，将在下文给出。</p>
+<a id="more"></a>
+<h2 id="使用案例"><a href="#使用案例" class="headerlink" title="使用案例"></a>使用案例</h2><p>先给出几个使用案例。</p>
+<h3 id="删除Notification监听"><a href="#删除Notification监听" class="headerlink" title="删除Notification监听"></a>删除Notification监听</h3><p>比如你给一个第三方类对象添加了Notification通知，要在对象release后删除Notification的监听，就可以：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[object ttg_addDeallocTask:^(__<span class="keyword">unsafe_unretained</span> SomeClass *object, <span class="built_in">NSUInteger</span> identifier) &#123;</div><div class="line">	<span class="comment">// 删除Notification监听</span></div><div class="line">    [[<span class="built_in">NSNotificationCenter</span> defaultCenter] removeObserver:object];</div><div class="line">&#125;];</div></pre></td></tr></table></figure>
+<h3 id="快速Debug内存泄漏"><a href="#快速Debug内存泄漏" class="headerlink" title="快速Debug内存泄漏"></a>快速Debug内存泄漏</h3><p>有时你想快速验证一下一个类有没有释放，存不存在内存泄漏，比如一个ViewController返回后，就可以这么做：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[someViewController ttg_addDeallocTask:^(__<span class="keyword">unsafe_unretained</span> <span class="built_in">UIViewController</span> *controller, <span class="built_in">NSUInteger</span> identifier) &#123;</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"我正常释放了！哈哈哈！"</span>);</div><div class="line">&#125;];</div></pre></td></tr></table></figure>
+<h3 id="事件打点"><a href="#事件打点" class="headerlink" title="事件打点"></a>事件打点</h3><p>业务开发中，想监听某个事件什么时候销毁，就可以：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[someEvent ttg_addDeallocTask:^(__<span class="keyword">unsafe_unretained</span> SomeEvent *event, <span class="built_in">NSUInteger</span> identifier) &#123;</div><div class="line">    <span class="comment">// 打点。。。</span></div><div class="line">&#125;];</div></pre></td></tr></table></figure>
+<p>是不是很方便！没有对原有的代码做任何侵入。<br>接下来看看实现原理。</p>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><h3 id="在对象dealloc的时候做操作的四种办法"><a href="#在对象dealloc的时候做操作的四种办法" class="headerlink" title="在对象dealloc的时候做操作的四种办法"></a>在对象dealloc的时候做操作的四种办法</h3><p>在对象dealloc的时候做操作，有好几种方法：</p>
+<ul>
+<li><strong>继承</strong>：这个应该是最“正常”的方法了，继承对应的类，在子类中实现<code>dealloc</code>方法，执行相关的任务。缺点是要修改用到类的地方为自己定义的子类</li>
+<li><strong>Method Swizzling</strong>：方法交换，直接自己定义新的dealloc方法实现，实现任务的调用。但是坏处是所有的对象都会被替换，侵入性太大</li>
+<li><strong>ISA Swizzling</strong>：动态的生成对象的子类，在子类继承方法，实现调用任务，然后设置对象的isa指针，使其指向子类。这种方法的好处是只会影响到单个对象，但是系统KVO也是用这个方法，重复设置isa的话，会有问题。</li>
+<li><strong>利用Associated Object</strong>：Associated Object会在对象释放时自动释放，所以可以用来“挂载”要执行的任务。</li>
+</ul>
+<p>对比了上面的四种方法后，选定用Associated Object的方式实现TTGDeallocTaskHelper。</p>
+<h3 id="用Associated-Object挂载任务"><a href="#用Associated-Object挂载任务" class="headerlink" title="用Associated Object挂载任务"></a>用Associated Object挂载任务</h3><p>总的思路是：</p>
+<ol>
+<li>给对象添加Associated Object</li>
+<li>在Associated Object里面保存要执行的任务Block</li>
+<li>实现Associated Object的<code>dealloc</code>方法，在Associated Object释放的时候，批量执行之前添加的Block</li>
+</ol>
+<p>图示如下：</p>
+<p><img src="http://zorrochen.qiniudn.com/TTGDeallocTaskHelper_1.jpg" alt="总体结构"></p>
+<h3 id="Associated-Object-TaskModel"><a href="#Associated-Object-TaskModel" class="headerlink" title="Associated Object - TaskModel"></a>Associated Object - TaskModel</h3><p><strong>属性</strong></p>
+<p>上图中的TaskModel，就是库代码里面的<code>TTGDeallocTaskModel</code>类，包含三个属性：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) pthread_mutex_t lock;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSMutableDictionary</span> *tasksDict;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">unsafe_unretained</span>) <span class="keyword">id</span> target;</div></pre></td></tr></table></figure>
+<ul>
+<li><code>tasksDict</code>保存要执行的任务Block</li>
+<li><code>lock</code>锁用来保证多线程下操作<code>tasksDict</code>的安全性</li>
+<li><code>target</code>指向的是原对象，是<code>unsafe_unretained</code>的，保证始终不为nil，所以也建议不要在任务Block里面调用target的方法</li>
+</ul>
+<h3 id="添加任务Block"><a href="#添加任务Block" class="headerlink" title="添加任务Block"></a>添加任务Block</h3><p><code>TTGDeallocTaskModel</code>的<code>tasksDict</code>就是用来保存要执行的任务Block的，为了能在添加了以后删除，所以要以Key-Value的形式保存。<br>Key的类型是NSUInteger，全局自增，保证唯一。</p>
+<h4 id="OSAtomicIncrement64实现线程安全的自增整型Key-identifier"><a href="#OSAtomicIncrement64实现线程安全的自增整型Key-identifier" class="headerlink" title="OSAtomicIncrement64实现线程安全的自增整型Key-identifier"></a>OSAtomicIncrement64实现线程安全的自增整型Key-identifier</h4><p>为了保证自增的Key的线程安全，同时平衡性能，所以此处用<code>OSAtomicIncrement64</code>实现原子整型数自增：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 全局静态变量</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">volatile</span> int64_t globalIdentifier = <span class="number">0</span>;</div><div class="line"><span class="comment">// 自增+1，生成新的Key</span></div><div class="line"><span class="built_in">NSUInteger</span> newIdentifier = (<span class="built_in">NSUInteger</span>)OSAtomicIncrement64(&amp;globalIdentifier);</div></pre></td></tr></table></figure>
+<h4 id="pthread-mutex-t保证操作字典的线程安全"><a href="#pthread-mutex-t保证操作字典的线程安全" class="headerlink" title="pthread_mutex_t保证操作字典的线程安全"></a>pthread_mutex_t保证操作字典的线程安全</h4><p>为了保证NSMutableDictionary的多线程操作的安全，用pthread_mutex_t对添加Block的操作加锁：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">pthread_mutex_lock(&amp;_lock);</div><div class="line">[_tasksDict setObject:[taskBlock <span class="keyword">copy</span>] forKey:newIdentifierNumber];</div><div class="line">pthread_mutex_unlock(&amp;_lock);</div></pre></td></tr></table></figure>
+<h3 id="删除任务Block"><a href="#删除任务Block" class="headerlink" title="删除任务Block"></a>删除任务Block</h3><p>删除任务有两种，分别是删除一个identifier key对应的Block，和删除所有Block，同样，都要加锁保证线程安全：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 加锁</span></div><div class="line">pthread_mutex_lock(&amp;_lock);</div><div class="line"><span class="comment">// 删除某个identifier对应的Block</span></div><div class="line">[_tasksDict removeObjectForKey:identifierNumber];</div><div class="line"><span class="comment">// 或删除所有</span></div><div class="line">[_tasksDict removeAllObjects];</div><div class="line"><span class="comment">// 解除锁</span></div><div class="line">pthread_mutex_unlock(&amp;_lock);</div></pre></td></tr></table></figure>
+<h3 id="dealloc执行Block"><a href="#dealloc执行Block" class="headerlink" title="dealloc执行Block"></a>dealloc执行Block</h3><p>最终在TaskModel被释放的时候，要批量执行所有添加的Block：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)dealloc &#123;</div><div class="line">    <span class="comment">// 批量执行Block</span></div><div class="line">    [_tasksDict enumerateKeysAndObjectsUsingBlock:^(<span class="built_in">NSNumber</span> *identifier, TTGDeallocTaskBlock block, <span class="built_in">BOOL</span> * _Nonnull stop) &#123;</div><div class="line">        block(_target, identifier.unsignedIntegerValue);</div><div class="line">    &#125;];</div><div class="line">    <span class="comment">// 销毁锁</span></div><div class="line">    pthread_mutex_destroy(&amp;_lock);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="给NSObject添加Category"><a href="#给NSObject添加Category" class="headerlink" title="给NSObject添加Category"></a>给NSObject添加Category</h3><p>上面是TaskModel的部分，接下来是NSObject的。</p>
+<p>给NSObject添加Categor <code>NSObject (TTGDeallocTaskHelper)</code>，保存<code>TTGDeallocTaskModel</code>，封装调用。</p>
+<h4 id="封装-添加任务Block"><a href="#封装-添加任务Block" class="headerlink" title="封装-添加任务Block"></a>封装-添加任务Block</h4><p><strong>Associated Object给对象添加TaskModel属性</strong></p>
+<p>用<code>objc_setAssociatedObject</code>实现给任意对象添加对应的TaskModel对象。</p>
+<p><strong>@synchronized保证多线程下TaskModel的唯一性</strong></p>
+<p>首次添加任务Block，会创建TaskModel，为了保证多线程下的唯一性，所以创建的部分要用<code>@synchronized</code>保护起来。</p>
+<p>所以，添加任务Block的代码如下：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">NSUInteger</span>)ttg_addDeallocTask:(TTGDeallocTaskBlock)taskBlock &#123;</div><div class="line">    <span class="keyword">if</span> (!taskBlock) &#123;</div><div class="line">        <span class="comment">// block为空</span></div><div class="line">        <span class="keyword">return</span> TTGDeallocTaskIllegalIdentifier;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    TTGDeallocTaskModel *model = <span class="literal">nil</span>;</div><div class="line">    </div><div class="line">    <span class="comment">// 线程安全</span></div><div class="line">    <span class="keyword">@synchronized</span> (<span class="keyword">self</span>) &#123;</div><div class="line">        model = objc_getAssociatedObject(<span class="keyword">self</span>, &amp;TTGDeallocTaskModelKey);</div><div class="line">        <span class="keyword">if</span> (!model) &#123;</div><div class="line">            <span class="comment">// 创建</span></div><div class="line">            model = [[TTGDeallocTaskModel alloc] initWithTarget:<span class="keyword">self</span>];</div><div class="line">            <span class="comment">// 保存</span></div><div class="line">            objc_setAssociatedObject(<span class="keyword">self</span>, &amp;TTGDeallocTaskModelKey, model, OBJC_ASSOCIATION_RETAIN_NONATOMIC);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 添加新的Block</span></div><div class="line">    <span class="built_in">NSUInteger</span> newIdentifier = [model addTask:taskBlock];</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> newIdentifier;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="封装-删除Block"><a href="#封装-删除Block" class="headerlink" title="封装-删除Block"></a>封装-删除Block</h4><p>直接获取当前对象的TaskModel对象，调用相应的方法即可，不再贴代码。</p>
+<h2 id="限制与注意事项"><a href="#限制与注意事项" class="headerlink" title="限制与注意事项"></a>限制与注意事项</h2><p>原理和实现说完了，接下来是库的限制与注意事项。</p>
+<h3 id="NSObject对象的dealloc过程"><a href="#NSObject对象的dealloc过程" class="headerlink" title="NSObject对象的dealloc过程"></a>NSObject对象的dealloc过程</h3><p>先来看看Associated Object在<code>dealloc</code>的什么时候释放。</p>
+<p>NSObject对象dealloc的具体细节，sunnyxx在他的<a href="http://blog.sunnyxx.com/2014/04/02/objc_dig_arc_dealloc/" target="_blank" rel="external">《ARC下dealloc过程及.cxx_destruct的探究》</a>已经说的很清楚了。简单来说，就是对象dealloc的时候，最终会调用到<code>objc_destructInstance</code>方法上：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 源码：objc4-706 objc-class.mm</span></div><div class="line"><span class="comment">/***********************************************************************</span></div><div class="line">* objc_destructInstance</div><div class="line">* Destroys an instance without freeing memory. </div><div class="line">* Calls C++ destructors.</div><div class="line">* Removes associative references.</div><div class="line">* Returns `obj`. Does nothing if `obj` is nil.</div><div class="line">* CoreFoundation and other clients do call this under GC.</div><div class="line">**********************************************************************/</div><div class="line"><span class="keyword">void</span> *objc_destructInstance(<span class="keyword">id</span> obj) </div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span> (obj) &#123;</div><div class="line">        Class isa = obj-&gt;getIsa();</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (isa-&gt;hasCxxDtor()) &#123;</div><div class="line">            <span class="comment">// 1. 释放property</span></div><div class="line">            object_cxxDestruct(obj);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (isa-&gt;instancesHaveAssociatedObjects()) &#123;</div><div class="line">            <span class="comment">// 2. 删除对象的associated objects</span></div><div class="line">            _object_remove_assocations(obj);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// 3. 设置所有指向此对象的weak指针为nil</span></div><div class="line">        objc_clear_deallocating(obj);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> obj;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>主要是3步：</p>
+<ol>
+<li><code>object_cxxDestruct</code>释放对象的ivar、property</li>
+<li><code>_object_remove_assocations</code>释放对象的Associated Object</li>
+<li><code>objc_clear_deallocating</code>重置所有指向对象的weak指针为空</li>
+</ol>
+<h3 id="不建议在Block里面调用target原对象的方法"><a href="#不建议在Block里面调用target原对象的方法" class="headerlink" title="不建议在Block里面调用target原对象的方法"></a>不建议在Block里面调用target原对象的方法</h3><p>从dealloc的流程可知，Associated Object是在第二步被释放的，这个时候，原对象的属性已被release，并且，Associated Object对象自己的dealloc不一定在什么时候会被调用（比如加到了autorelease pool里面），所以，不建议在任务Block里面调用target原对象的方法。</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>什么时候Associated Object的释放能在对象属性release之前就好了=。=</p>
+]]></content>
+      
+        <categories>
+            
+            <category> iOS </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 原创 </tag>
+            
+            <tag> iOS </tag>
+            
+            <tag> 开源 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[用QuartzCode快速实现一个收藏动画]]></title>
+      <url>http://tutuge.me/2017/03/08/quartzcode-demo-star-animation/</url>
+      <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>“工欲善其事,必先利其器”，iOS的Core Animation非常强大，可以做出非常炫酷的动画，但是实际写起来还是比较麻烦，代码不直观，需要反复的改参数、Build、运行，所以诞生了各种动画制作工具，本文就以其中比较有名的<a href="http://www.quartzcodeapp.com/" target="_blank" rel="external">QuartzCode</a>为例，快速实现一个收藏功能的星星动画，最终的效果如下：</p>
+<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_1.gif" alt=""></p>
+<p>GitHub地址：<a href="https://github.com/zekunyan/QuartzCodeExample-StarAimation" target="_blank" rel="external">https://github.com/zekunyan/QuartzCodeExample-StarAimation</a></p>
+<a id="more"></a>
+<h2 id="QuartzCode简介"><a href="#QuartzCode简介" class="headerlink" title="QuartzCode简介"></a>QuartzCode简介</h2><p>QuartzCode是一款专门用来创作iOS/macOS动画的软件，基本上把整个Core Animation框架的内容都搬到了软件里面，比如各种Layer、Mask、可以用来动画的属性，基本上跟代码是一致的，完全可以当成<strong>“可视化动画编程”</strong>工具，而且制作以后可以<strong>导出代码+资源文件</strong>，直接就可以在代码里面调用，方便自定义修改。</p>
+<p>以QuartzCode 1.54.0为例，主体界面如下：</p>
+<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_2.jpg" alt=""></p>
+<p>简单讲下：  </p>
+<ul>
+<li>A: Layers，用于动画的Layer在这里显示，先后顺序、层级和StoryBoard比较像</li>
+<li>B: Inspector，当前选中元素，如Layer的属性编辑，基本和对应CALayer类的属性一一对应</li>
+<li>C: Animations，动画组，可以有多个动画组，每个相互独立</li>
+<li>D: Timeline，动画时间轴，每个Layer的动画都会在时间轴上标出</li>
+<li>E: Keyframe inspector，动画关键帧的属性编辑，也是跟Core Animation的CAAnimation类以及子类的属性一致</li>
+<li>F: 画布，Layer的编辑区</li>
+</ul>
+<p>总体上来看，QuartzCode的界面跟XIB、StoryBoard的风格非常类似，还是很容易上手的，更多的教程看官网：<a href="http://www.quartzcodeapp.com/" target="_blank" rel="external">http://www.quartzcodeapp.com/</a></p>
+<h2 id="整理思路"><a href="#整理思路" class="headerlink" title="整理思路"></a>整理思路</h2><p>首先整理下思路：</p>
+<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_3.jpg" alt=""></p>
+<p>总体上可以分成两个部分，一个是动画部分，用QuartzCode实现可视化编辑创建；另一个是功能、代码API设置部分，需要在QuartzCode最后导出的代码基础上，添加、修改，封装成简单的控件库。</p>
+<h2 id="QuartzCode实现动画"><a href="#QuartzCode实现动画" class="headerlink" title="QuartzCode实现动画"></a>QuartzCode实现动画</h2><p>先来看看动画的实现，本节只把主要步骤流程列出来，详细的参数、设置，参考<a href="https://github.com/zekunyan/QuartzCodeExample-StarAimation" target="_blank" rel="external">GitHub上的QuartzCode文件</a>。</p>
+<h3 id="显示星星动画"><a href="#显示星星动画" class="headerlink" title="显示星星动画"></a>显示星星动画</h3><p>显示星星的动画由三个部分组成，分别是实心的星星从小到大出现，空心的从大到小并透明度减小消失，最后星星四周闪动圆点、短线。</p>
+<p><strong>实心星星从小到大出现</strong></p>
+<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_4.jpg" alt=""></p>
+<ol>
+<li>拖入图片素材到中间的画布上，软件会自动创建一个layer，可以通过Inspector调整大小、位置</li>
+<li>对Layers里面自动生成的layer重命名</li>
+<li>点击Animations的“+”按钮，添加一个动画组，命名为show</li>
+<li>选中当前的layer，点击Timeline下对应layer的“+”按钮，添加一个Bounds帧动画</li>
+<li>Timeline里面的每一行对应帧动画的时间轴，可以在轴上双击、右键添加关键帧，这里默认就好，分别<strong>选中</strong>Bounds帧动画时间轴<strong>两端的关键点</strong>，在右边的Keyframe inspector里面设置Size值，起始是（0，0），结束时大小为原图大小</li>
+</ol>
+<p><strong>空心星星从大到小、透明度减小消失</strong></p>
+<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_5.jpg" alt=""></p>
+<p>基本和上一步一样，可以先隐藏实心的layer以便于观察。</p>
+<ol>
+<li>添加空心的星星图片素材</li>
+<li>命名layer</li>
+<li>给空心的layer添加Bounds和Opacity两种动画，分别修改帧动画的起始、结束值</li>
+<li>拖动时间轴查看效果</li>
+</ol>
+<p><strong>四周闪动短线、圆点</strong></p>
+<p>短线、圆点是沿着星星的四周<strong>重复排列</strong>的，所以这里可以用<code>CAReplicatorLayer</code>来实现，对应到QuartzCode里面就是工具栏的”Replicator”类型的Layer。<code>CAReplicatorLayer</code>可以根据一定的<strong>规则重复</strong>的绘制内部的子Layer，在这里只需要按照旋转角度变化就好。</p>
+<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_6.jpg" alt=""></p>
+<ol>
+<li>点击”Replicator”，在中间的画布上拖动出一个layer，然后选择”Shape”里面的圆角矩形，在星星的一角拖动画出一个小的圆角矩形，<strong>保证star_layer在replicator layer的内部</strong></li>
+<li>设置replicator的属性，实现循环重复内部的layer，这里设置”instance count”为5，”Rotation”为72，也就是360/5=72，就可以实现按照星星的五个角重复绘制</li>
+<li>最后就是添加动画，分别是Opacity透明度从0到1，Position从内到外，Transform变化大小</li>
+</ol>
+<p>剩余的圆点，和短线的创建方法一致，就不再重复讲解～</p>
+<p>至此，显示的动画就创建好了。</p>
+<h3 id="隐藏星星动画"><a href="#隐藏星星动画" class="headerlink" title="隐藏星星动画"></a>隐藏星星动画</h3><p>再来看看隐藏星星的动画，有了上一小节的基础，隐藏星星的动画就容易多了，基本步骤都是一样的，如下：</p>
+<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_7.jpg" alt=""></p>
+<ol>
+<li>添加一个新的动画组hide</li>
+<li>分别设置每个layer的动画，实心的星星从大到小、同时透明度降低，空心的相反，replicator layer一直隐藏</li>
+</ol>
+<h3 id="导出动画代码"><a href="#导出动画代码" class="headerlink" title="导出动画代码"></a>导出动画代码</h3><p>动画都实现了好了以后，就可以导出代码了。</p>
+<p>依次<code>File-&gt;Export Code...</code>，就可以打开导出代码的预览界面：</p>
+<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_8.jpg" alt=""></p>
+<p>右边的选项，按照需要选择，默认的基本可以满足要求，“Export Image Assets”最好选上，可以一同导出图片资源。选项的说明参见文档：<a href="http://www.quartzcodeapp.com/code-generation/code-options/" target="_blank" rel="external">http://www.quartzcodeapp.com/code-generation/code-options/</a></p>
+<p>至此，最复杂的动画部分就完成了，不用写一行代码，全部可视化编辑～</p>
+<h2 id="调整、封装代码"><a href="#调整、封装代码" class="headerlink" title="调整、封装代码"></a>调整、封装代码</h2><p>接着就是封装导出的代码，方便使用。</p>
+<h3 id="API设计"><a href="#API设计" class="headerlink" title="API设计"></a>API设计</h3><p>首先是整个动画的API的设计，为了方便给任意UIView实例添加动画，所以设计成UIView的Category，如下：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//  UIView+TTGStarAnimation.h</span></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">UIView</span> (<span class="title">TTGStarAnimation</span>)</span></div><div class="line"></div><div class="line"><span class="comment">// 初始化动画</span></div><div class="line">- (<span class="keyword">void</span>)ttg_setupStarAnimation;</div><div class="line"></div><div class="line"><span class="comment">// 初始化动画，同时可以调整inset</span></div><div class="line">- (<span class="keyword">void</span>)ttg_setupStarAnimationWithEdgeInset:(<span class="built_in">UIEdgeInsets</span>)inset;</div><div class="line"></div><div class="line"><span class="comment">// 显示星星动画</span></div><div class="line">- (<span class="keyword">void</span>)ttg_showStarAnimated:(<span class="built_in">BOOL</span>)animated complete:(<span class="keyword">void</span> (^)())complete;</div><div class="line"></div><div class="line"><span class="comment">// 隐藏星星动画</span></div><div class="line">- (<span class="keyword">void</span>)ttg_hideStarAnimated:(<span class="built_in">BOOL</span>)animated complete:(<span class="keyword">void</span> (^)())complete;</div><div class="line"></div><div class="line"><span class="comment">// 当前是否显示</span></div><div class="line">- (<span class="built_in">BOOL</span>)ttg_getStarIsShow;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<h3 id="AssociatedObject保存动画View实例"><a href="#AssociatedObject保存动画View实例" class="headerlink" title="AssociatedObject保存动画View实例"></a>AssociatedObject保存动画View实例</h3><p>QuartzCode导出的动画代码都在一个View上，所以为了在Category里给任意UIView实例添加动画View的Property、当前星星是否显示的Bool值，就要用到AssociatedObject，对应的set、get方法如下：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//  UIView+TTGStarAnimation.m</span></div><div class="line"></div><div class="line">- (TTGStarAnimationView *)ttg_getStarAnimationView &#123;</div><div class="line">    <span class="keyword">return</span> objc_getAssociatedObject(<span class="keyword">self</span>, &amp;kTTGButtonStarAnimationViewKey);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="built_in">BOOL</span>)ttg_getStarIsShow &#123;</div><div class="line">    <span class="keyword">return</span> [objc_getAssociatedObject(<span class="keyword">self</span>, &amp;kTTGButtonStarAnimationStateKey) boolValue];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)ttg_setStarIsShow:(<span class="built_in">BOOL</span>)isShow &#123;</div><div class="line">    objc_setAssociatedObject(<span class="keyword">self</span>, &amp;kTTGButtonStarAnimationStateKey, @(isShow), OBJC_ASSOCIATION_COPY_NONATOMIC);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="修改QuartzCode导出的代码-暴露内部Layer实例"><a href="#修改QuartzCode导出的代码-暴露内部Layer实例" class="headerlink" title="修改QuartzCode导出的代码 - 暴露内部Layer实例"></a>修改QuartzCode导出的代码 - 暴露内部Layer实例</h3><p>QuartzCode导出的代码，内部的动画Layer是不可见的，为了能“手动”控制动画View的实际显示状态，就要修改下导出的代码，暴露内部的动画Layer实例。</p>
+<p>所有的Layer都在<code>NSMutableDictionary * layers</code>字典里面，通过key获取，给<code>TTGStarAnimationView.h</code>添加三个属性：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//  TTGStarAnimationView.h</span></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">TTGStarAnimationView</span> : <span class="title">UIView</span></span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>, <span class="keyword">readonly</span>) <span class="built_in">CALayer</span> *fillLayer;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>, <span class="keyword">readonly</span>) <span class="built_in">CALayer</span> *emptyLayer;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>, <span class="keyword">readonly</span>) <span class="built_in">CALayer</span> *replicatedLayer;</div><div class="line"><span class="comment">// ...</span></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>然后实现getter方法：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//  TTGStarAnimationView.m</span></div><div class="line">- (<span class="built_in">CALayer</span> *)fillLayer &#123;</div><div class="line">    <span class="keyword">return</span> _layers[<span class="string">@"star_animation_fill"</span>];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="built_in">CALayer</span> *)emptyLayer &#123;</div><div class="line">    <span class="keyword">return</span> _layers[<span class="string">@"star_animation_empty"</span>];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="built_in">CALayer</span> *)replicatedLayer &#123;</div><div class="line">    <span class="keyword">return</span> _layers[<span class="string">@"replicator"</span>];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><p><code>ttg_setupStarAnimation</code>和<code>ttg_setupStarAnimationWithEdgeInset:</code>方法，用来初始化动画，包括创建<code>TTGStarAnimationView</code>实例，添加、保存在当前view上，设置每个动画layer的状态等操作：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//  TTGStarAnimationView.m</span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)ttg_setupStarAnimation &#123;</div><div class="line">    [<span class="keyword">self</span> ttg_setupStarAnimationWithEdgeInset:<span class="built_in">UIEdgeInsetsZero</span>];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)ttg_setupStarAnimationWithEdgeInset:(<span class="built_in">UIEdgeInsets</span>)inset &#123;</div><div class="line">    <span class="comment">// 获取当前实例的动画starAnimationView</span></div><div class="line">    TTGStarAnimationView *starAnimationView = [<span class="keyword">self</span> ttg_getStarAnimationView];</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (!starAnimationView) &#123;</div><div class="line">        <span class="comment">// 不存在，创建新的</span></div><div class="line">        starAnimationView = [[TTGStarAnimationView alloc] initWithFrame:<span class="built_in">UIEdgeInsetsInsetRect</span>(<span class="keyword">self</span>.bounds, inset)];</div><div class="line">        <span class="comment">// 设置不可接受交互事件，防止阻断父view</span></div><div class="line">        starAnimationView.userInteractionEnabled = <span class="literal">NO</span>;</div><div class="line">        <span class="comment">// 设置AutoSizingMask</span></div><div class="line">        starAnimationView.autoresizingMask = <span class="built_in">UIViewAutoresizingFlexibleWidth</span> | <span class="built_in">UIViewAutoresizingFlexibleHeight</span>;</div><div class="line">        <span class="comment">// 添加</span></div><div class="line">        [<span class="keyword">self</span> addSubview:starAnimationView];</div><div class="line">        <span class="comment">// AssociatedObject保存实例</span></div><div class="line">        objc_setAssociatedObject(<span class="keyword">self</span>, &amp;kTTGButtonStarAnimationViewKey, starAnimationView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 移除所有动画</span></div><div class="line">    [starAnimationView removeAllAnimations];</div><div class="line"></div><div class="line">    <span class="comment">// 设置layer的初始化状态</span></div><div class="line">    starAnimationView.fillLayer.hidden = <span class="literal">YES</span>;</div><div class="line">    starAnimationView.emptyLayer.hidden = <span class="literal">NO</span>;</div><div class="line">    starAnimationView.replicatedLayer.hidden = <span class="literal">YES</span>;</div><div class="line">    </div><div class="line">    <span class="comment">// 设置初始化状态值</span></div><div class="line">    [<span class="keyword">self</span> ttg_setStarIsShow:<span class="literal">NO</span>];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="动画控制"><a href="#动画控制" class="headerlink" title="动画控制"></a>动画控制</h3><p>最后就是实现动画的控制，这里比较关键的是对动画的每个Layer的控制，每个Layer的初始、最终状态都要设置，<strong>保证多次调用、无论是否执行动画</strong>，最终显示都是一致的，以显示星星为例：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//  TTGStarAnimationView.m</span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)ttg_showStarAnimated:(<span class="built_in">BOOL</span>)animated complete:(<span class="keyword">void</span> (^)())complete &#123;</div><div class="line">    <span class="comment">// 获取当前view的动画starAnimationView实例</span></div><div class="line">    TTGStarAnimationView *starAnimationView = [<span class="keyword">self</span> ttg_getStarAnimationView];</div><div class="line">    </div><div class="line">    <span class="comment">// 当前是hide，才执行show</span></div><div class="line">    <span class="keyword">if</span> (![<span class="keyword">self</span> ttg_getStarIsShow]) &#123;</div><div class="line">        <span class="comment">// 设置状态值</span></div><div class="line">        [<span class="keyword">self</span> ttg_setStarIsShow:<span class="literal">YES</span>];</div><div class="line">        </div><div class="line">        <span class="comment">// 先移除所有动画</span></div><div class="line">        [starAnimationView removeAllAnimations];</div><div class="line">        </div><div class="line">        <span class="comment">// 设置最终状态下Layer的hidden值的Block</span></div><div class="line">        <span class="keyword">void</span> (^completionBlock)() = ^ &#123;</div><div class="line">            starAnimationView.fillLayer.hidden = <span class="literal">NO</span>;</div><div class="line">            starAnimationView.emptyLayer.hidden = <span class="literal">YES</span>;</div><div class="line">            starAnimationView.replicatedLayer.hidden = <span class="literal">YES</span>;</div><div class="line">            </div><div class="line">            <span class="comment">// 执行回调</span></div><div class="line">            <span class="keyword">if</span> (complete) &#123;</div><div class="line">                complete();</div><div class="line">            &#125;</div><div class="line">        &#125;;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (animated) &#123;</div><div class="line">            <span class="comment">// 如果要执行动画，则设置动画前Layer的hidden值</span></div><div class="line">            starAnimationView.fillLayer.hidden = <span class="literal">NO</span>;</div><div class="line">            starAnimationView.emptyLayer.hidden = <span class="literal">NO</span>;</div><div class="line">            starAnimationView.replicatedLayer.hidden = <span class="literal">NO</span>;</div><div class="line">            <span class="comment">// 执行动画</span></div><div class="line">            [starAnimationView addShowAnimationCompletionBlock:^(<span class="built_in">BOOL</span> finished) &#123;</div><div class="line">                completionBlock();</div><div class="line">            &#125;];</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">// 不用动画，直接执行最终状态</span></div><div class="line">            completionBlock();</div><div class="line">        &#125;   </div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>隐藏的代码跟显示基本一致，把各种状态、hidden的值倒过来就可以了。<br>所有代码参见<a href="https://github.com/zekunyan/QuartzCodeExample-StarAimation" target="_blank" rel="external">Github</a>。</p>
+<p>要写的代码就这么多，是不是非常简单！</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>“工欲善其事,必先利其器”，借助各种强大的工具软件，做动画的效率简直提升几十倍～</p>
+]]></content>
+      
+        <categories>
+            
+            <category> iOS </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 原创 </tag>
+            
+            <tag> iOS </tag>
+            
+            <tag> 开源 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[开源项目-拼图验证控件TTGPuzzleVerify的实现]]></title>
       <url>http://tutuge.me/2016/12/25/TTGPuzzleVerify/</url>
       <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近抽空写了个拼图验证控件，用户可以通过水平、垂直，或者直接拖动拼图块，完成拼图图案，来完成验证。拼图块的形状可以自定义，默认提供了经典的拼图形状、圆形、正方形，整个拼图的图案也是支持从图片生成的。</p>
@@ -3033,6 +3409,12 @@ $(document).ready(function(event) {
     </entry>
     
     <entry>
+      <title><![CDATA[tags]]></title>
+      <url>http://tutuge.me/tags/index.html</url>
+      <content type="html"></content>
+    </entry>
+    
+    <entry>
       <title></title>
       <url>http://tutuge.me/share/rcpr_api.html</url>
       <content type="html"><![CDATA[<!doctype html>
@@ -3372,12 +3754,6 @@ sup {
 
 </body>
 </html>]]></content>
-    </entry>
-    
-    <entry>
-      <title><![CDATA[tags]]></title>
-      <url>http://tutuge.me/tags/index.html</url>
-      <content type="html"></content>
     </entry>
     
     <entry>

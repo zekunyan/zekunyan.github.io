@@ -1,0 +1,721 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>用QuartzCode快速实现一个收藏动画 | iOS，Android程序猿，喜欢Mac、Linux、各种开源技术，各种语言</title>
+    <meta name="author" content="燕泽堃">
+    
+    <meta name="description" content="程序猿">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="用QuartzCode快速实现一个收藏动画"/>
+    <meta property="og:site_name" content="土土哥的技术Blog"/>
+
+    
+    <meta property="og:image" content="undefined"/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="土土哥的技术Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="blue-grey">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">土土哥的技术Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav blue-grey darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="http://7nj2iz.com1.z0.glb.clouddn.com/avatar_comic_big.png" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">土土哥</p>
+                        <p class="desc">iOS/Android/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav blue-grey darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/iOS/">
+                    iOS <span class="right">36 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/Android/">
+                    Android <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/Mac/">
+                    Mac <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/服务端/">
+                    服务端 <span class="right">2 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/其它/">
+                    其它 <span class="right">2 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper blue-grey">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/iOS/">iOS</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>用QuartzCode快速实现一个收藏动画</h1>
+    
+
+
+            </div>
+            <time class="teal-link-context" datetime="2017-03-07T16:00:00.000Z"><a href="/2017/03/08/quartzcode-demo-star-animation/">2017-03-08</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
+        
+            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
+        
+            <a href="/tags/开源/" class="chip teal accent-4">开源</a>
+        
+    </div>
+
+
+            <div class="toc teal-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#前言"><span class="section table-of-contents-text">前言</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#QuartzCode简介"><span class="section table-of-contents-text">QuartzCode简介</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#整理思路"><span class="section table-of-contents-text">整理思路</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#QuartzCode实现动画"><span class="section table-of-contents-text">QuartzCode实现动画</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#显示星星动画"><span class="section table-of-contents-text">显示星星动画</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#隐藏星星动画"><span class="section table-of-contents-text">隐藏星星动画</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#导出动画代码"><span class="section table-of-contents-text">导出动画代码</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#调整、封装代码"><span class="section table-of-contents-text">调整、封装代码</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#API设计"><span class="section table-of-contents-text">API设计</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#AssociatedObject保存动画View实例"><span class="section table-of-contents-text">AssociatedObject保存动画View实例</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#修改QuartzCode导出的代码-暴露内部Layer实例"><span class="section table-of-contents-text">修改QuartzCode导出的代码 - 暴露内部Layer实例</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#初始化"><span class="section table-of-contents-text">初始化</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#动画控制"><span class="section table-of-contents-text">动画控制</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#总结"><span class="section table-of-contents-text">总结</span></a></li></ol>
+</div>
+
+
+            <div class="entry teal-link-context">
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>“工欲善其事,必先利其器”，iOS的Core Animation非常强大，可以做出非常炫酷的动画，但是实际写起来还是比较麻烦，代码不直观，需要反复的改参数、Build、运行，所以诞生了各种动画制作工具，本文就以其中比较有名的<a href="http://www.quartzcodeapp.com/" target="_blank" rel="external">QuartzCode</a>为例，快速实现一个收藏功能的星星动画，最终的效果如下：</p>
+<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_1.gif" alt=""></p>
+<p>GitHub地址：<a href="https://github.com/zekunyan/QuartzCodeExample-StarAimation" target="_blank" rel="external">https://github.com/zekunyan/QuartzCodeExample-StarAimation</a></p>
+<a id="more"></a>
+<h2 id="QuartzCode简介"><a href="#QuartzCode简介" class="headerlink" title="QuartzCode简介"></a>QuartzCode简介</h2><p>QuartzCode是一款专门用来创作iOS/macOS动画的软件，基本上把整个Core Animation框架的内容都搬到了软件里面，比如各种Layer、Mask、可以用来动画的属性，基本上跟代码是一致的，完全可以当成<strong>“可视化动画编程”</strong>工具，而且制作以后可以<strong>导出代码+资源文件</strong>，直接就可以在代码里面调用，方便自定义修改。</p>
+<p>以QuartzCode 1.54.0为例，主体界面如下：</p>
+<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_2.jpg" alt=""></p>
+<p>简单讲下：  </p>
+<ul>
+<li>A: Layers，用于动画的Layer在这里显示，先后顺序、层级和StoryBoard比较像</li>
+<li>B: Inspector，当前选中元素，如Layer的属性编辑，基本和对应CALayer类的属性一一对应</li>
+<li>C: Animations，动画组，可以有多个动画组，每个相互独立</li>
+<li>D: Timeline，动画时间轴，每个Layer的动画都会在时间轴上标出</li>
+<li>E: Keyframe inspector，动画关键帧的属性编辑，也是跟Core Animation的CAAnimation类以及子类的属性一致</li>
+<li>F: 画布，Layer的编辑区</li>
+</ul>
+<p>总体上来看，QuartzCode的界面跟XIB、StoryBoard的风格非常类似，还是很容易上手的，更多的教程看官网：<a href="http://www.quartzcodeapp.com/" target="_blank" rel="external">http://www.quartzcodeapp.com/</a></p>
+<h2 id="整理思路"><a href="#整理思路" class="headerlink" title="整理思路"></a>整理思路</h2><p>首先整理下思路：</p>
+<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_3.jpg" alt=""></p>
+<p>总体上可以分成两个部分，一个是动画部分，用QuartzCode实现可视化编辑创建；另一个是功能、代码API设置部分，需要在QuartzCode最后导出的代码基础上，添加、修改，封装成简单的控件库。</p>
+<h2 id="QuartzCode实现动画"><a href="#QuartzCode实现动画" class="headerlink" title="QuartzCode实现动画"></a>QuartzCode实现动画</h2><p>先来看看动画的实现，本节只把主要步骤流程列出来，详细的参数、设置，参考<a href="https://github.com/zekunyan/QuartzCodeExample-StarAimation" target="_blank" rel="external">GitHub上的QuartzCode文件</a>。</p>
+<h3 id="显示星星动画"><a href="#显示星星动画" class="headerlink" title="显示星星动画"></a>显示星星动画</h3><p>显示星星的动画由三个部分组成，分别是实心的星星从小到大出现，空心的从大到小并透明度减小消失，最后星星四周闪动圆点、短线。</p>
+<p><strong>实心星星从小到大出现</strong></p>
+<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_4.jpg" alt=""></p>
+<ol>
+<li>拖入图片素材到中间的画布上，软件会自动创建一个layer，可以通过Inspector调整大小、位置</li>
+<li>对Layers里面自动生成的layer重命名</li>
+<li>点击Animations的“+”按钮，添加一个动画组，命名为show</li>
+<li>选中当前的layer，点击Timeline下对应layer的“+”按钮，添加一个Bounds帧动画</li>
+<li>Timeline里面的每一行对应帧动画的时间轴，可以在轴上双击、右键添加关键帧，这里默认就好，分别<strong>选中</strong>Bounds帧动画时间轴<strong>两端的关键点</strong>，在右边的Keyframe inspector里面设置Size值，起始是（0，0），结束时大小为原图大小</li>
+</ol>
+<p><strong>空心星星从大到小、透明度减小消失</strong></p>
+<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_5.jpg" alt=""></p>
+<p>基本和上一步一样，可以先隐藏实心的layer以便于观察。</p>
+<ol>
+<li>添加空心的星星图片素材</li>
+<li>命名layer</li>
+<li>给空心的layer添加Bounds和Opacity两种动画，分别修改帧动画的起始、结束值</li>
+<li>拖动时间轴查看效果</li>
+</ol>
+<p><strong>四周闪动短线、圆点</strong></p>
+<p>短线、圆点是沿着星星的四周<strong>重复排列</strong>的，所以这里可以用<code>CAReplicatorLayer</code>来实现，对应到QuartzCode里面就是工具栏的”Replicator”类型的Layer。<code>CAReplicatorLayer</code>可以根据一定的<strong>规则重复</strong>的绘制内部的子Layer，在这里只需要按照旋转角度变化就好。</p>
+<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_6.jpg" alt=""></p>
+<ol>
+<li>点击”Replicator”，在中间的画布上拖动出一个layer，然后选择”Shape”里面的圆角矩形，在星星的一角拖动画出一个小的圆角矩形，<strong>保证star_layer在replicator layer的内部</strong></li>
+<li>设置replicator的属性，实现循环重复内部的layer，这里设置”instance count”为5，”Rotation”为72，也就是360/5=72，就可以实现按照星星的五个角重复绘制</li>
+<li>最后就是添加动画，分别是Opacity透明度从0到1，Position从内到外，Transform变化大小</li>
+</ol>
+<p>剩余的圆点，和短线的创建方法一致，就不再重复讲解～</p>
+<p>至此，显示的动画就创建好了。</p>
+<h3 id="隐藏星星动画"><a href="#隐藏星星动画" class="headerlink" title="隐藏星星动画"></a>隐藏星星动画</h3><p>再来看看隐藏星星的动画，有了上一小节的基础，隐藏星星的动画就容易多了，基本步骤都是一样的，如下：</p>
+<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_7.jpg" alt=""></p>
+<ol>
+<li>添加一个新的动画组hide</li>
+<li>分别设置每个layer的动画，实心的星星从大到小、同时透明度降低，空心的相反，replicator layer一直隐藏</li>
+</ol>
+<h3 id="导出动画代码"><a href="#导出动画代码" class="headerlink" title="导出动画代码"></a>导出动画代码</h3><p>动画都实现了好了以后，就可以导出代码了。</p>
+<p>依次<code>File-&gt;Export Code...</code>，就可以打开导出代码的预览界面：</p>
+<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_8.jpg" alt=""></p>
+<p>右边的选项，按照需要选择，默认的基本可以满足要求，“Export Image Assets”最好选上，可以一同导出图片资源。选项的说明参见文档：<a href="http://www.quartzcodeapp.com/code-generation/code-options/" target="_blank" rel="external">http://www.quartzcodeapp.com/code-generation/code-options/</a></p>
+<p>至此，最复杂的动画部分就完成了，不用写一行代码，全部可视化编辑～</p>
+<h2 id="调整、封装代码"><a href="#调整、封装代码" class="headerlink" title="调整、封装代码"></a>调整、封装代码</h2><p>接着就是封装导出的代码，方便使用。</p>
+<h3 id="API设计"><a href="#API设计" class="headerlink" title="API设计"></a>API设计</h3><p>首先是整个动画的API的设计，为了方便给任意UIView实例添加动画，所以设计成UIView的Category，如下：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//  UIView+TTGStarAnimation.h</span></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">UIView</span> (<span class="title">TTGStarAnimation</span>)</span></div><div class="line"></div><div class="line"><span class="comment">// 初始化动画</span></div><div class="line">- (<span class="keyword">void</span>)ttg_setupStarAnimation;</div><div class="line"></div><div class="line"><span class="comment">// 初始化动画，同时可以调整inset</span></div><div class="line">- (<span class="keyword">void</span>)ttg_setupStarAnimationWithEdgeInset:(<span class="built_in">UIEdgeInsets</span>)inset;</div><div class="line"></div><div class="line"><span class="comment">// 显示星星动画</span></div><div class="line">- (<span class="keyword">void</span>)ttg_showStarAnimated:(<span class="built_in">BOOL</span>)animated complete:(<span class="keyword">void</span> (^)())complete;</div><div class="line"></div><div class="line"><span class="comment">// 隐藏星星动画</span></div><div class="line">- (<span class="keyword">void</span>)ttg_hideStarAnimated:(<span class="built_in">BOOL</span>)animated complete:(<span class="keyword">void</span> (^)())complete;</div><div class="line"></div><div class="line"><span class="comment">// 当前是否显示</span></div><div class="line">- (<span class="built_in">BOOL</span>)ttg_getStarIsShow;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<h3 id="AssociatedObject保存动画View实例"><a href="#AssociatedObject保存动画View实例" class="headerlink" title="AssociatedObject保存动画View实例"></a>AssociatedObject保存动画View实例</h3><p>QuartzCode导出的动画代码都在一个View上，所以为了在Category里给任意UIView实例添加动画View的Property、当前星星是否显示的Bool值，就要用到AssociatedObject，对应的set、get方法如下：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//  UIView+TTGStarAnimation.m</span></div><div class="line"></div><div class="line">- (TTGStarAnimationView *)ttg_getStarAnimationView &#123;</div><div class="line">    <span class="keyword">return</span> objc_getAssociatedObject(<span class="keyword">self</span>, &amp;kTTGButtonStarAnimationViewKey);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="built_in">BOOL</span>)ttg_getStarIsShow &#123;</div><div class="line">    <span class="keyword">return</span> [objc_getAssociatedObject(<span class="keyword">self</span>, &amp;kTTGButtonStarAnimationStateKey) boolValue];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)ttg_setStarIsShow:(<span class="built_in">BOOL</span>)isShow &#123;</div><div class="line">    objc_setAssociatedObject(<span class="keyword">self</span>, &amp;kTTGButtonStarAnimationStateKey, @(isShow), OBJC_ASSOCIATION_COPY_NONATOMIC);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="修改QuartzCode导出的代码-暴露内部Layer实例"><a href="#修改QuartzCode导出的代码-暴露内部Layer实例" class="headerlink" title="修改QuartzCode导出的代码 - 暴露内部Layer实例"></a>修改QuartzCode导出的代码 - 暴露内部Layer实例</h3><p>QuartzCode导出的代码，内部的动画Layer是不可见的，为了能“手动”控制动画View的实际显示状态，就要修改下导出的代码，暴露内部的动画Layer实例。</p>
+<p>所有的Layer都在<code>NSMutableDictionary * layers</code>字典里面，通过key获取，给<code>TTGStarAnimationView.h</code>添加三个属性：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//  TTGStarAnimationView.h</span></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">TTGStarAnimationView</span> : <span class="title">UIView</span></span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>, <span class="keyword">readonly</span>) <span class="built_in">CALayer</span> *fillLayer;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>, <span class="keyword">readonly</span>) <span class="built_in">CALayer</span> *emptyLayer;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>, <span class="keyword">readonly</span>) <span class="built_in">CALayer</span> *replicatedLayer;</div><div class="line"><span class="comment">// ...</span></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>然后实现getter方法：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//  TTGStarAnimationView.m</span></div><div class="line">- (<span class="built_in">CALayer</span> *)fillLayer &#123;</div><div class="line">    <span class="keyword">return</span> _layers[<span class="string">@"star_animation_fill"</span>];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="built_in">CALayer</span> *)emptyLayer &#123;</div><div class="line">    <span class="keyword">return</span> _layers[<span class="string">@"star_animation_empty"</span>];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="built_in">CALayer</span> *)replicatedLayer &#123;</div><div class="line">    <span class="keyword">return</span> _layers[<span class="string">@"replicator"</span>];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><p><code>ttg_setupStarAnimation</code>和<code>ttg_setupStarAnimationWithEdgeInset:</code>方法，用来初始化动画，包括创建<code>TTGStarAnimationView</code>实例，添加、保存在当前view上，设置每个动画layer的状态等操作：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//  TTGStarAnimationView.m</span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)ttg_setupStarAnimation &#123;</div><div class="line">    [<span class="keyword">self</span> ttg_setupStarAnimationWithEdgeInset:<span class="built_in">UIEdgeInsetsZero</span>];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)ttg_setupStarAnimationWithEdgeInset:(<span class="built_in">UIEdgeInsets</span>)inset &#123;</div><div class="line">    <span class="comment">// 获取当前实例的动画starAnimationView</span></div><div class="line">    TTGStarAnimationView *starAnimationView = [<span class="keyword">self</span> ttg_getStarAnimationView];</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (!starAnimationView) &#123;</div><div class="line">        <span class="comment">// 不存在，创建新的</span></div><div class="line">        starAnimationView = [[TTGStarAnimationView alloc] initWithFrame:<span class="built_in">UIEdgeInsetsInsetRect</span>(<span class="keyword">self</span>.bounds, inset)];</div><div class="line">        <span class="comment">// 设置不可接受交互事件，防止阻断父view</span></div><div class="line">        starAnimationView.userInteractionEnabled = <span class="literal">NO</span>;</div><div class="line">        <span class="comment">// 设置AutoSizingMask</span></div><div class="line">        starAnimationView.autoresizingMask = <span class="built_in">UIViewAutoresizingFlexibleWidth</span> | <span class="built_in">UIViewAutoresizingFlexibleHeight</span>;</div><div class="line">        <span class="comment">// 添加</span></div><div class="line">        [<span class="keyword">self</span> addSubview:starAnimationView];</div><div class="line">        <span class="comment">// AssociatedObject保存实例</span></div><div class="line">        objc_setAssociatedObject(<span class="keyword">self</span>, &amp;kTTGButtonStarAnimationViewKey, starAnimationView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 移除所有动画</span></div><div class="line">    [starAnimationView removeAllAnimations];</div><div class="line"></div><div class="line">    <span class="comment">// 设置layer的初始化状态</span></div><div class="line">    starAnimationView.fillLayer.hidden = <span class="literal">YES</span>;</div><div class="line">    starAnimationView.emptyLayer.hidden = <span class="literal">NO</span>;</div><div class="line">    starAnimationView.replicatedLayer.hidden = <span class="literal">YES</span>;</div><div class="line">    </div><div class="line">    <span class="comment">// 设置初始化状态值</span></div><div class="line">    [<span class="keyword">self</span> ttg_setStarIsShow:<span class="literal">NO</span>];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="动画控制"><a href="#动画控制" class="headerlink" title="动画控制"></a>动画控制</h3><p>最后就是实现动画的控制，这里比较关键的是对动画的每个Layer的控制，每个Layer的初始、最终状态都要设置，<strong>保证多次调用、无论是否执行动画</strong>，最终显示都是一致的，以显示星星为例：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//  TTGStarAnimationView.m</span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)ttg_showStarAnimated:(<span class="built_in">BOOL</span>)animated complete:(<span class="keyword">void</span> (^)())complete &#123;</div><div class="line">    <span class="comment">// 获取当前view的动画starAnimationView实例</span></div><div class="line">    TTGStarAnimationView *starAnimationView = [<span class="keyword">self</span> ttg_getStarAnimationView];</div><div class="line">    </div><div class="line">    <span class="comment">// 当前是hide，才执行show</span></div><div class="line">    <span class="keyword">if</span> (![<span class="keyword">self</span> ttg_getStarIsShow]) &#123;</div><div class="line">        <span class="comment">// 设置状态值</span></div><div class="line">        [<span class="keyword">self</span> ttg_setStarIsShow:<span class="literal">YES</span>];</div><div class="line">        </div><div class="line">        <span class="comment">// 先移除所有动画</span></div><div class="line">        [starAnimationView removeAllAnimations];</div><div class="line">        </div><div class="line">        <span class="comment">// 设置最终状态下Layer的hidden值的Block</span></div><div class="line">        <span class="keyword">void</span> (^completionBlock)() = ^ &#123;</div><div class="line">            starAnimationView.fillLayer.hidden = <span class="literal">NO</span>;</div><div class="line">            starAnimationView.emptyLayer.hidden = <span class="literal">YES</span>;</div><div class="line">            starAnimationView.replicatedLayer.hidden = <span class="literal">YES</span>;</div><div class="line">            </div><div class="line">            <span class="comment">// 执行回调</span></div><div class="line">            <span class="keyword">if</span> (complete) &#123;</div><div class="line">                complete();</div><div class="line">            &#125;</div><div class="line">        &#125;;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (animated) &#123;</div><div class="line">            <span class="comment">// 如果要执行动画，则设置动画前Layer的hidden值</span></div><div class="line">            starAnimationView.fillLayer.hidden = <span class="literal">NO</span>;</div><div class="line">            starAnimationView.emptyLayer.hidden = <span class="literal">NO</span>;</div><div class="line">            starAnimationView.replicatedLayer.hidden = <span class="literal">NO</span>;</div><div class="line">            <span class="comment">// 执行动画</span></div><div class="line">            [starAnimationView addShowAnimationCompletionBlock:^(<span class="built_in">BOOL</span> finished) &#123;</div><div class="line">                completionBlock();</div><div class="line">            &#125;];</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">// 不用动画，直接执行最终状态</span></div><div class="line">            completionBlock();</div><div class="line">        &#125;   </div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>隐藏的代码跟显示基本一致，把各种状态、hidden的值倒过来就可以了。<br>所有代码参见<a href="https://github.com/zekunyan/QuartzCodeExample-StarAimation" target="_blank" rel="external">Github</a>。</p>
+<p>要写的代码就这么多，是不是非常简单！</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>“工欲善其事,必先利其器”，借助各种强大的工具软件，做动画的效率简直提升几十倍～</p>
+
+                
+<p class="teal-link-context">
+    <a href="/2017/03/11/TTGDeallocTaskHelper/" rel="next" title="在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper">
+    上一篇：在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper
+  </a>
+</p>
+
+
+
+<p class="teal-link-context">
+    <a href="/2016/12/25/TTGPuzzleVerify/" rel="next" title="开源项目-拼图验证控件TTGPuzzleVerify的实现">
+    下一篇：开源项目-拼图验证控件TTGPuzzleVerify的实现
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comment">
+        <div class="card">
+            <div class="card-content">
+                <!-- Duoshuo Comment BEGIN -->
+                <div class="ds-thread" data-thread-key="2017/03/08/quartzcode-demo-star-animation/" data-title="用QuartzCode快速实现一个收藏动画" data-url="http://tutuge.me/2017/03/08/quartzcode-demo-star-animation/"></div>
+
+                <script type="text/javascript">
+                    console.log(document.querySelector('.ds-thread'));
+                    var duoshuoQuery = {
+                        short_name: 'tutuge'
+                    };
+                    (function() {
+                        var ds = document.createElement('script');
+                        ds.type = 'text/javascript';
+                        ds.async = true;
+                        ds.src = (document.location.protocol == 'https:'
+                            ? 'https:'
+                            : 'http:') + '//static.duoshuo.com/embed.js';
+                        ds.charset = 'UTF-8';
+                        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+                    })();
+                </script>
+                <!-- Duoshuo Comment END -->
+            </div>
+        </div>
+    </section>
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large teal">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect teal accent-4" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="menu"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer blue-grey darken-1">
+    
+    <div class="container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/zekunyan" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                <div class="site-visitors-container white-text">
+                    <span>
+                        <i class="fa fa-user"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+                    </span>
+                    <span>&nbsp;|&nbsp;</span>
+                    <span>
+                        <i class="fa fa-eye"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+                    </span>
+                </div>
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
+                
+                    <a class="social-link" href="http://raytaylorlin.com/" target="_blank">raytaylorism主题作者的技术博客</a>
+                
+                    <a class="social-link" href="http://suta.name/" target="_blank">很赞的设计师</a>
+                
+                    <a class="social-link" href="http://neoyeelf.github.io/" target="_blank">NeOye&#39;s blog</a>
+                
+                    <a class="social-link" href="http://bingyan.farbox.com/" target="_blank">Howl写东西的地方</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright teal-link-context">
+        <div class="container">
+            © 2017 tutuge.me, All rights reserved.
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('teal lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-68058110-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=55079830" charset="UTF-8"></script>
+
+
+
+
+
+</body>
+</html>

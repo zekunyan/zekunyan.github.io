@@ -1,0 +1,740 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>有趣的Autolayout示例5-Masonry实现 | iOS，Android程序猿，喜欢Mac、Linux、各种开源技术，各种语言</title>
+    <meta name="author" content="燕泽堃">
+    
+    <meta name="description" content="程序猿">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="有趣的Autolayout示例5-Masonry实现"/>
+    <meta property="og:site_name" content="土土哥的技术Blog"/>
+
+    
+    <meta property="og:image" content="undefined"/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="土土哥的技术Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="blue-grey">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">土土哥的技术Blog</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav blue-grey darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="http://7nj2iz.com1.z0.glb.clouddn.com/avatar_comic_big.png" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">土土哥</p>
+                        <p class="desc">iOS/Android/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav blue-grey darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/iOS/">
+                    iOS <span class="right">36 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/Android/">
+                    Android <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/Mac/">
+                    Mac <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/服务端/">
+                    服务端 <span class="right">2 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/其它/">
+                    其它 <span class="right">2 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper blue-grey">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/iOS/">iOS</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>有趣的Autolayout示例5-Masonry实现</h1>
+    
+
+
+            </div>
+            <time class="teal-link-context" datetime="2017-03-12T13:41:17.000Z"><a href="/2017/03/12/autolayout-example-with-masonry5/">2017-03-12</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
+        
+            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
+        
+            <a href="/tags/Autolayout/" class="chip teal accent-4">Autolayout</a>
+        
+            <a href="/tags/Masonry/" class="chip teal accent-4">Masonry</a>
+        
+    </div>
+
+
+            <div class="toc teal-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#前言"><span class="section table-of-contents-text">前言</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Case1-UITableViewCell中多个变高的Label"><span class="section table-of-contents-text">Case1: UITableViewCell中多个变高的Label</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#实现功能"><span class="section table-of-contents-text">实现功能</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#原理"><span class="section table-of-contents-text">原理</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#代码细节"><span class="section table-of-contents-text">代码细节</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Case2-StairView自定义View实现intrinsicContentSize"><span class="section table-of-contents-text">Case2: StairView自定义View实现intrinsicContentSize</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#实现功能-1"><span class="section table-of-contents-text">实现功能</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#intrinsicContentSize是什么"><span class="section table-of-contents-text">intrinsicContentSize是什么</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#StairView的实现"><span class="section table-of-contents-text">StairView的实现</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#API设计"><span class="section table-of-contents-text">API设计</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#内部属性"><span class="section table-of-contents-text">内部属性</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#设置阶梯标题-setStairTitles-的实现"><span class="section table-of-contents-text">设置阶梯标题: setStairTitles:的实现</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#内部阶梯Label的布局-intrinsicContentSize的计算-updateStairLayout的实现"><span class="section table-of-contents-text">内部阶梯Label的布局+intrinsicContentSize的计算: updateStairLayout的实现</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#通知外界内容大小发生变化-invalidateIntrinsicContentSize方法"><span class="section table-of-contents-text">通知外界内容大小发生变化-invalidateIntrinsicContentSize方法</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#关键：何时调用updateStairLayout更新布局、刷新contentSize"><span class="section table-of-contents-text">关键：何时调用updateStairLayout更新布局、刷新contentSize</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#自定义View小结"><span class="section table-of-contents-text">自定义View小结</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Case3-给同一个属性添加多重约束，实现复杂关系"><span class="section table-of-contents-text">Case3: 给同一个属性添加多重约束，实现复杂关系</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#区分观念：Frame布局和Autolayout的不同"><span class="section table-of-contents-text">区分观念：Frame布局和Autolayout的不同</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#代码细节-1"><span class="section table-of-contents-text">代码细节</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#最后"><span class="section table-of-contents-text">最后</span></a></li></ol>
+</div>
+
+
+            <div class="entry teal-link-context">
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>第五篇来了！<br>还是3个小例子，仍然是主要部分用Masonry手写代码实现，其它的约束在storyboard里面直接拖拽搭建。三个例子分别是：  </p>
+<ol>
+<li>UITableViewCell中多个变高的Label</li>
+<li>StairView自定义View的<code>intrinsicContentSize</code>，并支持在UITableViewCell中自动计算高度</li>
+<li>给同一个属性添加<strong>多重约束</strong>，实现复杂关系</li>
+</ol>
+<p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry5_1.png" alt=""></p>
+<p>前四篇：  </p>
+<ul>
+<li>第一篇：<a href="http://tutuge.me/2015/05/23/autolayout-example-with-masonry/">有趣的Autolayout示例-Masonry实现</a>  </li>
+<li>第二篇：<a href="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/">有趣的Autolayout示例2-Masonry实现</a>  </li>
+<li>第三篇：<a href="http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/">有趣的Autolayout示例3-Masonry实现</a></li>
+<li>第四篇：<a href="http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/">有趣的Autolayout示例4-Masonry实现</a></li>
+</ul>
+<p>Github地址：<br><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="external">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
+<a id="more"></a>
+<h2 id="Case1-UITableViewCell中多个变高的Label"><a href="#Case1-UITableViewCell中多个变高的Label" class="headerlink" title="Case1: UITableViewCell中多个变高的Label"></a>Case1: UITableViewCell中多个变高的Label</h2><h3 id="实现功能"><a href="#实现功能" class="headerlink" title="实现功能"></a>实现功能</h3><p>功能就是Cell整体变高，内部水平三个Label，宽度一样，高度由内容决定。</p>
+<p>在本例子中，Label的宽度定为80，避免多行Label的<code>preferredMaxLayoutWidth</code>的设置干扰。</p>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>原理一句话就是：Cell的高度由三个Label中最高的得出。</p>
+<p>但是，实际设置Autolayout的时候，不存在什么<code>cell.height = MAX(labels.height)</code>这样的关系。</p>
+<p>所以要转换一下，改为<strong><code>ANY(label.bottom) &lt;= cell.bottom</code></strong>，即<strong>每个Label的底部bottom都是在cell的底部bottom上面的</strong>，换算到坐标系里面，就是在Y轴上，<strong><code>label.bottom &lt;= cell.bottom</code></strong>。</p>
+<p>所以，cell的约束如下图所示：</p>
+<p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry5_2.png" alt=""></p>
+<h3 id="代码细节"><a href="#代码细节" class="headerlink" title="代码细节"></a>代码细节</h3><p>对应的代码如下：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)setupLayout &#123;</div><div class="line">    <span class="comment">// label1的约束    </span></div><div class="line">    [_label1 mas_makeConstraints:^(MASConstraintMaker *make) &#123;</div><div class="line">        make.width.equalTo(@<span class="number">80</span>); <span class="comment">// 宽度80</span></div><div class="line">        make.top.equalTo(<span class="keyword">self</span>.contentView.mas_topMargin); <span class="comment">// 上</span></div><div class="line">        make.left.equalTo(<span class="keyword">self</span>.contentView.mas_leftMargin); <span class="comment">// 左</span></div><div class="line">        <span class="comment">// label.bottom &lt;= cell.contentView.bottom，注意是在Y轴上对比</span></div><div class="line">        make.bottom.lessThanOrEqualTo(<span class="keyword">self</span>.contentView.mas_bottomMargin); </div><div class="line">    &#125;];</div><div class="line">    </div><div class="line">    <span class="comment">// label2的约束 </span></div><div class="line">    <span class="comment">// 类似...</span></div><div class="line">    <span class="comment">// label3的约束 </span></div><div class="line">    <span class="comment">// 类似...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Case2-StairView自定义View实现intrinsicContentSize"><a href="#Case2-StairView自定义View实现intrinsicContentSize" class="headerlink" title="Case2: StairView自定义View实现intrinsicContentSize"></a>Case2: StairView自定义View实现<code>intrinsicContentSize</code></h2><h3 id="实现功能-1"><a href="#实现功能-1" class="headerlink" title="实现功能"></a>实现功能</h3><p>实现一个自定义布局的View - StairView，阶梯布局View。<br>StairView支持设置Label成阶梯状从上到下、从左到右分布，如下图：</p>
+<p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry5_3.jpg" alt=""></p>
+<p>同时，StairView要支持Autolayout，支持大小由内容决定，可以在Cell里面用，并自动计算高度。</p>
+<p>接下来，看看如何实现这个StairView。</p>
+<h3 id="intrinsicContentSize是什么"><a href="#intrinsicContentSize是什么" class="headerlink" title="intrinsicContentSize是什么"></a>intrinsicContentSize是什么</h3><p>如果说到Autolayout的内容决定大小，就会遇到<code>intrinsicContentSize</code>方法，这个方法是什么呢？</p>
+<p>intrinsic单词的意思：</p>
+<blockquote>
+<p>adj.固有的，内在的，本质的； [解剖]体内的； 本征； 先天性</p>
+</blockquote>
+<p>而<code>intrinsicContentSize</code>方法的官方解释是：</p>
+<blockquote>
+<p>Returns the natural size for the receiving view, considering only properties of the view itself.</p>
+</blockquote>
+<p>所以，UIView的<code>intrinsicContentSize</code>，就是获取这个View的<strong>固有的，内在的，本质的</strong>的<strong>内容大小</strong>。</p>
+<p>在看Discussion部分：</p>
+<blockquote>
+<p>Custom views typically have content that they display of which the layout system is unaware. Overriding this method allows a custom view to communicate to the layout system what size it would like to be based on its content. This intrinsic size must be independent of the content frame, because there’s no way to dynamically communicate a changed width to the layout system based on a changed height, for example.</p>
+</blockquote>
+<p>比较长，简单说，就是Autolayout布局系统是不知道自定义View的内容大小的，所以自定义View可以重写这个方法，返回自己的<strong>内容大小</strong>，交由Autolayout布局系统去计算布局。并且，这个大小是不能依赖外部的大小的。</p>
+<p>所以，如果我们的View的大小是固定的时候，最简单，直接返回即可：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">CGSize</span>)intrinsicContentSize &#123;</div><div class="line">    <span class="keyword">return</span> <span class="built_in">CGSizeMake</span>(<span class="number">100</span>, <span class="number">100</span>); <span class="comment">// 固定100x100大小</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果大小需要计算，就要先计算，然后返回：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">CGSize</span>)intrinsicContentSize &#123;</div><div class="line">    <span class="comment">// 先计算内容大小，可以按情况缓存，减少计算量</span></div><div class="line">    <span class="built_in">CGSize</span> contentSize = [<span class="keyword">self</span> calculateContentSize];</div><div class="line">    <span class="comment">// 返回</span></div><div class="line">    <span class="keyword">return</span> contentSize;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>有了<code>intrinsicContentSize</code>的返回大小，Autolayout的布局系统才能正确的布局。</p>
+<h3 id="StairView的实现"><a href="#StairView的实现" class="headerlink" title="StairView的实现"></a>StairView的实现</h3><p>清楚了<code>intrinsicContentSize</code>的作用以后，就可以着手实现StairView了。</p>
+<h4 id="API设计"><a href="#API设计" class="headerlink" title="API设计"></a>API设计</h4><p>为了尽量简单，StairView的方法只有一个：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> *  设置阶梯title</div><div class="line"> *  @param titles 标题数组</div><div class="line"> */</div><div class="line">- (<span class="keyword">void</span>)setStairTitles:(<span class="built_in">NSArray</span> &lt;<span class="built_in">NSString</span> *&gt; *)titles;</div></pre></td></tr></table></figure>
+<p>直接传入字符串数组即可。</p>
+<h4 id="内部属性"><a href="#内部属性" class="headerlink" title="内部属性"></a>内部属性</h4><p>StairView内部由UILabel组成实现，所以需要一个数组保存所有的Label，还要一个CGSize类型的变量，保存当前的内容大小：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">StairView</span> ()</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSMutableArray</span> &lt;<span class="built_in">UILabel</span> *&gt; *itemViews; <span class="comment">// Label数组</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">CGSize</span> contentSize; <span class="comment">// 内容大小，随时更新</span></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<h4 id="设置阶梯标题-setStairTitles-的实现"><a href="#设置阶梯标题-setStairTitles-的实现" class="headerlink" title="设置阶梯标题: setStairTitles:的实现"></a>设置阶梯标题: setStairTitles:的实现</h4><p>接着就是实现<code>setStairTitles:</code>方法。<br>基本逻辑就是: <code>删除旧的Label-&gt;循环创建新的Label-&gt;重新布局</code>：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)setStairTitles:(<span class="built_in">NSArray</span>&lt;<span class="built_in">NSString</span> *&gt; *)titles &#123;</div><div class="line">    <span class="comment">// 批量从superView删除旧的Label</span></div><div class="line">    [_itemViews makeObjectsPerformSelector:<span class="keyword">@selector</span>(removeFromSuperview)];</div><div class="line">    </div><div class="line">    <span class="comment">// 重新创建</span></div><div class="line">    _itemViews = [<span class="built_in">NSMutableArray</span> new];</div><div class="line">    </div><div class="line">    <span class="comment">// 循环创建新的Label</span></div><div class="line">    <span class="keyword">for</span> (<span class="built_in">NSString</span> *title <span class="keyword">in</span> titles) &#123;</div><div class="line">        <span class="built_in">UILabel</span> *label = [<span class="built_in">UILabel</span> new];</div><div class="line">        <span class="comment">// 设置样式</span></div><div class="line">        label.text = title;</div><div class="line">        label.font = [<span class="built_in">UIFont</span> systemFontOfSize:<span class="number">12</span>];</div><div class="line">        label.layer.borderColor = [<span class="built_in">UIColor</span> lightGrayColor].CGColor;</div><div class="line">        label.layer.borderWidth = <span class="number">1.0</span>f / [<span class="built_in">UIScreen</span> mainScreen].scale;</div><div class="line">        label.numberOfLines = <span class="number">0</span>;</div><div class="line">        [<span class="keyword">self</span> addSubview:label];</div><div class="line">        <span class="comment">// 添加Label</span></div><div class="line">        [_itemViews addObject:label];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 重新布局</span></div><div class="line">    _contentSize = <span class="built_in">CGSizeZero</span>;</div><div class="line">    </div><div class="line">    <span class="comment">// 重点！</span></div><div class="line">    [<span class="keyword">self</span> updateStairLayout];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="内部阶梯Label的布局-intrinsicContentSize的计算-updateStairLayout的实现"><a href="#内部阶梯Label的布局-intrinsicContentSize的计算-updateStairLayout的实现" class="headerlink" title="内部阶梯Label的布局+intrinsicContentSize的计算: updateStairLayout的实现"></a>内部阶梯Label的布局+intrinsicContentSize的计算: updateStairLayout的实现</h4><p>从上面的设置代码可看出，重点是对内部Label布局的<code>updateStairLayout</code>方法，按照前面所说的功能要求，基本的原理就是:<br><code>根据当前阶梯数量计算每个Label的平均width-&gt;遍历所有Label计算当前width下的高度-&gt;设置每个Label的frame-&gt;更新contentSize</code></p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)updateStairLayout &#123;</div><div class="line">    <span class="keyword">if</span> (_itemViews.count == <span class="number">0</span>) &#123;</div><div class="line">        <span class="comment">// 没有设置内容，内容大小为零</span></div><div class="line">        _contentSize = <span class="built_in">CGSizeZero</span>;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 计算每个Label的平均宽度</span></div><div class="line">    <span class="built_in">CGFloat</span> eachLabelWidth = <span class="built_in">CGRectGetWidth</span>(<span class="keyword">self</span>.bounds) / (<span class="built_in">CGFloat</span>)_itemViews.count;</div><div class="line">    <span class="built_in">CGFloat</span> lastY = <span class="number">0</span>;</div><div class="line">    <span class="built_in">CGFloat</span> lastX = <span class="number">0</span>;</div><div class="line">    </div><div class="line">    <span class="keyword">for</span> (<span class="built_in">UILabel</span> *label <span class="keyword">in</span> _itemViews) &#123;</div><div class="line">        <span class="comment">// 根据内容、当前width计算高度</span></div><div class="line">        label.preferredMaxLayoutWidth = eachLabelWidth;</div><div class="line">        <span class="built_in">CGFloat</span> height = [label sizeThatFits:<span class="built_in">CGSizeMake</span>(eachLabelWidth, <span class="number">0</span>)].height;</div><div class="line">        </div><div class="line">        <span class="comment">// 设置frame</span></div><div class="line">        <span class="built_in">CGRect</span> frame = <span class="built_in">CGRectMake</span>(lastX, lastY, eachLabelWidth, height);</div><div class="line">        label.frame = frame;</div><div class="line">        </div><div class="line">        <span class="comment">// 更新下一轮</span></div><div class="line">        lastX += eachLabelWidth;</div><div class="line">        lastY += height;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 更新contentSize</span></div><div class="line">    <span class="built_in">CGSize</span> newContentSize = <span class="built_in">CGSizeMake</span>(<span class="built_in">CGRectGetWidth</span>(<span class="keyword">self</span>.bounds), lastY);</div><div class="line">    </div><div class="line">    <span class="comment">// 判断内容大小是否有变化</span></div><div class="line">    <span class="keyword">if</span> (!<span class="built_in">CGSizeEqualToSize</span>(newContentSize, _contentSize)) &#123;</div><div class="line">        <span class="comment">// 更新contentSize</span></div><div class="line">        _contentSize = newContentSize;</div><div class="line">        </div><div class="line">        <span class="comment">// 通知外部IntrinsicContentSize失效</span></div><div class="line">        [<span class="keyword">self</span> invalidateIntrinsicContentSize];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>要先判断设置的阶梯title数量是否为零，否则计算平均宽度时会导致除数为零的Crash</li>
+<li>每个Label的高度，根据当前的平均宽度，用<code>sizeThatFits:</code>计算得出</li>
+<li>最后更新<code>_contentSize</code>的值</li>
+<li>重点！<code>[self invalidateIntrinsicContentSize]</code>通知外界，StairView的内容大小发生变化</li>
+</ul>
+<p>计算内部Label布局的原理还是很简单的，重点就是最后的更新<code>_contentSize</code>和调用<code>[self invalidateIntrinsicContentSize]</code>。</p>
+<h4 id="通知外界内容大小发生变化-invalidateIntrinsicContentSize方法"><a href="#通知外界内容大小发生变化-invalidateIntrinsicContentSize方法" class="headerlink" title="通知外界内容大小发生变化-invalidateIntrinsicContentSize方法"></a>通知外界内容大小发生变化-invalidateIntrinsicContentSize方法</h4><p>先看看官方文档的解释：</p>
+<blockquote>
+<p>Call this when something changes in your custom view that invalidates its intrinsic content size. This allows the constraint-based layout system to take the new intrinsic content size into account in its next layout pass.</p>
+</blockquote>
+<p>意思就是，当自定义View的内容大小发生变化时，调用此方法通知布局系统，在下一次布局更新中刷新。</p>
+<p>所以，对照上面的代码:</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 判断内容大小是否有变化</span></div><div class="line"><span class="keyword">if</span> (!<span class="built_in">CGSizeEqualToSize</span>(newContentSize, _contentSize)) &#123;</div><div class="line">    <span class="comment">// 更新contentSize</span></div><div class="line">    _contentSize = newContentSize;</div><div class="line">    </div><div class="line">    <span class="comment">// 通知外部IntrinsicContentSize失效</span></div><div class="line">    [<span class="keyword">self</span> invalidateIntrinsicContentSize];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>就很明显了，就是按照文档的说明做的。</p>
+<h4 id="关键：何时调用updateStairLayout更新布局、刷新contentSize"><a href="#关键：何时调用updateStairLayout更新布局、刷新contentSize" class="headerlink" title="关键：何时调用updateStairLayout更新布局、刷新contentSize"></a>关键：何时调用updateStairLayout更新布局、刷新contentSize</h4><p>有了<code>updateStairLayout</code>方法来布局、计算contentSize，也用了<code>invalidateIntrinsicContentSize</code>通知系统刷新，那么剩下来的关键就是<strong>何时何地调用更新布局、contentSize</strong></p>
+<p><strong>在<code>layoutSubviews</code>的时候</strong><br>这里很明显，<code>layoutSubviews</code>就是刷新自定义view的地方，系统会在布局的过程中，多次调用，如frame改变。</p>
+<p><strong>在<code>intrinsicContentSize</code>的时候</strong><br>这里比较容易忽视，有时候，系统调用<code>intrinsicContentSize</code>方法的时候，可能在自定义View的布局之前，所以这个时候要“强制”刷新布局、计算出当前状态下正确的contentSize</p>
+<p>所以，有两处地方要加上：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">CGSize</span>)intrinsicContentSize &#123;</div><div class="line">    [<span class="keyword">self</span> updateStairLayout];</div><div class="line">    <span class="keyword">return</span> _contentSize;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)layoutSubviews &#123;</div><div class="line">    [<span class="keyword">super</span> layoutSubviews];</div><div class="line">    [<span class="keyword">self</span> updateStairLayout];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="自定义View小结"><a href="#自定义View小结" class="headerlink" title="自定义View小结"></a>自定义View小结</h3><p>StairView的原理、代码都讲完了，算是一个典型的自定义的、根据内容决定高度的View案例，主要要注意的就是<strong>更新布局、contentSize的时机</strong>，以及<strong>及时invalidateIntrinsicContentSize通知布局系统更新</strong></p>
+<h2 id="Case3-给同一个属性添加多重约束，实现复杂关系"><a href="#Case3-给同一个属性添加多重约束，实现复杂关系" class="headerlink" title="Case3: 给同一个属性添加多重约束，实现复杂关系"></a>Case3: 给同一个属性添加<strong>多重约束</strong>，实现复杂关系</h2><p>这个Case主要是为了纠正一个可能的误区：<strong>Autolayout里面，同一个属性，是可以加上多重约束的</strong>，或者说，同一个View的同一个属性，可以参与到多个约束里面的。</p>
+<p>先看看Case的功能：</p>
+<p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry5_4.jpg" alt=""></p>
+<p>注意到，右边绿色label的左边，不仅要大于左边蓝色label的右边，还要大于整体宽度的1/3，所以，是要<strong>同时满足多条约束条件的</strong>。</p>
+<h3 id="区分观念：Frame布局和Autolayout的不同"><a href="#区分观念：Frame布局和Autolayout的不同" class="headerlink" title="区分观念：Frame布局和Autolayout的不同"></a>区分观念：Frame布局和Autolayout的不同</h3><p><strong>按照Frame布局</strong></p>
+<p>按照传统的用Frame布局的方式，label的左边，其实就是<code>label.frame.origin.x</code>这个属性，所以，要左边满足条件的话，首先想到的可能就是：</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">// 满足大于蓝色<span class="built_in">label</span>的右边</div><div class="line"><span class="built_in">label</span>.frame.<span class="built_in">origin</span>.x &gt; blueLabel1.frame.<span class="built_in">origin</span>.x + blueLabel1.frame.size.<span class="built_in">width</span>;</div><div class="line"><span class="built_in">label</span>.frame.<span class="built_in">origin</span>.x &gt; blueLabel2.frame.<span class="built_in">origin</span>.x + blueLabel2.frame.size.<span class="built_in">width</span>;</div><div class="line"><span class="built_in">label</span>.frame.<span class="built_in">origin</span>.x &gt; blueLabel3.frame.<span class="built_in">origin</span>.x + blueLabel3.frame.size.<span class="built_in">width</span>;</div><div class="line">// 满足大于整体的<span class="number">1</span>/<span class="number">3</span></div><div class="line"><span class="built_in">label</span>.frame.<span class="built_in">origin</span>.x &gt; (superView.frame.<span class="built_in">origin</span>.x + superView.frame.size.<span class="built_in">width</span>) / <span class="number">3</span></div></pre></td></tr></table></figure>
+<p>这，乍一看，就是不停的在<code>layoutSubView</code>的时候做判断、处理。</p>
+<p><strong>按照Autolayout布局</strong></p>
+<p>而Autolayout是什么，是<strong>约束</strong>，是一种布局关系，只是对具体View的相关属性的一种关系设置，我们设置了约束，系统就会在需要的时候，按照约束，计算出每个View的frame，自动更新。</p>
+<p>所以，同一个属性，完全是可以加多个约束条件的。</p>
+<h3 id="代码细节-1"><a href="#代码细节-1" class="headerlink" title="代码细节"></a>代码细节</h3><p>一旦没有了一个属性一个约束的<strong>观念限制</strong>，这个Case的功能就很好实现了，关键代码如下：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 创建绿色label</span></div><div class="line">_greenLabel = [<span class="built_in">UILabel</span> new];</div><div class="line">[_containerView addSubview:_greenLabel];</div><div class="line"></div><div class="line"><span class="comment">// 设置内容抗压优先级最高</span></div><div class="line">[_greenLabel setContentCompressionResistancePriority:<span class="built_in">UILayoutPriorityRequired</span> forAxis:<span class="built_in">UILayoutConstraintAxisHorizontal</span>];</div><div class="line"></div><div class="line">[_greenLabel mas_makeConstraints:^(MASConstraintMaker *make) &#123;</div><div class="line">    <span class="comment">// 垂直居中</span></div><div class="line">    make.centerY.equalTo(_containerView);</div><div class="line">    </div><div class="line">    <span class="comment">// 右边不超出</span></div><div class="line">    make.right.lessThanOrEqualTo(_containerView);</div><div class="line">    </div><div class="line">    <span class="comment">// 左边大于等于父View宽度的1/3，注意不是width属性</span></div><div class="line">    make.left.greaterThanOrEqualTo(_containerView.mas_right).multipliedBy((<span class="built_in">CGFloat</span>)(<span class="number">1.0</span>f / <span class="number">3.0</span>f));</div><div class="line">    </div><div class="line">    <span class="comment">// 循环，左边大于所有左边label的右边+8</span></div><div class="line">    <span class="keyword">for</span> (<span class="built_in">UILabel</span> *label <span class="keyword">in</span> _leftLabels) &#123;</div><div class="line">        make.left.greaterThanOrEqualTo(label.mas_right).offset(<span class="number">8</span>);</div><div class="line">    &#125;</div><div class="line">&#125;];</div></pre></td></tr></table></figure>
+<p>只要约束没有冲突，我们设置的约束，就可以在各种情况下，按照需要生效。<br>对于这种内容动态变化，View之间关系复杂的情况，用Autolayout就非常有效了。</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>这个系列居然已经出到了第五篇了，自己都觉得不可思议=。=<br>所有的例子都是日常工作中遇到、想到的，觉得算是一个点，就把它记录了下来，以后会一直坚持下去～</p>
+
+                
+<p class="teal-link-context">
+    <a href="/2017/03/14/xcode8-crash-on-out-parameter/" rel="next" title="反编译分析Xcode8的Bug, release下连续两次调用有二级指针参数的空方法会Crash">
+    上一篇：反编译分析Xcode8的Bug, release下连续两次调用有二级指针参数的空方法会Crash
+  </a>
+</p>
+
+
+
+<p class="teal-link-context">
+    <a href="/2017/03/11/TTGDeallocTaskHelper/" rel="next" title="在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper">
+    下一篇：在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comment">
+        <div class="card">
+            <div class="card-content">
+                <!-- Duoshuo Comment BEGIN -->
+                <div class="ds-thread" data-thread-key="2017/03/12/autolayout-example-with-masonry5/" data-title="有趣的Autolayout示例5-Masonry实现" data-url="http://tutuge.me/2017/03/12/autolayout-example-with-masonry5/"></div>
+
+                <script type="text/javascript">
+                    console.log(document.querySelector('.ds-thread'));
+                    var duoshuoQuery = {
+                        short_name: 'tutuge'
+                    };
+                    (function() {
+                        var ds = document.createElement('script');
+                        ds.type = 'text/javascript';
+                        ds.async = true;
+                        ds.src = (document.location.protocol == 'https:'
+                            ? 'https:'
+                            : 'http:') + '//static.duoshuo.com/embed.js';
+                        ds.charset = 'UTF-8';
+                        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+                    })();
+                </script>
+                <!-- Duoshuo Comment END -->
+            </div>
+        </div>
+    </section>
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large teal">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect teal accent-4" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="menu"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer blue-grey darken-1">
+    
+    <div class="container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/zekunyan" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                <div class="site-visitors-container white-text">
+                    <span>
+                        <i class="fa fa-user"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+                    </span>
+                    <span>&nbsp;|&nbsp;</span>
+                    <span>
+                        <i class="fa fa-eye"></i>
+                        <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+                    </span>
+                </div>
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+                    <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
+                
+                    <a class="social-link" href="http://raytaylorlin.com/" target="_blank">raytaylorism主题作者的技术博客</a>
+                
+                    <a class="social-link" href="http://suta.name/" target="_blank">很赞的设计师</a>
+                
+                    <a class="social-link" href="http://neoyeelf.github.io/" target="_blank">NeOye&#39;s blog</a>
+                
+                    <a class="social-link" href="http://bingyan.farbox.com/" target="_blank">Howl写东西的地方</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright teal-link-context">
+        <div class="container">
+            © 2017 tutuge.me, All rights reserved.
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('teal lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-68058110-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=55079830" charset="UTF-8"></script>
+
+
+
+
+
+</body>
+</html>

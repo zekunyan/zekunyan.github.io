@@ -4,12 +4,84 @@
 
     
   <url>
-    <loc>http://tutuge.me/2015/12/31/TTGTagCollectionView/</loc>
-    <lastmod>2017-02-26T18:05:28.000Z</lastmod>
+    <loc>http://tutuge.me/2017/03/11/TTGDeallocTaskHelper/</loc>
+    <lastmod>2017-03-13T18:33:00.000Z</lastmod>
     <data>
         <display>
-        <title>开源项目-TTGTagCollectionView</title>
-        <pubTime>2015-12-31T13:56:04.000Z</pubTime>
+        <title>在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper</title>
+        <pubTime>2017-03-11T03:11:11.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+        <tag>开源</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://tutuge.me/2017/03/12/autolayout-example-with-masonry5/</loc>
+    <lastmod>2017-03-13T18:32:08.000Z</lastmod>
+    <data>
+        <display>
+        <title>有趣的Autolayout示例5-Masonry实现</title>
+        <pubTime>2017-03-12T13:41:17.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+        <tag>Autolayout</tag>
+         
+        <tag>Masonry</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://tutuge.me/2017/03/14/xcode8-crash-on-out-parameter/</loc>
+    <lastmod>2017-03-13T18:30:50.000Z</lastmod>
+    <data>
+        <display>
+        <title>反编译分析Xcode8的Bug, release下连续两次调用有二级指针参数的空方法会Crash</title>
+        <pubTime>2017-03-13T16:00:00.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://tutuge.me/2017/03/08/quartzcode-demo-star-animation/</loc>
+    <lastmod>2017-03-13T18:27:36.000Z</lastmod>
+    <data>
+        <display>
+        <title>用QuartzCode快速实现一个收藏动画</title>
+        <pubTime>2017-03-07T16:00:00.000Z</pubTime>
         
         <tag>原创</tag>
          
@@ -29,7 +101,7 @@
     
   <url>
     <loc>http://tutuge.me/2015/05/23/autolayout-example-with-masonry/</loc>
-    <lastmod>2017-02-19T13:26:31.000Z</lastmod>
+    <lastmod>2017-03-12T17:42:02.000Z</lastmod>
     <data>
         <display>
         <title>有趣的Autolayout示例-Masonry实现</title>
@@ -42,6 +114,108 @@
         <tag>Autolayout</tag>
          
         <tag>Masonry</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/</loc>
+    <lastmod>2017-03-12T17:41:56.000Z</lastmod>
+    <data>
+        <display>
+        <title>有趣的Autolayout示例2-Masonry实现</title>
+        <pubTime>2015-08-07T16:55:52.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+        <tag>Autolayout</tag>
+         
+        <tag>Masonry</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/</loc>
+    <lastmod>2017-03-12T17:41:52.000Z</lastmod>
+    <data>
+        <display>
+        <title>有趣的Autolayout示例3-Masonry实现</title>
+        <pubTime>2015-12-14T13:36:08.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+        <tag>Autolayout</tag>
+         
+        <tag>Masonry</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/</loc>
+    <lastmod>2017-03-12T17:41:47.000Z</lastmod>
+    <data>
+        <display>
+        <title>有趣的Autolayout示例4-Masonry实现</title>
+        <pubTime>2016-08-06T13:41:17.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+        <tag>Autolayout</tag>
+         
+        <tag>Masonry</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://tutuge.me/2015/12/31/TTGTagCollectionView/</loc>
+    <lastmod>2017-02-26T18:05:28.000Z</lastmod>
+    <data>
+        <display>
+        <title>开源项目-TTGTagCollectionView</title>
+        <pubTime>2015-12-31T13:56:04.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+        <tag>开源</tag>
          
          
            
@@ -124,58 +298,6 @@
            
              
               <breadCrumb title="Mac" url="http://tutuge.me/categories/Mac/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/</loc>
-    <lastmod>2016-08-09T16:49:51.000Z</lastmod>
-    <data>
-        <display>
-        <title>有趣的Autolayout示例3-Masonry实现</title>
-        <pubTime>2015-12-14T13:36:08.000Z</pubTime>
-        
-        <tag>原创</tag>
-         
-        <tag>iOS</tag>
-         
-        <tag>Autolayout</tag>
-         
-        <tag>Masonry</tag>
-         
-         
-           
-             
-              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/</loc>
-    <lastmod>2016-08-09T16:49:36.000Z</lastmod>
-    <data>
-        <display>
-        <title>有趣的Autolayout示例2-Masonry实现</title>
-        <pubTime>2015-08-07T16:55:52.000Z</pubTime>
-        
-        <tag>原创</tag>
-         
-        <tag>iOS</tag>
-         
-        <tag>Autolayout</tag>
-         
-        <tag>Masonry</tag>
-         
-         
-           
-             
-              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
           
         </display>
     </data>
@@ -489,32 +611,6 @@
         <tag>原创</tag>
          
         <tag>iOS</tag>
-         
-         
-           
-             
-              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/</loc>
-    <lastmod>2016-08-06T17:32:15.000Z</lastmod>
-    <data>
-        <display>
-        <title>有趣的Autolayout示例4-Masonry实现</title>
-        <pubTime>2016-08-06T13:41:17.000Z</pubTime>
-        
-        <tag>原创</tag>
-         
-        <tag>iOS</tag>
-         
-        <tag>Autolayout</tag>
-         
-        <tag>Masonry</tag>
          
          
            
