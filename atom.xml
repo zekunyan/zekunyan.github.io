@@ -584,11 +584,11 @@
     <link href="http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/"/>
     <id>http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/</id>
     <published>2016-08-06T13:41:17.000Z</published>
-    <updated>2017-03-12T17:41:47.000Z</updated>
+    <updated>2017-03-18T16:26:02.000Z</updated>
     
     <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>第四篇来了。<br>还是3个小例子，仍然是主要部分用Masonry手写代码实现，其它的约束在storyboard里面直接拖拽搭建。<br>三个例子分别是：  </p>
 <ol>
-<li>用约束优先级保证可移动View的内容可见性</li>
+<li>用约束优先级保证可移动View的内容可见</li>
 <li>Autolayout的约束=控件间位置关系的“绑定”</li>
 <li>利用<code>layoutIfNeeded</code>控制约束的生效时机</li>
 </ol>
@@ -665,7 +665,7 @@
     
       &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;第四篇来了。&lt;br&gt;还是3个小例子，仍然是主要部分用Masonry手写代码实现，其它的约束在storyboard里面直接拖拽搭建。&lt;br&gt;三个例子分别是：  &lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;用约束优先级保证可移动View的内容可见性&lt;/li&gt;
+&lt;li&gt;用约束优先级保证可移动View的内容可见&lt;/li&gt;
 &lt;li&gt;Autolayout的约束=控件间位置关系的“绑定”&lt;/li&gt;
 &lt;li&gt;利用&lt;code&gt;layoutIfNeeded&lt;/code&gt;控制约束的生效时机&lt;/li&gt;
 &lt;/ol&gt;

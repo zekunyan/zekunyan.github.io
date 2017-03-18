@@ -4,6 +4,32 @@
 
     
   <url>
+    <loc>http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/</loc>
+    <lastmod>2017-03-18T16:26:02.000Z</lastmod>
+    <data>
+        <display>
+        <title>有趣的Autolayout示例4-Masonry实现</title>
+        <pubTime>2016-08-06T13:41:17.000Z</pubTime>
+        
+        <tag>原创</tag>
+         
+        <tag>iOS</tag>
+         
+        <tag>Autolayout</tag>
+         
+        <tag>Masonry</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://tutuge.me/2017/03/11/TTGDeallocTaskHelper/</loc>
     <lastmod>2017-03-13T18:33:00.000Z</lastmod>
     <data>
@@ -158,32 +184,6 @@
         <display>
         <title>有趣的Autolayout示例3-Masonry实现</title>
         <pubTime>2015-12-14T13:36:08.000Z</pubTime>
-        
-        <tag>原创</tag>
-         
-        <tag>iOS</tag>
-         
-        <tag>Autolayout</tag>
-         
-        <tag>Masonry</tag>
-         
-         
-           
-             
-              <breadCrumb title="iOS" url="http://tutuge.me/categories/iOS/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/</loc>
-    <lastmod>2017-03-12T17:41:47.000Z</lastmod>
-    <data>
-        <display>
-        <title>有趣的Autolayout示例4-Masonry实现</title>
-        <pubTime>2016-08-06T13:41:17.000Z</pubTime>
         
         <tag>原创</tag>
          

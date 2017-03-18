@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/</loc>
+    
+    <lastmod>2017-03-18T16:26:02.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://tutuge.me/2017/03/11/TTGDeallocTaskHelper/</loc>
     
     <lastmod>2017-03-13T18:33:00.000Z</lastmod>
@@ -47,13 +54,6 @@
     <loc>http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/</loc>
     
     <lastmod>2017-03-12T17:41:52.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/</loc>
-    
-    <lastmod>2017-03-12T17:41:47.000Z</lastmod>
     
   </url>
   
