@@ -3,6 +3,7 @@
   <title>土土哥的技术Blog</title>
   <subtitle>iOS，Android程序猿，喜欢Mac、Linux、各种开源技术，各种语言</subtitle>
   <link href="/atom.xml" rel="self"/>
+  
   <link href="http://tutuge.me/"/>
   <updated>2017-03-13T18:30:50.000Z</updated>
   <id>http://tutuge.me/</id>
@@ -583,7 +584,7 @@
     <link href="http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/"/>
     <id>http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/</id>
     <published>2016-08-06T13:41:17.000Z</published>
-    <updated>2017-03-18T16:26:02.000Z</updated>
+    <updated>2017-03-18T16:38:39.000Z</updated>
     
     <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>第四篇来了。<br>还是3个小例子，仍然是主要部分用Masonry手写代码实现，其它的约束在storyboard里面直接拖拽搭建。<br>三个例子分别是：  </p>
 <ol>
@@ -630,7 +631,7 @@
 <p>然后就是设置具体的left、top约束，并设置优先级为750，也就是High</p>
 <figure class="highlight scheme"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[<span class="name">_tipLabel</span> mas_makeConstraints:^(<span class="name">MASConstraintMaker</span> *make) &#123;</div><div class="line">    // 优先级要比边界条件低</div><div class="line">    _leftConstraint = make.centerX.equalTo(<span class="name">_containerView.mas_left</span>).with.offset(<span class="name">50</span>).priorityHigh()<span class="comment">; </span></div><div class="line">    // 优先级要比边界条件低</div><div class="line">    _topConstraint = make.centerY.equalTo(<span class="name">_containerView.mas_top</span>).with.offset(<span class="name">50</span>).priorityHigh()<span class="comment">;</span></div><div class="line">    // ...</div><div class="line">&#125;]<span class="comment">;</span></div></pre></td></tr></table></figure>
 <h4 id="四周的约束-保证内容在边界内"><a href="#四周的约束-保证内容在边界内" class="headerlink" title="四周的约束 - 保证内容在边界内"></a>四周的约束 - 保证内容在边界内</h4><p>然后就是上下左右四个边界的约束：</p>
-<figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[_tipLabel mas_makeConstraints:^(<span class="name">MASConstraintMaker</span> *make) &#123;</div><div class="line">    // 设置边界条件约束，保证内容可见，优先级<span class="number">1000</span></div><div class="line">    make.left.greaterThanOrEqualTo(<span class="name">_containerView.mas_left</span>)<span class="comment">;</span></div><div class="line">    make.right.lessThanOrEqualTo(<span class="name">_containerView.mas_right</span>)<span class="comment">;</span></div><div class="line">    make.top.greaterThanOrEqualTo(<span class="name">_containerView.mas_top</span>)<span class="comment">;</span></div><div class="line">    make.bottom.lessThanOrEqualTo(<span class="name">_containerView.mas_bottom</span>)<span class="comment">;</span></div><div class="line">    // ...</div><div class="line">&#125;]<span class="comment">;</span></div></pre></td></tr></table></figure>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[_tipLabel mas_makeConstraints:^(<span class="name">MASConstraintMaker</span> *make) &#123;</div><div class="line">    // 边界条件约束，保证内容可见，优先级<span class="number">1000</span></div><div class="line">    make.left.greaterThanOrEqualTo(<span class="name">_containerView.mas_left</span>)<span class="comment">;</span></div><div class="line">    make.right.lessThanOrEqualTo(<span class="name">_containerView.mas_right</span>)<span class="comment">;</span></div><div class="line">    make.top.greaterThanOrEqualTo(<span class="name">_containerView.mas_top</span>)<span class="comment">;</span></div><div class="line">    make.bottom.lessThanOrEqualTo(<span class="name">_containerView.mas_bottom</span>)<span class="comment">;</span></div><div class="line">    // ...</div><div class="line">&#125;]<span class="comment">;</span></div></pre></td></tr></table></figure>
 <p>这个地方要注意是<code>lessThanOrEqualTo</code>还是<code>greaterThanOrEqualTo</code>。</p>
 <h4 id="滑动时更新Tip位置"><a href="#滑动时更新Tip位置" class="headerlink" title="滑动时更新Tip位置"></a>滑动时更新Tip位置</h4><p>这一点比较简单，直接将当前触摸的坐标赋值给<code>leftConstraint</code>和<code>rightConstraint</code>就好：</p>
 <figure class="highlight abnf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">_leftConstraint.offset = touchPoint.x<span class="comment">;</span></div><div class="line">_topConstraint.offset = touchPoint.y<span class="comment">;</span></div></pre></td></tr></table></figure>
