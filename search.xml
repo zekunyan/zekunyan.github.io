@@ -4,6 +4,111 @@
   
     
     <entry>
+      <title><![CDATA[反编译分析并模拟实现methodSignatureForSelector方法]]></title>
+      <url>http://tutuge.me/2017/04/08/diy-methodSignatureForSelector/</url>
+      <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近跟同事讨论了有关<code>methodSignatureForSelector:</code>的问题，大概如下：</p>
+<blockquote>
+<ol>
+<li>一个ProtocolA声明了一个实例方法funcA，然后一个类ClassA声明实现这个ProtocolA，但是并没有实现方法funcA，对ClassA的实例调用<code>methodSignatureForSelector:@selector(funcA)</code>能否返回正确的signature？</li>
+<li>一个类ClassB，在@interface声明了实例方法funcB，但是没有实现funcB，对ClassB的实例调用<code>methodSignatureForSelector:@selector(funcB)</code>，能否返回正确的signature？</li>
+</ol>
+</blockquote>
+<p>写个Demo验证了下，结果非常有意思，不由得好奇起来，所以深入研究了下<code>methodSignatureForSelector:</code>的实现，然后自己模拟实现出来。</p>
+<p>Github地址：<a href="https://github.com/zekunyan/TTGRemakeMethodSignatureForSelector" target="_blank" rel="external">TTGRemakeMethodSignatureForSelector</a></p>
+<p>详细的研究过程如下：</p>
+<a id="more"></a>
+<h2 id="写Demo验证问题"><a href="#写Demo验证问题" class="headerlink" title="写Demo验证问题"></a>写Demo验证问题</h2><p>测试类TestClass和Protocol如下：</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="variable">@protocol</span> TestProtocol &lt;NSObject&gt;</div><div class="line">- (void)protocolTestFunc1;</div><div class="line"><span class="variable">@end</span></div><div class="line"></div><div class="line"><span class="variable">@interface</span> <span class="attribute">TestClass </span>: NSObject &lt;TestProtocol&gt; <span class="comment">// 不实现Protocol任何方法</span></div><div class="line">- (void)testFunc1; <span class="comment">// 不实现</span></div><div class="line"><span class="variable">@end</span></div><div class="line"><span class="variable">@implementation</span> TestClass</div><div class="line"><span class="variable">@end</span></div></pre></td></tr></table></figure>
+<p>调用<code>methodSignatureForSelector:</code>获取<code>protocolTestFunc1</code>和<code>testFunc1</code>的methodSignature，<code>protocolTestFunc1</code>可以获取到，但是<code>testFunc1</code>就不行。</p>
+<h2 id="扩展到所有情况"><a href="#扩展到所有情况" class="headerlink" title="扩展到所有情况"></a>扩展到所有情况</h2><p>分析整理下可能的情况：</p>
+<p>对于一个类：</p>
+<ol>
+<li>方法没有声明，也没有实现</li>
+<li>方法有声明，但是没有实现</li>
+<li>方法没有声明，但是有实现</li>
+<li>实例方法和类方法都有上面1、2、3的情况</li>
+</ol>
+<p>对于一个Protocol：</p>
+<ol>
+<li>方法有声明，但是没有实现</li>
+<li>实例方法和类方法</li>
+<li>required和optional方法</li>
+</ol>
+<p><strong>经过验证，发现：</strong></p>
+<ol>
+<li><strong>对于类，只要@implementation里实现了方法，不管@interface是否有声明，都可以返回methodSignature</strong></li>
+<li><strong>对于Protocol声明的方法，不管实例方法还是类方法，不管required还是optional的，都可以返回methodSignature</strong></li>
+</ol>
+<p>所以，有必要进一步研究<code>methodSignatureForSelector:</code>的实现。</p>
+<h2 id="从Runtime源码入手"><a href="#从Runtime源码入手" class="headerlink" title="从Runtime源码入手"></a>从Runtime源码入手</h2><p><code>methodSignatureForSelector:</code>是<code>NSObject</code>的方法，所以想知道原理，第一步当然就是翻看Runtime的源码，看看有没有实现，最新的<code>objc4-709</code>源码，实现如下：</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// From objc4-709 NSObject.mm</span></div><div class="line"><span class="comment">// Replaced by CF (returns an NSMethodSignature)</span></div><div class="line"><span class="selector-tag">-</span> (NSMethodSignature *)<span class="selector-tag">methodSignatureForSelector</span><span class="selector-pseudo">:(SEL)sel</span> &#123;</div><div class="line">    <span class="selector-tag">_objc_fatal</span>(<span class="string">"-[NSObject methodSignatureForSelector:] "</span></div><div class="line">                <span class="string">"not available without CoreFoundation"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可见，Runtime源码是没有实现的，要到CoreFoundation里面找。</p>
+<h2 id="找CoreFoundation源码"><a href="#找CoreFoundation源码" class="headerlink" title="找CoreFoundation源码"></a>找CoreFoundation源码</h2><p>接着Google CoreFoundation源码，找到<a href="https://opensource.apple.com/source/CF/CF-1153.18/" target="_blank" rel="external">https://opensource.apple.com/source/CF/CF-1153.18/</a>，怎么都找不到有关<code>methodSignatureForSelector:</code>的实现，难道要就此打住？</p>
+<h2 id="反编译大法"><a href="#反编译大法" class="headerlink" title="反编译大法"></a>反编译大法</h2><p>既然找不到源码，那就只好祭出反编译大法，直接上汇编=。=</p>
+<h3 id="找到CoreFoundation动态库"><a href="#找到CoreFoundation动态库" class="headerlink" title="找到CoreFoundation动态库"></a>找到CoreFoundation动态库</h3><p>CoreFoundation是在程序运行时链接上去的动态库，属于系统动态库的一部分，所以首先要找到CoreFoundation动态库的二进制代码文件，命令行：</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo -<span class="built_in">i</span></div><div class="line"><span class="built_in">find</span> / -name CoreFoundation.framework</div></pre></td></tr></table></figure>
+<p>搜到的结果很多，以iPhone模拟器的为例：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="regexp">/Applications/</span>Xcode.app<span class="regexp">/Contents/</span>Developer<span class="regexp">/Platforms/i</span>PhoneSimulator.platform<span class="regexp">/Developer/</span>SDKs<span class="regexp">/iPhoneSimulator.sdk/</span>System<span class="regexp">/Library/</span>Frameworks<span class="regexp">/CoreFoundation.framework</span></div></pre></td></tr></table></figure>
+<p>打开<code>CoreFoundation.framework</code>文件夹，<code>CoreFoundation</code>文件就是要反编译的文件。</p>
+<h3 id="Hopper-Disassembler反编译"><a href="#Hopper-Disassembler反编译" class="headerlink" title="Hopper Disassembler反编译"></a>Hopper Disassembler反编译</h3><p>用Hopper Disassembler打开<code>CoreFoundation</code>文件，在Labels搜索<code>methodSignatureForSelector:</code>，就能找到对应的汇编实现代码，如下：</p>
+<p><img src="http://zorrochen.qiniudn.com/blog_RemakeMethodSignatureForSelector_1.jpg" alt=""></p>
+<p>Hopper翻译的代码如下：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> * +[<span class="built_in">NSObject</span> methodSignatureForSelector:](<span class="keyword">void</span> * <span class="keyword">self</span>, <span class="keyword">void</span> * _cmd, <span class="keyword">void</span> * arg2) &#123;</div><div class="line">    rdi = <span class="keyword">self</span>;</div><div class="line">    rbx = arg2;</div><div class="line">    <span class="keyword">if</span> ((rbx != <span class="number">0x0</span>) &amp;&amp; (___methodDescriptionForSelector(object_getClass(rdi), rbx) != <span class="number">0x0</span>)) &#123;</div><div class="line">            rax = [<span class="built_in">NSMethodSignature</span> signatureWithObjCTypes:rdx];</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span> &#123;</div><div class="line">            rax = <span class="number">0x0</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> rax;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可发现，关键在于<code>___methodDescriptionForSelector:</code>方法。</p>
+<h3 id="methodDescriptionForSelector-方法的实现"><a href="#methodDescriptionForSelector-方法的实现" class="headerlink" title="___methodDescriptionForSelector:方法的实现"></a>___methodDescriptionForSelector:方法的实现</h3><p>进一步看<code>___methodDescriptionForSelector:</code>的实现。</p>
+<p>汇编代码、Hopper翻译的代码都很长，循环也不见了，全是goto：</p>
+<p><img src="http://zorrochen.qiniudn.com/blog_RemakeMethodSignatureForSelector_3.jpg" alt=""></p>
+<p>经过反复校对整理（排除Hopper的错误=。=），可以整理出主要的流程如下图所示：</p>
+<p><img src="http://zorrochen.qiniudn.com/blog_RemakeMethodSignatureForSelector_2.png" alt=""></p>
+<p>根据流程，可以得出，<code>___methodDescriptionForSelector:</code>方法：</p>
+<ol>
+<li>用<code>class_copyProtocolList</code>、<code>protocol_getMethodDescription</code>方法，检查是否有对应的selector，不管是否实现</li>
+<li>用<code>class_getInstanceMethod</code>检查selector是否有<strong>implementation</strong>，注意，是<strong>implementation</strong>，跟是否声明了没有关系</li>
+</ol>
+<p>所以，符合前面的结论。</p>
+<h2 id="模拟实现"><a href="#模拟实现" class="headerlink" title="模拟实现"></a>模拟实现</h2><p>流程都有了，不如更进一步，自己实现一个<code>methodSignatureForSelector:</code>方法出来～</p>
+<h3 id="模拟实现-methodDescriptionForSelector"><a href="#模拟实现-methodDescriptionForSelector" class="headerlink" title="模拟实现___methodDescriptionForSelector:"></a>模拟实现___methodDescriptionForSelector:</h3><p>按照流程，实现代码如下：</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 模拟实现___methodDescriptionForSelector方法：</span></div><div class="line">struct objc_method_description ttg_MethodDescription(<span class="keyword">Class</span> <span class="keyword">class</span>, SEL sel) &#123;</div><div class="line">    <span class="comment">// 结果</span></div><div class="line">    struct objc_method_description <span class="keyword">description</span> = (struct objc_method_description)&#123;<span class="keyword">NULL</span>, <span class="keyword">NULL</span>&#125;;</div><div class="line">    <span class="keyword">Class</span> currentClass = <span class="keyword">class</span>;</div><div class="line">    </div><div class="line">    <span class="keyword">while</span> (currentClass &amp;&amp; <span class="keyword">description</span>.name == <span class="keyword">NULL</span>) &#123;</div><div class="line">        <span class="comment">// 获取Protocol列表</span></div><div class="line">        unsigned <span class="keyword">int</span> <span class="keyword">count</span> = <span class="number">0</span>;</div><div class="line">        __unsafe_unretained Protocol **protocols = class_copyProtocolList(currentClass, &amp;<span class="keyword">count</span>);</div><div class="line">        </div><div class="line">        <span class="comment">// 遍历所有Protocol</span></div><div class="line">        <span class="keyword">for</span> (unsigned <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="keyword">count</span>; i++) &#123;</div><div class="line">            <span class="comment">// Required 方法</span></div><div class="line">            <span class="keyword">description</span> = protocol_getMethodDescription(protocols[i], sel, YES, class_isMetaClass(currentClass) ^ <span class="number">1</span>);</div><div class="line">            <span class="keyword">if</span> (<span class="keyword">description</span>.name != <span class="keyword">NULL</span>) &#123;</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            &#125;</div><div class="line">            </div><div class="line">            <span class="comment">// Optional 方法</span></div><div class="line">            <span class="keyword">description</span> = protocol_getMethodDescription(protocols[i], sel, NO, class_isMetaClass(currentClass) ^ <span class="number">1</span>);</div><div class="line">            <span class="keyword">if</span> (<span class="keyword">description</span>.name != <span class="keyword">NULL</span>) &#123;</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="comment">// 释放</span></div><div class="line">        free(protocols);</div><div class="line">        </div><div class="line">        <span class="comment">// 找到、返回</span></div><div class="line">        <span class="keyword">if</span> (<span class="keyword">description</span>.name != <span class="keyword">NULL</span>) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">description</span>;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="comment">// 获取父类，继续</span></div><div class="line">        currentClass = class_getSuperclass(currentClass);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 获取实例方法</span></div><div class="line">    Method method = class_getInstanceMethod(<span class="keyword">class</span>, sel);</div><div class="line">    <span class="keyword">if</span> (method) &#123;</div><div class="line">        <span class="comment">// 找到实例方法</span></div><div class="line">        <span class="keyword">return</span> *method_getDescription(method);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">// 返回空</span></div><div class="line">        <span class="keyword">return</span> (struct objc_method_description)&#123;<span class="keyword">NULL</span>, <span class="keyword">NULL</span>&#125;;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>用description记录迭代中的结果，只要找到就返回</li>
+<li>用currentClass记录每次迭代的类class</li>
+<li>Protocol的@required和@optional方法都要检查</li>
+<li>注意释放Protocol数组</li>
+<li>最后才用<code>class_getInstanceMethod</code>获取类本身的实现</li>
+</ol>
+<h3 id="模拟实现methodSignatureForSelector"><a href="#模拟实现methodSignatureForSelector" class="headerlink" title="模拟实现methodSignatureForSelector:"></a>模拟实现methodSignatureForSelector:</h3><p>用Category给NSObject加两个方法：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">NSObject</span> (<span class="title">TTGRemakeMethodSignatureForSelector</span>)</span></div><div class="line">- (<span class="built_in">NSMethodSignature</span> *)ttg_methodSignatureForSelector:(SEL)sel;</div><div class="line">+ (<span class="built_in">NSMethodSignature</span> *)ttg_methodSignatureForSelector:(SEL)sel;</div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>实现基本一样：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">NSObject</span> (<span class="title">TTGRemakeMethodSignatureForSelector</span>)</span></div><div class="line"></div><div class="line">- (<span class="built_in">NSMethodSignature</span> *)ttg_methodSignatureForSelector:(SEL)sel &#123;</div><div class="line">    <span class="keyword">struct</span> objc_method_description description = ttg_MethodDescription([<span class="keyword">self</span> <span class="keyword">class</span>], sel); <span class="comment">// 注意！是获取实例的class</span></div><div class="line">    <span class="keyword">if</span> (sel &amp;&amp; description.types != <span class="literal">NULL</span>) &#123;</div><div class="line">        <span class="keyword">return</span> [<span class="built_in">NSMethodSignature</span> signatureWithObjCTypes:description.types];</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">return</span> <span class="literal">nil</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">+ (<span class="built_in">NSMethodSignature</span> *)ttg_methodSignatureForSelector:(SEL)sel &#123;</div><div class="line">    <span class="keyword">struct</span> objc_method_description description = ttg_MethodDescription(object_getClass(<span class="keyword">self</span>), sel); <span class="comment">// 必须用object_getClass获取metaClass</span></div><div class="line">    <span class="keyword">if</span> (sel &amp;&amp; description.types != <span class="literal">NULL</span>) &#123;</div><div class="line">        <span class="keyword">return</span> [<span class="built_in">NSMethodSignature</span> signatureWithObjCTypes:description.types];</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">return</span> <span class="literal">nil</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p><strong>注意要获取正确的”class”：</strong></p>
+<ol>
+<li>对于对象实例，从<code>[obj class]</code>、<code>object_getClass(obj)</code>结果一致，都是对象的类</li>
+<li>对于类，要获取元类，也就是metaClass，只能用<code>object_getClass(class)</code></li>
+</ol>
+<h3 id="验证模拟实现"><a href="#验证模拟实现" class="headerlink" title="验证模拟实现"></a>验证模拟实现</h3><p>验证自己模拟实现的<code>methodSignatureForSelector:</code>和系统的是否一致：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 测试equal相等</span></div><div class="line">NSMethodSignature *signature1 = [test methodSignatureForSelector:<span class="meta">@selector(testFunc1)</span>];</div><div class="line">NSMethodSignature *signature2 = [test ttg_methodSignatureForSelector:<span class="meta">@selector(testFunc1)</span>];</div><div class="line">NSLog(@<span class="string">"signature1 == signature2: %d"</span>, [signature1 isEqual:signature2]);</div><div class="line"></div><div class="line"><span class="comment">// Invoke实例方法</span></div><div class="line">NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[test ttg_methodSignatureForSelector:<span class="meta">@selector(testFunc1)</span>]];</div><div class="line">invocation.target = test;</div><div class="line">invocation.selector = <span class="meta">@selector(testFunc1)</span>;</div><div class="line">[invocation invoke];</div><div class="line"></div><div class="line"><span class="comment">// Invoke类方法</span></div><div class="line">invocation = [NSInvocation invocationWithMethodSignature:[TestClass ttg_methodSignatureForSelector:<span class="meta">@selector(staticTestFunc1)</span>]];</div><div class="line">invocation.target = [TestClass <span class="class"><span class="keyword">class</span>];</span></div><div class="line">invocation.selector = <span class="meta">@selector(staticTestFunc1)</span>;</div><div class="line">[invocation invoke];</div></pre></td></tr></table></figure>
+<p>结果跟系统实现的行为一致，更多Case见Github的Demo。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>从两个小问题出发，到最后通过反编译、模拟实现，终于搞清楚了<code>methodSignatureForSelector:</code>的原理、流程、各种隐藏特性！哈哈～～过瘾～～</p>
+]]></content>
+      
+        <categories>
+            
+            <category> iOS </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 原创 </tag>
+            
+            <tag> iOS </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[反编译分析Xcode8的Bug, release下连续两次调用有二级指针参数的空方法会Crash]]></title>
       <url>http://tutuge.me/2017/03/14/xcode8-crash-on-out-parameter/</url>
       <content type="html"><![CDATA[<h2 id="二级指针"><a href="#二级指针" class="headerlink" title="二级指针"></a>二级指针</h2><p>二级指针，也叫指针的指针，或者Out Parameters，可以用来改变一个指针的地址值，由于在Objective-C里面方法、函数不支持返回多个值，所以经常用二级指针实现这个功能，比如<code>NSFileManager</code>的<code>- (BOOL)removeItemAtURL:(NSURL *)URL error:(NSError **)error</code>方法，就可以让方法在内部创建error后传出。</p>
@@ -3410,348 +3515,6 @@ $(document).ready(function(event) {
     
     <entry>
       <title></title>
-      <url>http://tutuge.me/share/rcpr_api.html</url>
-      <content type="html"><![CDATA[<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<style>
-body {
-  font-family: Helvetica, arial, sans-serif;
-  font-size: 14px;
-  line-height: 1.6;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  background-color: white;
-  padding: 30px; }
-
-body > *:first-child {
-  margin-top: 0 !important; }
-body > *:last-child {
-  margin-bottom: 0 !important; }
-
-a {
-  color: #4183C4; }
-a.absent {
-  color: #cc0000; }
-a.anchor {
-  display: block;
-  padding-left: 30px;
-  margin-left: -30px;
-  cursor: pointer;
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0; }
-
-h1, h2, h3, h4, h5, h6 {
-  margin: 20px 0 10px;
-  padding: 0;
-  font-weight: bold;
-  -webkit-font-smoothing: antialiased;
-  cursor: text;
-  position: relative; }
-
-h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
-  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA09pVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoMTMuMCAyMDEyMDMwNS5tLjQxNSAyMDEyLzAzLzA1OjIxOjAwOjAwKSAgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OUM2NjlDQjI4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OUM2NjlDQjM4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5QzY2OUNCMDg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo5QzY2OUNCMTg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PsQhXeAAAABfSURBVHjaYvz//z8DJYCRUgMYQAbAMBQIAvEqkBQWXI6sHqwHiwG70TTBxGaiWwjCTGgOUgJiF1J8wMRAIUA34B4Q76HUBelAfJYSA0CuMIEaRP8wGIkGMA54bgQIMACAmkXJi0hKJQAAAABJRU5ErkJggg==) no-repeat 10px center;
-  text-decoration: none; }
-
-h1 tt, h1 code {
-  font-size: inherit; }
-
-h2 tt, h2 code {
-  font-size: inherit; }
-
-h3 tt, h3 code {
-  font-size: inherit; }
-
-h4 tt, h4 code {
-  font-size: inherit; }
-
-h5 tt, h5 code {
-  font-size: inherit; }
-
-h6 tt, h6 code {
-  font-size: inherit; }
-
-h1 {
-  font-size: 28px;
-  color: black; }
-
-h2 {
-  font-size: 24px;
-  border-bottom: 1px solid #cccccc;
-  color: black; }
-
-h3 {
-  font-size: 18px; }
-
-h4 {
-  font-size: 16px; }
-
-h5 {
-  font-size: 14px; }
-
-h6 {
-  color: #777777;
-  font-size: 14px; }
-
-p, blockquote, ul, ol, dl, li, table, pre {
-  margin: 15px 0; }
-
-hr {
-  background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAECAYAAACtBE5DAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OENDRjNBN0E2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OENDRjNBN0I2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4Q0NGM0E3ODY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4Q0NGM0E3OTY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PqqezsUAAAAfSURBVHjaYmRABcYwBiM2QSA4y4hNEKYDQxAEAAIMAHNGAzhkPOlYAAAAAElFTkSuQmCC) repeat-x 0 0;
-  border: 0 none;
-  color: #cccccc;
-  height: 4px;
-  padding: 0;
-}
-
-body > h2:first-child {
-  margin-top: 0;
-  padding-top: 0; }
-body > h1:first-child {
-  margin-top: 0;
-  padding-top: 0; }
-  body > h1:first-child + h2 {
-    margin-top: 0;
-    padding-top: 0; }
-body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
-  margin-top: 0;
-  padding-top: 0; }
-
-a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
-  margin-top: 0;
-  padding-top: 0; }
-
-h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
-  margin-top: 0; }
-
-li p.first {
-  display: inline-block; }
-li {
-  margin: 0; }
-ul, ol {
-  padding-left: 30px; }
-
-ul :first-child, ol :first-child {
-  margin-top: 0; }
-
-dl {
-  padding: 0; }
-  dl dt {
-    font-size: 14px;
-    font-weight: bold;
-    font-style: italic;
-    padding: 0;
-    margin: 15px 0 5px; }
-    dl dt:first-child {
-      padding: 0; }
-    dl dt > :first-child {
-      margin-top: 0; }
-    dl dt > :last-child {
-      margin-bottom: 0; }
-  dl dd {
-    margin: 0 0 15px;
-    padding: 0 15px; }
-    dl dd > :first-child {
-      margin-top: 0; }
-    dl dd > :last-child {
-      margin-bottom: 0; }
-
-blockquote {
-  border-left: 4px solid #dddddd;
-  padding: 0 15px;
-  color: #777777; }
-  blockquote > :first-child {
-    margin-top: 0; }
-  blockquote > :last-child {
-    margin-bottom: 0; }
-
-table {
-  padding: 0;border-collapse: collapse; }
-  table tr {
-    border-top: 1px solid #cccccc;
-    background-color: white;
-    margin: 0;
-    padding: 0; }
-    table tr:nth-child(2n) {
-      background-color: #f8f8f8; }
-    table tr th {
-      font-weight: bold;
-      border: 1px solid #cccccc;
-      margin: 0;
-      padding: 6px 13px; }
-    table tr td {
-      border: 1px solid #cccccc;
-      margin: 0;
-      padding: 6px 13px; }
-    table tr th :first-child, table tr td :first-child {
-      margin-top: 0; }
-    table tr th :last-child, table tr td :last-child {
-      margin-bottom: 0; }
-
-img {
-  max-width: 100%; }
-
-span.frame {
-  display: block;
-  overflow: hidden; }
-  span.frame > span {
-    border: 1px solid #dddddd;
-    display: block;
-    float: left;
-    overflow: hidden;
-    margin: 13px 0 0;
-    padding: 7px;
-    width: auto; }
-  span.frame span img {
-    display: block;
-    float: left; }
-  span.frame span span {
-    clear: both;
-    color: #333333;
-    display: block;
-    padding: 5px 0 0; }
-span.align-center {
-  display: block;
-  overflow: hidden;
-  clear: both; }
-  span.align-center > span {
-    display: block;
-    overflow: hidden;
-    margin: 13px auto 0;
-    text-align: center; }
-  span.align-center span img {
-    margin: 0 auto;
-    text-align: center; }
-span.align-right {
-  display: block;
-  overflow: hidden;
-  clear: both; }
-  span.align-right > span {
-    display: block;
-    overflow: hidden;
-    margin: 13px 0 0;
-    text-align: right; }
-  span.align-right span img {
-    margin: 0;
-    text-align: right; }
-span.float-left {
-  display: block;
-  margin-right: 13px;
-  overflow: hidden;
-  float: left; }
-  span.float-left span {
-    margin: 13px 0 0; }
-span.float-right {
-  display: block;
-  margin-left: 13px;
-  overflow: hidden;
-  float: right; }
-  span.float-right > span {
-    display: block;
-    overflow: hidden;
-    margin: 13px auto 0;
-    text-align: right; }
-
-code, tt {
-  margin: 0 2px;
-  padding: 0 5px;
-  white-space: nowrap;
-  border: 1px solid #eaeaea;
-  background-color: #f8f8f8;
-  border-radius: 3px; }
-
-pre code {
-  margin: 0;
-  padding: 0;
-  white-space: pre;
-  border: none;
-  background: transparent; }
-
-.highlight pre {
-  background-color: #f8f8f8;
-  border: 1px solid #cccccc;
-  font-size: 13px;
-  line-height: 19px;
-  overflow: auto;
-  padding: 6px 10px;
-  border-radius: 3px; }
-
-pre {
-  background-color: #f8f8f8;
-  border: 1px solid #cccccc;
-  font-size: 13px;
-  line-height: 19px;
-  overflow: auto;
-  padding: 6px 10px;
-  border-radius: 3px; }
-  pre code, pre tt {
-    background-color: transparent;
-    border: none; }
-
-sup {
-    font-size: 0.83em;
-    vertical-align: super;
-    line-height: 0;
-}
-* {
-	-webkit-print-color-adjust: exact;
-}
-@media screen and (min-width: 914px) {
-    body {
-        width: 854px;
-        margin:0 auto;
-    }
-}
-@media print {
-	table, pre {
-		page-break-inside: avoid;
-	}
-	pre {
-		word-wrap: break-word;
-	}
-}
-</style>
-<title>RCPR 人脸29点检测API说明文档</title>
-
-</head>
-<body>
-<h1>RCPR 人脸29点检测API说明文档</h1>
-
-<h2>Web 测试页面</h2>
-
-<p><a href="http://120.24.247.190/RCPR/test/index.html" target="_blank" rel="external">http://120.24.247.190/RCPR/test/index.html</a></p>
-
-<p>（别上传太多=。=，图片文件一天清理一次）</p>
-
-<hr>
-
-<h2>API</h2>
-
-<p><a href="http://120.24.247.190/RCPR/detect_landmark" target="_blank" rel="external">http://120.24.247.190/RCPR/detect_landmark</a></p>
-
-<ul>
-<li>请求方式：POST</li>
-<li>参数：img-->图片文件，multipart/form-data方式</li>
-<li>目前没有加上图片归一化处理，别上传太大的图。</li>
-</ul>
-
-
-<h2>参考</h2>
-
-<ul>
-<li><a href="https://www.imququ.com/post/four-ways-to-post-data-in-http.html" target="_blank" rel="external">四种常见的 POST 提交数据方式</a></li>
-</ul>
-
-</body>
-</html>]]></content>
-    </entry>
-    
-    <entry>
-      <title></title>
       <url>http://tutuge.me/share/rcpr_setup.html</url>
       <content type="html"><![CDATA[<!doctype html>
 <html>
@@ -4273,6 +4036,348 @@ echo 'Clean done at ' `date`
 
 <pre><code>0 23 * * * sh /home/yzk/program/crontab/cleanUploadImg.sh &gt;&gt; /home/yzk/program/crontab/cleanLog.txt 2&gt;&amp;1
 </code></pre>
+</body>
+</html>]]></content>
+    </entry>
+    
+    <entry>
+      <title></title>
+      <url>http://tutuge.me/share/rcpr_api.html</url>
+      <content type="html"><![CDATA[<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<style>
+body {
+  font-family: Helvetica, arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: white;
+  padding: 30px; }
+
+body > *:first-child {
+  margin-top: 0 !important; }
+body > *:last-child {
+  margin-bottom: 0 !important; }
+
+a {
+  color: #4183C4; }
+a.absent {
+  color: #cc0000; }
+a.anchor {
+  display: block;
+  padding-left: 30px;
+  margin-left: -30px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0; }
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+  cursor: text;
+  position: relative; }
+
+h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA09pVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoMTMuMCAyMDEyMDMwNS5tLjQxNSAyMDEyLzAzLzA1OjIxOjAwOjAwKSAgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OUM2NjlDQjI4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OUM2NjlDQjM4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5QzY2OUNCMDg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo5QzY2OUNCMTg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PsQhXeAAAABfSURBVHjaYvz//z8DJYCRUgMYQAbAMBQIAvEqkBQWXI6sHqwHiwG70TTBxGaiWwjCTGgOUgJiF1J8wMRAIUA34B4Q76HUBelAfJYSA0CuMIEaRP8wGIkGMA54bgQIMACAmkXJi0hKJQAAAABJRU5ErkJggg==) no-repeat 10px center;
+  text-decoration: none; }
+
+h1 tt, h1 code {
+  font-size: inherit; }
+
+h2 tt, h2 code {
+  font-size: inherit; }
+
+h3 tt, h3 code {
+  font-size: inherit; }
+
+h4 tt, h4 code {
+  font-size: inherit; }
+
+h5 tt, h5 code {
+  font-size: inherit; }
+
+h6 tt, h6 code {
+  font-size: inherit; }
+
+h1 {
+  font-size: 28px;
+  color: black; }
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #cccccc;
+  color: black; }
+
+h3 {
+  font-size: 18px; }
+
+h4 {
+  font-size: 16px; }
+
+h5 {
+  font-size: 14px; }
+
+h6 {
+  color: #777777;
+  font-size: 14px; }
+
+p, blockquote, ul, ol, dl, li, table, pre {
+  margin: 15px 0; }
+
+hr {
+  background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAECAYAAACtBE5DAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OENDRjNBN0E2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OENDRjNBN0I2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4Q0NGM0E3ODY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4Q0NGM0E3OTY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PqqezsUAAAAfSURBVHjaYmRABcYwBiM2QSA4y4hNEKYDQxAEAAIMAHNGAzhkPOlYAAAAAElFTkSuQmCC) repeat-x 0 0;
+  border: 0 none;
+  color: #cccccc;
+  height: 4px;
+  padding: 0;
+}
+
+body > h2:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+body > h1:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+  body > h1:first-child + h2 {
+    margin-top: 0;
+    padding-top: 0; }
+body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0; }
+
+h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+  margin-top: 0; }
+
+li p.first {
+  display: inline-block; }
+li {
+  margin: 0; }
+ul, ol {
+  padding-left: 30px; }
+
+ul :first-child, ol :first-child {
+  margin-top: 0; }
+
+dl {
+  padding: 0; }
+  dl dt {
+    font-size: 14px;
+    font-weight: bold;
+    font-style: italic;
+    padding: 0;
+    margin: 15px 0 5px; }
+    dl dt:first-child {
+      padding: 0; }
+    dl dt > :first-child {
+      margin-top: 0; }
+    dl dt > :last-child {
+      margin-bottom: 0; }
+  dl dd {
+    margin: 0 0 15px;
+    padding: 0 15px; }
+    dl dd > :first-child {
+      margin-top: 0; }
+    dl dd > :last-child {
+      margin-bottom: 0; }
+
+blockquote {
+  border-left: 4px solid #dddddd;
+  padding: 0 15px;
+  color: #777777; }
+  blockquote > :first-child {
+    margin-top: 0; }
+  blockquote > :last-child {
+    margin-bottom: 0; }
+
+table {
+  padding: 0;border-collapse: collapse; }
+  table tr {
+    border-top: 1px solid #cccccc;
+    background-color: white;
+    margin: 0;
+    padding: 0; }
+    table tr:nth-child(2n) {
+      background-color: #f8f8f8; }
+    table tr th {
+      font-weight: bold;
+      border: 1px solid #cccccc;
+      margin: 0;
+      padding: 6px 13px; }
+    table tr td {
+      border: 1px solid #cccccc;
+      margin: 0;
+      padding: 6px 13px; }
+    table tr th :first-child, table tr td :first-child {
+      margin-top: 0; }
+    table tr th :last-child, table tr td :last-child {
+      margin-bottom: 0; }
+
+img {
+  max-width: 100%; }
+
+span.frame {
+  display: block;
+  overflow: hidden; }
+  span.frame > span {
+    border: 1px solid #dddddd;
+    display: block;
+    float: left;
+    overflow: hidden;
+    margin: 13px 0 0;
+    padding: 7px;
+    width: auto; }
+  span.frame span img {
+    display: block;
+    float: left; }
+  span.frame span span {
+    clear: both;
+    color: #333333;
+    display: block;
+    padding: 5px 0 0; }
+span.align-center {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+  span.align-center > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px auto 0;
+    text-align: center; }
+  span.align-center span img {
+    margin: 0 auto;
+    text-align: center; }
+span.align-right {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+  span.align-right > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px 0 0;
+    text-align: right; }
+  span.align-right span img {
+    margin: 0;
+    text-align: right; }
+span.float-left {
+  display: block;
+  margin-right: 13px;
+  overflow: hidden;
+  float: left; }
+  span.float-left span {
+    margin: 13px 0 0; }
+span.float-right {
+  display: block;
+  margin-left: 13px;
+  overflow: hidden;
+  float: right; }
+  span.float-right > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px auto 0;
+    text-align: right; }
+
+code, tt {
+  margin: 0 2px;
+  padding: 0 5px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px; }
+
+pre code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent; }
+
+.highlight pre {
+  background-color: #f8f8f8;
+  border: 1px solid #cccccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px; }
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #cccccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px; }
+  pre code, pre tt {
+    background-color: transparent;
+    border: none; }
+
+sup {
+    font-size: 0.83em;
+    vertical-align: super;
+    line-height: 0;
+}
+* {
+	-webkit-print-color-adjust: exact;
+}
+@media screen and (min-width: 914px) {
+    body {
+        width: 854px;
+        margin:0 auto;
+    }
+}
+@media print {
+	table, pre {
+		page-break-inside: avoid;
+	}
+	pre {
+		word-wrap: break-word;
+	}
+}
+</style>
+<title>RCPR 人脸29点检测API说明文档</title>
+
+</head>
+<body>
+<h1>RCPR 人脸29点检测API说明文档</h1>
+
+<h2>Web 测试页面</h2>
+
+<p><a href="http://120.24.247.190/RCPR/test/index.html" target="_blank" rel="external">http://120.24.247.190/RCPR/test/index.html</a></p>
+
+<p>（别上传太多=。=，图片文件一天清理一次）</p>
+
+<hr>
+
+<h2>API</h2>
+
+<p><a href="http://120.24.247.190/RCPR/detect_landmark" target="_blank" rel="external">http://120.24.247.190/RCPR/detect_landmark</a></p>
+
+<ul>
+<li>请求方式：POST</li>
+<li>参数：img-->图片文件，multipart/form-data方式</li>
+<li>目前没有加上图片归一化处理，别上传太大的图。</li>
+</ul>
+
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="https://www.imququ.com/post/four-ways-to-post-data-in-http.html" target="_blank" rel="external">四种常见的 POST 提交数据方式</a></li>
+</ul>
+
 </body>
 </html>]]></content>
     </entry>
