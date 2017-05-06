@@ -412,7 +412,7 @@
             
                 <div class="entry teal-link-context">
                     <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。</p>
-<p>之前的做的项目，<a href="https://itunes.apple.com/us/app/qing-ju-yin-le-quan-guo-zui/id913235479?l=zh&amp;ls=1&amp;mt=8">青桔音乐iOS客户端</a>里面的首页就是一个类似微信朋友圈的“动态”页面，大致如下：</p>
+<p>之前的做的项目，<a href="https://itunes.apple.com/us/app/qing-ju-yin-le-quan-guo-zui/id913235479?l=zh&amp;ls=1&amp;mt=8" target="_blank" rel="external">青桔音乐iOS客户端</a>里面的首页就是一个类似微信朋友圈的“动态”页面，大致如下：</p>
 <p><img src="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_1.png?imageView2/0/h/300" alt="青桔动态页面"></p>
 <p>如果是你，你会怎么实现这个页面呢？</p>
 <p>这还用问，当然是用UITableView+自定义的UITableViewCell。</p>
@@ -504,7 +504,7 @@
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>之前在做项目的时候，所有业务的网络接口方法，全部都写在了一个文件里面，一开始还好，毕竟每个方法的代码也只是十几行，增加、修改也比较容易。但是随着接口的增多，这个文件慢慢居然超过了1000行，里面几十个方法都写在一起，实在是不好维护。</p>
 <p>虽然保持这样也没有什么，多用用Cmd+F就能找到。但是，真是越看越不顺眼😳， 代码一定要有“美感”啊~😝</p>
 <p>所以在查阅了大量文章后，终于想出了本文即将说明的办法，越发觉得Objective-C的“消息”机制是多么的赞~😚</p>
-<h2 id="Github-示例"><a href="#Github-示例" class="headerlink" title="Github 示例"></a>Github 示例</h2><p>贴上本文中的示例工程：<a href="https://github.com/zekunyan/HttpProxyExample">https://github.com/zekunyan/HttpProxyExample</a></p>
+<h2 id="Github-示例"><a href="#Github-示例" class="headerlink" title="Github 示例"></a>Github 示例</h2><p>贴上本文中的示例工程：<a href="https://github.com/zekunyan/HttpProxyExample" target="_blank" rel="external">https://github.com/zekunyan/HttpProxyExample</a></p>
                 </div>
             
         </div>
@@ -687,14 +687,14 @@
     </a>
     <ul>
       <li><a class="btn-return-top btn-floating waves-effect teal accent-4" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
-      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="menu"><i class="fa fa-navicon"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
     </ul>
   </div>
 
     </main>
     <footer class="page-footer blue-grey darken-1">
     
-    <div class="container">
+    <div class="footer-container container">
         <div class="row">
             
             <div class="social-group col m4 s12">
@@ -712,17 +712,22 @@
                         <i class="fa fa-2x fa-rss"></i>
                     </a>
                 
-                <div class="site-visitors-container white-text">
-                    <span>
-                        <i class="fa fa-user"></i>
-                        <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
-                    </span>
-                    <span>&nbsp;|&nbsp;</span>
-                    <span>
-                        <i class="fa fa-eye"></i>
-                        <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
-                    </span>
-                </div>
+                
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
             </div>
             
 
@@ -767,8 +772,6 @@
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/materialize.min.js"></script>
-<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
-</script>
 
 <script>
     (function($) {

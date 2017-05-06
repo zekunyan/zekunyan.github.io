@@ -328,16 +328,21 @@
     </div>
 </article>
 
-<div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
-<script>
-  var cloudTieConfig = {
-    url: document.location.href, 
-    sourceId: "",
-    productKey: "a36947900dda436985a80d3b2f48b312",
-    target: "cloud-tie-wrapper"
-  };
-</script>
-<script src="https://img1.cache.netease.com/f2e/tie/yun/sdk/loader.js"></script>
+
+
+
+    <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href,
+        sourceId: "",
+        productKey: "a36947900dda436985a80d3b2f48b312",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.cache.netease.com/f2e/tie/yun/sdk/loader.js"></script>
+
+
 
 </div>
 
@@ -347,14 +352,14 @@
     </a>
     <ul>
       <li><a class="btn-return-top btn-floating waves-effect teal accent-4" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
-      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="menu"><i class="fa fa-navicon"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
     </ul>
   </div>
 
     </main>
     <footer class="page-footer blue-grey darken-1">
     
-    <div class="container">
+    <div class="footer-container container">
         <div class="row">
             
             <div class="social-group col m4 s12">
@@ -372,17 +377,22 @@
                         <i class="fa fa-2x fa-rss"></i>
                     </a>
                 
-                <div class="site-visitors-container white-text">
-                    <span>
-                        <i class="fa fa-user"></i>
-                        <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
-                    </span>
-                    <span>&nbsp;|&nbsp;</span>
-                    <span>
-                        <i class="fa fa-eye"></i>
-                        <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
-                    </span>
-                </div>
+                
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
             </div>
             
 
@@ -427,8 +437,6 @@
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/materialize.min.js"></script>
-<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
-</script>
 
 <script>
     (function($) {

@@ -257,7 +257,7 @@
 </ol>
 </blockquote>
 <p>写个Demo验证了下，结果非常有意思，不由得好奇起来，所以深入研究了下<code>methodSignatureForSelector:</code>的实现，然后自己模拟实现出来。</p>
-<p>Github地址：<a href="https://github.com/zekunyan/TTGRemakeMethodSignatureForSelector">TTGRemakeMethodSignatureForSelector</a></p>
+<p>Github地址：<a href="https://github.com/zekunyan/TTGRemakeMethodSignatureForSelector" target="_blank" rel="external">TTGRemakeMethodSignatureForSelector</a></p>
 <p>详细的研究过程如下：</p>
                 </div>
             
@@ -358,7 +358,7 @@
 <li>第三篇：<a href="http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/">有趣的Autolayout示例3-Masonry实现</a></li>
 <li>第四篇：<a href="http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/">有趣的Autolayout示例4-Masonry实现</a></li>
 </ul>
-<p>Github地址：<br><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
+<p>Github地址：<br><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="external">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
                 </div>
             
         </div>
@@ -403,7 +403,7 @@
                 <div class="entry teal-link-context">
                     <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近更新了下以前写的TTGDeallocTaskHelper库，功能非常简单，就是<strong>在不改变原有代码的情况下，不用Runtime的Method Swizzling给任意对象添加任务Block，在对象dealloc的后期执行Block。</strong>使用时：</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 给object对象添加dealloc后期要执行的任务Block</span></div><div class="line">[object ttg_addDeallocTask:^(__<span class="keyword">unsafe_unretained</span> <span class="keyword">id</span> target, <span class="built_in">NSUInteger</span> identifier) &#123;</div><div class="line">    <span class="comment">// 执行任务</span></div><div class="line">&#125;];</div></pre></td></tr></table></figure>
-<p>Github地址：<a href="https://github.com/zekunyan/TTGDeallocTaskHelper/">https://github.com/zekunyan/TTGDeallocTaskHelper</a></p>
+<p>Github地址：<a href="https://github.com/zekunyan/TTGDeallocTaskHelper/" target="_blank" rel="external">https://github.com/zekunyan/TTGDeallocTaskHelper</a></p>
 <p>一张图说明原理：</p>
 <p><img src="http://zorrochen.qiniudn.com/TTGDeallocTaskHelper_1.jpg" alt="总体结构"></p>
 <p>库的详细原理、限制、注意事项，为什么说“<strong>后期</strong>”执行，将在下文给出。</p>
@@ -449,9 +449,9 @@
 
             
                 <div class="entry teal-link-context">
-                    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>“工欲善其事,必先利其器”，iOS的Core Animation非常强大，可以做出非常炫酷的动画，但是实际写起来还是比较麻烦，代码不直观，需要反复的改参数、Build、运行，所以诞生了各种动画制作工具，本文就以其中比较有名的<a href="http://www.quartzcodeapp.com/">QuartzCode</a>为例，快速实现一个收藏功能的星星动画，最终的效果如下：</p>
+                    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>“工欲善其事,必先利其器”，iOS的Core Animation非常强大，可以做出非常炫酷的动画，但是实际写起来还是比较麻烦，代码不直观，需要反复的改参数、Build、运行，所以诞生了各种动画制作工具，本文就以其中比较有名的<a href="http://www.quartzcodeapp.com/" target="_blank" rel="external">QuartzCode</a>为例，快速实现一个收藏功能的星星动画，最终的效果如下：</p>
 <p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_1.gif" alt=""></p>
-<p>GitHub地址：<a href="https://github.com/zekunyan/QuartzCodeExample-StarAimation">https://github.com/zekunyan/QuartzCodeExample-StarAimation</a></p>
+<p>GitHub地址：<a href="https://github.com/zekunyan/QuartzCodeExample-StarAimation" target="_blank" rel="external">https://github.com/zekunyan/QuartzCodeExample-StarAimation</a></p>
                 </div>
             
         </div>
@@ -495,7 +495,7 @@
             
                 <div class="entry teal-link-context">
                     <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近抽空写了个拼图验证控件，用户可以通过水平、垂直，或者直接拖动拼图块，完成拼图图案，来完成验证。拼图块的形状可以自定义，默认提供了经典的拼图形状、圆形、正方形，整个拼图的图案也是支持从图片生成的。</p>
-<p><strong>CocoaPods</strong>: <code>pod &quot;TTGPuzzleVerify&quot;</code><br><strong>Github</strong>: <a href="https://github.com/zekunyan/TTGPuzzleVerify">https://github.com/zekunyan/TTGPuzzleVerify</a></p>
+<p><strong>CocoaPods</strong>: <code>pod &quot;TTGPuzzleVerify&quot;</code><br><strong>Github</strong>: <a href="https://github.com/zekunyan/TTGPuzzleVerify" target="_blank" rel="external">https://github.com/zekunyan/TTGPuzzleVerify</a></p>
 <p><img src="http://zorrochen.qiniudn.com/blog_TTGPuzzleVerify_gif.gif" alt=""></p>
 <p>接下来，说说TTGPuzzleVerify的整体设计思路和实现原理。</p>
                 </div>
@@ -543,13 +543,13 @@
             
                 <div class="entry teal-link-context">
                     <h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><ul>
-<li>2016-09-05: <a href="https://github.com/zekunyan/TTGBingWallPaper/releases/download/0.3/BingWallPaper.app.zip">新版0.3</a>增加子Menu，整理选项；增加“History Wallpapers”打开历史图片文件夹；增加“Launch at startup”开机启动。</li>
-<li>2016-09-03: <a href="https://github.com/zekunyan/TTGBingWallPaper/releases/download/0.2.0/BingWallPaper.app.zip">新版0.2.0！</a>增加“Auto Update”选项；增加“Random”随机选择设置壁纸；修复自动更新不准的Bug。</li>
+<li>2016-09-05: <a href="https://github.com/zekunyan/TTGBingWallPaper/releases/download/0.3/BingWallPaper.app.zip" target="_blank" rel="external">新版0.3</a>增加子Menu，整理选项；增加“History Wallpapers”打开历史图片文件夹；增加“Launch at startup”开机启动。</li>
+<li>2016-09-03: <a href="https://github.com/zekunyan/TTGBingWallPaper/releases/download/0.2.0/BingWallPaper.app.zip" target="_blank" rel="external">新版0.2.0！</a>增加“Auto Update”选项；增加“Random”随机选择设置壁纸；修复自动更新不准的Bug。</li>
 </ul>
 <p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/BingWallPaper_banner.png" alt="Banner"></p>
 <p>极简的壁纸Mac App，每天<strong>自动</strong>下载最新微软Bing的每日壁纸并设置为桌面背景。</p>
 <p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/BingWallPaper_screenshot_2.png?2=2" alt="ScreenShot1"></p>
-<p>Github: <a href="https://github.com/zekunyan/TTGBingWallPaper">https://github.com/zekunyan/TTGBingWallPaper</a></p>
+<p>Github: <a href="https://github.com/zekunyan/TTGBingWallPaper" target="_blank" rel="external">https://github.com/zekunyan/TTGBingWallPaper</a></p>
                 </div>
             
         </div>
@@ -606,7 +606,7 @@
 <li>第二篇：<a href="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/">有趣的Autolayout示例2-Masonry实现</a>  </li>
 <li>第三篇：<a href="http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/">有趣的Autolayout示例3-Masonry实现</a></li>
 </ul>
-<p>Github地址：<br><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
+<p>Github地址：<br><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="external">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
 <p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry4_1.gif" alt="Gif示例"></p>
                 </div>
             
@@ -649,9 +649,9 @@
             
                 <div class="entry teal-link-context">
                     <h2 id="译者前言"><a href="#译者前言" class="headerlink" title="译者前言"></a>译者前言</h2><p>总是看到有人说用汇编实现<code>objc_msgSend</code>是为了速度快，当然这个不可否认。但是难道没有别的原因？于是就看到了这篇文章，遂翻译之！=。=  </p>
-<p>我自己的理解就是，用汇编实现，是为了应对不同的“<a href="https://en.wikipedia.org/wiki/Calling_convention">Calling convention</a>”，把函数调用前的栈和寄存器的参数、状态设置，交给编译器去处理。<br>先看看原文吧。</p>
+<p>我自己的理解就是，用汇编实现，是为了应对不同的“<a href="https://en.wikipedia.org/wiki/Calling_convention" target="_blank" rel="external">Calling convention</a>”，把函数调用前的栈和寄存器的参数、状态设置，交给编译器去处理。<br>先看看原文吧。</p>
 <blockquote>
-<p>原作者: <a href="https://www.linkedin.com/in/ari-grant-789a1015">Ari Grant</a><br>原文链接: <a href="http://arigrant.com/blog/2014/2/12/why-objcmsgsend-must-be-written-in-assembly">Why objc_msgSend Must be Written in Assembly</a></p>
+<p>原作者: <a href="https://www.linkedin.com/in/ari-grant-789a1015" target="_blank" rel="external">Ari Grant</a><br>原文链接: <a href="http://arigrant.com/blog/2014/2/12/why-objcmsgsend-must-be-written-in-assembly" target="_blank" rel="external">Why objc_msgSend Must be Written in Assembly</a></p>
 </blockquote>
                 </div>
             
@@ -738,14 +738,14 @@
     </a>
     <ul>
       <li><a class="btn-return-top btn-floating waves-effect teal accent-4" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
-      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="menu"><i class="fa fa-navicon"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
     </ul>
   </div>
 
     </main>
     <footer class="page-footer blue-grey darken-1">
     
-    <div class="container">
+    <div class="footer-container container">
         <div class="row">
             
             <div class="social-group col m4 s12">
@@ -763,17 +763,22 @@
                         <i class="fa fa-2x fa-rss"></i>
                     </a>
                 
-                <div class="site-visitors-container white-text">
-                    <span>
-                        <i class="fa fa-user"></i>
-                        <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
-                    </span>
-                    <span>&nbsp;|&nbsp;</span>
-                    <span>
-                        <i class="fa fa-eye"></i>
-                        <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
-                    </span>
-                </div>
+                
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
             </div>
             
 
@@ -818,8 +823,6 @@
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/materialize.min.js"></script>
-<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
-</script>
 
 <script>
     (function($) {
