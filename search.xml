@@ -3456,15 +3456,23 @@ $(document).ready(function(event) {
       <content type="html"><![CDATA[<blockquote>
 <p>姓名: 燕泽堃<br>Email: zekunyan@163.com<br>Github: <a href="https://github.com/zekunyan" target="_blank" rel="external">https://github.com/zekunyan</a><br>博客 - 土土哥的技术博客: <a href="http://tutuge.me">http://tutuge.me</a><br>开发经验: iOS、Android、后台开发<br>微博: <a href="http://weibo.com/zekunyan" target="_blank" rel="external">http://weibo.com/zekunyan</a>  </p>
 </blockquote>
-<h2 id="教育经历"><a href="#教育经历" class="headerlink" title="教育经历"></a>教育经历</h2><p>华中科技大学 - 本科 - 电子信息工程 -（2010-2014）<br>华中科技大学 - 工程硕士 - 电子与通信工程 -（2014-2016）对=。=，我2016年6月份才毕业。  </p>
-<h2 id="实习经历"><a href="#实习经历" class="headerlink" title="实习经历"></a>实习经历</h2><p>阿里巴巴 - B2B国际事业部 - iOS开发工程师 - (2015-6至2015-9)</p>
-<h2 id="工作经历"><a href="#工作经历" class="headerlink" title="工作经历"></a>工作经历</h2><p>阿里巴巴 - B2B国际事业部 - iOS开发工程师 - (2016-7至现在)</p>
+<h2 id="工作经历"><a href="#工作经历" class="headerlink" title="工作经历"></a>工作经历</h2><p>阿里巴巴 - iOS开发工程师 - (2016-7至现在)</p>
+<h2 id="实习经历"><a href="#实习经历" class="headerlink" title="实习经历"></a>实习经历</h2><p>阿里巴巴 - iOS开发工程师 - (2015-6至2015-9)</p>
+<h2 id="教育经历"><a href="#教育经历" class="headerlink" title="教育经历"></a>教育经历</h2><p>华中科技大学 - 本科 - 电子信息工程 -（2010-2014）<br>华中科技大学 - 工程硕士 - 电子与通信工程 -（2014-2016）  </p>
 <h2 id="技能"><a href="#技能" class="headerlink" title="技能"></a>技能</h2><ul>
-<li>熟悉：C, C++, Java, Objective-C, Swift</li>
+<li>熟悉：iOS开发，C, C++, Java, Objective-C, Swift</li>
 <li>了解：PHP, Python, html, js, css, Node.js, Linux Shell脚本</li>
 <li>数据库：MySQL, SQLite, MongoDB</li>
-<li>华科蝴蝶Hudbt网站（PHP+nginx+memcache）服务器管理员。</li>
+<li>华科蝴蝶Hudbt网站（PHP+nginx+memcache）服务器管理员</li>
 </ul>
+<hr>
+<h2 id="工作内容"><a href="#工作内容" class="headerlink" title="工作内容"></a>工作内容</h2><p>阿里巴巴国际站三个App的日常开发与基础建设。</p>
+<ul>
+<li><a href="https://itunes.apple.com/us/app/alibaba-com-app-buy-sell-goods-across-the-world/id503451073?mt=8" target="_blank" rel="external">Alibaba.com App - Buy &amp; sell goods across the world</a></li>
+<li><a href="https://itunes.apple.com/cn/app/阿里卖家-阿里巴巴国际站b2b外贸出口官方app/id708064914?mt=8" target="_blank" rel="external">阿里卖家 - 阿里巴巴国际站B2B外贸出口官方App</a></li>
+<li><a href="https://itunes.apple.com/us/app/阿里友办-外贸移动协同平台/id1101588739?mt=8" target="_blank" rel="external">阿里友办 - 外贸移动协同平台</a></li>
+</ul>
+<hr>
 <h2 id="在校期间主要项目经历"><a href="#在校期间主要项目经历" class="headerlink" title="在校期间主要项目经历"></a>在校期间主要项目经历</h2><h3 id="妈妈搜索iOS客户端"><a href="#妈妈搜索iOS客户端" class="headerlink" title="妈妈搜索iOS客户端"></a><a href="https://itunes.apple.com/cn/app/ma-ma-sou-suo/id1068092349?ls=1&amp;mt=8" target="_blank" rel="external">妈妈搜索iOS客户端</a></h3><p>简介：<strong>妈妈搜索</strong>：最贴心的育儿知识服务！按照【健康】【养育】【教育】3个板块提供最权威、最贴心的育儿知识搜索服务。<strong>独立完成1.0、1.1版本开发</strong><br>(学校实验室试水项目，内测阶段)</p>
 <ul>
 <li>为应用内的标签显示开发出独立组件库：<a href="https://github.com/zekunyan/TTGTagCollectionView" target="_blank" rel="external">TTGTagCollectionView</a></li>
@@ -3511,6 +3519,12 @@ $(document).ready(function(event) {
 </ul>
 <h2 id="博客"><a href="#博客" class="headerlink" title="博客"></a>博客</h2><p>日均PV300左右，被收入”<strong><a href="https://github.com/tangqiaoboy/iOSBlogCN" target="_blank" rel="external">中文 iOS/Mac 开发博客列表</a></strong>”。</p>
 ]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[tags]]></title>
+      <url>http://tutuge.me/tags/index.html</url>
+      <content type="html"></content>
     </entry>
     
     <entry>
@@ -4380,12 +4394,6 @@ echo 'Clean done at ' `date`
 </code></pre>
 </body>
 </html>]]></content>
-    </entry>
-    
-    <entry>
-      <title><![CDATA[tags]]></title>
-      <url>http://tutuge.me/tags/index.html</url>
-      <content type="html"></content>
     </entry>
     
   
