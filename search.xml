@@ -111,7 +111,10 @@
     <entry>
       <title><![CDATA[反编译分析Xcode8的Bug, release下连续两次调用有二级指针参数的空方法会Crash]]></title>
       <url>http://tutuge.me/2017/03/14/xcode8-crash-on-out-parameter/</url>
-      <content type="html"><![CDATA[<h2 id="二级指针"><a href="#二级指针" class="headerlink" title="二级指针"></a>二级指针</h2><p>二级指针，也叫指针的指针，或者Out Parameters，可以用来改变一个指针的地址值，由于在Objective-C里面方法、函数不支持返回多个值，所以经常用二级指针实现这个功能，比如<code>NSFileManager</code>的<code>- (BOOL)removeItemAtURL:(NSURL *)URL error:(NSError **)error</code>方法，就可以让方法在内部创建error后传出。</p>
+      <content type="html"><![CDATA[<h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><ul>
+<li>在最新的Xcode 9 Beta版本中，此Bug已被苹果修复：<strong>Bug ID 30530580: Crash on “Release” Build Configuration scheme setting for Out Parameters code</strong></li>
+</ul>
+<h2 id="二级指针"><a href="#二级指针" class="headerlink" title="二级指针"></a>二级指针</h2><p>二级指针，也叫指针的指针，或者Out Parameters，可以用来改变一个指针的地址值，由于在Objective-C里面方法、函数不支持返回多个值，所以经常用二级指针实现这个功能，比如<code>NSFileManager</code>的<code>- (BOOL)removeItemAtURL:(NSURL *)URL error:(NSError **)error</code>方法，就可以让方法在内部创建error后传出。</p>
 <a id="more"></a>
 <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>最近在Debug代码的时候，注释掉了一个带有二级指针参数的方法内部所有代码，然后在Release环境下安装运行，结果居然Crash了，猛然想起好像以前同事也遇到过，仔细检查了下，感觉代码是没有问题的，所以继续深究，新建了一个空的工程，重现了这个EXC_BAD_ACCESS的Crash，代码非常简单，如下：</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// main.m</span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;CoreFoundation/CoreFoundation.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">TestClass</span> : <span class="title">NSObject</span></span></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">TestClass</span></span></div><div class="line"></div><div class="line">+ (<span class="keyword">void</span>)runTest &#123;</div><div class="line">    <span class="built_in">NSMutableArray</span> *array = [<span class="built_in">NSMutableArray</span> new];</div><div class="line">    [TestClass testFunc:&amp;array];</div><div class="line">    [TestClass testFunc:&amp;array];</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"array: %@"</span>, array);</div><div class="line">&#125;</div><div class="line"></div><div class="line">+ (<span class="keyword">void</span>)testFunc:(<span class="built_in">NSMutableArray</span> **)array &#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[]) &#123;</div><div class="line">    <span class="keyword">@autoreleasepool</span> &#123;</div><div class="line">        [TestClass runTest];</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
@@ -3456,7 +3459,7 @@ $(document).ready(function(event) {
       <content type="html"><![CDATA[<blockquote>
 <p>姓名: 燕泽堃<br>Email: zekunyan@163.com<br>Github: <a href="https://github.com/zekunyan" target="_blank" rel="external">https://github.com/zekunyan</a><br>博客 - 土土哥的技术博客: <a href="http://tutuge.me">http://tutuge.me</a><br>开发经验: iOS、Android、后台开发<br>微博: <a href="http://weibo.com/zekunyan" target="_blank" rel="external">http://weibo.com/zekunyan</a>  </p>
 </blockquote>
-<h2 id="工作经历"><a href="#工作经历" class="headerlink" title="工作经历"></a>工作经历</h2><p>阿里巴巴 - iOS开发工程师 - (2016-7至现在)</p>
+<h2 id="工作经历"><a href="#工作经历" class="headerlink" title="工作经历"></a>工作经历</h2><p>阿里巴巴 - 资深无线开发工程师 - (2016-7至现在)</p>
 <h2 id="实习经历"><a href="#实习经历" class="headerlink" title="实习经历"></a>实习经历</h2><p>阿里巴巴 - iOS开发工程师 - (2015-6至2015-9)</p>
 <h2 id="教育经历"><a href="#教育经历" class="headerlink" title="教育经历"></a>教育经历</h2><p>华中科技大学 - 本科 - 电子信息工程 -（2010-2014）<br>华中科技大学 - 工程硕士 - 电子与通信工程 -（2014-2016）  </p>
 <h2 id="技能"><a href="#技能" class="headerlink" title="技能"></a>技能</h2><ul>
@@ -3519,12 +3522,6 @@ $(document).ready(function(event) {
 </ul>
 <h2 id="博客"><a href="#博客" class="headerlink" title="博客"></a>博客</h2><p>日均PV300左右，被收入”<strong><a href="https://github.com/tangqiaoboy/iOSBlogCN" target="_blank" rel="external">中文 iOS/Mac 开发博客列表</a></strong>”。</p>
 ]]></content>
-    </entry>
-    
-    <entry>
-      <title><![CDATA[tags]]></title>
-      <url>http://tutuge.me/tags/index.html</url>
-      <content type="html"></content>
     </entry>
     
     <entry>
@@ -4394,6 +4391,12 @@ echo 'Clean done at ' `date`
 </code></pre>
 </body>
 </html>]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[tags]]></title>
+      <url>http://tutuge.me/tags/index.html</url>
+      <content type="html"></content>
     </entry>
     
   

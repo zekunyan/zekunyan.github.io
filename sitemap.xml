@@ -4,7 +4,14 @@
   <url>
     <loc>http://tutuge.me/about/index.html</loc>
     
-    <lastmod>2017-05-13T14:34:18.000Z</lastmod>
+    <lastmod>2017-08-01T17:30:32.249Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://tutuge.me/2017/03/14/xcode8-crash-on-out-parameter/</loc>
+    
+    <lastmod>2017-08-01T17:29:15.566Z</lastmod>
     
   </url>
   
@@ -33,13 +40,6 @@
     <loc>http://tutuge.me/2017/03/12/autolayout-example-with-masonry5/</loc>
     
     <lastmod>2017-03-13T18:32:08.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://tutuge.me/2017/03/14/xcode8-crash-on-out-parameter/</loc>
-    
-    <lastmod>2017-03-13T18:30:50.000Z</lastmod>
     
   </url>
   

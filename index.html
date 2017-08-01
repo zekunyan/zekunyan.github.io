@@ -299,7 +299,10 @@
 
             
                 <div class="entry teal-link-context">
-                    <h2 id="二级指针"><a href="#二级指针" class="headerlink" title="二级指针"></a>二级指针</h2><p>二级指针，也叫指针的指针，或者Out Parameters，可以用来改变一个指针的地址值，由于在Objective-C里面方法、函数不支持返回多个值，所以经常用二级指针实现这个功能，比如<code>NSFileManager</code>的<code>- (BOOL)removeItemAtURL:(NSURL *)URL error:(NSError **)error</code>方法，就可以让方法在内部创建error后传出。</p>
+                    <h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><ul>
+<li>在最新的Xcode 9 Beta版本中，此Bug已被苹果修复：<strong>Bug ID 30530580: Crash on “Release” Build Configuration scheme setting for Out Parameters code</strong></li>
+</ul>
+<h2 id="二级指针"><a href="#二级指针" class="headerlink" title="二级指针"></a>二级指针</h2><p>二级指针，也叫指针的指针，或者Out Parameters，可以用来改变一个指针的地址值，由于在Objective-C里面方法、函数不支持返回多个值，所以经常用二级指针实现这个功能，比如<code>NSFileManager</code>的<code>- (BOOL)removeItemAtURL:(NSURL *)URL error:(NSError **)error</code>方法，就可以让方法在内部创建error后传出。</p>
                 </div>
             
         </div>
