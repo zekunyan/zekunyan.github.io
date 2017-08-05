@@ -429,16 +429,25 @@ $(document).ready(function(event) {
 
 
 
-    <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
-    <script>
-      var cloudTieConfig = {
-        url: document.location.href,
-        sourceId: "",
-        productKey: "a36947900dda436985a80d3b2f48b312",
-        target: "cloud-tie-wrapper"
-      };
-    </script>
-    <script src="https://img1.cache.netease.com/f2e/tie/yun/sdk/loader.js"></script>
+    <section id="comment">
+        <div id="disqus_thread"></div>
+        <script>
+            var disqus_config = function() {
+                this.page.url = 'http://tutuge.me/404.html';
+                this.page.identifier = '404.html';
+            };
+            (function() {
+                var d = document,
+                    s = d.createElement('script');
+                s.src = '//tutuge-me.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', + new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the
+            <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+        </noscript>
+    </section>
 
 
 
