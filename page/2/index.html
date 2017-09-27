@@ -179,16 +179,16 @@
         
 
             <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/服务端/">
-                    服务端 <span class="right">2 篇</span></a>
+                <a class="no-padding" href="/categories/其它/">
+                    其它 <span class="right">4 篇</span></a>
                 </a>
             </li>
 
         
 
             <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/其它/">
-                    其它 <span class="right">2 篇</span></a>
+                <a class="no-padding" href="/categories/服务端/">
+                    服务端 <span class="right">2 篇</span></a>
                 </a>
             </li>
 
@@ -221,6 +221,92 @@
 
 
 <div id="article-list" class="container main-container">
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="blue-grey-link-context"><a href="/2016/06/19/translation-why-objcmsgsend-must-be-written-in-assembly/">翻译-为什么objc_msgSend必须用汇编实现</a></h1>
+    
+
+
+            </div>
+
+            <time class="teal-link-context" datetime="2016-06-18T16:19:23.000Z"><a href="/2016/06/19/translation-why-objcmsgsend-must-be-written-in-assembly/">2016-06-19</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
+        
+            <a href="/tags/翻译/" class="chip teal accent-4">翻译</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry teal-link-context">
+                    <h2 id="译者前言"><a href="#译者前言" class="headerlink" title="译者前言"></a>译者前言</h2><p>总是看到有人说用汇编实现<code>objc_msgSend</code>是为了速度快，当然这个不可否认。但是难道没有别的原因？于是就看到了这篇文章，遂翻译之！=。=  </p>
+<p>我自己的理解就是，用汇编实现，是为了应对不同的“<a href="https://en.wikipedia.org/wiki/Calling_convention" target="_blank" rel="external">Calling convention</a>”，把函数调用前的栈和寄存器的参数、状态设置，交给编译器去处理。<br>先看看原文吧。</p>
+<blockquote>
+<p>原作者: <a href="https://www.linkedin.com/in/ari-grant-789a1015" target="_blank" rel="external">Ari Grant</a><br>原文链接: <a href="http://arigrant.com/blog/2014/2/12/why-objcmsgsend-must-be-written-in-assembly" target="_blank" rel="external">Why objc_msgSend Must be Written in Assembly</a></p>
+</blockquote>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action teal-link-context">
+            <a href="/2016/06/19/translation-why-objcmsgsend-must-be-written-in-assembly/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
+    
+        <article class="simple-article">
+    <div class="card">
+        <div class="card-content">
+            <div class="article-title">
+                
+    
+        <h1 class="blue-grey-link-context"><a href="/2016/05/02/design-json-api-respoense/">API返回结果设计经验与总结</a></h1>
+    
+
+
+            </div>
+
+            <time class="teal-link-context" datetime="2016-05-02T02:44:49.000Z"><a href="/2016/05/02/design-json-api-respoense/">2016-05-02</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
+        
+    </div>
+
+
+
+            
+                <div class="entry teal-link-context">
+                    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>RESTful API的设计已经很成熟了，大家也都比较认可。本文也不再过多介绍RESTful API相关的知识，而是针对JSON型API的返回结果设计，总结下自己的经验。</p>
+<h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><p>先来看看返回结果的结构示例：</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attribute">data </span>: &#123; <span class="comment">// 请求数据，对象或数组均可</span></div><div class="line">        <span class="attribute">user_id</span>: <span class="number">123</span>,</div><div class="line">        <span class="attribute">user_name</span>: <span class="string">"tutuge"</span>,</div><div class="line">        <span class="attribute">user_avatar_url</span>: <span class="string">"http://tutuge.me/avatar.jpg"</span></div><div class="line">        ...</div><div class="line">    &#125;,</div><div class="line">    <span class="attribute">msg </span>: <span class="string">"done"</span>, <span class="comment">// 请求状态描述，调试用</span></div><div class="line">    <span class="attribute">code</span>: <span class="number">1001</span>, <span class="comment">// 业务自定义状态码</span></div><div class="line">    <span class="attribute">extra </span>: &#123; <span class="comment">// 全局附加数据，字段、内容不定</span></div><div class="line">        <span class="attribute">type</span>: <span class="number">1</span>,</div><div class="line">        <span class="attribute">desc</span>: <span class="string">"签到成功！"</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+                </div>
+            
+        </div>
+
+        
+        <div class="card-action teal-link-context">
+            <a href="/2016/05/02/design-json-api-respoense/">阅读全文</a>
+        </ div>
+        
+    </div>
+</article>
+
     
         <article class="simple-article">
     <div class="card">
@@ -605,96 +691,6 @@
         
         <div class="card-action teal-link-context">
             <a href="/2015/08/08/autolayout-example-with-masonry2/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="blue-grey-link-context"><a href="/2015/07/25/compatibility-with-macro-category-and-runtime/">解决iOS项目的版本兼容问题-结合宏、Category和Runtime</a></h1>
-    
-
-
-            </div>
-
-            <time class="teal-link-context" datetime="2015-07-24T16:39:03.000Z"><a href="/2015/07/25/compatibility-with-macro-category-and-runtime/">2015-07-25</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
-        
-            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
-        
-            <a href="/tags/Runtime/" class="chip teal accent-4">Runtime</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry teal-link-context">
-                    <h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><h3 id="2015-11-16"><a href="#2015-11-16" class="headerlink" title="2015-11-16"></a>2015-11-16</h3><p>感谢微博好友<strong>@zyyy_000</strong>的评论，补充了为什么要在<code>+ (void)load</code>方法里面做<strong>Method Swizzling</strong>。</p>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近，在做项目时，因为某种原因，突然要“适配”iOS6（也是醉了。。。），保证极少数的iOS6用户可以“用上”新的版本。哪怕界面上有瑕疵，只要功能正常就行。于是就只好花几天时间对iOS6进行紧急适配（心中一万头驼羊奔跑而过。。。）</p>
-<p>本文总结了一些常规的，和“非常规”的iOS项目向老版本兼容的办法，结合了<strong>宏定义</strong>、<strong>Category</strong>和<strong>Runtime</strong>，大家看着消遣一下就好哈~</p>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action teal-link-context">
-            <a href="/2015/07/25/compatibility-with-macro-category-and-runtime/">阅读全文</a>
-        </ div>
-        
-    </div>
-</article>
-
-    
-        <article class="simple-article">
-    <div class="card">
-        <div class="card-content">
-            <div class="article-title">
-                
-    
-        <h1 class="blue-grey-link-context"><a href="/2015/07/08/fill-nil-property-of-object/">用Runtime的手段填充任意NSObject对象的nil属性</a></h1>
-    
-
-
-            </div>
-
-            <time class="teal-link-context" datetime="2015-07-08T15:23:23.000Z"><a href="/2015/07/08/fill-nil-property-of-object/">2015-07-08</a></time>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
-        
-            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
-        
-            <a href="/tags/Runtime/" class="chip teal accent-4">Runtime</a>
-        
-    </div>
-
-
-
-            
-                <div class="entry teal-link-context">
-                    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>好久没有写东西了，忙啊。</p>
-<p>前段时间参加了一下我们华科联创的HackDay（本人在读研=。=，目前在阿里实习），作品是一款<strong>实时在线对战游戏 - 波波攒</strong>，（介绍请看<a href="http://www.zhihu.com/question/24402279" target="_blank" rel="external">知乎</a>）<br>从iOS游戏客户端（用的<strong>SpriteKit</strong>）到后台（<strong>PHP CI + Node + SocketIO + MySQL</strong>）全是自己一个人倒腾出来的，做了一把真正的全栈工程师，爽啊~<br>后面会完善整个游戏，增加角色、优化啥的，过上一段时间会上线的哈~</p>
-<p><strong>回到正文</strong>，本文主要介绍了怎么用Runtime的手段遍历任意NSObject对象的所有property，检查其值是否是nil，是的话根据其类型为其填充一个默认值。<br>Runtime毕竟是个“危险”的技术，本文的代码只是个初步的尝试。</p>
-                </div>
-            
-        </div>
-
-        
-        <div class="card-action teal-link-context">
-            <a href="/2015/07/08/fill-nil-property-of-object/">阅读全文</a>
         </ div>
         
     </div>
