@@ -302,7 +302,7 @@
 <li>在UITextView中编辑文字时插入自定义表情图片</li>
 <li>同时可以返回带有表情“<strong>替换符</strong>”的纯文本字符串。</li>
 </ul>
-<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>本文代码工程地址：<a href="https://github.com/zekunyan/UITextViewDIYEmojiExample" target="_blank" rel="external">https://github.com/zekunyan/UITextViewDIYEmojiExample</a></p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>本文代码工程地址：<a href="https://github.com/zekunyan/UITextViewDIYEmojiExample" target="_blank" rel="noopener">https://github.com/zekunyan/UITextViewDIYEmojiExample</a></p>
 <p>效果图：</p>
 <p><img src="http://zorrochen.qiniudn.com/inputEmoji_Sample.gif" alt="效果图"></p>
                 </div>
@@ -421,7 +421,7 @@
                 <div class="entry teal-link-context">
                     <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>项目最近一次审核被拒了=。=<br>仔细看了一下后，发现是没有遵守“<strong>iOS Data Storage Guidelines</strong>”。<br>在此总结一下。</p>
 <h2 id="被拒原因"><a href="#被拒原因" class="headerlink" title="被拒原因"></a>被拒原因</h2><p>先看看被拒的反馈信息：</p>
-<figure class="highlight lasso"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Apps must follow the iOS <span class="built_in">Data</span> Storage Guidelines <span class="literal">or</span> they will be rejected</div><div class="line"></div><div class="line"><span class="keyword">On</span> launch <span class="literal">and</span> content download, your app stores <span class="number">12.14</span> MB, which does <span class="literal">not</span> comply <span class="keyword">with</span> the iOS <span class="built_in">Data</span> Storage Guidelines.</div></pre></td></tr></table></figure>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Apps must follow the iOS <span class="built_in">Data</span> Storage Guidelines <span class="literal">or</span> they will be rejected</span><br><span class="line"></span><br><span class="line"><span class="keyword">On</span> launch <span class="literal">and</span> content download, your app stores <span class="number">12.14</span> MB, which does <span class="literal">not</span> comply <span class="keyword">with</span> the iOS <span class="built_in">Data</span> Storage Guidelines.</span><br></pre></td></tr></table></figure>
 <p>大致意思就是App下载东西以后，在iCloud里面查看此App需要备份的体积变大了。</p>
                 </div>
             
@@ -508,7 +508,7 @@
             
                 <div class="entry teal-link-context">
                     <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。</p>
-<p>之前的做的项目，<a href="https://itunes.apple.com/us/app/qing-ju-yin-le-quan-guo-zui/id913235479?l=zh&amp;ls=1&amp;mt=8" target="_blank" rel="external">青桔音乐iOS客户端</a>里面的首页就是一个类似微信朋友圈的“动态”页面，大致如下：</p>
+<p>之前的做的项目，<a href="https://itunes.apple.com/us/app/qing-ju-yin-le-quan-guo-zui/id913235479?l=zh&amp;ls=1&amp;mt=8" target="_blank" rel="noopener">青桔音乐iOS客户端</a>里面的首页就是一个类似微信朋友圈的“动态”页面，大致如下：</p>
 <p><img src="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_1.png?imageView2/0/h/300" alt="青桔动态页面"></p>
 <p>如果是你，你会怎么实现这个页面呢？</p>
 <p>这还用问，当然是用UITableView+自定义的UITableViewCell。</p>
@@ -600,7 +600,7 @@
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>之前在做项目的时候，所有业务的网络接口方法，全部都写在了一个文件里面，一开始还好，毕竟每个方法的代码也只是十几行，增加、修改也比较容易。但是随着接口的增多，这个文件慢慢居然超过了1000行，里面几十个方法都写在一起，实在是不好维护。</p>
 <p>虽然保持这样也没有什么，多用用Cmd+F就能找到。但是，真是越看越不顺眼😳， 代码一定要有“美感”啊~😝</p>
 <p>所以在查阅了大量文章后，终于想出了本文即将说明的办法，越发觉得Objective-C的“消息”机制是多么的赞~😚</p>
-<h2 id="Github-示例"><a href="#Github-示例" class="headerlink" title="Github 示例"></a>Github 示例</h2><p>贴上本文中的示例工程：<a href="https://github.com/zekunyan/HttpProxyExample" target="_blank" rel="external">https://github.com/zekunyan/HttpProxyExample</a></p>
+<h2 id="Github-示例"><a href="#Github-示例" class="headerlink" title="Github 示例"></a>Github 示例</h2><p>贴上本文中的示例工程：<a href="https://github.com/zekunyan/HttpProxyExample" target="_blank" rel="noopener">https://github.com/zekunyan/HttpProxyExample</a></p>
                 </div>
             
         </div>
@@ -752,12 +752,13 @@
             </div>
             
         </div>
+        <p>Hosted by <a href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a></p>
     </div>
     
 
     <div class="footer-copyright teal-link-context">
         <div class="container">
-            © 2017 tutuge.me, All rights reserved.
+            © 2018 tutuge.me, All rights reserved.
             <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
         </div>
     </div>

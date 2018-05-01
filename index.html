@@ -292,7 +292,7 @@
 
             
                 <div class="entry teal-link-context">
-                    <h2 id="转自"><a href="#转自" class="headerlink" title="转自"></a>转自</h2><p>给自己部门的软文！<br><a href="http://icbu.info/welcome-to-icbu/" target="_blank" rel="external">阿里巴巴国际无线技术部 - 在这里遇见最好的自己</a></p>
+                    <h2 id="转自"><a href="#转自" class="headerlink" title="转自"></a>转自</h2><p>给自己部门的软文！<br><a href="http://icbu.info/welcome-to-icbu/" target="_blank" rel="noopener">阿里巴巴国际无线技术部 - 在这里遇见最好的自己</a></p>
 <h2 id="我们做什么"><a href="#我们做什么" class="headerlink" title="我们做什么"></a>我们做什么</h2><p>阿里巴巴国际无线技术部背靠阿里巴巴集团和阿里巴巴国际站，阿里巴巴国际站是全球领先的跨境B2B贸易服务平台，服务全世界数以千万计的采购商和供应商，阿里巴巴国际站（www.alibaba.com）帮助中小企业拓展国际贸易的出口营销推广服务，专注服务于全球中小微企业，在平台上，通过向海外买家展示、推广供应商的企业和产品，进而获得贸易商机和订单，买卖双方可以在线更高效地找到适合的彼此，并更快更安心地达成交易，是出口企业拓展国际贸易的首选跨境贸易平台。</p>
 <p>阿里巴巴国际站技术致力于打造一站式eWTP全球国际B类贸易服务平台解决方案。近年来，随着智能手机的普及无线的趋势已经锐不可当。阿里巴巴国际无线技术部不仅是站在阿里巴巴集团和阿里巴巴国际站两个巨人的肩上，更是站在无线时代的浪潮之上。来吧少年，一起为全球中小企业服务！</p>
                 </div>
@@ -343,7 +343,7 @@
 </ol>
 </blockquote>
 <p>写个Demo验证了下，结果非常有意思，不由得好奇起来，所以深入研究了下<code>methodSignatureForSelector:</code>的实现，然后自己模拟实现出来。</p>
-<p>Github地址：<a href="https://github.com/zekunyan/TTGRemakeMethodSignatureForSelector" target="_blank" rel="external">TTGRemakeMethodSignatureForSelector</a></p>
+<p>Github地址：<a href="https://github.com/zekunyan/TTGRemakeMethodSignatureForSelector" target="_blank" rel="noopener">TTGRemakeMethodSignatureForSelector</a></p>
 <p>详细的研究过程如下：</p>
                 </div>
             
@@ -447,7 +447,7 @@
 <li>第三篇：<a href="http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/">有趣的Autolayout示例3-Masonry实现</a></li>
 <li>第四篇：<a href="http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/">有趣的Autolayout示例4-Masonry实现</a></li>
 </ul>
-<p>Github地址：<br><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="external">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
+<p>Github地址：<br><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="noopener">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
                 </div>
             
         </div>
@@ -491,8 +491,8 @@
             
                 <div class="entry teal-link-context">
                     <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近更新了下以前写的TTGDeallocTaskHelper库，功能非常简单，就是<strong>在不改变原有代码的情况下，不用Runtime的Method Swizzling给任意对象添加任务Block，在对象dealloc的后期执行Block。</strong>使用时：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 给object对象添加dealloc后期要执行的任务Block</span></div><div class="line">[object ttg_addDeallocTask:^(__<span class="keyword">unsafe_unretained</span> <span class="keyword">id</span> target, <span class="built_in">NSUInteger</span> identifier) &#123;</div><div class="line">    <span class="comment">// 执行任务</span></div><div class="line">&#125;];</div></pre></td></tr></table></figure>
-<p>Github地址：<a href="https://github.com/zekunyan/TTGDeallocTaskHelper/" target="_blank" rel="external">https://github.com/zekunyan/TTGDeallocTaskHelper</a></p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 给object对象添加dealloc后期要执行的任务Block</span></span><br><span class="line">[object ttg_addDeallocTask:^(__<span class="keyword">unsafe_unretained</span> <span class="keyword">id</span> target, <span class="built_in">NSUInteger</span> identifier) &#123;</span><br><span class="line">    <span class="comment">// 执行任务</span></span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+<p>Github地址：<a href="https://github.com/zekunyan/TTGDeallocTaskHelper/" target="_blank" rel="noopener">https://github.com/zekunyan/TTGDeallocTaskHelper</a></p>
 <p>一张图说明原理：</p>
 <p><img src="http://zorrochen.qiniudn.com/TTGDeallocTaskHelper_1.jpg" alt="总体结构"></p>
 <p>库的详细原理、限制、注意事项，为什么说“<strong>后期</strong>”执行，将在下文给出。</p>
@@ -538,9 +538,9 @@
 
             
                 <div class="entry teal-link-context">
-                    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>“工欲善其事,必先利其器”，iOS的Core Animation非常强大，可以做出非常炫酷的动画，但是实际写起来还是比较麻烦，代码不直观，需要反复的改参数、Build、运行，所以诞生了各种动画制作工具，本文就以其中比较有名的<a href="http://www.quartzcodeapp.com/" target="_blank" rel="external">QuartzCode</a>为例，快速实现一个收藏功能的星星动画，最终的效果如下：</p>
+                    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>“工欲善其事,必先利其器”，iOS的Core Animation非常强大，可以做出非常炫酷的动画，但是实际写起来还是比较麻烦，代码不直观，需要反复的改参数、Build、运行，所以诞生了各种动画制作工具，本文就以其中比较有名的<a href="http://www.quartzcodeapp.com/" target="_blank" rel="noopener">QuartzCode</a>为例，快速实现一个收藏功能的星星动画，最终的效果如下：</p>
 <p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_1.gif" alt=""></p>
-<p>GitHub地址：<a href="https://github.com/zekunyan/QuartzCodeExample-StarAimation" target="_blank" rel="external">https://github.com/zekunyan/QuartzCodeExample-StarAimation</a></p>
+<p>GitHub地址：<a href="https://github.com/zekunyan/QuartzCodeExample-StarAimation" target="_blank" rel="noopener">https://github.com/zekunyan/QuartzCodeExample-StarAimation</a></p>
                 </div>
             
         </div>
@@ -584,7 +584,7 @@
             
                 <div class="entry teal-link-context">
                     <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近抽空写了个拼图验证控件，用户可以通过水平、垂直，或者直接拖动拼图块，完成拼图图案，来完成验证。拼图块的形状可以自定义，默认提供了经典的拼图形状、圆形、正方形，整个拼图的图案也是支持从图片生成的。</p>
-<p><strong>CocoaPods</strong>: <code>pod &quot;TTGPuzzleVerify&quot;</code><br><strong>Github</strong>: <a href="https://github.com/zekunyan/TTGPuzzleVerify" target="_blank" rel="external">https://github.com/zekunyan/TTGPuzzleVerify</a></p>
+<p><strong>CocoaPods</strong>: <code>pod &quot;TTGPuzzleVerify&quot;</code><br><strong>Github</strong>: <a href="https://github.com/zekunyan/TTGPuzzleVerify" target="_blank" rel="noopener">https://github.com/zekunyan/TTGPuzzleVerify</a></p>
 <p><img src="http://zorrochen.qiniudn.com/blog_TTGPuzzleVerify_gif.gif" alt=""></p>
 <p>接下来，说说TTGPuzzleVerify的整体设计思路和实现原理。</p>
                 </div>
@@ -632,13 +632,13 @@
             
                 <div class="entry teal-link-context">
                     <h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><ul>
-<li>2016-09-05: <a href="https://github.com/zekunyan/TTGBingWallPaper/releases/download/0.3/BingWallPaper.app.zip" target="_blank" rel="external">新版0.3</a>增加子Menu，整理选项；增加“History Wallpapers”打开历史图片文件夹；增加“Launch at startup”开机启动。</li>
-<li>2016-09-03: <a href="https://github.com/zekunyan/TTGBingWallPaper/releases/download/0.2.0/BingWallPaper.app.zip" target="_blank" rel="external">新版0.2.0！</a>增加“Auto Update”选项；增加“Random”随机选择设置壁纸；修复自动更新不准的Bug。</li>
+<li>2016-09-05: <a href="https://github.com/zekunyan/TTGBingWallPaper/releases/download/0.3/BingWallPaper.app.zip" target="_blank" rel="noopener">新版0.3</a>增加子Menu，整理选项；增加“History Wallpapers”打开历史图片文件夹；增加“Launch at startup”开机启动。</li>
+<li>2016-09-03: <a href="https://github.com/zekunyan/TTGBingWallPaper/releases/download/0.2.0/BingWallPaper.app.zip" target="_blank" rel="noopener">新版0.2.0！</a>增加“Auto Update”选项；增加“Random”随机选择设置壁纸；修复自动更新不准的Bug。</li>
 </ul>
 <p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/BingWallPaper_banner.png" alt="Banner"></p>
 <p>极简的壁纸Mac App，每天<strong>自动</strong>下载最新微软Bing的每日壁纸并设置为桌面背景。</p>
 <p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/BingWallPaper_screenshot_2.png?2=2" alt="ScreenShot1"></p>
-<p>Github: <a href="https://github.com/zekunyan/TTGBingWallPaper" target="_blank" rel="external">https://github.com/zekunyan/TTGBingWallPaper</a></p>
+<p>Github: <a href="https://github.com/zekunyan/TTGBingWallPaper" target="_blank" rel="noopener">https://github.com/zekunyan/TTGBingWallPaper</a></p>
                 </div>
             
         </div>
@@ -695,7 +695,7 @@
 <li>第二篇：<a href="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/">有趣的Autolayout示例2-Masonry实现</a>  </li>
 <li>第三篇：<a href="http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/">有趣的Autolayout示例3-Masonry实现</a></li>
 </ul>
-<p>Github地址：<br><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="external">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
+<p>Github地址：<br><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="noopener">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
 <p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry4_1.gif" alt="Gif示例"></p>
                 </div>
             
@@ -802,12 +802,13 @@
             </div>
             
         </div>
+        <p>Hosted by <a href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a></p>
     </div>
     
 
     <div class="footer-copyright teal-link-context">
         <div class="container">
-            © 2017 tutuge.me, All rights reserved.
+            © 2018 tutuge.me, All rights reserved.
             <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
         </div>
     </div>
