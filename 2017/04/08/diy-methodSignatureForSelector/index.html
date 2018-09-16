@@ -315,7 +315,7 @@
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="regexp">/Applications/</span>Xcode.app<span class="regexp">/Contents/</span>Developer<span class="regexp">/Platforms/i</span>PhoneSimulator.platform<span class="regexp">/Developer/</span>SDKs<span class="regexp">/iPhoneSimulator.sdk/</span>System<span class="regexp">/Library/</span>Frameworks<span class="regexp">/CoreFoundation.framework</span></span><br></pre></td></tr></table></figure>
 <p>打开<code>CoreFoundation.framework</code>文件夹，<code>CoreFoundation</code>文件就是要反编译的文件。</p>
 <h3 id="Hopper-Disassembler反编译"><a href="#Hopper-Disassembler反编译" class="headerlink" title="Hopper Disassembler反编译"></a>Hopper Disassembler反编译</h3><p>用Hopper Disassembler打开<code>CoreFoundation</code>文件，在Labels搜索<code>methodSignatureForSelector:</code>，就能找到对应的汇编实现代码，如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_RemakeMethodSignatureForSelector_1.jpg" alt=""></p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNbRwgy1fvbqcq2ifsj30tv0bqjte.jpg" alt=""></p>
 <p>Hopper翻译的代码如下：</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> * +[<span class="built_in">NSObject</span> methodSignatureForSelector:](<span class="keyword">void</span> * <span class="keyword">self</span>, <span class="keyword">void</span> * _cmd, <span class="keyword">void</span> * arg2) &#123;</span><br><span class="line">    rdi = <span class="keyword">self</span>;</span><br><span class="line">    rbx = arg2;</span><br><span class="line">    <span class="keyword">if</span> ((rbx != <span class="number">0x0</span>) &amp;&amp; (___methodDescriptionForSelector(object_getClass(rdi), rbx) != <span class="number">0x0</span>)) &#123;</span><br><span class="line">            rax = [<span class="built_in">NSMethodSignature</span> signatureWithObjCTypes:rdx];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">            rax = <span class="number">0x0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> rax;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>可发现，关键在于<code>___methodDescriptionForSelector:</code>方法。</p>
@@ -539,15 +539,15 @@
             <div class="col m8 s12">
                 <h5 class="white-text">友情链接</h5>
                 
-                    <a class="social-link" href="http://chenrudan.github.io/" target="_blank">女朋友的博客😊</a>
+                    <a class="social-link" href="http://chenrudan.github.io" target="_blank">女朋友的博客😊</a>
                 
-                    <a class="social-link" href="http://raytaylorlin.com/" target="_blank">raytaylorism主题作者的技术博客</a>
+                    <a class="social-link" href="https://raytaylorlin.github.io" target="_blank">raytaylorism主题作者的技术博客</a>
                 
-                    <a class="social-link" href="http://suta.name/" target="_blank">很赞的设计师</a>
+                    <a class="social-link" href="http://suta.name" target="_blank">很赞的设计师</a>
                 
-                    <a class="social-link" href="http://neoyeelf.github.io/" target="_blank">NeOye&#39;s blog</a>
+                    <a class="social-link" href="http://neoyeelf.github.io" target="_blank">NeOye&#39;s blog</a>
                 
-                    <a class="social-link" href="http://bingyan.farbox.com/" target="_blank">Howl写东西的地方</a>
+                    <a class="social-link" href="http://bingyan.farbox.com" target="_blank">Howl写东西的地方</a>
                 
             </div>
             
