@@ -274,7 +274,7 @@
             <div class="entry teal-link-context">
                 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。</p>
 <p>之前的做的项目，<a href="https://itunes.apple.com/us/app/qing-ju-yin-le-quan-guo-zui/id913235479?l=zh&amp;ls=1&amp;mt=8" target="_blank" rel="noopener">青桔音乐iOS客户端</a>里面的首页就是一个类似微信朋友圈的“动态”页面，大致如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_1.png?imageView2/0/h/300" alt="青桔动态页面"></p>
+<p><img src="/2015/02/19/提升UITableView性能-复杂页面的优化/blog_ios_speed_up_uitableview_1_1.png" alt="青桔动态页面"></p>
 <p>如果是你，你会怎么实现这个页面呢？</p>
 <p>这还用问，当然是用UITableView+自定义的UITableViewCell。</p>
 <p>UITableView是可以滑动的，为了不让用户在滑动中感到有卡顿，该如何优化？下面，我就写一下我自己在做项目时的“经验”~</p>
@@ -296,7 +296,7 @@
 <li>基于Cell的重用，真正运行时铺满屏幕所需的Cell数量大致是固定的，设为<strong>N</strong>个。所以如果如果只有一种Cell，那就是只有<strong>N</strong>个Cell的实例；但是如果有<strong>M</strong>种Cell，那么运行时最多可能会是“<strong>M x N = MN</strong>”个Cell的实例，虽然可能并不会占用太多内存，但是能少点不是更好吗。</li>
 </ul>
 <h4 id="善用hidden隐藏（显示）Subview"><a href="#善用hidden隐藏（显示）Subview" class="headerlink" title="善用hidden隐藏（显示）Subview"></a>善用hidden隐藏（显示）Subview</h4><p>既然只定义一种Cell，那该如何显示不同类型的内容呢？<br>答案就是，把所有不同类型的view都定义好，放在cell里面，通过hidden显示、隐藏，来显示不同类型的内容。如下图定义Cell：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_2.jpg?imageView2/0/h/400" alt="Cell示意图"></p>
+<p><img src="/2015/02/19/提升UITableView性能-复杂页面的优化/blog_ios_speed_up_uitableview_1_2.jpg" alt="Cell示意图"></p>
 <p>图中的Subview1、Subview2、Subview3就是不同类型Cell的不同之处，所以我们在“<strong>cellForRowAtIndexPath</strong>”函数中，设置Cell的样式、内容时，就可以通过显示、隐藏这三个子view来显示。</p>
 <p>毕竟，在用户快速滑动中，只是单纯的显示、隐藏subview比实时创建要快得多。</p>
 <h3 id="提前计算并缓存每个Cell的高度"><a href="#提前计算并缓存每个Cell的高度" class="headerlink" title="提前计算并缓存每个Cell的高度"></a>提前计算并缓存每个Cell的高度</h3><p>开发过Android，用过Android的ListView以后，对UITableView需要提前计算Cell的高度很不适应。=。=</p>

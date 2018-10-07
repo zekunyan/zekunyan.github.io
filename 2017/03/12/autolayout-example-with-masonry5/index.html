@@ -280,7 +280,7 @@
 <li>StairView自定义View的<code>intrinsicContentSize</code>，并支持在UITableViewCell中自动计算高度</li>
 <li>给同一个属性添加<strong>多重约束</strong>，实现复杂关系</li>
 </ol>
-<p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry5_1.png" alt=""></p>
+<p><img src="/2017/03/12/autolayout-example-with-masonry5/blog_autolayout_example_with_masonry5_1.png" alt=""></p>
 <p>前四篇：  </p>
 <ul>
 <li>第一篇：<a href="http://tutuge.me/2015/05/23/autolayout-example-with-masonry/">有趣的Autolayout示例-Masonry实现</a>  </li>
@@ -296,11 +296,11 @@
 <p>但是，实际设置Autolayout的时候，不存在什么<code>cell.height = MAX(labels.height)</code>这样的关系。</p>
 <p>所以要转换一下，改为<strong><code>ANY(label.bottom) &lt;= cell.bottom</code></strong>，即<strong>每个Label的底部bottom都是在cell的底部bottom上面的</strong>，换算到坐标系里面，就是在Y轴上，<strong><code>label.bottom &lt;= cell.bottom</code></strong>。</p>
 <p>所以，cell的约束如下图所示：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry5_2.png" alt=""></p>
+<p><img src="/2017/03/12/autolayout-example-with-masonry5/blog_autolayout_example_with_masonry5_2.png" alt=""></p>
 <h3 id="代码细节"><a href="#代码细节" class="headerlink" title="代码细节"></a>代码细节</h3><p>对应的代码如下：</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)setupLayout &#123;</span><br><span class="line">    <span class="comment">// label1的约束    </span></span><br><span class="line">    [_label1 mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">        make.width.equalTo(@<span class="number">80</span>); <span class="comment">// 宽度80</span></span><br><span class="line">        make.top.equalTo(<span class="keyword">self</span>.contentView.mas_topMargin); <span class="comment">// 上</span></span><br><span class="line">        make.left.equalTo(<span class="keyword">self</span>.contentView.mas_leftMargin); <span class="comment">// 左</span></span><br><span class="line">        <span class="comment">// label.bottom &lt;= cell.contentView.bottom，注意是在Y轴上对比</span></span><br><span class="line">        make.bottom.lessThanOrEqualTo(<span class="keyword">self</span>.contentView.mas_bottomMargin); </span><br><span class="line">    &#125;];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// label2的约束 </span></span><br><span class="line">    <span class="comment">// 类似...</span></span><br><span class="line">    <span class="comment">// label3的约束 </span></span><br><span class="line">    <span class="comment">// 类似...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="Case2-StairView自定义View实现intrinsicContentSize"><a href="#Case2-StairView自定义View实现intrinsicContentSize" class="headerlink" title="Case2: StairView自定义View实现intrinsicContentSize"></a>Case2: StairView自定义View实现<code>intrinsicContentSize</code></h2><h3 id="实现功能-1"><a href="#实现功能-1" class="headerlink" title="实现功能"></a>实现功能</h3><p>实现一个自定义布局的View - StairView，阶梯布局View。<br>StairView支持设置Label成阶梯状从上到下、从左到右分布，如下图：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry5_3.jpg" alt=""></p>
+<p><img src="/2017/03/12/autolayout-example-with-masonry5/blog_autolayout_example_with_masonry5_3.jpg" alt=""></p>
 <p>同时，StairView要支持Autolayout，支持大小由内容决定，可以在Cell里面用，并自动计算高度。</p>
 <p>接下来，看看如何实现这个StairView。</p>
 <h3 id="intrinsicContentSize是什么"><a href="#intrinsicContentSize是什么" class="headerlink" title="intrinsicContentSize是什么"></a>intrinsicContentSize是什么</h3><p>如果说到Autolayout的内容决定大小，就会遇到<code>intrinsicContentSize</code>方法，这个方法是什么呢？</p>
@@ -356,7 +356,7 @@
 <h3 id="自定义View小结"><a href="#自定义View小结" class="headerlink" title="自定义View小结"></a>自定义View小结</h3><p>StairView的原理、代码都讲完了，算是一个典型的自定义的、根据内容决定高度的View案例，主要要注意的就是<strong>更新布局、contentSize的时机</strong>，以及<strong>及时invalidateIntrinsicContentSize通知布局系统更新</strong></p>
 <h2 id="Case3-给同一个属性添加多重约束，实现复杂关系"><a href="#Case3-给同一个属性添加多重约束，实现复杂关系" class="headerlink" title="Case3: 给同一个属性添加多重约束，实现复杂关系"></a>Case3: 给同一个属性添加<strong>多重约束</strong>，实现复杂关系</h2><p>这个Case主要是为了纠正一个可能的误区：<strong>Autolayout里面，同一个属性，是可以加上多重约束的</strong>，或者说，同一个View的同一个属性，可以参与到多个约束里面的。</p>
 <p>先看看Case的功能：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry5_4.jpg" alt=""></p>
+<p><img src="/2017/03/12/autolayout-example-with-masonry5/blog_autolayout_example_with_masonry5_4.jpg" alt=""></p>
 <p>注意到，右边绿色label的左边，不仅要大于左边蓝色label的右边，还要大于整体宽度的1/3，所以，是要<strong>同时满足多条约束条件的</strong>。</p>
 <h3 id="区分观念：Frame布局和Autolayout的不同"><a href="#区分观念：Frame布局和Autolayout的不同" class="headerlink" title="区分观念：Frame布局和Autolayout的不同"></a>区分观念：Frame布局和Autolayout的不同</h3><p><strong>按照Frame布局</strong></p>
 <p>按照传统的用Frame布局的方式，label的左边，其实就是<code>label.frame.origin.x</code>这个属性，所以，要左边满足条件的话，首先想到的可能就是：</p>

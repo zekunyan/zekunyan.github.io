@@ -287,7 +287,7 @@
 <li>第三篇：<a href="http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/">有趣的Autolayout示例3-Masonry实现</a></li>
 </ul>
 <p>Github地址：<br><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="noopener">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry4_1.gif" alt="Gif示例"></p>
+<p><img src="/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_1.gif" alt="Gif示例"></p>
 <a id="more"></a>
 <h2 id="Case-1-用约束优先级保证可移动View的内容可见性"><a href="#Case-1-用约束优先级保证可移动View的内容可见性" class="headerlink" title="Case 1: 用约束优先级保证可移动View的内容可见性"></a>Case 1: 用约束优先级保证可移动View的内容可见性</h2><h3 id="实现功能"><a href="#实现功能" class="headerlink" title="实现功能"></a>实现功能</h3><p>Case 1实现的功能就是，可以用手指拖动一个灰色的Tip控件，在红框containerView内移动，并且保持移动到红框边缘时，Tip控件的内容不会超出红框，保证内容的可见性。</p>
 <h3 id="Frame-VS-Autolayout"><a href="#Frame-VS-Autolayout" class="headerlink" title="Frame VS Autolayout"></a>Frame VS Autolayout</h3><p>如果不用Autolayout的话，直接计算、设定frame，那么可能的步骤如下：</p>
@@ -306,7 +306,7 @@
 </ol>
 <p>至于保证Tip内容在可见范围内，就交给Autolayout处理吧~</p>
 <h3 id="关键原理"><a href="#关键原理" class="headerlink" title="关键原理"></a>关键原理</h3><p>用Autolayout实现的关键，就是<strong>善于利用约束的优先级</strong>。先看看设置的约束示意图：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry4_2.png?1=1" alt="Case 1: 用约束优先级保证可移动View的内容可见性"></p>
+<p><img src="/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_2.png" alt="Case 1: 用约束优先级保证可移动View的内容可见性"></p>
 <p>中间的tipLabel就是被移动的控件  </p>
 <ul>
 <li>褐色的两个约束，分别是Tip控件的centerX和centerY，与上级View的left和top的约束，用来对Tip定位</li>
@@ -328,7 +328,7 @@
 <h3 id="关键概念：约束-“动态的绑定”"><a href="#关键概念：约束-“动态的绑定”" class="headerlink" title="关键概念：约束 = “动态的绑定”"></a>关键概念：约束 = “动态的绑定”</h3><p>之所以写这个例子，主要是想从概念上更加深入的理解Autolayout与传统的设置Frame的不同，即Autolayout里面的约束，其实是“动态的绑定”，是控件相互之间的位置关系绑定，约束是可以<strong>实时</strong>保证这种绑定关系的。</p>
 <p>传统的设置Frame，在View的内容、位置要变化时，是要手动设置的，是“一次性”的，而Autolayout，在确定了约束后，会实时的用约束的规则去更新Frame，所以可以避免这种手动设置。</p>
 <p>所以，对于本例子来说，设置Frame的方式和Autolayout的方式对比如下：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry4_3.png?1=1" alt="Case 2: Autolayout的约束=控件间位置关系的“绑定”"></p>
+<p><img src="/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_3.png" alt="Case 2: Autolayout的约束=控件间位置关系的“绑定”"></p>
 <p>用Autolayout的话，只要把Attachment的位置设置为相对于TipLabel就可以了。</p>
 <h3 id="实现细节-1"><a href="#实现细节-1" class="headerlink" title="实现细节"></a>实现细节</h3><p>代码比较简单，如下：</p>
 <figure class="highlight scheme"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[<span class="name">attachmentView</span> mas_makeConstraints:^(<span class="name">MASConstraintMaker</span> *make) &#123;</span><br><span class="line">    // 依附在tipLabel上</span><br><span class="line">    make.left.equalTo(<span class="name">_tipLabel.mas_left</span>).with.offset(<span class="name">20</span>).priorityHigh()<span class="comment">;</span></span><br><span class="line">    make.bottom.equalTo(<span class="name">_tipLabel.mas_top</span>).with.offset(<span class="name">-2</span>).priorityHigh()<span class="comment">;</span></span><br><span class="line">&#125;]<span class="comment">;</span></span><br></pre></td></tr></table></figure>
@@ -339,7 +339,7 @@
 <p>但是仔细分析，应该是先设置View的位置到屏幕的左边看不见的区域，然后用动画平滑的再让View移动回原位。</p>
 <p>就是说，只是从左边移动回来时，才让动画生效！问题就变成了，如何让<strong>约束分段执行</strong>，或者说，<strong>控制约束的生效时机</strong>。</p>
 <p>步骤可以由下图表示：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry4_4.png?1=1" alt="Case 3: 利用layoutIfNeeded控制约束的生效时机"></p>
+<p><img src="/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_4.png" alt="Case 3: 利用layoutIfNeeded控制约束的生效时机"></p>
 <h3 id="实现关键"><a href="#实现关键" class="headerlink" title="实现关键"></a>实现关键</h3><p>步骤分析清楚了，那么问题就是如何让约束在修改后，“立即”生效，而不是等到系统自动在下次更新布局时被动的生效。</p>
 <p>答案就是：利用<strong><code>layoutIfNeeded</code></strong>  </p>
 <p>在更改了约束后，调用<code>layoutIfNeeded</code>，就可以通知系统立即刷新布局，从而更新Frame。如果要更加“保险”，可以在调用<code>layoutIfNeeded</code>前，加上调用<code>setNeedsUpdateConstraints</code>、<code>setNeedsLayout</code>，系统刷新布局时，就会先更新约束，然后根据约束重新计算相关View的Frame，想了解具体的过程的，可以参考：<a href="https://developer.apple.com/videos/play/wwdc2015/218/" target="_blank" rel="noopener">Mysteries of Auto Layout, Part 1 - WWDC 2015</a>、<a href="https://developer.apple.com/videos/play/wwdc2015/219/" target="_blank" rel="noopener">Mysteries of Auto Layout, Part 2</a></p>

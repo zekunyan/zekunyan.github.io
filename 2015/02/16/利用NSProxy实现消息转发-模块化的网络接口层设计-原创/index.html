@@ -288,7 +288,7 @@
 <li>网络接口的具体实现，按照业务划分到不同的类中，如“<strong>UserHttpHandler</strong>”、“<strong>CommentHttpHandler</strong>”。</li>
 </ul>
 <p>其实，按照面向对象的原则，就是接口代理类<strong>HttpProxy</strong>拥有若干个按照业务划分的接口（Interface），这些接口的所有方法组成了网络层的不同的Http请求。如下图：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_http_proxy_1_1.jpg" alt="请求示意图"></p>
+<p><img src="blog_ios_http_proxy_1_1.jpg" alt="请求示意图"></p>
 <p>那么，调用的时候，所有接口都用HttpProxy调用，如：</p>
 <figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//实际调用的是UserHttpHandler类的方法</span></span><br><span class="line"><span class="selector-attr">[[HttpProxy sharedInstance]</span> getUserWithID:@<span class="number">100</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//实际调用的是CommentHttpHandler类的方法</span></span><br><span class="line"><span class="selector-attr">[[HttpProxy sharedInstance]</span> getCommentsWithDate:date];</span><br></pre></td></tr></table></figure>
 <h2 id="关键"><a href="#关键" class="headerlink" title="关键"></a>关键</h2><p>根据前面的描述，我们可以得出，关键就是：<strong>消息转发（Message Forward）</strong></p>
@@ -314,7 +314,7 @@
 <figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//HttpProxy.h</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//1. 继承了NSproxy。 2. “实现”了网络接口Protocol</span></span><br><span class="line"><span class="meta">@interface</span> <span class="string">HttpProxy :</span> NSProxy &lt;UserHttpHandler, CommentHttpHandler&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取单例</span></span><br><span class="line">+ (instancetype)sharedInstance;</span><br><span class="line"></span><br><span class="line"><span class="comment">//注册具体实现类</span></span><br><span class="line">- (<span class="keyword">void</span>)<span class="string">registerHttpProtocol:</span>(Protocol *)httpProtocol <span class="string">handler:</span>(id)handler;</span><br><span class="line"></span><br><span class="line"><span class="meta">@end</span></span><br></pre></td></tr></table></figure>
 <h3 id="找到消息对应的实现类对象"><a href="#找到消息对应的实现类对象" class="headerlink" title="找到消息对应的实现类对象"></a>找到消息对应的实现类对象</h3><p>如何在HttpProxy做消息转发时，找到某个消息对应的真正的实现类对象呢？</p>
 <p>最好的办法就是保存每个接口方法到其实现类对象的映射，可以用Dictionary保存，关系如下图：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_http_proxy_1_2.jpg" alt="image"></p>
+<p><img src="blog_ios_http_proxy_1_2.jpg" alt="image"></p>
 <p>所以，<code>registerHttpProtocol:handler:</code>方法的职责就是：</p>
 <ol>
 <li>遍历Protocol的所有方法（利用Objective-C的<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html" target="_blank" rel="noopener">Runtime</a>）。</li>
@@ -330,7 +330,7 @@
 <figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//初始化，注册Protocol对应的实现类对象</span></span><br><span class="line">[[HttpProxy sharedInstance] <span class="string">registerHttpProtocol:</span><span class="meta">@protocol</span>(UserHttpHandler) <span class="string">handler:</span>[UserHttpHandlerImp <span class="keyword">new</span>]];</span><br><span class="line">[[HttpProxy sharedInstance] <span class="string">registerHttpProtocol:</span><span class="meta">@protocol</span>(CommentHttpHandler) <span class="string">handler:</span>[CommentHttpHandlerImp <span class="keyword">new</span>]];</span><br><span class="line"></span><br><span class="line"><span class="comment">//调用</span></span><br><span class="line">[[HttpProxy sharedInstance] <span class="string">getUserWithID:</span>@<span class="number">100</span>];</span><br><span class="line">[[HttpProxy sharedInstance] <span class="string">getCommentsWithDate:</span>[NSDate <span class="keyword">new</span>]];</span><br></pre></td></tr></table></figure>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>所有的代码及示例都提交到Github了，<a href="https://github.com/zekunyan/HttpProxyExample" target="_blank" rel="noopener">HttpProxyExample</a>。</p>
 <p>总的来说，就是利用Objective-C的“消息”机制，继承NSProxy抽象类，实现自己定义的转发机制，将网络接口层的各个方法的实现与声明分离，提升项目代码的可维护性，更加模块化。如下图表示:</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_http_proxy_1_3.jpg" alt="image"></p>
+<p><img src="blog_ios_http_proxy_1_3.jpg" alt="image"></p>
 <p>以上，就是我自己在项目中，利用NSProxy设计并实现的网络接口层结构。💪</p>
 <p>从了解NSProxy、Runtime到设计、实现出这个网络层架构，着实花了点时间，收获真是不少。其实像这种纯代码层次的重构，很多人会觉得“吃力不讨好”😨，但我觉得，正是这样，才能真正让自己提升。</p>
 <p>代码是具有美感的！嗯！😝</p>

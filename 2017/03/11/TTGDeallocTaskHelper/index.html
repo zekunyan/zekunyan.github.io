@@ -276,7 +276,7 @@
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 给object对象添加dealloc后期要执行的任务Block</span></span><br><span class="line">[object ttg_addDeallocTask:^(__<span class="keyword">unsafe_unretained</span> <span class="keyword">id</span> target, <span class="built_in">NSUInteger</span> identifier) &#123;</span><br><span class="line">    <span class="comment">// 执行任务</span></span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
 <p>Github地址：<a href="https://github.com/zekunyan/TTGDeallocTaskHelper/" target="_blank" rel="noopener">https://github.com/zekunyan/TTGDeallocTaskHelper</a></p>
 <p>一张图说明原理：</p>
-<p><img src="http://zorrochen.qiniudn.com/TTGDeallocTaskHelper_1.jpg" alt="总体结构"></p>
+<p><img src="/2017/03/11/TTGDeallocTaskHelper/TTGDeallocTaskHelper_1.jpg" alt="总体结构"></p>
 <p>库的详细原理、限制、注意事项，为什么说“<strong>后期</strong>”执行，将在下文给出。</p>
 <a id="more"></a>
 <h2 id="使用案例"><a href="#使用案例" class="headerlink" title="使用案例"></a>使用案例</h2><p>先给出几个使用案例。</p>
@@ -302,7 +302,7 @@
 <li>实现Associated Object的<code>dealloc</code>方法，在Associated Object释放的时候，批量执行之前添加的Block</li>
 </ol>
 <p>图示如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/TTGDeallocTaskHelper_1.jpg" alt="总体结构"></p>
+<p><img src="/2017/03/11/TTGDeallocTaskHelper/TTGDeallocTaskHelper_1.jpg" alt="总体结构"></p>
 <h3 id="Associated-Object-TaskModel"><a href="#Associated-Object-TaskModel" class="headerlink" title="Associated Object - TaskModel"></a>Associated Object - TaskModel</h3><p><strong>属性</strong></p>
 <p>上图中的TaskModel，就是库代码里面的<code>TTGDeallocTaskModel</code>类，包含三个属性：</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) pthread_mutex_t lock;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSMutableDictionary</span> *tasksDict;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">unsafe_unretained</span>) <span class="keyword">id</span> target;</span><br></pre></td></tr></table></figure>

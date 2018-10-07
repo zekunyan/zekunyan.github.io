@@ -292,7 +292,7 @@
 <p>为了更充分的理解，咱们看看如下例子：</p>
 <figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">NSString</span> *<span class="keyword">str1 </span>= <span class="comment">@"a string";</span></span><br><span class="line"><span class="symbol">NSString</span> *<span class="keyword">str2 </span>= <span class="keyword">str1;</span></span><br></pre></td></tr></table></figure>
 <p>熟悉C语言的朋友应该知道这是怎么回事，内存当中只有一块区域储存着“a string”这个字符串，str1、str2都是指向着这个区域的字符串指针。如下图：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_effective_objective_c_item_1_1.jpg" alt="image"></p>
+<p><img src="/2015/02/05/Effective-Objective-C-读书笔记-Item-1/blog_effective_objective_c_item_1_1.jpg" alt="image"></p>
 <ul>
 <li>str1、str2都在栈内存上分配的，就是字符串（NSString）类型的指针。</li>
 <li>“a string”字符串实际储存在堆内存上。</li>

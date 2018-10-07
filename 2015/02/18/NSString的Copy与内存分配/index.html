@@ -293,11 +293,11 @@
 <figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">Name:</span> tutuge blog</span><br></pre></td></tr></table></figure>
 <p>看，我们明明是保存的“tutuge”，怎么到后面输出的是“tutuge blog”？</p>
 <h3 id="让NSString类型的Property为Copy型"><a href="#让NSString类型的Property为Copy型" class="headerlink" title="让NSString类型的Property为Copy型"></a>让NSString类型的Property为Copy型</h3><p>因为name的Property属性是strong的，所以赋值后，它跟showName均指向同一个NSMutableString实例，如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_nsstring_copy_1_1.jpg" alt="内存示意图"></p>
+<p><img src="/2015/02/18/NSString的Copy与内存分配/blog_ios_nsstring_copy_1_1.jpg" alt="内存示意图"></p>
 <p>所以改变了showName，当然name输出的值也就变了。<br>这个时候，name的property属性就不能是strong了，应该是copy，如下：</p>
 <figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//UserEntity.h</span></span><br><span class="line"></span><br><span class="line"><span class="variable">@interface</span> <span class="attribute">UserEntity </span>: NSObject &lt;NSCopying&gt;</span><br><span class="line"><span class="variable">@property</span>(copy, nonatomic) NSString *name;</span><br><span class="line"><span class="variable">@end</span></span><br></pre></td></tr></table></figure>
 <p>这样的话，当“<strong>userEntity.name = showName;</strong>”这句运行后，内存布局如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_nsstring_copy_1_2.jpg" alt="内存示意图"></p>
+<p><img src="/2015/02/18/NSString的Copy与内存分配/blog_ios_nsstring_copy_1_2.jpg" alt="内存示意图"></p>
 <p>这样，就避免了这个问题。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>很所时候，代码并不是看上去那样“运行”的，多试试，多查阅资料，就能了解其中的奥秘了~</p>
 

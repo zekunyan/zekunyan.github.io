@@ -9,7 +9,7 @@
       <content type="html"><![CDATA[<h1 id="阿里巴巴（中国）网络技术有限公司"><a href="#阿里巴巴（中国）网络技术有限公司" class="headerlink" title="阿里巴巴（中国）网络技术有限公司"></a>阿里巴巴（中国）网络技术有限公司</h1><h2 id="招人啦～求iOS、Android、Windows-C"><a href="#招人啦～求iOS、Android、Windows-C" class="headerlink" title="招人啦～求iOS、Android、Windows C++"></a>招人啦～求iOS、Android、Windows C++</h2><p>大量招人啊～～～真实信息绝无有假啊～～～我不是HR不是猎头，我是开发啊～～～我就是土土哥啊～～～</p>
 <ul>
 <li>工作地点：杭州，滨江</li>
-<li>简历投递邮箱：zekun.yzk@alibaba-inc.com</li>
+<li>简历投递邮箱：<a href="mailto:zekun.yzk@alibaba-inc.com" target="_blank" rel="noopener">zekun.yzk@alibaba-inc.com</a></li>
 <li>关键词：<strong>有竞争力的薪酬、大神云集、集团战略重点</strong></li>
 <li>软文：<a href="http://tutuge.me/2017/09/28/alibaba-icbu-mobile-hc/">阿里巴巴国际无线技术部 - 在这里遇见最好的自己</a></li>
 </ul>
@@ -83,7 +83,7 @@
       <title><![CDATA[转-阿里巴巴国际无线技术部 - 在这里遇见最好的自己]]></title>
       <url>http://tutuge.me/2017/09/28/alibaba-icbu-mobile-hc/</url>
       <content type="html"><![CDATA[<h2 id="转自"><a href="#转自" class="headerlink" title="转自"></a>转自</h2><p>给自己部门的软文！<br><a href="http://icbu.info/welcome-to-icbu/" target="_blank" rel="noopener">阿里巴巴国际无线技术部 - 在这里遇见最好的自己</a></p>
-<h2 id="我们做什么"><a href="#我们做什么" class="headerlink" title="我们做什么"></a>我们做什么</h2><p>阿里巴巴国际无线技术部背靠阿里巴巴集团和阿里巴巴国际站，阿里巴巴国际站是全球领先的跨境B2B贸易服务平台，服务全世界数以千万计的采购商和供应商，阿里巴巴国际站（www.alibaba.com）帮助中小企业拓展国际贸易的出口营销推广服务，专注服务于全球中小微企业，在平台上，通过向海外买家展示、推广供应商的企业和产品，进而获得贸易商机和订单，买卖双方可以在线更高效地找到适合的彼此，并更快更安心地达成交易，是出口企业拓展国际贸易的首选跨境贸易平台。</p>
+<h2 id="我们做什么"><a href="#我们做什么" class="headerlink" title="我们做什么"></a>我们做什么</h2><p>阿里巴巴国际无线技术部背靠阿里巴巴集团和阿里巴巴国际站，阿里巴巴国际站是全球领先的跨境B2B贸易服务平台，服务全世界数以千万计的采购商和供应商，阿里巴巴国际站（<a href="http://www.alibaba.com）帮助中小企业拓展国际贸易的出口营销推广服务，专注服务于全球中小微企业，在平台上，通过向海外买家展示、推广供应商的企业和产品，进而获得贸易商机和订单，买卖双方可以在线更高效地找到适合的彼此，并更快更安心地达成交易，是出口企业拓展国际贸易的首选跨境贸易平台。" target="_blank" rel="noopener">www.alibaba.com）帮助中小企业拓展国际贸易的出口营销推广服务，专注服务于全球中小微企业，在平台上，通过向海外买家展示、推广供应商的企业和产品，进而获得贸易商机和订单，买卖双方可以在线更高效地找到适合的彼此，并更快更安心地达成交易，是出口企业拓展国际贸易的首选跨境贸易平台。</a></p>
 <p>阿里巴巴国际站技术致力于打造一站式eWTP全球国际B类贸易服务平台解决方案。近年来，随着智能手机的普及无线的趋势已经锐不可当。阿里巴巴国际无线技术部不仅是站在阿里巴巴集团和阿里巴巴国际站两个巨人的肩上，更是站在无线时代的浪潮之上。来吧少年，一起为全球中小企业服务！</p>
 <a id="more"></a>
 <h2 id="我们在哪里"><a href="#我们在哪里" class="headerlink" title="我们在哪里"></a>我们在哪里</h2><h3 id="杭州-一座来了就不想走的城市"><a href="#杭州-一座来了就不想走的城市" class="headerlink" title="杭州 - 一座来了就不想走的城市"></a>杭州 - 一座来了就不想走的城市</h3><p>杭州有“欲把西湖比西子，淡妆浓抹总相宜”的西湖，<br><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/175b41acb93011a4e220fbcf498603f0.png" alt="4feb7f9bc5d49be00e1ef5c333629572.png"></p>
@@ -179,9 +179,9 @@
 <p>可发现，关键在于<code>___methodDescriptionForSelector:</code>方法。</p>
 <h3 id="methodDescriptionForSelector-方法的实现"><a href="#methodDescriptionForSelector-方法的实现" class="headerlink" title="___methodDescriptionForSelector:方法的实现"></a>___methodDescriptionForSelector:方法的实现</h3><p>进一步看<code>___methodDescriptionForSelector:</code>的实现。</p>
 <p>汇编代码、Hopper翻译的代码都很长，循环也不见了，全是goto：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_RemakeMethodSignatureForSelector_3.jpg" alt=""></p>
+<p><img src="/2017/04/08/diy-methodSignatureForSelector/blog_RemakeMethodSignatureForSelector_3.jpg" alt=""></p>
 <p>经过反复校对整理（排除Hopper的错误=。=），可以整理出主要的流程如下图所示：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_RemakeMethodSignatureForSelector_2.png" alt=""></p>
+<p><img src="/2017/04/08/diy-methodSignatureForSelector/blog_RemakeMethodSignatureForSelector_2.png" alt=""></p>
 <p>根据流程，可以得出，<code>___methodDescriptionForSelector:</code>方法：</p>
 <ol>
 <li>用<code>class_copyProtocolList</code>、<code>protocol_getMethodDescription</code>方法，检查是否有对应的selector，不管是否实现</li>
@@ -249,10 +249,10 @@
 <p>从C++代码来看，也没有可能会导致EXC_BAD_ACCESS问题的释放、dealloc之类的代码，继续！</p>
 <h3 id="Hopper-Disassembler反编译分析"><a href="#Hopper-Disassembler反编译分析" class="headerlink" title="Hopper Disassembler反编译分析"></a>Hopper Disassembler反编译分析</h3><p>重写出C++代码无法解决，就只能让Hopper出马了，毕竟“汇编面前，没有秘密”=。=，以x86_64架构二进制为例。</p>
 <p>先来看<code>testFunc:</code>的：</p>
-<p><img src="http://zorrochen.qiniudn.com/xcode8_crash_on_out_parameter_1.jpg" alt=""></p>
+<p><img src="/2017/03/14/xcode8-crash-on-out-parameter/xcode8_crash_on_out_parameter_1.jpg" alt=""></p>
 <p>跟预想的一致，没有任何“有效代码”。</p>
 <p>再看<code>runTest</code>方法：</p>
-<p><img src="http://zorrochen.qiniudn.com/xcode8_crash_on_out_parameter_2.jpg" alt=""></p>
+<p><img src="/2017/03/14/xcode8-crash-on-out-parameter/xcode8_crash_on_out_parameter_2.jpg" alt=""></p>
 <p>为了方便分析，把反编译出来的汇编代码分了段：</p>
 <ol>
 <li>调用<code>NSMutableArray new</code>创建array变量，保存在r15寄存器上</li>
@@ -268,7 +268,7 @@
 <p><strong>release和retain的顺序错误</strong><br>Hopper生成的代码跟汇编分析基本一致，至此，可以看出，唯一“不正常”的代码就是第5段的<strong>“先release，再retain”</strong>，这会导致array变量提前释放，以至于后面再次retain无效，NSLog的时候，出现访问已被释放的变量，于是出现EXC_BAD_ACCESS崩溃。</p>
 <h3 id="对比Xcode7"><a href="#对比Xcode7" class="headerlink" title="对比Xcode7"></a>对比Xcode7</h3><p>现在已经基本可以确定问题了，但是为什么Xcode7就不会Crash？反编译一探究竟。</p>
 <p>相同的代码，Xcode7 Release环境编译出可执行二进制文件，反编译后，用Hopper生成Objective-C代码，然后跟Xcode8的做对比，如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/xcode8_crash_on_out_parameter_3.jpg" alt=""></p>
+<p><img src="/2017/03/14/xcode8-crash-on-out-parameter/xcode8_crash_on_out_parameter_3.jpg" alt=""></p>
 <p>可以看出，Xcode8编译后，release和retain的顺序错了，导致了array变量提前被释放，继而EXC_BAD_ACCESS错误。而Xcode7编译的一切正常。</p>
 <h2 id="问题原因小结"><a href="#问题原因小结" class="headerlink" title="问题原因小结"></a>问题原因小结</h2><p>现在可以大胆猜测，EXC_BAD_ACCESS的原因就是<strong>Xcode8的编译错误</strong>。<br>在编译上面的代码时，Xcode8不能正确的处理array变量作为二级指针传入testFunc空函数后的<strong>release、retain顺序</strong>，导致array被<strong>提前释放</strong>，最终产生EXC_BAD_ACCESS错误。  </p>
 <p>目前已经给Xcode提了Bug report，等待苹果的回复～</p>
@@ -302,7 +302,7 @@
 <li>StairView自定义View的<code>intrinsicContentSize</code>，并支持在UITableViewCell中自动计算高度</li>
 <li>给同一个属性添加<strong>多重约束</strong>，实现复杂关系</li>
 </ol>
-<p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry5_1.png" alt=""></p>
+<p><img src="/2017/03/12/autolayout-example-with-masonry5/blog_autolayout_example_with_masonry5_1.png" alt=""></p>
 <p>前四篇：  </p>
 <ul>
 <li>第一篇：<a href="http://tutuge.me/2015/05/23/autolayout-example-with-masonry/">有趣的Autolayout示例-Masonry实现</a>  </li>
@@ -318,11 +318,11 @@
 <p>但是，实际设置Autolayout的时候，不存在什么<code>cell.height = MAX(labels.height)</code>这样的关系。</p>
 <p>所以要转换一下，改为<strong><code>ANY(label.bottom) &lt;= cell.bottom</code></strong>，即<strong>每个Label的底部bottom都是在cell的底部bottom上面的</strong>，换算到坐标系里面，就是在Y轴上，<strong><code>label.bottom &lt;= cell.bottom</code></strong>。</p>
 <p>所以，cell的约束如下图所示：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry5_2.png" alt=""></p>
+<p><img src="/2017/03/12/autolayout-example-with-masonry5/blog_autolayout_example_with_masonry5_2.png" alt=""></p>
 <h3 id="代码细节"><a href="#代码细节" class="headerlink" title="代码细节"></a>代码细节</h3><p>对应的代码如下：</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)setupLayout &#123;</span><br><span class="line">    <span class="comment">// label1的约束    </span></span><br><span class="line">    [_label1 mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">        make.width.equalTo(@<span class="number">80</span>); <span class="comment">// 宽度80</span></span><br><span class="line">        make.top.equalTo(<span class="keyword">self</span>.contentView.mas_topMargin); <span class="comment">// 上</span></span><br><span class="line">        make.left.equalTo(<span class="keyword">self</span>.contentView.mas_leftMargin); <span class="comment">// 左</span></span><br><span class="line">        <span class="comment">// label.bottom &lt;= cell.contentView.bottom，注意是在Y轴上对比</span></span><br><span class="line">        make.bottom.lessThanOrEqualTo(<span class="keyword">self</span>.contentView.mas_bottomMargin); </span><br><span class="line">    &#125;];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// label2的约束 </span></span><br><span class="line">    <span class="comment">// 类似...</span></span><br><span class="line">    <span class="comment">// label3的约束 </span></span><br><span class="line">    <span class="comment">// 类似...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="Case2-StairView自定义View实现intrinsicContentSize"><a href="#Case2-StairView自定义View实现intrinsicContentSize" class="headerlink" title="Case2: StairView自定义View实现intrinsicContentSize"></a>Case2: StairView自定义View实现<code>intrinsicContentSize</code></h2><h3 id="实现功能-1"><a href="#实现功能-1" class="headerlink" title="实现功能"></a>实现功能</h3><p>实现一个自定义布局的View - StairView，阶梯布局View。<br>StairView支持设置Label成阶梯状从上到下、从左到右分布，如下图：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry5_3.jpg" alt=""></p>
+<p><img src="/2017/03/12/autolayout-example-with-masonry5/blog_autolayout_example_with_masonry5_3.jpg" alt=""></p>
 <p>同时，StairView要支持Autolayout，支持大小由内容决定，可以在Cell里面用，并自动计算高度。</p>
 <p>接下来，看看如何实现这个StairView。</p>
 <h3 id="intrinsicContentSize是什么"><a href="#intrinsicContentSize是什么" class="headerlink" title="intrinsicContentSize是什么"></a>intrinsicContentSize是什么</h3><p>如果说到Autolayout的内容决定大小，就会遇到<code>intrinsicContentSize</code>方法，这个方法是什么呢？</p>
@@ -378,7 +378,7 @@
 <h3 id="自定义View小结"><a href="#自定义View小结" class="headerlink" title="自定义View小结"></a>自定义View小结</h3><p>StairView的原理、代码都讲完了，算是一个典型的自定义的、根据内容决定高度的View案例，主要要注意的就是<strong>更新布局、contentSize的时机</strong>，以及<strong>及时invalidateIntrinsicContentSize通知布局系统更新</strong></p>
 <h2 id="Case3-给同一个属性添加多重约束，实现复杂关系"><a href="#Case3-给同一个属性添加多重约束，实现复杂关系" class="headerlink" title="Case3: 给同一个属性添加多重约束，实现复杂关系"></a>Case3: 给同一个属性添加<strong>多重约束</strong>，实现复杂关系</h2><p>这个Case主要是为了纠正一个可能的误区：<strong>Autolayout里面，同一个属性，是可以加上多重约束的</strong>，或者说，同一个View的同一个属性，可以参与到多个约束里面的。</p>
 <p>先看看Case的功能：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry5_4.jpg" alt=""></p>
+<p><img src="/2017/03/12/autolayout-example-with-masonry5/blog_autolayout_example_with_masonry5_4.jpg" alt=""></p>
 <p>注意到，右边绿色label的左边，不仅要大于左边蓝色label的右边，还要大于整体宽度的1/3，所以，是要<strong>同时满足多条约束条件的</strong>。</p>
 <h3 id="区分观念：Frame布局和Autolayout的不同"><a href="#区分观念：Frame布局和Autolayout的不同" class="headerlink" title="区分观念：Frame布局和Autolayout的不同"></a>区分观念：Frame布局和Autolayout的不同</h3><p><strong>按照Frame布局</strong></p>
 <p>按照传统的用Frame布局的方式，label的左边，其实就是<code>label.frame.origin.x</code>这个属性，所以，要左边满足条件的话，首先想到的可能就是：</p>
@@ -421,7 +421,7 @@
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 给object对象添加dealloc后期要执行的任务Block</span></span><br><span class="line">[object ttg_addDeallocTask:^(__<span class="keyword">unsafe_unretained</span> <span class="keyword">id</span> target, <span class="built_in">NSUInteger</span> identifier) &#123;</span><br><span class="line">    <span class="comment">// 执行任务</span></span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
 <p>Github地址：<a href="https://github.com/zekunyan/TTGDeallocTaskHelper/" target="_blank" rel="noopener">https://github.com/zekunyan/TTGDeallocTaskHelper</a></p>
 <p>一张图说明原理：</p>
-<p><img src="http://zorrochen.qiniudn.com/TTGDeallocTaskHelper_1.jpg" alt="总体结构"></p>
+<p><img src="/2017/03/11/TTGDeallocTaskHelper/TTGDeallocTaskHelper_1.jpg" alt="总体结构"></p>
 <p>库的详细原理、限制、注意事项，为什么说“<strong>后期</strong>”执行，将在下文给出。</p>
 <a id="more"></a>
 <h2 id="使用案例"><a href="#使用案例" class="headerlink" title="使用案例"></a>使用案例</h2><p>先给出几个使用案例。</p>
@@ -447,7 +447,7 @@
 <li>实现Associated Object的<code>dealloc</code>方法，在Associated Object释放的时候，批量执行之前添加的Block</li>
 </ol>
 <p>图示如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/TTGDeallocTaskHelper_1.jpg" alt="总体结构"></p>
+<p><img src="/2017/03/11/TTGDeallocTaskHelper/TTGDeallocTaskHelper_1.jpg" alt="总体结构"></p>
 <h3 id="Associated-Object-TaskModel"><a href="#Associated-Object-TaskModel" class="headerlink" title="Associated Object - TaskModel"></a>Associated Object - TaskModel</h3><p><strong>属性</strong></p>
 <p>上图中的TaskModel，就是库代码里面的<code>TTGDeallocTaskModel</code>类，包含三个属性：</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) pthread_mutex_t lock;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSMutableDictionary</span> *tasksDict;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">unsafe_unretained</span>) <span class="keyword">id</span> target;</span><br></pre></td></tr></table></figure>
@@ -511,12 +511,12 @@
       <title><![CDATA[用QuartzCode快速实现一个收藏动画]]></title>
       <url>http://tutuge.me/2017/03/08/quartzcode-demo-star-animation/</url>
       <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>“工欲善其事,必先利其器”，iOS的Core Animation非常强大，可以做出非常炫酷的动画，但是实际写起来还是比较麻烦，代码不直观，需要反复的改参数、Build、运行，所以诞生了各种动画制作工具，本文就以其中比较有名的<a href="http://www.quartzcodeapp.com/" target="_blank" rel="noopener">QuartzCode</a>为例，快速实现一个收藏功能的星星动画，最终的效果如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_1.gif" alt=""></p>
+<p><img src="/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_1.gif" alt=""></p>
 <p>GitHub地址：<a href="https://github.com/zekunyan/QuartzCodeExample-StarAimation" target="_blank" rel="noopener">https://github.com/zekunyan/QuartzCodeExample-StarAimation</a></p>
 <a id="more"></a>
 <h2 id="QuartzCode简介"><a href="#QuartzCode简介" class="headerlink" title="QuartzCode简介"></a>QuartzCode简介</h2><p>QuartzCode是一款专门用来创作iOS/macOS动画的软件，基本上把整个Core Animation框架的内容都搬到了软件里面，比如各种Layer、Mask、可以用来动画的属性，基本上跟代码是一致的，完全可以当成<strong>“可视化动画编程”</strong>工具，而且制作以后可以<strong>导出代码+资源文件</strong>，直接就可以在代码里面调用，方便自定义修改。</p>
 <p>以QuartzCode 1.54.0为例，主体界面如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_2.jpg" alt=""></p>
+<p><img src="/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_2.jpg" alt=""></p>
 <p>简单讲下：  </p>
 <ul>
 <li>A: Layers，用于动画的Layer在这里显示，先后顺序、层级和StoryBoard比较像</li>
@@ -528,12 +528,12 @@
 </ul>
 <p>总体上来看，QuartzCode的界面跟XIB、StoryBoard的风格非常类似，还是很容易上手的，更多的教程看官网：<a href="http://www.quartzcodeapp.com/" target="_blank" rel="noopener">http://www.quartzcodeapp.com/</a></p>
 <h2 id="整理思路"><a href="#整理思路" class="headerlink" title="整理思路"></a>整理思路</h2><p>首先整理下思路：</p>
-<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_3.jpg" alt=""></p>
+<p><img src="/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_3.jpg" alt=""></p>
 <p>总体上可以分成两个部分，一个是动画部分，用QuartzCode实现可视化编辑创建；另一个是功能、代码API设置部分，需要在QuartzCode最后导出的代码基础上，添加、修改，封装成简单的控件库。</p>
 <h2 id="QuartzCode实现动画"><a href="#QuartzCode实现动画" class="headerlink" title="QuartzCode实现动画"></a>QuartzCode实现动画</h2><p>先来看看动画的实现，本节只把主要步骤流程列出来，详细的参数、设置，参考<a href="https://github.com/zekunyan/QuartzCodeExample-StarAimation" target="_blank" rel="noopener">GitHub上的QuartzCode文件</a>。</p>
 <h3 id="显示星星动画"><a href="#显示星星动画" class="headerlink" title="显示星星动画"></a>显示星星动画</h3><p>显示星星的动画由三个部分组成，分别是实心的星星从小到大出现，空心的从大到小并透明度减小消失，最后星星四周闪动圆点、短线。</p>
 <p><strong>实心星星从小到大出现</strong></p>
-<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_4.jpg" alt=""></p>
+<p><img src="/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_4.jpg" alt=""></p>
 <ol>
 <li>拖入图片素材到中间的画布上，软件会自动创建一个layer，可以通过Inspector调整大小、位置</li>
 <li>对Layers里面自动生成的layer重命名</li>
@@ -542,7 +542,7 @@
 <li>Timeline里面的每一行对应帧动画的时间轴，可以在轴上双击、右键添加关键帧，这里默认就好，分别<strong>选中</strong>Bounds帧动画时间轴<strong>两端的关键点</strong>，在右边的Keyframe inspector里面设置Size值，起始是（0，0），结束时大小为原图大小</li>
 </ol>
 <p><strong>空心星星从大到小、透明度减小消失</strong></p>
-<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_5.jpg" alt=""></p>
+<p><img src="/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_5.jpg" alt=""></p>
 <p>基本和上一步一样，可以先隐藏实心的layer以便于观察。</p>
 <ol>
 <li>添加空心的星星图片素材</li>
@@ -552,7 +552,7 @@
 </ol>
 <p><strong>四周闪动短线、圆点</strong></p>
 <p>短线、圆点是沿着星星的四周<strong>重复排列</strong>的，所以这里可以用<code>CAReplicatorLayer</code>来实现，对应到QuartzCode里面就是工具栏的”Replicator”类型的Layer。<code>CAReplicatorLayer</code>可以根据一定的<strong>规则重复</strong>的绘制内部的子Layer，在这里只需要按照旋转角度变化就好。</p>
-<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_6.jpg" alt=""></p>
+<p><img src="/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_6.jpg" alt=""></p>
 <ol>
 <li>点击”Replicator”，在中间的画布上拖动出一个layer，然后选择”Shape”里面的圆角矩形，在星星的一角拖动画出一个小的圆角矩形，<strong>保证star_layer在replicator layer的内部</strong></li>
 <li>设置replicator的属性，实现循环重复内部的layer，这里设置”instance count”为5，”Rotation”为72，也就是360/5=72，就可以实现按照星星的五个角重复绘制</li>
@@ -561,14 +561,14 @@
 <p>剩余的圆点，和短线的创建方法一致，就不再重复讲解～</p>
 <p>至此，显示的动画就创建好了。</p>
 <h3 id="隐藏星星动画"><a href="#隐藏星星动画" class="headerlink" title="隐藏星星动画"></a>隐藏星星动画</h3><p>再来看看隐藏星星的动画，有了上一小节的基础，隐藏星星的动画就容易多了，基本步骤都是一样的，如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_7.jpg" alt=""></p>
+<p><img src="/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_7.jpg" alt=""></p>
 <ol>
 <li>添加一个新的动画组hide</li>
 <li>分别设置每个layer的动画，实心的星星从大到小、同时透明度降低，空心的相反，replicator layer一直隐藏</li>
 </ol>
 <h3 id="导出动画代码"><a href="#导出动画代码" class="headerlink" title="导出动画代码"></a>导出动画代码</h3><p>动画都实现了好了以后，就可以导出代码了。</p>
 <p>依次<code>File-&gt;Export Code...</code>，就可以打开导出代码的预览界面：</p>
-<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_8.jpg" alt=""></p>
+<p><img src="/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_8.jpg" alt=""></p>
 <p>右边的选项，按照需要选择，默认的基本可以满足要求，“Export Image Assets”最好选上，可以一同导出图片资源。选项的说明参见文档：<a href="http://www.quartzcodeapp.com/code-generation/code-options/" target="_blank" rel="noopener">http://www.quartzcodeapp.com/code-generation/code-options/</a></p>
 <p>至此，最复杂的动画部分就完成了，不用写一行代码，全部可视化编辑～</p>
 <h2 id="调整、封装代码"><a href="#调整、封装代码" class="headerlink" title="调整、封装代码"></a>调整、封装代码</h2><p>接着就是封装导出的代码，方便使用。</p>
@@ -614,11 +614,11 @@
       <url>http://tutuge.me/2016/12/25/TTGPuzzleVerify/</url>
       <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近抽空写了个拼图验证控件，用户可以通过水平、垂直，或者直接拖动拼图块，完成拼图图案，来完成验证。拼图块的形状可以自定义，默认提供了经典的拼图形状、圆形、正方形，整个拼图的图案也是支持从图片生成的。</p>
 <p><strong>CocoaPods</strong>: <code>pod &quot;TTGPuzzleVerify&quot;</code><br><strong>Github</strong>: <a href="https://github.com/zekunyan/TTGPuzzleVerify" target="_blank" rel="noopener">https://github.com/zekunyan/TTGPuzzleVerify</a></p>
-<p><img src="http://zorrochen.qiniudn.com/blog_TTGPuzzleVerify_gif.gif" alt=""></p>
+<p><img src="/2016/12/25/TTGPuzzleVerify/blog_TTGPuzzleVerify_gif.gif" alt=""></p>
 <p>接下来，说说TTGPuzzleVerify的整体设计思路和实现原理。</p>
 <a id="more"></a>
 <h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><h3 id="组成部分"><a href="#组成部分" class="headerlink" title="组成部分"></a>组成部分</h3><p>先直观上分析一下控件的组成部分：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_TTGPuzzleVerify_1.png" alt="组成部分"></p>
+<p><img src="/2016/12/25/TTGPuzzleVerify/blog_TTGPuzzleVerify_1.png" alt="组成部分"></p>
 <p>可以直观看出，控件应该由三个部分组成：</p>
 <ul>
 <li>拼图块：就是从原图上<strong>“抠”</strong>出来的拼图形状的图片块</li>
@@ -626,7 +626,7 @@
 <li>镂空背景：从原始图片上抠出拼图块以后，给用户提示用的，透明度更低的拼图块镂空背景</li>
 </ul>
 <h3 id="拆解步骤"><a href="#拆解步骤" class="headerlink" title="拆解步骤"></a>拆解步骤</h3><p>分析完了控件的组成，现在就来梳理一下控件的整个创建、交互流程。</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_TTGPuzzleVerify_2.png" alt="步骤"></p>
+<p><img src="/2016/12/25/TTGPuzzleVerify/blog_TTGPuzzleVerify_2.png" alt="步骤"></p>
 <ul>
 <li>输入：图片、拼图形状、拼图大小、镂空的位置、拼图块的起始位置</li>
 <li>生成拼图路径：根据拼图类型，生成对应的贝塞尔曲线</li>
@@ -643,7 +643,7 @@
 <h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="拼图的路径生成"><a href="#拼图的路径生成" class="headerlink" title="拼图的路径生成"></a>拼图的路径生成</h3><p>既然手写代码太难，那就从现有的图案生成代码。</p>
 <p><strong>1. 找SVG素材</strong><br>既然要能随意改变大小，就要找矢量的图，Google “free svg”、“free icon”之类的，很容易就能找到免费的矢量图素材，例如TTGPuzzleVerify里面用的拼图形状就是从<a href="http://iconmonstr.com/puzzle-1/" target="_blank" rel="noopener">iconmonstr.com</a>找来的。</p>
 <p><strong>2. 编辑</strong><br>直接下载回来的SVG还需要调整一下，如去除背景，我是用Sketch来编辑的。</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_TTGPuzzleVerify_3.png" alt="拼图SVG编辑"></p>
+<p><img src="/2016/12/25/TTGPuzzleVerify/blog_TTGPuzzleVerify_3.png" alt="拼图SVG编辑"></p>
 <p><strong>3. 生成代码</strong><br>拼图的路径本质上就是拼图的轮廓，在Sketch里面把拼图SVG的背景色等颜色删除，然后就是将其转换为代码。<br>这里可以用<a href="https://www.paintcodeapp.com/sketch" target="_blank" rel="noopener">PaintCode plugin for Sketch</a>，将Sketch的拼图矢量路径导出成代码。</p>
 <p><strong>4. 调整代码</strong><br>直接生成的代码有时可能会不适用，可以人工调整下，然后就可以放到自己的类里面了：</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">+ (<span class="built_in">UIBezierPath</span> *)classicPuzzlePath &#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="built_in">UIBezierPath</span> *puzzleShape = <span class="literal">nil</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;</span><br><span class="line">    <span class="built_in">dispatch_once</span>(&amp;onceToken, ^&#123;</span><br><span class="line">        puzzleShape = [<span class="built_in">UIBezierPath</span> bezierPath];</span><br><span class="line">        [puzzleShape moveToPoint:<span class="built_in">CGPointMake</span>(<span class="number">17.45</span>, <span class="number">71.16</span>)];</span><br><span class="line">        <span class="comment">// 此处省略很多行=。=，PaintCode生成的</span></span><br><span class="line">        [puzzleShape closePath];</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span> puzzleShape;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -656,7 +656,7 @@
 <h3 id="从图片上“抠出”拼图块、镂空"><a href="#从图片上“抠出”拼图块、镂空" class="headerlink" title="从图片上“抠出”拼图块、镂空"></a>从图片上“抠出”拼图块、镂空</h3><p><strong>1. 拼图块</strong><br>有了UIBezierPath路径，抠出拼图块还是比较容易的，直接用<code>CAShapeLayer</code>来<strong>“mask”</strong>图片即可：</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 拼图路径</span></span><br><span class="line"><span class="built_in">UIBezierPath</span> *puzzlePath = [<span class="keyword">self</span> getNewScaledPuzzledPath];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建mask layer</span></span><br><span class="line"><span class="built_in">CAShapeLayer</span> *puzzleMaskLayer = [<span class="built_in">CAShapeLayer</span> new];</span><br><span class="line">puzzleMaskLayer.frame = <span class="keyword">self</span>.bounds;</span><br><span class="line">puzzleMaskLayer.path = puzzlePath.CGPath;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Mask到图片imageView上</span></span><br><span class="line">_puzzleImageView.layer.mask = puzzleMaskLayer;</span><br></pre></td></tr></table></figure>
 <p>效果就是：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_TTGPuzzleVerify_4.png" alt="拼图块"></p>
+<p><img src="/2016/12/25/TTGPuzzleVerify/blog_TTGPuzzleVerify_4.png" alt="拼图块"></p>
 <p><strong>2. 镂空图片</strong><br>抠出拼图块还是很容易的，但是“镂空”怎么办？<br>其实道理是一样的，都是<strong>mask</strong>，只不过mask的区域反过来而已。<br><code>CAShapeLayer</code>的<code>fillRule</code>就可以调整“填充的规则”，此处用<code>kCAFillRuleEvenOdd</code>就可以了，文档的解释如下：</p>
 <blockquote>
 <p>Specifies the even-odd winding rule. Count the total number of path crossings. If the number of crossings is even, the point is outside the path. If the number of crossings is odd, the point is inside the path and the region containing it should be filled.</p>
@@ -665,10 +665,10 @@
 <p>所以，只要在拼图路径的基础上，补充最外部的边框的路径即可：</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建矩形边框路径</span></span><br><span class="line"><span class="built_in">UIBezierPath</span> *maskPath = [<span class="built_in">UIBezierPath</span> bezierPathWithRect:<span class="keyword">self</span>.bounds];</span><br><span class="line"><span class="comment">// 添加拼图路径</span></span><br><span class="line">[maskPath appendPath:[<span class="built_in">UIBezierPath</span> bezierPathWithCGPath:puzzlePath.CGPath]];</span><br><span class="line"><span class="comment">// 设置规则</span></span><br><span class="line">maskPath.usesEvenOddFillRule = <span class="literal">YES</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建mask的layer</span></span><br><span class="line"><span class="built_in">CAShapeLayer</span> *frontMaskLayer = [<span class="built_in">CAShapeLayer</span> new];</span><br><span class="line">frontMaskLayer.frame = <span class="keyword">self</span>.bounds;</span><br><span class="line">frontMaskLayer.path = maskPath.CGPath;</span><br><span class="line">frontMaskLayer.fillRule = kCAFillRuleEvenOdd; <span class="comment">// 填充规则</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置mask</span></span><br><span class="line">_frontImageView.layer.mask = frontMaskLayer;</span><br></pre></td></tr></table></figure>
 <p>效果：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_TTGPuzzleVerify_5.png" alt="镂空"></p>
+<p><img src="/2016/12/25/TTGPuzzleVerify/blog_TTGPuzzleVerify_5.png" alt="镂空"></p>
 <p><strong>3. 镂空背景</strong><br>有了拼图块、镂空，还差一块，就是镂空的“半透明背景”，其实这个“半透明背景”和拼图块是一模一样的，所以不再重复代码，唯一增加的就是设置其透明度。</p>
 <p><strong>4. 组合</strong><br>将上面的组合到一起，就能形成最终的效果，从Reveal里面看到分层结构如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_TTGPuzzleVerify_6.png" alt="分层"></p>
+<p><img src="/2016/12/25/TTGPuzzleVerify/blog_TTGPuzzleVerify_6.png" alt="分层"></p>
 <p>其实就是三张一样的图片，按照不同的mask规则做了处理，叠加起来。</p>
 <h3 id="用户拖动拼图、完成拼图验证"><a href="#用户拖动拼图、完成拼图验证" class="headerlink" title="用户拖动拼图、完成拼图验证"></a>用户拖动拼图、完成拼图验证</h3><p><strong>1. 拖动图片</strong><br>有了上面的结构，拖动拼图的处理也就容易多了，只要移动最上层的拼图块就行了，这里直接用<code>UIPanGestureRecognizer</code>实现，移动的时候基于拼图的中心移动。</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建手势</span></span><br><span class="line"><span class="built_in">UIPanGestureRecognizer</span> *panGestureRecognizer = [<span class="built_in">UIPanGestureRecognizer</span> new];</span><br><span class="line">[panGestureRecognizer addTarget:<span class="keyword">self</span> action:<span class="keyword">@selector</span>(onPanGesture:)];</span><br><span class="line">[<span class="keyword">self</span> addGestureRecognizer:panGestureRecognizer];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 手势处理</span></span><br><span class="line">- (<span class="keyword">void</span>)onPanGesture:(<span class="built_in">UIPanGestureRecognizer</span> *)panGestureRecognizer &#123;</span><br><span class="line">    <span class="comment">// 获取坐标</span></span><br><span class="line">    <span class="built_in">CGPoint</span> panLocation = [panGestureRecognizer locationInView:<span class="keyword">self</span>];</span><br><span class="line">    <span class="comment">// 拼图中心偏移</span></span><br><span class="line">    <span class="built_in">CGPoint</span> position = <span class="built_in">CGPointZero</span>;</span><br><span class="line">    position.x = panLocation.x - _puzzleSize.width / <span class="number">2</span>;</span><br><span class="line">    position.y = panLocation.y - _puzzleSize.height / <span class="number">2</span>;</span><br><span class="line">    <span class="comment">// 设置坐标</span></span><br><span class="line">    [<span class="keyword">self</span> setPuzzlePosition:position];</span><br><span class="line">    <span class="comment">// 判断、回调。。。</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -707,9 +707,9 @@
 <li>2016-09-05: <a href="https://github.com/zekunyan/TTGBingWallPaper/releases/download/0.3/BingWallPaper.app.zip" target="_blank" rel="noopener">新版0.3</a>增加子Menu，整理选项；增加“History Wallpapers”打开历史图片文件夹；增加“Launch at startup”开机启动。</li>
 <li>2016-09-03: <a href="https://github.com/zekunyan/TTGBingWallPaper/releases/download/0.2.0/BingWallPaper.app.zip" target="_blank" rel="noopener">新版0.2.0！</a>增加“Auto Update”选项；增加“Random”随机选择设置壁纸；修复自动更新不准的Bug。</li>
 </ul>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/BingWallPaper_banner.png" alt="Banner"></p>
+<p><img src="/2016/08/28/TTGBingWallPaper/BingWallPaper_banner.png" alt="Banner"></p>
 <p>极简的壁纸Mac App，每天<strong>自动</strong>下载最新微软Bing的每日壁纸并设置为桌面背景。</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/BingWallPaper_screenshot_2.png?2=2" alt="ScreenShot1"></p>
+<p><img src="/2016/08/28/TTGBingWallPaper/BingWallPaper_screenshot_2.png" alt="ScreenShot1"></p>
 <p>Github: <a href="https://github.com/zekunyan/TTGBingWallPaper" target="_blank" rel="noopener">https://github.com/zekunyan/TTGBingWallPaper</a></p>
 <a id="more"></a>
 <h2 id="由来"><a href="#由来" class="headerlink" title="由来"></a>由来</h2><p>其实最开始只是很喜欢Bing的首页的壁纸图片，然后手动下载回来做壁纸，后来发现手动太麻烦，作为一个程序员，自己动手丰衣足食！=。= 然后花了个周末写了这个超简单的Mac App。</p>
@@ -770,7 +770,7 @@
 <li>第三篇：<a href="http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/">有趣的Autolayout示例3-Masonry实现</a></li>
 </ul>
 <p>Github地址：<br><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="noopener">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry4_1.gif" alt="Gif示例"></p>
+<p><img src="/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_1.gif" alt="Gif示例"></p>
 <a id="more"></a>
 <h2 id="Case-1-用约束优先级保证可移动View的内容可见性"><a href="#Case-1-用约束优先级保证可移动View的内容可见性" class="headerlink" title="Case 1: 用约束优先级保证可移动View的内容可见性"></a>Case 1: 用约束优先级保证可移动View的内容可见性</h2><h3 id="实现功能"><a href="#实现功能" class="headerlink" title="实现功能"></a>实现功能</h3><p>Case 1实现的功能就是，可以用手指拖动一个灰色的Tip控件，在红框containerView内移动，并且保持移动到红框边缘时，Tip控件的内容不会超出红框，保证内容的可见性。</p>
 <h3 id="Frame-VS-Autolayout"><a href="#Frame-VS-Autolayout" class="headerlink" title="Frame VS Autolayout"></a>Frame VS Autolayout</h3><p>如果不用Autolayout的话，直接计算、设定frame，那么可能的步骤如下：</p>
@@ -789,7 +789,7 @@
 </ol>
 <p>至于保证Tip内容在可见范围内，就交给Autolayout处理吧~</p>
 <h3 id="关键原理"><a href="#关键原理" class="headerlink" title="关键原理"></a>关键原理</h3><p>用Autolayout实现的关键，就是<strong>善于利用约束的优先级</strong>。先看看设置的约束示意图：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry4_2.png?1=1" alt="Case 1: 用约束优先级保证可移动View的内容可见性"></p>
+<p><img src="/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_2.png" alt="Case 1: 用约束优先级保证可移动View的内容可见性"></p>
 <p>中间的tipLabel就是被移动的控件  </p>
 <ul>
 <li>褐色的两个约束，分别是Tip控件的centerX和centerY，与上级View的left和top的约束，用来对Tip定位</li>
@@ -811,7 +811,7 @@
 <h3 id="关键概念：约束-“动态的绑定”"><a href="#关键概念：约束-“动态的绑定”" class="headerlink" title="关键概念：约束 = “动态的绑定”"></a>关键概念：约束 = “动态的绑定”</h3><p>之所以写这个例子，主要是想从概念上更加深入的理解Autolayout与传统的设置Frame的不同，即Autolayout里面的约束，其实是“动态的绑定”，是控件相互之间的位置关系绑定，约束是可以<strong>实时</strong>保证这种绑定关系的。</p>
 <p>传统的设置Frame，在View的内容、位置要变化时，是要手动设置的，是“一次性”的，而Autolayout，在确定了约束后，会实时的用约束的规则去更新Frame，所以可以避免这种手动设置。</p>
 <p>所以，对于本例子来说，设置Frame的方式和Autolayout的方式对比如下：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry4_3.png?1=1" alt="Case 2: Autolayout的约束=控件间位置关系的“绑定”"></p>
+<p><img src="/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_3.png" alt="Case 2: Autolayout的约束=控件间位置关系的“绑定”"></p>
 <p>用Autolayout的话，只要把Attachment的位置设置为相对于TipLabel就可以了。</p>
 <h3 id="实现细节-1"><a href="#实现细节-1" class="headerlink" title="实现细节"></a>实现细节</h3><p>代码比较简单，如下：</p>
 <figure class="highlight scheme"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[<span class="name">attachmentView</span> mas_makeConstraints:^(<span class="name">MASConstraintMaker</span> *make) &#123;</span><br><span class="line">    // 依附在tipLabel上</span><br><span class="line">    make.left.equalTo(<span class="name">_tipLabel.mas_left</span>).with.offset(<span class="name">20</span>).priorityHigh()<span class="comment">;</span></span><br><span class="line">    make.bottom.equalTo(<span class="name">_tipLabel.mas_top</span>).with.offset(<span class="name">-2</span>).priorityHigh()<span class="comment">;</span></span><br><span class="line">&#125;]<span class="comment">;</span></span><br></pre></td></tr></table></figure>
@@ -822,7 +822,7 @@
 <p>但是仔细分析，应该是先设置View的位置到屏幕的左边看不见的区域，然后用动画平滑的再让View移动回原位。</p>
 <p>就是说，只是从左边移动回来时，才让动画生效！问题就变成了，如何让<strong>约束分段执行</strong>，或者说，<strong>控制约束的生效时机</strong>。</p>
 <p>步骤可以由下图表示：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry4_4.png?1=1" alt="Case 3: 利用layoutIfNeeded控制约束的生效时机"></p>
+<p><img src="/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_4.png" alt="Case 3: 利用layoutIfNeeded控制约束的生效时机"></p>
 <h3 id="实现关键"><a href="#实现关键" class="headerlink" title="实现关键"></a>实现关键</h3><p>步骤分析清楚了，那么问题就是如何让约束在修改后，“立即”生效，而不是等到系统自动在下次更新布局时被动的生效。</p>
 <p>答案就是：利用<strong><code>layoutIfNeeded</code></strong>  </p>
 <p>在更改了约束后，调用<code>layoutIfNeeded</code>，就可以通知系统立即刷新布局，从而更新Frame。如果要更加“保险”，可以在调用<code>layoutIfNeeded</code>前，加上调用<code>setNeedsUpdateConstraints</code>、<code>setNeedsLayout</code>，系统刷新布局时，就会先更新约束，然后根据约束重新计算相关View的Frame，想了解具体的过程的，可以参考：<a href="https://developer.apple.com/videos/play/wwdc2015/218/" target="_blank" rel="noopener">Mysteries of Auto Layout, Part 1 - WWDC 2015</a>、<a href="https://developer.apple.com/videos/play/wwdc2015/219/" target="_blank" rel="noopener">Mysteries of Auto Layout, Part 2</a></p>
@@ -1039,7 +1039,7 @@
 <p>再进一步，除开各种影响因素，假设有如下函数：</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)funcWithObj:(<span class="keyword">id</span>)someObj &#123;</span><br><span class="line">    <span class="keyword">id</span> __autoreleasing obj = someObj;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>用Hopper Disassembler反编译后为如下汇编代码(MachO 64bits)：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/autoreleasing-meet-autoreleasepool_1.jpg" alt="funcWithObj:反汇编"></p>
+<p><img src="/2016/04/30/autoreleasing-meet-autoreleasepool/autoreleasing-meet-autoreleasepool_1.jpg" alt="funcWithObj:反汇编"></p>
 <p><strong><code>var_18</code>就是obj变量：</strong></p>
 <p><code>lea rax, qword [ss:rbp+var_18]</code>和<code>mov rdi, rax</code>取了var_18的地址放在<code>rdi</code>寄存器中，<code>mov rsi, rdx</code>将<code>someObj</code>值放到了rsi寄存器中，然后调用<code>id objc_storeStrong(id *object, id value)</code>函数最终将<code>someObj</code>值保存在<code>var_18</code>变量中。</p>
 <p><strong><code>__autoreleasing</code>导致了<code>id objc_retainAutorelease(id value)</code>函数的调用：</strong></p>
@@ -1051,7 +1051,7 @@
 <figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)generateError1:(NSError **)<span class="keyword">error</span> &#123;</span><br><span class="line">    *<span class="keyword">error</span> = [NSError <span class="keyword">new</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)generateError2:(NSError * __autoreleasing *)<span class="keyword">error</span> &#123;</span><br><span class="line">    *<span class="keyword">error</span> = [NSError <span class="keyword">new</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>编译时，<code>generateError1:</code>会对参数<code>error</code>自动添加<code>__autoreleasing</code>，然后就跟<code>generateError2:</code>的实现完全一致了。</p>
 <p>通过反汇编也可看出两者完全一致：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/autoreleasing-meet-autoreleasepool_2.jpg" alt="Out Parameters参数会自动添加__autoreleasing属性"></p>
+<p><img src="/2016/04/30/autoreleasing-meet-autoreleasepool/autoreleasing-meet-autoreleasepool_2.jpg" alt="Out Parameters参数会自动添加__autoreleasing属性"></p>
 <p>在<code>call imp___stubs__objc_msgSend</code>完成后，<code>rax</code>寄存器保存了<code>[NSError new]</code>的对象，然后<code>mov rdi, rax</code>，转移到<code>rdi</code>寄存器，作为<code>objc_autorelease</code>函数的参数被调用，<code>*error</code>被加到了当前的autoreleasepool中。</p>
 <h2 id="如果传给Out-Parameters参数的变量没有用-autoreleasing修饰，编译器会创建一个临时变量并以-autoreleasing修饰再传入"><a href="#如果传给Out-Parameters参数的变量没有用-autoreleasing修饰，编译器会创建一个临时变量并以-autoreleasing修饰再传入" class="headerlink" title="如果传给Out Parameters参数的变量没有用__autoreleasing修饰，编译器会创建一个临时变量并以__autoreleasing修饰再传入"></a>如果传给Out Parameters参数的变量没有用__autoreleasing修饰，编译器会创建一个临时变量并以__autoreleasing修饰再传入</h2><p>根据苹果的<a href="https://developer.apple.com/library/mac/releasenotes/ObjectiveC/RN-TransitioningToARC/Introduction/Introduction.html" target="_blank" rel="noopener">Transitioning to ARC Release Notes</a>文档可知，如果有如下调用:</p>
 <figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSError *<span class="built_in">error</span>; <span class="comment">// 默认__strong类型</span></span><br><span class="line">[self generateError1:&amp;<span class="built_in">error</span>]；</span><br></pre></td></tr></table></figure>
@@ -1061,7 +1061,7 @@
 <p>假如有如下调用：</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)runTest &#123;</span><br><span class="line">    <span class="built_in">NSError</span> *error = <span class="literal">nil</span>;</span><br><span class="line">    [<span class="keyword">self</span> generateError1:&amp;error]; <span class="comment">// 就是上面的实现</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>反汇编后，如下：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/autoreleasing-meet-autoreleasepool_3.jpg" alt="自动添加__autoreleasing临时变量"></p>
+<p><img src="/2016/04/30/autoreleasing-meet-autoreleasepool/autoreleasing-meet-autoreleasepool_3.jpg" alt="自动添加__autoreleasing临时变量"></p>
 <p>代码有点多=。=，从图中汇编可知：<code>var_20</code>就是自动生成的临时变量，<code>var_18</code>是我们定义的<code>error</code>变量。</p>
 <p><code>mov qword [ss:rbp+var_18], 0x0</code>对<code>var_18</code>做初始化，也就是赋<code>nil</code>值，然后<code>mov rdi, qword [ss:rbp+var_18]</code>和<code>mov qword [ss:rbp+var_20], rdi</code>就是用<code>var_18</code>初始化了<code>var_20</code>临时变量。</p>
 <p><code>lea rdx, qword [ss:rbp+var_20]</code>将<code>var_20</code>临时变量的地址存到了<code>rdx</code>寄存器中，作为<code>objc_msgSend</code>实现<code>generateError1:</code>调用时的第三个参数，也就是<code>(NSError **):error</code>参数，完成调用。</p>
@@ -1248,18 +1248,18 @@
 <h4 id="横向拆分业务、功能模块"><a href="#横向拆分业务、功能模块" class="headerlink" title="横向拆分业务、功能模块"></a>横向拆分业务、功能模块</h4><p>很多时候，一个完整的软件程序是同时为多种业务服务的，所有可以优先按照业务的不同，将整个系统进行拆分。  </p>
 <p>如一个电商类型的App，就可以分出商品浏览模块、订单模块、购物车模块、消息模块、支付模块等。又如微信这种社交型应用，可以拆分出联系人模块、朋友圈模块、聊天模块、消息模块等。  </p>
 <p>其实就是从用户使用的角度，按照功能的不同划分模块，当然，这种业务模块是要由各种技术模块作支撑的。</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/modular_and_component_summary_1.jpg" alt="横向拆分业务模块示例"></p>
+<p><img src="/2016/03/29/modular-and-component-summary/modular_and_component_summary_1.jpg" alt="横向拆分业务模块示例"></p>
 <h4 id="纵向拆分技术、架构模块"><a href="#纵向拆分技术、架构模块" class="headerlink" title="纵向拆分技术、架构模块"></a>纵向拆分技术、架构模块</h4><p>如果脱离业务，只从技术角度来看，则可以尝试纵向对系统拆分模块。</p>
 <p>其实这里的纵向拆分跟对系统的架构做分层有点像=。=，现如今只要需要联网请求API的App都免不了有网络请求、数据缓存、数据加工处理、数据展示、反馈用户操作等行为，所有这些环节层层递进才能完成一个功能。  </p>
 <p>当开始着手规划一个完整软件系统，或者说App时，就可以按照这些环节划分模块，纵向分层次的组合，搭建出一个以技术模块组成的简易系统架构图，方便后续的开发，如下图。</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/modular_and_component_summary_2.jpg" alt="纵向拆分技术模块示例"></p>
+<p><img src="/2016/03/29/modular-and-component-summary/modular_and_component_summary_2.jpg" alt="纵向拆分技术模块示例"></p>
 <p>大体上的技术模块划分好以后，就可以按照具体的需求，实现每个技术模块，乃至细分出更多的子模块，如缓存模块可能由键值对缓存（NSUserDefaults）、数据库缓存（SQLite、Realm）、图片缓存等子模块组成，根据具体情况而定。</p>
 <h4 id="从界面入手，拆分可视化组件"><a href="#从界面入手，拆分可视化组件" class="headerlink" title="从界面入手，拆分可视化组件"></a>从界面入手，拆分可视化组件</h4><p>现在再来看看如何从界面入手拆分可复用的组件。假如有如下布局的界面：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/modular_and_component_summary_3.jpg" alt="从界面入手拆分可视化组件"></p>
+<p><img src="/2016/03/29/modular-and-component-summary/modular_and_component_summary_3.jpg" alt="从界面入手拆分可视化组件"></p>
 <p>很多时候，像界面里面的“搜索框”、“头像按钮”、“内容框”和显示提示用的“加载中”HUD，甚至整个内容的Cell，都是可能在很多地方出现的，而且本身的样式、功能比较集中。<br>如头像可能要支持点击跳转，头像图片圆角，内容框有特定的Padding和字体大小等，所以可以将这些界面上的元素“提”出来，单独封装成一个组件，供整个App复用。或者直接用第三方的组件，如图中的“加载中”HUD，就可以用SVProgressHUD、MBProgressHUD等开源库。</p>
 <p>其实这里的组件有种sunnyxx大大提到过的“Self-Manager”的味道=。=，组件本身负责自己的所有功能、样式，参考：<a href="http://blog.sunnyxx.com/2015/12/19/self-manager-pattern-in-ios/" target="_blank" rel="noopener">iOS 开发中的 Self-Manager 模式</a>。当然跟前端的组件化也挺像的，如React里面的component，样式、功能都封装到component里面，以便更好地解耦复用。</p>
 <h4 id="从数据入手，拆分数据加工组件"><a href="#从数据入手，拆分数据加工组件" class="headerlink" title="从数据入手，拆分数据加工组件"></a>从数据入手，拆分数据加工组件</h4><p>再来看看从数据入手，拆分可复用的组件。假如有如下数据处理流程：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/modular_and_component_summary_4.jpg" alt="一数据处理流程示例"></p>
+<p><img src="/2016/03/29/modular-and-component-summary/modular_and_component_summary_4.jpg" alt="一数据处理流程示例"></p>
 <p>其实大部分时候，拆分模块、组件都是以清晰的流程、逻辑为基础的，就如上图的过程，当流程清晰后，可以拆分复用的组件也就“出来了”。 </p>
 <p>如从JSON数据实例化出对应的Entity对象，这个功能就是一个完整独立的组件，当然实际开发中会用Mantle、JSONModel等库实现。  </p>
 <p>以此类推，校验、格式化日期（如“几秒钟前、几天前”）、多语言等环节，都可以独立成一个个的组件。  </p>
@@ -1305,9 +1305,9 @@
 <li>2016-02-18: 修复了超长标签导致排版错误的Bug</li>
 </ul>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这段时间做项目的时候，总是需要显示一些“标签”样式的内容，但是又找不到用的顺手的库，所以琢磨了几天，自己实现了出来，就有了这个库：TTGTagCollectionView。如果只需要显示文字标签的话，直接使用<code>TTGTextTagCollectionView</code>，需要自己定义标签的话，就用<code>TTGTagCollectionView</code>，效果如下:</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/TTGTagCollectionView_screenshot.png" alt="ScreenShot"></p>
+<p><img src="/2015/12/31/TTGTagCollectionView/TTGTagCollectionView_screenshot.png" alt="ScreenShot"></p>
 <p>支持五种布局排版：</p>
-<p><img src="http://zorrochen.qiniudn.com/TTGTagCollectionView_alignment_type_1.png" alt="Alignment"></p>
+<p><img src="/2015/12/31/TTGTagCollectionView/TTGTagCollectionView_alignment_type_1.png" alt="Alignment"></p>
 <p>CocoaPods: <code>pod &quot;TTGTagCollectionView&quot;</code><br>Carthage: <code>github &quot;zekunyan/TTGTagCollectionView&quot;</code></p>
 <p>Github地址: <a href="https://github.com/zekunyan/TTGTagCollectionView" target="_blank" rel="noopener">https://github.com/zekunyan/TTGTagCollectionView</a></p>
 <a id="more"></a>
@@ -1367,7 +1367,7 @@
 <li>第四篇：<a href="http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/">有趣的Autolayout示例4-Masonry实现</a></li>
 </ul>
 <p>Github地址：<br><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="noopener">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry3_1.gif" alt="Gif示例"></p>
+<p><img src="/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_1.gif" alt="Gif示例"></p>
 <a id="more"></a>
 <h2 id="Case-1-Parallax-Header"><a href="#Case-1-Parallax-Header" class="headerlink" title="Case 1: Parallax Header"></a>Case 1: Parallax Header</h2><p>Parallax翻译过来就是“视差”，我个人觉得就是一种“联动”的效果，在许多应用里面都能见到。当前这个例子，就是最简单的一种。</p>
 <h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>原理其实就是根据UITableView当前下拉的位移值，同步改变Parallax Header的高度，即<code>NSLayoutConstraint</code>的<code>constant</code>属性，对应到Masonry里面就是重新让约束<code>equalTo()</code>一次。</p>
@@ -1378,7 +1378,7 @@
 <li>设置UITableView的<code>contentInset</code>跟Parallax Header等高，使UITableView的头部“撑开”，让后面的Parallax Header露出来。</li>
 <li>在代码里面监听UITableView的<code>contentOffset</code>属性，当y小于0时，增加Parallax Header高度，使其产生联动效果。</li>
 </ol>
-<p>约束示意图如下：<br><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry3_6.png" alt="Parallax Header"></p>
+<p>约束示意图如下：<br><img src="/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_6.png" alt="Parallax Header"></p>
 <h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><p>创建Parallax Header的代码如下：</p>
 <figure class="highlight sqf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">_parallaxHeaderView</span> = [UIImageView new];</span><br><span class="line"><span class="comment">// 把Parallax Header放在UITableView的下面</span></span><br><span class="line">[self.view insertSubview:<span class="variable">_parallaxHeaderView</span> belowSubview:<span class="variable">_tableView</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置contentMode</span></span><br><span class="line"><span class="variable">_parallaxHeaderView</span>.contentMode = UIViewContentModeScaleAspectFill;</span><br><span class="line"><span class="variable">_parallaxHeaderView</span>.<span class="built_in">image</span> = [UIImage imageNamed:@<span class="string">"parallax_header_back"</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 添加约束</span></span><br><span class="line">[<span class="variable">_parallaxHeaderView</span> mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">    make.left.<span class="built_in">and</span>.right.equalTo(self.view);</span><br><span class="line">    make.top.equalTo(self.mas_topLayoutGuideBottom);</span><br><span class="line">    <span class="comment">// 保存高度约束</span></span><br><span class="line">    <span class="variable">_parallaxHeaderHeightConstraint</span> = make.height.equalTo(@(ParallaxHeaderHeight));</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
 <p>设置UITableView的<code>contentInset</code></p>
@@ -1406,7 +1406,7 @@
 <li>最后就是Cell的高度变化。（此时的这一行的Cell实例并不一定是之前的那个实例）</li>
 </ol>
 <h3 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h3><p>为了尽量简单，例子里面的Cell只有三个子控件，第一个UILabel是标题等调试信息，第二个UILabel用来显示多行文本，最后一个UIButton用来切换展开、收回的状态。大致的布局如下：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry3_3.png" alt="Case2 UITableViewCell布局示意"></p>
+<p><img src="/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_3.png" alt="Case2 UITableViewCell布局示意"></p>
 <h4 id="布局的代码"><a href="#布局的代码" class="headerlink" title="布局的代码"></a>布局的代码</h4><p><strong>标题UIlabel</strong></p>
 <figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">_titleLabel</span> = [UILabel new];</span><br><span class="line"><span class="section">[self.contentView addSubview:_titleLabel]</span><span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="section">[_titleLabel mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span></span><br><span class="line"><span class="section">    make.height.equalTo(@21);</span></span><br><span class="line"><span class="section">    make.left.and.right.and.top.equalTo(self.contentView).with.insets(UIEdgeInsetsMake(4, 8, 4, 8));</span></span><br><span class="line"><span class="section">&#125;]</span><span class="comment">;</span></span><br></pre></td></tr></table></figure>
 <p><strong>底部“More”按钮</strong></p>
@@ -1434,7 +1434,7 @@
 <h3 id="小节-1"><a href="#小节-1" class="headerlink" title="小节"></a>小节</h3><p>想用好Autolayout不容易啊，要仔细研究UITableView的机制=。=</p>
 <h2 id="Case-3-两种方式实现等间距"><a href="#Case-3-两种方式实现等间距" class="headerlink" title="Case 3: 两种方式实现等间距"></a>Case 3: 两种方式实现等间距</h2><p>等间距，也就是View之间的X或Y轴上的坐标等差，在这里我只举出水平方向上的等间距，垂直方向上一个道理。</p>
 <h3 id="方法1：利用透明等宽的占位View填充空白处，实现等间距"><a href="#方法1：利用透明等宽的占位View填充空白处，实现等间距" class="headerlink" title="方法1：利用透明等宽的占位View填充空白处，实现等间距"></a>方法1：利用透明等宽的占位View填充空白处，实现等间距</h3><p>步骤很简单，就是循环创建真正要展示的View和占位View，布局如下：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry3_4.png?refresh" alt="利用占位View实现等间距"></p>
+<p><img src="/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_4.png" alt="利用占位View实现等间距"></p>
 <p>说明一下：</p>
 <ul>
 <li>占位View的宽度不能定死，这样外部的父级View宽度变化时，内部的View仍然可以保持等间距。</li>
@@ -1449,7 +1449,7 @@
 <p><strong>始终在坐标系上考虑约束</strong></p>
 <p>在上一篇<a href="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/">有趣的Autolayout示例2-Masonry实现</a>的开头我也提到过，Autolayout最终都是体现在坐标系上，一切都会按照<code>viewA-attribute = viewB-attribute * multiplier + constant</code>这种公式去计算，既然centerX不能跟父级的Width宽度一起加约束，那就换一个，如父级的<strong>右边界</strong>，父级View的<strong>右边界</strong>在父级本身的参照系下的Y坐标值不就等于其宽度吗~</p>
 <p>所以，可以按照如下方式加约束：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry3_5.png" alt="按比例设置multiplier实现等间距"></p>
+<p><img src="/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_5.png" alt="按比例设置multiplier实现等间距"></p>
 <p>对应的代码也会异常简单：</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 循环创建</span></span><br><span class="line"><span class="keyword">for</span> (<span class="built_in">NSUInteger</span> i = <span class="number">0</span>; i &lt; ITEM_COUNT; i++) &#123;</span><br><span class="line">    <span class="built_in">UIView</span> *itemView = [<span class="keyword">self</span> getItemViewWithIndex:i];</span><br><span class="line">    [_containerView2 addSubview:itemView];</span><br><span class="line"></span><br><span class="line">    [itemView mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">        <span class="comment">// 宽高一定</span></span><br><span class="line">        make.width.and.height.equalTo(@(ITEM_SIZE));</span><br><span class="line">        <span class="comment">// 确定Y坐标</span></span><br><span class="line">        make.centerY.equalTo(_containerView2.mas_centerY);</span><br><span class="line">        <span class="comment">// 确定X坐标，注意分子分母都要加1</span></span><br><span class="line">        make.centerX.equalTo(_containerView2.mas_right).multipliedBy(((<span class="built_in">CGFloat</span>)i + <span class="number">1</span>) / ((<span class="built_in">CGFloat</span>)ITEM_COUNT + <span class="number">1</span>));</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="小节-2"><a href="#小节-2" class="headerlink" title="小节"></a>小节</h3><p>很多时候，灵活的使用multiplier能大大简化开发~</p>
@@ -1482,10 +1482,10 @@
       <url>http://tutuge.me/2015/10/25/ttgemojirate-lib/</url>
       <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前段时间在Dribbble上发现了一个<a href="https://dribbble.com/shots/2211556-Rating-Version-A" target="_blank" rel="noopener">Rating控件</a>的演示动画，控件以Emoji表情为基础，结合了上下滑动手势，正好最近正在深入学习iOS动画、绘图相关的知识，就尝试着用<code>UIBezierPath</code>实现了出来。本文就是TTGEmojiRate的实现过程。</p>
 <p>Github: <a href="https://github.com/zekunyan/TTGEmojiRate" target="_blank" rel="noopener">https://github.com/zekunyan/TTGEmojiRate</a></p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/TTGEmojiRate_screenshot2.gif" alt="TTGEmojiRate Example"></p>
+<p><img src="/2015/10/25/ttgemojirate-lib/TTGEmojiRate_screenshot2.gif" alt="TTGEmojiRate Example"></p>
 <a id="more"></a>
 <h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>先看看原本的效果：<a href="https://dribbble.com/shots/2211556-Rating-Version-A" target="_blank" rel="noopener">Rating Version A - Hoang Nguyen</a></p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/TTGEmojiRate_Dribbble.gif" alt="Rating Version A - Hoang Nguyen"></p>
+<p><img src="/2015/10/25/ttgemojirate-lib/TTGEmojiRate_Dribbble.gif" alt="Rating Version A - Hoang Nguyen"></p>
 <p>可以看出来，主要的特点如下：</p>
 <ul>
 <li>可以上下拖动，改变Emoji表情嘴的弧度。</li>
@@ -1495,7 +1495,7 @@
 <p>实际实现的时候，增加了眼睛元素，并且增强了自定义，如颜色的变化范围、线条的粗细等都可以设定，基本的思路还是不变的。</p>
 <h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>开始写代码之前，先理理思路。</p>
 <p>拖动的时候，直接影响的应该是Rate值，然后在Rate值改变的时候刷新整个控件，刷新的时候重绘。重绘的时候，嘴、眼睛的弧度，颜色的值都要根据Rate值重新计算，如下图：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_ttgemojirate_1.png" alt="Image"></p>
+<p><img src="/2015/10/25/ttgemojirate-lib/blog_ttgemojirate_1.png" alt="Image"></p>
 <h3 id="拖动改变Rate值"><a href="#拖动改变Rate值" class="headerlink" title="拖动改变Rate值"></a>拖动改变Rate值</h3><p>这个还是很容易实现的，直接重写<code>UIView</code>的touch相关的三个方法，在里面记录拖动在Y轴上的变化值，然后映射到Rate值上就可以了。</p>
 <p>先声明一个CGPoint属性，用来保存手指按下时的点位置：<br><figure class="highlight delphi"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> touchPoint: CGPoint? = <span class="keyword">nil</span></span><br></pre></td></tr></table></figure></p>
 <p>在手指移动的时候，在<code>touchesMoved</code>方法里面计算当前点跟上一次触摸点的Y轴上的<strong>差值</strong>，然后映射到Rate值上。</p>
@@ -1512,9 +1512,9 @@
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">func</span> <span class="title">drawFaceWithRect</span><span class="params">(rect: CGRect)</span></span> &#123;</span><br><span class="line">    <span class="keyword">let</span> facePath = <span class="type">UIBezierPath</span>(ovalInRect: rect)</span><br><span class="line">    rateColor.setStroke()</span><br><span class="line">    facePath.lineWidth = rateLineWidth <span class="comment">// 线粗细</span></span><br><span class="line">    facePath.stroke()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>实际实现的时候可以加上Margin，防止线画到View的边界之外。</p>
 <h3 id="嘴、眼睛"><a href="#嘴、眼睛" class="headerlink" title="嘴、眼睛"></a>嘴、眼睛</h3><p>先看看<code>UIBezierPath</code>提供的可以用来绘制曲线的方法：<br><code>addCurveToPoint(_:controlPoint1:controlPoint2:)</code>和<code>addQuadCurveToPoint(_:controlPoint:)</code>，如下图:</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_ttgemojirate_2.png" alt="UIBezierPath"></p>
+<p><img src="/2015/10/25/ttgemojirate-lib/blog_ttgemojirate_2.png" alt="UIBezierPath"></p>
 <p>直观上来讲，嘴、眼睛的绘制跟<code>addQuadCurveToPoint</code>方法绘制的效果基本一致，但是这样的效果没法调整，因为只能控制唯一的一个控制点，所以还是要用<code>addCurveToPoint</code>方法，对称的绘制两条曲线，拼接起来，如下图：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_ttgemojirate_3.png" alt="Curve拼接"></p>
+<p><img src="/2015/10/25/ttgemojirate-lib/blog_ttgemojirate_3.png" alt="Curve拼接"></p>
 <p>这样的话，就可以通过调整两个控制点，来控制嘴、眼睛的弯曲宽度、形状。</p>
 <p>以绘制嘴为例：</p>
 <figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> func drawMouthWithRect(<span class="built_in">rect</span>: CGRect) &#123;</span><br><span class="line">    let <span class="built_in">width</span> = CGRectGetWidth(<span class="built_in">rect</span>)</span><br><span class="line">    let <span class="built_in">height</span> = CGRectGetWidth(<span class="built_in">rect</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 左端点</span></span><br><span class="line">    let leftPoint = CGPointMake(</span><br><span class="line">        <span class="built_in">width</span> * (<span class="number">1</span> - rateMouthWidth) / <span class="number">2</span>,</span><br><span class="line">        <span class="built_in">height</span> * (<span class="number">1</span> - rateMouthVerticalPosition))</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 右端点</span></span><br><span class="line">    let rightPoint = CGPointMake(</span><br><span class="line">        <span class="built_in">width</span> - leftPoint.x,</span><br><span class="line">        leftPoint.y)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 中间点 - Y值根据当前的Rate值计算，0.3为系数</span></span><br><span class="line">    let centerPoint = CGPointMake(</span><br><span class="line">        <span class="built_in">width</span> / <span class="number">2</span>,</span><br><span class="line">        leftPoint.y + <span class="built_in">height</span> * <span class="number">0.3</span> * (CGFloat(rateValue) - <span class="number">2.5</span>) / <span class="number">5</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 控制点跟中间点在X轴上的距离</span></span><br><span class="line">    let halfLipWidth = <span class="built_in">width</span> * rateMouthWidth * rateLipWidth / <span class="number">2</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建贝塞尔曲线</span></span><br><span class="line">    let mouthPath = UIBezierPath()</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 移动到起始点</span></span><br><span class="line">    mouthPath.moveToPoint(leftPoint)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 添加左半边曲线路径</span></span><br><span class="line">    mouthPath.addCurveToPoint(</span><br><span class="line">        centerPoint,</span><br><span class="line">        controlPoint1: leftPoint,</span><br><span class="line">        controlPoint2: CGPointMake(centerPoint.x - halfLipWidth, centerPoint.y))</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 添加右半边曲线路径</span></span><br><span class="line">    mouthPath.addCurveToPoint(</span><br><span class="line">        rightPoint,</span><br><span class="line">        controlPoint1: CGPointMake(centerPoint.x + halfLipWidth, centerPoint.y),</span><br><span class="line">        controlPoint2: rightPoint)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设定样式</span></span><br><span class="line">    mouthPath.lineCapStyle = CGLineCap.Round;</span><br><span class="line">    rateColor.setStroke()</span><br><span class="line">    mouthPath.lineWidth = rateLineWidth</span><br><span class="line">    mouthPath.<span class="built_in">stroke</span>()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -1531,7 +1531,7 @@
 <blockquote>
 <p>HSB 色彩模式是基于人眼的一种颜色模式。是普及型设计软件中常见的色彩模式，其中H代表色相；S代表饱和度；B代表亮度。- <a href="http://baike.baidu.com/view/1006662.htm" target="_blank" rel="noopener">百度百科</a></p>
 </blockquote>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_ttgemojirate_4.jpg?imageView2/1/w/240/h/192" alt="HSB色彩模式"></p>
+<p><img src="/2015/10/25/ttgemojirate-lib/blog_ttgemojirate_4.jpg" alt="HSB色彩模式"></p>
 <p>对应到<code>UIColor</code>类，就是下面两个方法：</p>
 <figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建UIColor</span></span><br><span class="line">init(<span class="built_in">hue</span> <span class="built_in">hue</span>: CGFloat, <span class="built_in">saturation</span> <span class="built_in">saturation</span>: CGFloat, <span class="built_in">brightness</span> <span class="built_in">brightness</span>: CGFloat, <span class="built_in">alpha</span> <span class="built_in">alpha</span>: CGFloat)</span><br><span class="line"><span class="comment">// 获取HSB值，注意参数</span></span><br><span class="line">func getHue(_ <span class="built_in">hue</span>: UnsafeMutablePointer&lt;CGFloat&gt;, <span class="built_in">saturation</span> <span class="built_in">saturation</span>: UnsafeMutablePointer&lt;CGFloat&gt;, <span class="built_in">brightness</span> <span class="built_in">brightness</span>: UnsafeMutablePointer&lt;CGFloat&gt;, <span class="built_in">alpha</span> <span class="built_in">alpha</span>: UnsafeMutablePointer&lt;CGFloat&gt;) -&gt; Bool</span><br></pre></td></tr></table></figure>
 <p>实现的时候，为了增加可定制性，控件颜色的变化范围是可以设置的，用以下属性保存：</p>
@@ -1554,7 +1554,7 @@
 <p>在属性前面加上<code>@IBInspectable</code>，就可以在IB里面编辑属性，实时预览：</p>
 <figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@IBInspectable</span> <span class="keyword">public</span> var <span class="string">rateLineWidth:</span> CGFloat = <span class="number">14</span> &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>详细的使用可以参考NSHipster上的文章：<a href="http://nshipster.cn/ibinspectable-ibdesignable/" target="_blank" rel="noopener">IBInspectable / IBDesignable</a></p>
-<p>最后，在IB里面就是下面这样：<br><img src="http://7nj2iz.com1.z0.glb.clouddn.com/TTGEmojiRate_IBExample.png?imageView2/0/w/640" alt="IB example"></p>
+<p>最后，在IB里面就是下面这样：<br><img src="/2015/10/25/ttgemojirate-lib/TTGEmojiRate_IBExample.png" alt="IB example"></p>
 <p><strong>By the way =。=</strong><br>属性名字太长，在IB里面显示不完整，咋办。。。</p>
 <h3 id="回调"><a href="#回调" class="headerlink" title="回调"></a>回调</h3><p>拖动改变Rate值的时候，肯定要有回调，如下定义：</p>
 <figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">var</span> rateValueChangeCallback: <span class="type"></span>((<span class="keyword">new</span><span class="type">RateValue</span>: <span class="keyword">Float</span>) -&gt; <span class="keyword">Void</span>)? = nil</span><br></pre></td></tr></table></figure>
@@ -1603,20 +1603,20 @@
 </ul>
 <h2 id="TTGSnackbar"><a href="#TTGSnackbar" class="headerlink" title="TTGSnackbar"></a>TTGSnackbar</h2><p>用Swift写了个简单的控件库：TTGSnackbar，模仿Android的Snackbar。目前更新到了版本1.3.0。支持多种动画，增强了自定义。</p>
 <p>Github: <a href="https://github.com/zekunyan/TTGSnackbar" target="_blank" rel="noopener">https://github.com/zekunyan/TTGSnackbar</a></p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/TTGSnackbar_screen_shot.png" alt="Screenshot"></p>
+<p><img src="/2015/10/09/ttgsnackbar-lib/TTGSnackbar_screen_shot.png" alt="Screenshot"></p>
 <p><strong>Gif</strong></p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/TTGSnackbar_example.gif?imageView2/2/w/400/q/100" alt="Screenshot"></p>
+<p><img src="/2015/10/09/ttgsnackbar-lib/TTGSnackbar_example.gif" alt="Screenshot"></p>
 <a id="more"></a>
 <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>需要Swift3, Xcode8, iOS 8+  </p>
 <h3 id="CocoaPods"><a href="#CocoaPods" class="headerlink" title="CocoaPods"></a>CocoaPods</h3><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">platform <span class="symbol">:ios</span>, <span class="string">'8.0'</span></span><br><span class="line">use_frameworks!</span><br><span class="line"></span><br><span class="line">pod <span class="string">"TTGSnackbar"</span></span><br></pre></td></tr></table></figure>
 <h3 id="Carthage"><a href="#Carthage" class="headerlink" title="Carthage"></a>Carthage</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">github</span> <span class="string">"zekunyan/TTGSnackbar"</span></span><br></pre></td></tr></table></figure>
-<h2 id="简单的使用案例"><a href="#简单的使用案例" class="headerlink" title="简单的使用案例"></a>简单的使用案例</h2><h3 id="只显示文字"><a href="#只显示文字" class="headerlink" title="只显示文字"></a>只显示文字</h3><p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/TTGSnackbar_2.png" alt="Example"></p>
+<h2 id="简单的使用案例"><a href="#简单的使用案例" class="headerlink" title="简单的使用案例"></a>简单的使用案例</h2><h3 id="只显示文字"><a href="#只显示文字" class="headerlink" title="只显示文字"></a>只显示文字</h3><p><img src="/2015/10/09/ttgsnackbar-lib/TTGSnackbar_2.png" alt="Example"></p>
 <figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> snackbar = TTGSnackbar.init(message: <span class="string">"Message"</span>, duration: .Short)</span><br><span class="line">snackbar.<span class="keyword">show</span>()</span><br></pre></td></tr></table></figure>
-<h3 id="显示文字和一个动作按钮"><a href="#显示文字和一个动作按钮" class="headerlink" title="显示文字和一个动作按钮"></a>显示文字和一个动作按钮</h3><p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/TTGSnackbar_3.png" alt="Example"></p>
+<h3 id="显示文字和一个动作按钮"><a href="#显示文字和一个动作按钮" class="headerlink" title="显示文字和一个动作按钮"></a>显示文字和一个动作按钮</h3><p><img src="/2015/10/09/ttgsnackbar-lib/TTGSnackbar_3.png" alt="Example"></p>
 <figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> snackbar = TTGSnackbar.init(message: <span class="string">"Message"</span>, duration: .Middle, actionText: <span class="string">"Action"</span>)</span><br><span class="line">&#123; <span class="function"><span class="params">(snackbar)</span> -&gt;</span> Void <span class="keyword">in</span></span><br><span class="line">    NSLog(<span class="string">"Click action!"</span>)</span><br><span class="line">&#125;      </span><br><span class="line">snackbar.show()</span><br></pre></td></tr></table></figure>
-<h3 id="显示文字和一个耗时操作按钮"><a href="#显示文字和一个耗时操作按钮" class="headerlink" title="显示文字和一个耗时操作按钮"></a>显示文字和一个耗时操作按钮</h3><p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/TTGSnackbar_5.png" alt="Example"></p>
+<h3 id="显示文字和一个耗时操作按钮"><a href="#显示文字和一个耗时操作按钮" class="headerlink" title="显示文字和一个耗时操作按钮"></a>显示文字和一个耗时操作按钮</h3><p><img src="/2015/10/09/ttgsnackbar-lib/TTGSnackbar_5.png" alt="Example"></p>
 <figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> snackbar = TTGSnackbar.init(message: <span class="string">"Message"</span>, <span class="built_in">duration</span>: .Forever, actionText: <span class="string">"Action"</span>)</span><br><span class="line">&#123; (snackbar) -&gt; <span class="literal">Void</span> <span class="keyword">in</span></span><br><span class="line">    NSLog(<span class="string">"Click action!"</span>)</span><br><span class="line">    <span class="comment">// Dismiss manually after 3 seconds</span></span><br><span class="line">    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(<span class="number">3</span> * Double(NSEC_PER_SEC))), dispatch_get_main_queue()) &#123; () -&gt; <span class="literal">Void</span> <span class="keyword">in</span></span><br><span class="line">        snackbar.dismiss()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;      </span><br><span class="line">snackbar.show()</span><br></pre></td></tr></table></figure>
-<h3 id="显示文字和两个动作按钮"><a href="#显示文字和两个动作按钮" class="headerlink" title="显示文字和两个动作按钮"></a>显示文字和两个动作按钮</h3><p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/TTGSnackbar_9.png" alt="Example"></p>
+<h3 id="显示文字和两个动作按钮"><a href="#显示文字和两个动作按钮" class="headerlink" title="显示文字和两个动作按钮"></a>显示文字和两个动作按钮</h3><p><img src="/2015/10/09/ttgsnackbar-lib/TTGSnackbar_9.png" alt="Example"></p>
 <figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">let snackbar: TTGSnackbar = TTGSnackbar.init(message: <span class="string">"Two actions !"</span>, duration: .Long)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Action 1</span></span><br><span class="line">snackbar<span class="selector-class">.actionText</span> = <span class="string">"Yes"</span></span><br><span class="line">snackbar<span class="selector-class">.actionTextColor</span> = UIColor.greenColor()</span><br><span class="line">snackbar<span class="selector-class">.actionBlock</span> = &#123; (snackbar) <span class="keyword">in</span> NSLog(<span class="string">"Click Yes !"</span>) &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Action 2</span></span><br><span class="line">snackbar<span class="selector-class">.secondActionText</span> = <span class="string">"No"</span></span><br><span class="line">snackbar<span class="selector-class">.secondActionTextColor</span> = UIColor.yellowColor()</span><br><span class="line">snackbar<span class="selector-class">.secondActionBlock</span> = &#123; (snackbar) <span class="keyword">in</span> NSLog(<span class="string">"Click No !"</span>) &#125;</span><br><span class="line"></span><br><span class="line">snackbar.show()</span><br></pre></td></tr></table></figure>
 <h2 id="显示文字和图片ICON"><a href="#显示文字和图片ICON" class="headerlink" title="显示文字和图片ICON"></a>显示文字和图片ICON</h2><p><img src="https://github.com/zekunyan/TTGSnackbar/raw/master/Resources/snackbar_5.jpg" alt="Example"></p>
 <figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">let <span class="string">snackbar:</span> TTGSnackbar = TTGSnackbar.init(<span class="string">message:</span> <span class="string">"Two actions !"</span>, <span class="string">duration:</span> .Long)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Add icon image</span></span><br><span class="line">snackbar.icon = UIImage.init(<span class="string">named:</span> <span class="string">"emoji_cool_small"</span>)</span><br><span class="line"></span><br><span class="line">snackbar.show()</span><br></pre></td></tr></table></figure>
@@ -1655,7 +1655,7 @@
 <li>第四篇: <a href="http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/">有趣的Autolayout示例4-Masonry实现</a></li>
 </ul>
 <p>Github地址：<br><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="noopener">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_1.gif" alt="Gif示例"></p>
+<p><img src="/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_1.gif" alt="Gif示例"></p>
 <a id="more"></a>
 <h2 id="知识点"><a href="#知识点" class="headerlink" title="知识点"></a>知识点</h2><p>先讲讲两个知识点，很基础，但是很容易被忽略。</p>
 <h3 id="坐标系、top、right、offset"><a href="#坐标系、top、right、offset" class="headerlink" title="坐标系、top、right、offset"></a>坐标系、top、right、offset</h3><p>先看看Masonry的Github主页的示例代码：</p>
@@ -1663,7 +1663,7 @@
 <p>代码的意思很简单，就是view1的上下左右边距为padding对应的值。</p>
 <p>但是，为什么bottom、right的offset是<strong>负数</strong>呢？</p>
 <p>其实无论是Autolayout还是直接写frame，最终的结果都是要把我们的控件按照正确的位置绘制在屏幕上，也就是说，在一个统一的坐标系下，如下：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_2.png" alt="坐标系"></p>
+<p><img src="/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_2.png" alt="坐标系"></p>
 <p>而在Masonry里面，offset只是做了“加法”运算，举个例，上面的：</p>
 <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">make</span><span class="selector-class">.top</span><span class="selector-class">.equalTo</span>(<span class="selector-tag">superview</span><span class="selector-class">.mas_top</span>)<span class="selector-class">.with</span><span class="selector-class">.offset</span>(<span class="selector-tag">padding</span><span class="selector-class">.top</span>);</span><br></pre></td></tr></table></figure>
 <p>其实等于下面的式子：</p>
@@ -1689,7 +1689,7 @@
 <h3 id="UITableViewCell"><a href="#UITableViewCell" class="headerlink" title="UITableViewCell"></a>UITableViewCell</h3><p>先看看Cell的约束。</p>
 <h4 id="“自我约束”的Cell"><a href="#“自我约束”的Cell" class="headerlink" title="“自我约束”的Cell"></a>“自我约束”的Cell</h4><p>既然要能让系统自己计算出Cell的高度，我们在设置约束的时候，就要让约束整体是“完整”、“自我约束”的。（这个很难用语言描述。。。）Cell里面的每一个View的大小、位置，都可以从约束中得到体现，而Cell的整体大小，也是从子View的约束综合计算得出的。</p>
 <p>如下面的Cell：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_3.png" alt="Cell"></p>
+<p><img src="/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_3.png" alt="Cell"></p>
 <ol>
 <li>左上角的图片固定大小。</li>
 <li>标题的Label只显示一行，固定高度。</li>
@@ -1697,7 +1697,7 @@
 <li>两个Label宽度整体随着Cell的宽度变化。</li>
 </ol>
 <p>约束的设定如下：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_4.png" alt="约束示意"></p>
+<p><img src="/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_4.png" alt="约束示意"></p>
 <p>关键点:</p>
 <ol>
 <li>内容Label的bottom和Cell的contentView的约束不可以省，因为cell的高度要由内部的约束决定，所以上下左右的约束一个不能少。</li>
@@ -1742,7 +1742,7 @@
 </blockquote>
 <p>简单来说，topLayoutGuide表示当前页面的上方被status bar、navigation bar遮挡的部分。同理，bottomLayoutGuide表示下方被遮挡的部分。</p>
 <p>如下图:  </p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_5.jpg?imageView2/0/w/400/q/100" alt="topLayoutGuide和bottomLayoutGuide"></p>
+<p><img src="/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_5.jpg" alt="topLayoutGuide和bottomLayoutGuide"></p>
 <h3 id="解决的问题"><a href="#解决的问题" class="headerlink" title="解决的问题"></a>解决的问题</h3><p>有些时候，一个ViewController可能单独显示出来，也可能内嵌在UINavigationController里面显示出来。在这两种情况下，页面的“<strong>可视范围</strong>”是不一样的，很明显，NavigationBar会遮挡住一部分，用了UITabBarController时，tabBar也会遮挡住下方一部分。再加上各种Bar都可以隐藏，情况会变得更复杂。</p>
 <p>难道要为每种情况去写一份布局代码？</p>
 <h3 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h3><p>为了解决上面的问题，就需要在设置约束时，加进topLayoutGuide和bottomLayoutGuide。</p>
@@ -1760,10 +1760,10 @@
 <h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>直接看Demo吧，比较简单。</p>
 <h2 id="Case-3-自定义baseline"><a href="#Case-3-自定义baseline" class="headerlink" title="Case 3: 自定义baseline"></a>Case 3: 自定义baseline</h2><p>最后一个Case，讲讲baseline。  </p>
 <p>baseline，翻译过来就是“基线”，在Autolayout里面对应着<strong><code>NSLayoutFormatAlignAllBaseline</code></strong>，也是一种对齐的标准。例如，UIButton的baseline就是内部的文字，如果一排button按照baseline对齐的话，就是下面这样：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_6.jpg" alt="按钮按照baseline对其"></p>
+<p><img src="/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_6.jpg" alt="按钮按照baseline对其"></p>
 <p>对于自定义的View来说，baseline默认就是整个view的底部，如果想改变baseline的话，可以重写UIView的<strong>viewForBaselineLayout</strong>，返回当成baseline的view即可。</p>
 <p>如下面的自定义view：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_7.jpg" alt="自定义baseline"></p>
+<p><img src="/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_7.jpg" alt="自定义baseline"></p>
 <p>很明显，baseline就是显示图片的UIImageView，代码也很简单:</p>
 <figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 自定义的View中</span></span><br><span class="line"><span class="comment">// 返回自定义的baseline的view</span></span><br><span class="line">- (UIView *)viewForBaselineLayout &#123;</span><br><span class="line">    <span class="keyword">return</span> _imageView;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>灵活的使用baseline，可以更加方便的进行布局。</p>
@@ -1817,7 +1817,7 @@
 <p><strong>区分</strong></p>
 <p>既然Base SDK的版本大于等于Deployment Target的版本，那么就要小心了，因为<strong>“只要用到的类、方法，在当前的Base SDK版本里面存在，就可以<em>编译通过</em>！但是一旦运行APP的手机的系统版本低于这些类、方法的最低版本要求，APP就会Crash！”</strong></p>
 <p>所以并不是说，能编译通过的，就一定能<em>运行成功</em>！还要在<em>运行时检查</em>！简单来说，就是如下图：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_compatibility-with-macro-category-and-runtime_1.png" alt="兼容示意图"></p>
+<p><img src="/2015/07/25/compatibility-with-macro-category-and-runtime/blog_compatibility-with-macro-category-and-runtime_1.png" alt="兼容示意图"></p>
 <h3 id="宏只在编译时生效！"><a href="#宏只在编译时生效！" class="headerlink" title="宏只在编译时生效！"></a>宏只在编译时生效！</h3><p>宏定义只是纯粹的文本替换，只在编译时起作用。如下代码：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">if</span> __IPHONE_OS_VERSION_MIN_REQUIRED &gt;= 70000</span></span><br><span class="line">    NSLog(@<span class="string">"Tutuge"</span>);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
 <p>被宏定义包起来的代码是否会执行，在编译时就决定好了，无论你是用什么系统运行，宏定义再也没有什么卵用=。=</p>
@@ -1956,7 +1956,7 @@
 <li>2015-9-1: 感谢“王振宇C艹”指出打字错误，已经修改了哈~</li>
 </ul>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>好久没有写Blog了，这段时间有点忙啊=。=<br>本文举了3个比较有“特点”的Autolayout例子，源于微博上好友的提问，感觉比较有意思，也比较有代表性，就写了出来，分享给大家~<br>至于为什么用Masonry，那是因为它好用啊！（被问到过有关Masonry的问题，就索性用它来实现吧=。=）。</p>
-<h3 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_1.gif" alt="效果图"></p>
+<h3 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h3><p><img src="/2015/05/23/autolayout-example-with-masonry/blog_autolayout_example_with_masonry_1.gif" alt="效果图"></p>
 <h3 id="Github地址"><a href="#Github地址" class="headerlink" title="Github地址"></a>Github地址</h3><p><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="noopener">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
 <a id="more"></a>
 <h3 id="关于例子工程结构"><a href="#关于例子工程结构" class="headerlink" title="关于例子工程结构"></a>关于例子工程结构</h3><p>实现的时候采用的是用StoryBoard拖拽约束+Masonry手写代码相结合的方式实现。最关键的地方是用Masonry，为了更好地突出重点。其它的无关紧要的空间约束，直接就拖拽了。</p>
@@ -1984,19 +1984,19 @@
 <li>label不设置具体的宽度（width）属性，宽度由内容决定。</li>
 <li>显示的优先级由“Content Compression Resistance”属性的高低决定。</li>
 </ol>
-<h3 id="约束示例图"><a href="#约束示例图" class="headerlink" title="约束示例图"></a>约束示例图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_2.png" alt="约束示例图"></p>
+<h3 id="约束示例图"><a href="#约束示例图" class="headerlink" title="约束示例图"></a>约束示例图</h3><p><img src="/2015/05/23/autolayout-example-with-masonry/blog_autolayout_example_with_masonry_2.png" alt="约束示例图"></p>
 <h3 id="关键代码"><a href="#关键代码" class="headerlink" title="关键代码"></a>关键代码</h3><p>关键的代码如下：（label1是左边的label，label2是右边的）</p>
 <h4 id="设置位置"><a href="#设置位置" class="headerlink" title="设置位置"></a>设置位置</h4><figure class="highlight sqf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// label1: 位于左上角</span></span><br><span class="line">[<span class="variable">_label1</span> mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">    make.top.equalTo(<span class="variable">_contentView1</span>.mas_top).<span class="keyword">with</span>.offset(<span class="number">5</span>);</span><br><span class="line">    make.left.equalTo(<span class="variable">_contentView1</span>.mas_left).<span class="keyword">with</span>.offset(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 40高度</span></span><br><span class="line">    make.height.equalTo(@<span class="number">40</span>);</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line"><span class="comment">// label2: 位于右上角</span></span><br><span class="line">[<span class="variable">_label2</span> mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">    <span class="comment">//左边贴着label1，间隔2</span></span><br><span class="line">    make.left.equalTo(<span class="variable">_label1</span>.mas_right).<span class="keyword">with</span>.offset(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//上边贴着父view，间隔5</span></span><br><span class="line">    make.top.equalTo(<span class="variable">_contentView1</span>.mas_top).<span class="keyword">with</span>.offset(<span class="number">5</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//右边的间隔保持大于等于2，注意是lessThanOrEqual</span></span><br><span class="line">    <span class="comment">//这里的“lessThanOrEqualTo”放在从左往右的X轴上考虑会更好理解。</span></span><br><span class="line">    <span class="comment">//即：label2的右边界的X坐标值“小于等于”containView的右边界的X坐标值。</span></span><br><span class="line">    make.right.lessThanOrEqualTo(<span class="variable">_contentView1</span>.mas_right).<span class="keyword">with</span>.offset(-<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//只设置高度40</span></span><br><span class="line">    make.height.equalTo(@<span class="number">40</span>);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
 <h4 id="设置内容约束"><a href="#设置内容约束" class="headerlink" title="设置内容约束"></a>设置内容约束</h4><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//设置label1的content hugging 为1000</span></span><br><span class="line">[_label1 setContentHuggingPriority:<span class="built_in">UILayoutPriorityRequired</span></span><br><span class="line">                           forAxis:<span class="built_in">UILayoutConstraintAxisHorizontal</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//设置label1的content compression 为1000</span></span><br><span class="line">[_label1 setContentCompressionResistancePriority:<span class="built_in">UILayoutPriorityRequired</span></span><br><span class="line">                                         forAxis:<span class="built_in">UILayoutConstraintAxisHorizontal</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//设置右边的label2的content hugging 为1000</span></span><br><span class="line">[_label2 setContentHuggingPriority:<span class="built_in">UILayoutPriorityRequired</span></span><br><span class="line">                           forAxis:<span class="built_in">UILayoutConstraintAxisHorizontal</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//设置右边的label2的content compression 为250</span></span><br><span class="line">[_label2 setContentCompressionResistancePriority:<span class="built_in">UILayoutPriorityDefaultLow</span></span><br><span class="line">                                         forAxis:<span class="built_in">UILayoutConstraintAxisHorizontal</span>];</span><br></pre></td></tr></table></figure>
 <h3 id="小节"><a href="#小节" class="headerlink" title="小节"></a>小节</h3><p>灵活运用“Content Compression Resistance”和“Content Hugging”属性。</p>
 <h2 id="Case-2-四个ImageView整体居中，可以任意显示、隐藏"><a href="#Case-2-四个ImageView整体居中，可以任意显示、隐藏" class="headerlink" title="Case 2: 四个ImageView整体居中，可以任意显示、隐藏"></a>Case 2: 四个ImageView整体居中，可以任意显示、隐藏</h2><p>先看看示例的截图：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_3.png" alt="效果图"></p>
+<p><img src="/2015/05/23/autolayout-example-with-masonry/blog_autolayout_example_with_masonry_3.png" alt="效果图"></p>
 <p>下面的四个Switch控件分别控制上面对应位置的图片是否显示。</p>
 <h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><ol>
 <li>首先就是整体居中，为了实现这个，最简单的办法就是将四个图片“装进”一个<strong>容器View</strong>里面，然后让这个容器View在整个页面中居中即可。这样就不用控制每个图片的居中效果了。</li>
 <li>然后就是显示与隐藏。在这里我直接控制图片ImageView的宽度，宽度为0的时候不就“隐藏”了吗。</li>
 </ol>
-<h3 id="约束示例图-1"><a href="#约束示例图-1" class="headerlink" title="约束示例图"></a>约束示例图</h3><p><img src="http://zorrochen.qiniudn.com/blog_autolayout_example_with_masonry_4.png" alt="约束示例图"></p>
+<h3 id="约束示例图-1"><a href="#约束示例图-1" class="headerlink" title="约束示例图"></a>约束示例图</h3><p><img src="/2015/05/23/autolayout-example-with-masonry/blog_autolayout_example_with_masonry_4.png" alt="约束示例图"></p>
 <p><strong>解释</strong></p>
 <p>之所以这么设置，主要目的有以下几点：</p>
 <ol>
@@ -2063,7 +2063,7 @@
 </ul>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本文是基于<a href="http://tutuge.me/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/">UITextView编辑时插入自定义表情-简单的图文混编</a>写的，主要实现了在UITextView插入表情图片时，自定义表情大小的功能。</p>
 <h4 id="Github"><a href="#Github" class="headerlink" title="Github"></a>Github</h4><p>本文代码工程地址：<a href="https://github.com/zekunyan/UITextViewDIYEmojiExample" target="_blank" rel="noopener">https://github.com/zekunyan/UITextViewDIYEmojiExample</a></p>
-<h4 id="Gif示例图"><a href="#Gif示例图" class="headerlink" title="Gif示例图"></a>Gif示例图</h4><p><img src="http://zorrochen.qiniudn.com/blog_resizable_nstextattachment_1.gif" alt="Gif示例图"></p>
+<h4 id="Gif示例图"><a href="#Gif示例图" class="headerlink" title="Gif示例图"></a>Gif示例图</h4><p><img src="/2015/04/21/resizable-nstextattachment/blog_resizable_nstextattachment_1.gif" alt="Gif示例图"></p>
 <a id="more"></a>
 <h2 id="关键点"><a href="#关键点" class="headerlink" title="关键点"></a>关键点</h2><p>首先要明确我们要什么，很简单，就是<strong>指定NSTextAttachment在被绘制时的大小</strong>。</p>
 <p>所以，按照这个思路，就可以去找找NSTextAttachment类的相关方法，看能不能通过继承或其他的方式改变大小。</p>
@@ -2113,7 +2113,7 @@
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前段时间用了一下Facebook的开源RPC框架Thrift，做PHP客户端调用C++后端程序，真心觉得Thrift不错！</p>
 <p>本文项目地址：<a href="https://github.com/zekunyan/ThriftDemo_PHP_CPP" target="_blank" rel="noopener">https://github.com/zekunyan/ThriftDemo_PHP_CPP</a></p>
 <p>先看看本文的例子示意图：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_thrift_example_cpp_and_php_1.jpg" alt="通信示意图"></p>
+<p><img src="/2015/04/19/thrift-example-cpp-and-php/blog_thrift_example_cpp_and_php_1.jpg" alt="通信示意图"></p>
 <p><strong>流程</strong></p>
 <ol>
 <li>PHP客户端发起请求，请求参数是“Request”类型，里面有studentID参数。</li>
@@ -2284,7 +2284,7 @@
 <h2 id="使用dispatch-barrier-async-dispatch-barrier-sync的注意事项"><a href="#使用dispatch-barrier-async-dispatch-barrier-sync的注意事项" class="headerlink" title="使用dispatch_barrier_async,dispatch_barrier_sync的注意事项"></a>使用dispatch_barrier_async,dispatch_barrier_sync的注意事项</h2><p>dispatch_barrier_async的作用就是向某个队列插入一个block，当目前正在执行的block运行完成后，阻塞这个block后面添加的block，只运行这个block直到完成，然后再继续后续的任务，有点“唯我独尊”的感觉=。=</p>
 <p>值得注意的是：</p>
 <ol>
-<li>dispatch<em>barrier\</em>(a)sync只在自己创建的并发队列上有效，在全局(Global)并发队列、串行队列上，效果跟<strong>dispatch_(a)sync</strong>效果一样。</li>
+<li>dispatch_barrier_(a)sync只在自己创建的并发队列上有效，在全局(Global)并发队列、串行队列上，效果跟<strong>dispatch_(a)sync</strong>效果一样。</li>
 <li>既然在串行队列上跟<strong>dispatch_(a)sync</strong>效果一样，那就要小心别死锁！</li>
 </ol>
 <h2 id="dispatch-set-context与dispatch-set-finalizer-f的配合使用"><a href="#dispatch-set-context与dispatch-set-finalizer-f的配合使用" class="headerlink" title="dispatch_set_context与dispatch_set_finalizer_f的配合使用"></a>dispatch_set_context与dispatch_set_finalizer_f的配合使用</h2><p>dispatch_set_context可以为队列添加<strong>上下文数据</strong>，但是因为GCD是C语言接口形式的，所以其context参数类型是“<strong>void *</strong>”。也就是说，我们创建context时有如下几种选择：</p>
@@ -2420,7 +2420,7 @@
 <p>看，这里的选项是用<strong>位运算</strong>的方式定义的，这样的好处就是，我们的选项变量可以如下表示：</p>
 <figure class="highlight sqf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//用“或”运算同时赋值多个选项</span></span><br><span class="line">TTGDirection <span class="built_in">direction</span> = TTGDirectionTop | TTGDirectionLeft | TTGDirectionBottom;</span><br><span class="line"></span><br><span class="line"><span class="comment">//用“与”运算取出对应位</span></span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">direction</span> &amp; TTGDirectionTop) &#123;</span><br><span class="line">    NSLog(@<span class="string">"top"</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">direction</span> &amp; TTGDirectionLeft) &#123;</span><br><span class="line">    NSLog(@<span class="string">"left"</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">direction</span> &amp; TTGDirectionRight) &#123;</span><br><span class="line">    NSLog(@<span class="string">"right"</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">direction</span> &amp; TTGDirectionBottom) &#123;</span><br><span class="line">    NSLog(@<span class="string">"bottom"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><strong>direction</strong>变量的实际内存如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_effective_objective_c_5_enum_2.jpg" alt="内存示意图"></p>
+<p><img src="/2015/03/21/effective-objective-c-5-enum/blog_effective_objective_c_5_enum_2.jpg" alt="内存示意图"></p>
 <p>这样，用位运算，就可以同时支持多个值。</p>
 <h2 id="enum在Objective-C中的“升级版”"><a href="#enum在Objective-C中的“升级版”" class="headerlink" title="enum在Objective-C中的“升级版”"></a>enum在Objective-C中的“升级版”</h2><p>一般来说，我们不能指定枚举变量的实际类型是什么，就是说，我们不知道枚举最后是int型，还是其他的什么类型。但是从C++ 11开始，我们可以为枚举指定其实际的存储类型，如下语法：</p>
 <figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">TTGState</span> : <span class="title">NSInteger</span> &#123;/*...*/&#125;;</span></span><br></pre></td></tr></table></figure>
@@ -2665,7 +2665,7 @@
 </ul>
 <h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>本文代码工程地址：<a href="https://github.com/zekunyan/UITextViewDIYEmojiExample" target="_blank" rel="noopener">https://github.com/zekunyan/UITextViewDIYEmojiExample</a></p>
 <p>效果图：</p>
-<p><img src="http://zorrochen.qiniudn.com/inputEmoji_Sample.gif" alt="效果图"></p>
+<p><img src="/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/inputEmoji_Sample.gif" alt="效果图"></p>
 <a id="more"></a>
 <h2 id="背景知识"><a href="#背景知识" class="headerlink" title="背景知识"></a>背景知识</h2><ul>
 <li>NSAttributedString及其子类，用于显示富文本。</li>
@@ -2675,7 +2675,7 @@
 <h3 id="表情与其标志"><a href="#表情与其标志" class="headerlink" title="表情与其标志"></a>表情与其标志</h3><p>首先需要明确的是，我们的自定义表情一定是有一一对应的“<strong>标志</strong>”的，如“<strong>[/emoji_haha]</strong>”。</p>
 <p>就是说，为了方便处理，方便在数据库、网络传输中保存、传输带有表情图片的文本，我们必须要为每种表情取特定的“<strong>名字</strong>”，数据库中储存的、网络传输的文本就只包含这些标志名字就行，在显示的时候做对应的替换。</p>
 <p>如：</p>
-<p><strong>tutuge.me<img src="http://zorrochen.qiniudn.com/blog_uitextview_input_emoji_emoji_1.png" alt="表情"></strong></p>
+<p><strong>tutuge.me<img src="/2015/03/07/UITextView编辑时插入自定义表情-简单的图文混编/blog_uitextview_input_emoji_emoji_1.png" alt="表情"></strong></p>
 <p>对应的纯文本就是：</p>
 <p><strong>tutuge.me[/emoji_1]</strong></p>
 <h2 id="插入并显示表情图片"><a href="#插入并显示表情图片" class="headerlink" title="插入并显示表情图片"></a>插入并显示表情图片</h2><p>插入表情很简单，直接实例化<strong>NSTextAttachment</strong>类，将需要的表情的UIImage实例赋值给NSTextAttachment的image属性，然后用“<strong>[NSAttributedString attributedStringWithAttachment:]</strong>”方法实例化一个NSAttributedString的对象，插入到UITextView的textStorage对应的位置即可。</p>
@@ -2811,15 +2811,15 @@
 <a id="more"></a>
 <p>再根据 <a href="https://developer.apple.com/icloud/documentation/data-storage/index.html" target="_blank" rel="noopener"><strong>iOS Data Storage Guidelines</strong></a>的说明，得出几点重要信息：</p>
 <ul>
-<li>只有<strong>用户创建的，并且不能被App重现的文档、数据</strong>，才应该被保存在“<strong><application_home>/Documents</application_home></strong>”路径下。</li>
-<li>可以重新产生、下载的数据可以放在“<strong><application_home>/Library/Caches</application_home></strong>”目录下，如用于缓存的数据库文件。</li>
-<li>纯粹用于缓存的数据可以放在“<strong><application_home>/tmp</application_home></strong>”目录下。</li>
+<li>只有<strong>用户创建的，并且不能被App重现的文档、数据</strong>，才应该被保存在“<strong>&lt;Application_Home&gt;/Documents</strong>”路径下。</li>
+<li>可以重新产生、下载的数据可以放在“<strong>&lt;Application_Home&gt;/Library/Caches</strong>”目录下，如用于缓存的数据库文件。</li>
+<li>纯粹用于缓存的数据可以放在“<strong>&lt;Application_Home&gt;/tmp</strong>”目录下。</li>
 <li>可以通过对NSURL加参数，来保证特定的文件夹及其内容不被iCloud备份，也不会被清除，如Document文件夹。</li>
 </ul>
 <p>所以可以初步得出被拒的原因是因为App中下载的文件也被包含在iCloud备份当中了，而Apple审核人员觉得这些文件不应该被备份。</p>
 <h3 id="真正应该备份的数据"><a href="#真正应该备份的数据" class="headerlink" title="真正应该备份的数据"></a>真正应该备份的数据</h3><p>所以，真正需要备份的文件是<strong>用户创建的，不能通过程序重新产生的</strong>，如记事本应用中用户创建的文本数据，绘画应用中用户画的画等。</p>
 <h2 id="解决当中遇到的坑"><a href="#解决当中遇到的坑" class="headerlink" title="解决当中遇到的坑"></a>解决当中遇到的坑</h2><p>既然知道了原因，那就好办了。</p>
-<p>根据<strong>iOS Data Storage Guidelines</strong>的简短说明，乍一看，<strong><application_home>/Library/Caches</application_home></strong>是存放可以重新产生、下载的数据。</p>
+<p>根据<strong>iOS Data Storage Guidelines</strong>的简短说明，乍一看，<strong>&lt;Application_Home&gt;/Library/Caches</strong>是存放可以重新产生、下载的数据。</p>
 <p>但是有个“陷阱”在这。</p>
 <h3 id="系统可能清空的目录"><a href="#系统可能清空的目录" class="headerlink" title="系统可能清空的目录"></a>系统可能清空的目录</h3><p>根据官方文档“<a href="https://developer.apple.com/library/mac/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/FileSystemOverview/FileSystemOverview.html#//apple_ref/doc/uid/TP40010672-CH2-SW1" target="_blank" rel="noopener"><strong>File System Programming Guide</strong></a>”可以整理出一下两个系统可能会清除的目录：（在储存空间不够时）</p>
 <ol>
@@ -2827,11 +2827,11 @@
 <li>tmp/</li>
 </ol>
 <p>所以，像App下载的歌曲等资源文件是不能放在上面两个目录中的。</p>
-<h2 id="解决："><a href="#解决：" class="headerlink" title="解决："></a>解决：</h2><p>所以，为了保险起见，最靠谱的还是放在<strong><application_home>/Documents</application_home></strong>中，并且通过设置，不让iCloud备份。</p>
+<h2 id="解决："><a href="#解决：" class="headerlink" title="解决："></a>解决：</h2><p>所以，为了保险起见，最靠谱的还是放在<strong>&lt;Application_Home&gt;/Documents</strong>中，并且通过设置，不让iCloud备份。</p>
 <p>Apple已经提供了相应的函数，如下（iOS 5.1及以后的版本）：</p>
 <figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL)addSkipBackupAttributeToItemAtURL:(NSURL *)URL &#123;</span><br><span class="line">    <span class="built_in">assert</span>(<span class="string">[[NSFileManager defaultManager] fileExistsAtPath: [URL path]]</span>);</span><br><span class="line"></span><br><span class="line">    NSError *<span class="built_in">error</span> = <span class="literal">nil</span>;</span><br><span class="line">    BOOL success = [URL setResourceValue: [NSNumber numberWithBool: YES]</span><br><span class="line">                                  forKey: NSURLIsExcludedFromBackupKey <span class="built_in">error</span>: &amp;<span class="built_in">error</span>];</span><br><span class="line">    <span class="keyword">if</span>(!success)&#123;</span><br><span class="line">        NSLog(@<span class="string">"Error excluding %@ from backup %@"</span>, [URL lastPathComponent], <span class="built_in">error</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> success;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h3><ul>
-<li><strong><application_home>/Documents</application_home></strong>根目录也可以通过上面的函数设置成不备份。（如应用AVPlayer）</li>
+<li><strong>&lt;Application_Home&gt;/Documents</strong>根目录也可以通过上面的函数设置成不备份。（如应用AVPlayer）</li>
 <li>设置是递归的，所以其所有子目录和文件都不用再设置一次，都会自动不被备份。（测试有效，但是不确定=。=，参考：<a href="http://stackoverflow.com/questions/14376883/is-nsurlisexcludedfrombackupkey-recursive" target="_blank" rel="noopener">is-nsurlisexcludedfrombackupkey-recursive</a>）</li>
 </ul>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>多看官方说明=。=</p>
@@ -2922,7 +2922,7 @@
       <url>http://tutuge.me/2015/02/19/%E6%8F%90%E5%8D%87UITableView%E6%80%A7%E8%83%BD-%E5%A4%8D%E6%9D%82%E9%A1%B5%E9%9D%A2%E7%9A%84%E4%BC%98%E5%8C%96/</url>
       <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。</p>
 <p>之前的做的项目，<a href="https://itunes.apple.com/us/app/qing-ju-yin-le-quan-guo-zui/id913235479?l=zh&amp;ls=1&amp;mt=8" target="_blank" rel="noopener">青桔音乐iOS客户端</a>里面的首页就是一个类似微信朋友圈的“动态”页面，大致如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_1.png?imageView2/0/h/300" alt="青桔动态页面"></p>
+<p><img src="/2015/02/19/提升UITableView性能-复杂页面的优化/blog_ios_speed_up_uitableview_1_1.png" alt="青桔动态页面"></p>
 <p>如果是你，你会怎么实现这个页面呢？</p>
 <p>这还用问，当然是用UITableView+自定义的UITableViewCell。</p>
 <p>UITableView是可以滑动的，为了不让用户在滑动中感到有卡顿，该如何优化？下面，我就写一下我自己在做项目时的“经验”~</p>
@@ -2944,7 +2944,7 @@
 <li>基于Cell的重用，真正运行时铺满屏幕所需的Cell数量大致是固定的，设为<strong>N</strong>个。所以如果如果只有一种Cell，那就是只有<strong>N</strong>个Cell的实例；但是如果有<strong>M</strong>种Cell，那么运行时最多可能会是“<strong>M x N = MN</strong>”个Cell的实例，虽然可能并不会占用太多内存，但是能少点不是更好吗。</li>
 </ul>
 <h4 id="善用hidden隐藏（显示）Subview"><a href="#善用hidden隐藏（显示）Subview" class="headerlink" title="善用hidden隐藏（显示）Subview"></a>善用hidden隐藏（显示）Subview</h4><p>既然只定义一种Cell，那该如何显示不同类型的内容呢？<br>答案就是，把所有不同类型的view都定义好，放在cell里面，通过hidden显示、隐藏，来显示不同类型的内容。如下图定义Cell：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_speed_up_uitableview_1_2.jpg?imageView2/0/h/400" alt="Cell示意图"></p>
+<p><img src="/2015/02/19/提升UITableView性能-复杂页面的优化/blog_ios_speed_up_uitableview_1_2.jpg" alt="Cell示意图"></p>
 <p>图中的Subview1、Subview2、Subview3就是不同类型Cell的不同之处，所以我们在“<strong>cellForRowAtIndexPath</strong>”函数中，设置Cell的样式、内容时，就可以通过显示、隐藏这三个子view来显示。</p>
 <p>毕竟，在用户快速滑动中，只是单纯的显示、隐藏subview比实时创建要快得多。</p>
 <h3 id="提前计算并缓存每个Cell的高度"><a href="#提前计算并缓存每个Cell的高度" class="headerlink" title="提前计算并缓存每个Cell的高度"></a>提前计算并缓存每个Cell的高度</h3><p>开发过Android，用过Android的ListView以后，对UITableView需要提前计算Cell的高度很不适应。=。=</p>
@@ -3025,11 +3025,11 @@
 <figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">Name:</span> tutuge blog</span><br></pre></td></tr></table></figure>
 <p>看，我们明明是保存的“tutuge”，怎么到后面输出的是“tutuge blog”？</p>
 <h3 id="让NSString类型的Property为Copy型"><a href="#让NSString类型的Property为Copy型" class="headerlink" title="让NSString类型的Property为Copy型"></a>让NSString类型的Property为Copy型</h3><p>因为name的Property属性是strong的，所以赋值后，它跟showName均指向同一个NSMutableString实例，如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_nsstring_copy_1_1.jpg" alt="内存示意图"></p>
+<p><img src="/2015/02/18/NSString的Copy与内存分配/blog_ios_nsstring_copy_1_1.jpg" alt="内存示意图"></p>
 <p>所以改变了showName，当然name输出的值也就变了。<br>这个时候，name的property属性就不能是strong了，应该是copy，如下：</p>
 <figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//UserEntity.h</span></span><br><span class="line"></span><br><span class="line"><span class="variable">@interface</span> <span class="attribute">UserEntity </span>: NSObject &lt;NSCopying&gt;</span><br><span class="line"><span class="variable">@property</span>(copy, nonatomic) NSString *name;</span><br><span class="line"><span class="variable">@end</span></span><br></pre></td></tr></table></figure>
 <p>这样的话，当“<strong>userEntity.name = showName;</strong>”这句运行后，内存布局如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_nsstring_copy_1_2.jpg" alt="内存示意图"></p>
+<p><img src="/2015/02/18/NSString的Copy与内存分配/blog_ios_nsstring_copy_1_2.jpg" alt="内存示意图"></p>
 <p>这样，就避免了这个问题。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>很所时候，代码并不是看上去那样“运行”的，多试试，多查阅资料，就能了解其中的奥秘了~</p>
 ]]></content>
@@ -3072,7 +3072,7 @@
 <li>网络接口的具体实现，按照业务划分到不同的类中，如“<strong>UserHttpHandler</strong>”、“<strong>CommentHttpHandler</strong>”。</li>
 </ul>
 <p>其实，按照面向对象的原则，就是接口代理类<strong>HttpProxy</strong>拥有若干个按照业务划分的接口（Interface），这些接口的所有方法组成了网络层的不同的Http请求。如下图：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_http_proxy_1_1.jpg" alt="请求示意图"></p>
+<p><img src="blog_ios_http_proxy_1_1.jpg" alt="请求示意图"></p>
 <p>那么，调用的时候，所有接口都用HttpProxy调用，如：</p>
 <figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//实际调用的是UserHttpHandler类的方法</span></span><br><span class="line"><span class="selector-attr">[[HttpProxy sharedInstance]</span> getUserWithID:@<span class="number">100</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//实际调用的是CommentHttpHandler类的方法</span></span><br><span class="line"><span class="selector-attr">[[HttpProxy sharedInstance]</span> getCommentsWithDate:date];</span><br></pre></td></tr></table></figure>
 <h2 id="关键"><a href="#关键" class="headerlink" title="关键"></a>关键</h2><p>根据前面的描述，我们可以得出，关键就是：<strong>消息转发（Message Forward）</strong></p>
@@ -3098,7 +3098,7 @@
 <figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//HttpProxy.h</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//1. 继承了NSproxy。 2. “实现”了网络接口Protocol</span></span><br><span class="line"><span class="meta">@interface</span> <span class="string">HttpProxy :</span> NSProxy &lt;UserHttpHandler, CommentHttpHandler&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取单例</span></span><br><span class="line">+ (instancetype)sharedInstance;</span><br><span class="line"></span><br><span class="line"><span class="comment">//注册具体实现类</span></span><br><span class="line">- (<span class="keyword">void</span>)<span class="string">registerHttpProtocol:</span>(Protocol *)httpProtocol <span class="string">handler:</span>(id)handler;</span><br><span class="line"></span><br><span class="line"><span class="meta">@end</span></span><br></pre></td></tr></table></figure>
 <h3 id="找到消息对应的实现类对象"><a href="#找到消息对应的实现类对象" class="headerlink" title="找到消息对应的实现类对象"></a>找到消息对应的实现类对象</h3><p>如何在HttpProxy做消息转发时，找到某个消息对应的真正的实现类对象呢？</p>
 <p>最好的办法就是保存每个接口方法到其实现类对象的映射，可以用Dictionary保存，关系如下图：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_http_proxy_1_2.jpg" alt="image"></p>
+<p><img src="blog_ios_http_proxy_1_2.jpg" alt="image"></p>
 <p>所以，<code>registerHttpProtocol:handler:</code>方法的职责就是：</p>
 <ol>
 <li>遍历Protocol的所有方法（利用Objective-C的<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html" target="_blank" rel="noopener">Runtime</a>）。</li>
@@ -3114,7 +3114,7 @@
 <figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//初始化，注册Protocol对应的实现类对象</span></span><br><span class="line">[[HttpProxy sharedInstance] <span class="string">registerHttpProtocol:</span><span class="meta">@protocol</span>(UserHttpHandler) <span class="string">handler:</span>[UserHttpHandlerImp <span class="keyword">new</span>]];</span><br><span class="line">[[HttpProxy sharedInstance] <span class="string">registerHttpProtocol:</span><span class="meta">@protocol</span>(CommentHttpHandler) <span class="string">handler:</span>[CommentHttpHandlerImp <span class="keyword">new</span>]];</span><br><span class="line"></span><br><span class="line"><span class="comment">//调用</span></span><br><span class="line">[[HttpProxy sharedInstance] <span class="string">getUserWithID:</span>@<span class="number">100</span>];</span><br><span class="line">[[HttpProxy sharedInstance] <span class="string">getCommentsWithDate:</span>[NSDate <span class="keyword">new</span>]];</span><br></pre></td></tr></table></figure>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>所有的代码及示例都提交到Github了，<a href="https://github.com/zekunyan/HttpProxyExample" target="_blank" rel="noopener">HttpProxyExample</a>。</p>
 <p>总的来说，就是利用Objective-C的“消息”机制，继承NSProxy抽象类，实现自己定义的转发机制，将网络接口层的各个方法的实现与声明分离，提升项目代码的可维护性，更加模块化。如下图表示:</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_ios_http_proxy_1_3.jpg" alt="image"></p>
+<p><img src="blog_ios_http_proxy_1_3.jpg" alt="image"></p>
 <p>以上，就是我自己在项目中，利用NSProxy设计并实现的网络接口层结构。💪</p>
 <p>从了解NSProxy、Runtime到设计、实现出这个网络层架构，着实花了点时间，收获真是不少。其实像这种纯代码层次的重构，很多人会觉得“吃力不讨好”😨，但我觉得，正是这样，才能真正让自己提升。</p>
 <p>代码是具有美感的！嗯！😝</p>
@@ -3273,7 +3273,7 @@
 <p>为了更充分的理解，咱们看看如下例子：</p>
 <figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">NSString</span> *<span class="keyword">str1 </span>= <span class="comment">@"a string";</span></span><br><span class="line"><span class="symbol">NSString</span> *<span class="keyword">str2 </span>= <span class="keyword">str1;</span></span><br></pre></td></tr></table></figure>
 <p>熟悉C语言的朋友应该知道这是怎么回事，内存当中只有一块区域储存着“a string”这个字符串，str1、str2都是指向着这个区域的字符串指针。如下图：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_effective_objective_c_item_1_1.jpg" alt="image"></p>
+<p><img src="/2015/02/05/Effective-Objective-C-读书笔记-Item-1/blog_effective_objective_c_item_1_1.jpg" alt="image"></p>
 <ul>
 <li>str1、str2都在栈内存上分配的，就是字符串（NSString）类型的指针。</li>
 <li>“a string”字符串实际储存在堆内存上。</li>
@@ -3398,7 +3398,7 @@
       <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>近来因为项目的缘故，仔细研究了一下如何在Android的TextView里面绑定可以点击的链接，并且定制链接的颜色，包括正常状态、按下去时的文字、背景的颜色，当然，还有点击后的回调。</p>
 <p>为了以后方便自己，也为了方便更多的人，就把这些封装成了一个简单的开源库，也算是我自己的<strong><em>第一个开源库</em></strong>吧。</p>
 <h2 id="LinkTextView"><a href="#LinkTextView" class="headerlink" title="LinkTextView"></a>LinkTextView</h2><p>名称：<a href="https://github.com/zekunyan/LinkTextView" target="_blank" rel="noopener">LinkTextView</a>。喜欢的话就Star一下吧。</p>
-<h3 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h3><p><img src="http://zorrochen.qiniudn.com/LinkTextView_Sample.gif" alt="示例"></p>
+<h3 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h3><p><img src="/2014/11/02/LinkTextView-Android开源库-原创/LinkTextView_Sample.gif" alt="示例"></p>
 <a id="more"></a>
 <h3 id="功能："><a href="#功能：" class="headerlink" title="功能："></a>功能：<br></h3><ol>
 <li>可以方便的对TextView里面的文字增加可点击链接，并且绑定回调。</li>
@@ -3593,7 +3593,7 @@ The owner of this blog reserves the right to edit or delete any comments submitt
       <title><![CDATA[关于]]></title>
       <url>http://tutuge.me/about/index.html</url>
       <content type="html"><![CDATA[<blockquote>
-<p>姓名: 燕泽堃<br>Email: zekunyan@163.com<br>Github: <a href="https://github.com/zekunyan" target="_blank" rel="noopener">https://github.com/zekunyan</a><br>博客 - 土土哥的技术博客: <a href="http://tutuge.me">http://tutuge.me</a><br>开发经验: iOS、Android、后台开发<br>微博: <a href="http://weibo.com/zekunyan" target="_blank" rel="noopener">http://weibo.com/zekunyan</a>  </p>
+<p>姓名: 燕泽堃<br>Email: <a href="mailto:zekunyan@163.com" target="_blank" rel="noopener">zekunyan@163.com</a><br>Github: <a href="https://github.com/zekunyan" target="_blank" rel="noopener">https://github.com/zekunyan</a><br>博客 - 土土哥的技术博客: <a href="http://tutuge.me">http://tutuge.me</a><br>开发经验: iOS、Android、后台开发<br>微博: <a href="http://weibo.com/zekunyan" target="_blank" rel="noopener">http://weibo.com/zekunyan</a>  </p>
 </blockquote>
 <h2 id="工作经历"><a href="#工作经历" class="headerlink" title="工作经历"></a>工作经历</h2><p>阿里巴巴 - 资深无线开发工程师 - (2016-7至现在)</p>
 <h2 id="实习经历"><a href="#实习经历" class="headerlink" title="实习经历"></a>实习经历</h2><p>阿里巴巴 - iOS开发工程师 - (2015-6至2015-9)</p>

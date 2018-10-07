@@ -321,9 +321,9 @@
 <p>可发现，关键在于<code>___methodDescriptionForSelector:</code>方法。</p>
 <h3 id="methodDescriptionForSelector-方法的实现"><a href="#methodDescriptionForSelector-方法的实现" class="headerlink" title="___methodDescriptionForSelector:方法的实现"></a>___methodDescriptionForSelector:方法的实现</h3><p>进一步看<code>___methodDescriptionForSelector:</code>的实现。</p>
 <p>汇编代码、Hopper翻译的代码都很长，循环也不见了，全是goto：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_RemakeMethodSignatureForSelector_3.jpg" alt=""></p>
+<p><img src="/2017/04/08/diy-methodSignatureForSelector/blog_RemakeMethodSignatureForSelector_3.jpg" alt=""></p>
 <p>经过反复校对整理（排除Hopper的错误=。=），可以整理出主要的流程如下图所示：</p>
-<p><img src="http://zorrochen.qiniudn.com/blog_RemakeMethodSignatureForSelector_2.png" alt=""></p>
+<p><img src="/2017/04/08/diy-methodSignatureForSelector/blog_RemakeMethodSignatureForSelector_2.png" alt=""></p>
 <p>根据流程，可以得出，<code>___methodDescriptionForSelector:</code>方法：</p>
 <ol>
 <li>用<code>class_copyProtocolList</code>、<code>protocol_getMethodDescription</code>方法，检查是否有对应的selector，不管是否实现</li>

@@ -358,7 +358,7 @@
 <h2 id="使用dispatch-barrier-async-dispatch-barrier-sync的注意事项"><a href="#使用dispatch-barrier-async-dispatch-barrier-sync的注意事项" class="headerlink" title="使用dispatch_barrier_async,dispatch_barrier_sync的注意事项"></a>使用dispatch_barrier_async,dispatch_barrier_sync的注意事项</h2><p>dispatch_barrier_async的作用就是向某个队列插入一个block，当目前正在执行的block运行完成后，阻塞这个block后面添加的block，只运行这个block直到完成，然后再继续后续的任务，有点“唯我独尊”的感觉=。=</p>
 <p>值得注意的是：</p>
 <ol>
-<li>dispatch<em>barrier\</em>(a)sync只在自己创建的并发队列上有效，在全局(Global)并发队列、串行队列上，效果跟<strong>dispatch_(a)sync</strong>效果一样。</li>
+<li>dispatch_barrier_(a)sync只在自己创建的并发队列上有效，在全局(Global)并发队列、串行队列上，效果跟<strong>dispatch_(a)sync</strong>效果一样。</li>
 <li>既然在串行队列上跟<strong>dispatch_(a)sync</strong>效果一样，那就要小心别死锁！</li>
 </ol>
 <h2 id="dispatch-set-context与dispatch-set-finalizer-f的配合使用"><a href="#dispatch-set-context与dispatch-set-finalizer-f的配合使用" class="headerlink" title="dispatch_set_context与dispatch_set_finalizer_f的配合使用"></a>dispatch_set_context与dispatch_set_finalizer_f的配合使用</h2><p>dispatch_set_context可以为队列添加<strong>上下文数据</strong>，但是因为GCD是C语言接口形式的，所以其context参数类型是“<strong>void *</strong>”。也就是说，我们创建context时有如下几种选择：</p>

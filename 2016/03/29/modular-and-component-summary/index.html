@@ -307,18 +307,18 @@
 <h4 id="横向拆分业务、功能模块"><a href="#横向拆分业务、功能模块" class="headerlink" title="横向拆分业务、功能模块"></a>横向拆分业务、功能模块</h4><p>很多时候，一个完整的软件程序是同时为多种业务服务的，所有可以优先按照业务的不同，将整个系统进行拆分。  </p>
 <p>如一个电商类型的App，就可以分出商品浏览模块、订单模块、购物车模块、消息模块、支付模块等。又如微信这种社交型应用，可以拆分出联系人模块、朋友圈模块、聊天模块、消息模块等。  </p>
 <p>其实就是从用户使用的角度，按照功能的不同划分模块，当然，这种业务模块是要由各种技术模块作支撑的。</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/modular_and_component_summary_1.jpg" alt="横向拆分业务模块示例"></p>
+<p><img src="/2016/03/29/modular-and-component-summary/modular_and_component_summary_1.jpg" alt="横向拆分业务模块示例"></p>
 <h4 id="纵向拆分技术、架构模块"><a href="#纵向拆分技术、架构模块" class="headerlink" title="纵向拆分技术、架构模块"></a>纵向拆分技术、架构模块</h4><p>如果脱离业务，只从技术角度来看，则可以尝试纵向对系统拆分模块。</p>
 <p>其实这里的纵向拆分跟对系统的架构做分层有点像=。=，现如今只要需要联网请求API的App都免不了有网络请求、数据缓存、数据加工处理、数据展示、反馈用户操作等行为，所有这些环节层层递进才能完成一个功能。  </p>
 <p>当开始着手规划一个完整软件系统，或者说App时，就可以按照这些环节划分模块，纵向分层次的组合，搭建出一个以技术模块组成的简易系统架构图，方便后续的开发，如下图。</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/modular_and_component_summary_2.jpg" alt="纵向拆分技术模块示例"></p>
+<p><img src="/2016/03/29/modular-and-component-summary/modular_and_component_summary_2.jpg" alt="纵向拆分技术模块示例"></p>
 <p>大体上的技术模块划分好以后，就可以按照具体的需求，实现每个技术模块，乃至细分出更多的子模块，如缓存模块可能由键值对缓存（NSUserDefaults）、数据库缓存（SQLite、Realm）、图片缓存等子模块组成，根据具体情况而定。</p>
 <h4 id="从界面入手，拆分可视化组件"><a href="#从界面入手，拆分可视化组件" class="headerlink" title="从界面入手，拆分可视化组件"></a>从界面入手，拆分可视化组件</h4><p>现在再来看看如何从界面入手拆分可复用的组件。假如有如下布局的界面：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/modular_and_component_summary_3.jpg" alt="从界面入手拆分可视化组件"></p>
+<p><img src="/2016/03/29/modular-and-component-summary/modular_and_component_summary_3.jpg" alt="从界面入手拆分可视化组件"></p>
 <p>很多时候，像界面里面的“搜索框”、“头像按钮”、“内容框”和显示提示用的“加载中”HUD，甚至整个内容的Cell，都是可能在很多地方出现的，而且本身的样式、功能比较集中。<br>如头像可能要支持点击跳转，头像图片圆角，内容框有特定的Padding和字体大小等，所以可以将这些界面上的元素“提”出来，单独封装成一个组件，供整个App复用。或者直接用第三方的组件，如图中的“加载中”HUD，就可以用SVProgressHUD、MBProgressHUD等开源库。</p>
 <p>其实这里的组件有种sunnyxx大大提到过的“Self-Manager”的味道=。=，组件本身负责自己的所有功能、样式，参考：<a href="http://blog.sunnyxx.com/2015/12/19/self-manager-pattern-in-ios/" target="_blank" rel="noopener">iOS 开发中的 Self-Manager 模式</a>。当然跟前端的组件化也挺像的，如React里面的component，样式、功能都封装到component里面，以便更好地解耦复用。</p>
 <h4 id="从数据入手，拆分数据加工组件"><a href="#从数据入手，拆分数据加工组件" class="headerlink" title="从数据入手，拆分数据加工组件"></a>从数据入手，拆分数据加工组件</h4><p>再来看看从数据入手，拆分可复用的组件。假如有如下数据处理流程：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/modular_and_component_summary_4.jpg" alt="一数据处理流程示例"></p>
+<p><img src="/2016/03/29/modular-and-component-summary/modular_and_component_summary_4.jpg" alt="一数据处理流程示例"></p>
 <p>其实大部分时候，拆分模块、组件都是以清晰的流程、逻辑为基础的，就如上图的过程，当流程清晰后，可以拆分复用的组件也就“出来了”。 </p>
 <p>如从JSON数据实例化出对应的Entity对象，这个功能就是一个完整独立的组件，当然实际开发中会用Mantle、JSONModel等库实现。  </p>
 <p>以此类推，校验、格式化日期（如“几秒钟前、几天前”）、多语言等环节，都可以独立成一个个的组件。  </p>

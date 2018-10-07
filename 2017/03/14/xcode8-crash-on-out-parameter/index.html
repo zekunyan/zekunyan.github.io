@@ -286,10 +286,10 @@
 <p>从C++代码来看，也没有可能会导致EXC_BAD_ACCESS问题的释放、dealloc之类的代码，继续！</p>
 <h3 id="Hopper-Disassembler反编译分析"><a href="#Hopper-Disassembler反编译分析" class="headerlink" title="Hopper Disassembler反编译分析"></a>Hopper Disassembler反编译分析</h3><p>重写出C++代码无法解决，就只能让Hopper出马了，毕竟“汇编面前，没有秘密”=。=，以x86_64架构二进制为例。</p>
 <p>先来看<code>testFunc:</code>的：</p>
-<p><img src="http://zorrochen.qiniudn.com/xcode8_crash_on_out_parameter_1.jpg" alt=""></p>
+<p><img src="/2017/03/14/xcode8-crash-on-out-parameter/xcode8_crash_on_out_parameter_1.jpg" alt=""></p>
 <p>跟预想的一致，没有任何“有效代码”。</p>
 <p>再看<code>runTest</code>方法：</p>
-<p><img src="http://zorrochen.qiniudn.com/xcode8_crash_on_out_parameter_2.jpg" alt=""></p>
+<p><img src="/2017/03/14/xcode8-crash-on-out-parameter/xcode8_crash_on_out_parameter_2.jpg" alt=""></p>
 <p>为了方便分析，把反编译出来的汇编代码分了段：</p>
 <ol>
 <li>调用<code>NSMutableArray new</code>创建array变量，保存在r15寄存器上</li>
@@ -305,7 +305,7 @@
 <p><strong>release和retain的顺序错误</strong><br>Hopper生成的代码跟汇编分析基本一致，至此，可以看出，唯一“不正常”的代码就是第5段的<strong>“先release，再retain”</strong>，这会导致array变量提前释放，以至于后面再次retain无效，NSLog的时候，出现访问已被释放的变量，于是出现EXC_BAD_ACCESS崩溃。</p>
 <h3 id="对比Xcode7"><a href="#对比Xcode7" class="headerlink" title="对比Xcode7"></a>对比Xcode7</h3><p>现在已经基本可以确定问题了，但是为什么Xcode7就不会Crash？反编译一探究竟。</p>
 <p>相同的代码，Xcode7 Release环境编译出可执行二进制文件，反编译后，用Hopper生成Objective-C代码，然后跟Xcode8的做对比，如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/xcode8_crash_on_out_parameter_3.jpg" alt=""></p>
+<p><img src="/2017/03/14/xcode8-crash-on-out-parameter/xcode8_crash_on_out_parameter_3.jpg" alt=""></p>
 <p>可以看出，Xcode8编译后，release和retain的顺序错了，导致了array变量提前被释放，继而EXC_BAD_ACCESS错误。而Xcode7编译的一切正常。</p>
 <h2 id="问题原因小结"><a href="#问题原因小结" class="headerlink" title="问题原因小结"></a>问题原因小结</h2><p>现在可以大胆猜测，EXC_BAD_ACCESS的原因就是<strong>Xcode8的编译错误</strong>。<br>在编译上面的代码时，Xcode8不能正确的处理array变量作为二级指针传入testFunc空函数后的<strong>release、retain顺序</strong>，导致array被<strong>提前释放</strong>，最终产生EXC_BAD_ACCESS错误。  </p>
 <p>目前已经给Xcode提了Bug report，等待苹果的回复～</p>

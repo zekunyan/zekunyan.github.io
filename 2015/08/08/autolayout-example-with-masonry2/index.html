@@ -281,7 +281,7 @@
 <li>第四篇: <a href="http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/">有趣的Autolayout示例4-Masonry实现</a></li>
 </ul>
 <p>Github地址：<br><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="noopener">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_1.gif" alt="Gif示例"></p>
+<p><img src="/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_1.gif" alt="Gif示例"></p>
 <a id="more"></a>
 <h2 id="知识点"><a href="#知识点" class="headerlink" title="知识点"></a>知识点</h2><p>先讲讲两个知识点，很基础，但是很容易被忽略。</p>
 <h3 id="坐标系、top、right、offset"><a href="#坐标系、top、right、offset" class="headerlink" title="坐标系、top、right、offset"></a>坐标系、top、right、offset</h3><p>先看看Masonry的Github主页的示例代码：</p>
@@ -289,7 +289,7 @@
 <p>代码的意思很简单，就是view1的上下左右边距为padding对应的值。</p>
 <p>但是，为什么bottom、right的offset是<strong>负数</strong>呢？</p>
 <p>其实无论是Autolayout还是直接写frame，最终的结果都是要把我们的控件按照正确的位置绘制在屏幕上，也就是说，在一个统一的坐标系下，如下：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_2.png" alt="坐标系"></p>
+<p><img src="/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_2.png" alt="坐标系"></p>
 <p>而在Masonry里面，offset只是做了“加法”运算，举个例，上面的：</p>
 <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">make</span><span class="selector-class">.top</span><span class="selector-class">.equalTo</span>(<span class="selector-tag">superview</span><span class="selector-class">.mas_top</span>)<span class="selector-class">.with</span><span class="selector-class">.offset</span>(<span class="selector-tag">padding</span><span class="selector-class">.top</span>);</span><br></pre></td></tr></table></figure>
 <p>其实等于下面的式子：</p>
@@ -315,7 +315,7 @@
 <h3 id="UITableViewCell"><a href="#UITableViewCell" class="headerlink" title="UITableViewCell"></a>UITableViewCell</h3><p>先看看Cell的约束。</p>
 <h4 id="“自我约束”的Cell"><a href="#“自我约束”的Cell" class="headerlink" title="“自我约束”的Cell"></a>“自我约束”的Cell</h4><p>既然要能让系统自己计算出Cell的高度，我们在设置约束的时候，就要让约束整体是“完整”、“自我约束”的。（这个很难用语言描述。。。）Cell里面的每一个View的大小、位置，都可以从约束中得到体现，而Cell的整体大小，也是从子View的约束综合计算得出的。</p>
 <p>如下面的Cell：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_3.png" alt="Cell"></p>
+<p><img src="/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_3.png" alt="Cell"></p>
 <ol>
 <li>左上角的图片固定大小。</li>
 <li>标题的Label只显示一行，固定高度。</li>
@@ -323,7 +323,7 @@
 <li>两个Label宽度整体随着Cell的宽度变化。</li>
 </ol>
 <p>约束的设定如下：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_4.png" alt="约束示意"></p>
+<p><img src="/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_4.png" alt="约束示意"></p>
 <p>关键点:</p>
 <ol>
 <li>内容Label的bottom和Cell的contentView的约束不可以省，因为cell的高度要由内部的约束决定，所以上下左右的约束一个不能少。</li>
@@ -368,7 +368,7 @@
 </blockquote>
 <p>简单来说，topLayoutGuide表示当前页面的上方被status bar、navigation bar遮挡的部分。同理，bottomLayoutGuide表示下方被遮挡的部分。</p>
 <p>如下图:  </p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_5.jpg?imageView2/0/w/400/q/100" alt="topLayoutGuide和bottomLayoutGuide"></p>
+<p><img src="/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_5.jpg" alt="topLayoutGuide和bottomLayoutGuide"></p>
 <h3 id="解决的问题"><a href="#解决的问题" class="headerlink" title="解决的问题"></a>解决的问题</h3><p>有些时候，一个ViewController可能单独显示出来，也可能内嵌在UINavigationController里面显示出来。在这两种情况下，页面的“<strong>可视范围</strong>”是不一样的，很明显，NavigationBar会遮挡住一部分，用了UITabBarController时，tabBar也会遮挡住下方一部分。再加上各种Bar都可以隐藏，情况会变得更复杂。</p>
 <p>难道要为每种情况去写一份布局代码？</p>
 <h3 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h3><p>为了解决上面的问题，就需要在设置约束时，加进topLayoutGuide和bottomLayoutGuide。</p>
@@ -386,10 +386,10 @@
 <h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>直接看Demo吧，比较简单。</p>
 <h2 id="Case-3-自定义baseline"><a href="#Case-3-自定义baseline" class="headerlink" title="Case 3: 自定义baseline"></a>Case 3: 自定义baseline</h2><p>最后一个Case，讲讲baseline。  </p>
 <p>baseline，翻译过来就是“基线”，在Autolayout里面对应着<strong><code>NSLayoutFormatAlignAllBaseline</code></strong>，也是一种对齐的标准。例如，UIButton的baseline就是内部的文字，如果一排button按照baseline对齐的话，就是下面这样：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_6.jpg" alt="按钮按照baseline对其"></p>
+<p><img src="/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_6.jpg" alt="按钮按照baseline对其"></p>
 <p>对于自定义的View来说，baseline默认就是整个view的底部，如果想改变baseline的话，可以重写UIView的<strong>viewForBaselineLayout</strong>，返回当成baseline的view即可。</p>
 <p>如下面的自定义view：</p>
-<p><img src="http://7nj2iz.com1.z0.glb.clouddn.com/blog_autolayout_example_with_masonry2_7.jpg" alt="自定义baseline"></p>
+<p><img src="/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_7.jpg" alt="自定义baseline"></p>
 <p>很明显，baseline就是显示图片的UIImageView，代码也很简单:</p>
 <figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 自定义的View中</span></span><br><span class="line"><span class="comment">// 返回自定义的baseline的view</span></span><br><span class="line">- (UIView *)viewForBaselineLayout &#123;</span><br><span class="line">    <span class="keyword">return</span> _imageView;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>灵活的使用baseline，可以更加方便的进行布局。</p>

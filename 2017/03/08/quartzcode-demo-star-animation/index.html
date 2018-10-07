@@ -273,12 +273,12 @@
 
             <div class="entry teal-link-context">
                 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>“工欲善其事,必先利其器”，iOS的Core Animation非常强大，可以做出非常炫酷的动画，但是实际写起来还是比较麻烦，代码不直观，需要反复的改参数、Build、运行，所以诞生了各种动画制作工具，本文就以其中比较有名的<a href="http://www.quartzcodeapp.com/" target="_blank" rel="noopener">QuartzCode</a>为例，快速实现一个收藏功能的星星动画，最终的效果如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_1.gif" alt=""></p>
+<p><img src="/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_1.gif" alt=""></p>
 <p>GitHub地址：<a href="https://github.com/zekunyan/QuartzCodeExample-StarAimation" target="_blank" rel="noopener">https://github.com/zekunyan/QuartzCodeExample-StarAimation</a></p>
 <a id="more"></a>
 <h2 id="QuartzCode简介"><a href="#QuartzCode简介" class="headerlink" title="QuartzCode简介"></a>QuartzCode简介</h2><p>QuartzCode是一款专门用来创作iOS/macOS动画的软件，基本上把整个Core Animation框架的内容都搬到了软件里面，比如各种Layer、Mask、可以用来动画的属性，基本上跟代码是一致的，完全可以当成<strong>“可视化动画编程”</strong>工具，而且制作以后可以<strong>导出代码+资源文件</strong>，直接就可以在代码里面调用，方便自定义修改。</p>
 <p>以QuartzCode 1.54.0为例，主体界面如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_2.jpg" alt=""></p>
+<p><img src="/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_2.jpg" alt=""></p>
 <p>简单讲下：  </p>
 <ul>
 <li>A: Layers，用于动画的Layer在这里显示，先后顺序、层级和StoryBoard比较像</li>
@@ -290,12 +290,12 @@
 </ul>
 <p>总体上来看，QuartzCode的界面跟XIB、StoryBoard的风格非常类似，还是很容易上手的，更多的教程看官网：<a href="http://www.quartzcodeapp.com/" target="_blank" rel="noopener">http://www.quartzcodeapp.com/</a></p>
 <h2 id="整理思路"><a href="#整理思路" class="headerlink" title="整理思路"></a>整理思路</h2><p>首先整理下思路：</p>
-<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_3.jpg" alt=""></p>
+<p><img src="/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_3.jpg" alt=""></p>
 <p>总体上可以分成两个部分，一个是动画部分，用QuartzCode实现可视化编辑创建；另一个是功能、代码API设置部分，需要在QuartzCode最后导出的代码基础上，添加、修改，封装成简单的控件库。</p>
 <h2 id="QuartzCode实现动画"><a href="#QuartzCode实现动画" class="headerlink" title="QuartzCode实现动画"></a>QuartzCode实现动画</h2><p>先来看看动画的实现，本节只把主要步骤流程列出来，详细的参数、设置，参考<a href="https://github.com/zekunyan/QuartzCodeExample-StarAimation" target="_blank" rel="noopener">GitHub上的QuartzCode文件</a>。</p>
 <h3 id="显示星星动画"><a href="#显示星星动画" class="headerlink" title="显示星星动画"></a>显示星星动画</h3><p>显示星星的动画由三个部分组成，分别是实心的星星从小到大出现，空心的从大到小并透明度减小消失，最后星星四周闪动圆点、短线。</p>
 <p><strong>实心星星从小到大出现</strong></p>
-<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_4.jpg" alt=""></p>
+<p><img src="/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_4.jpg" alt=""></p>
 <ol>
 <li>拖入图片素材到中间的画布上，软件会自动创建一个layer，可以通过Inspector调整大小、位置</li>
 <li>对Layers里面自动生成的layer重命名</li>
@@ -304,7 +304,7 @@
 <li>Timeline里面的每一行对应帧动画的时间轴，可以在轴上双击、右键添加关键帧，这里默认就好，分别<strong>选中</strong>Bounds帧动画时间轴<strong>两端的关键点</strong>，在右边的Keyframe inspector里面设置Size值，起始是（0，0），结束时大小为原图大小</li>
 </ol>
 <p><strong>空心星星从大到小、透明度减小消失</strong></p>
-<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_5.jpg" alt=""></p>
+<p><img src="/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_5.jpg" alt=""></p>
 <p>基本和上一步一样，可以先隐藏实心的layer以便于观察。</p>
 <ol>
 <li>添加空心的星星图片素材</li>
@@ -314,7 +314,7 @@
 </ol>
 <p><strong>四周闪动短线、圆点</strong></p>
 <p>短线、圆点是沿着星星的四周<strong>重复排列</strong>的，所以这里可以用<code>CAReplicatorLayer</code>来实现，对应到QuartzCode里面就是工具栏的”Replicator”类型的Layer。<code>CAReplicatorLayer</code>可以根据一定的<strong>规则重复</strong>的绘制内部的子Layer，在这里只需要按照旋转角度变化就好。</p>
-<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_6.jpg" alt=""></p>
+<p><img src="/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_6.jpg" alt=""></p>
 <ol>
 <li>点击”Replicator”，在中间的画布上拖动出一个layer，然后选择”Shape”里面的圆角矩形，在星星的一角拖动画出一个小的圆角矩形，<strong>保证star_layer在replicator layer的内部</strong></li>
 <li>设置replicator的属性，实现循环重复内部的layer，这里设置”instance count”为5，”Rotation”为72，也就是360/5=72，就可以实现按照星星的五个角重复绘制</li>
@@ -323,14 +323,14 @@
 <p>剩余的圆点，和短线的创建方法一致，就不再重复讲解～</p>
 <p>至此，显示的动画就创建好了。</p>
 <h3 id="隐藏星星动画"><a href="#隐藏星星动画" class="headerlink" title="隐藏星星动画"></a>隐藏星星动画</h3><p>再来看看隐藏星星的动画，有了上一小节的基础，隐藏星星的动画就容易多了，基本步骤都是一样的，如下：</p>
-<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_7.jpg" alt=""></p>
+<p><img src="/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_7.jpg" alt=""></p>
 <ol>
 <li>添加一个新的动画组hide</li>
 <li>分别设置每个layer的动画，实心的星星从大到小、同时透明度降低，空心的相反，replicator layer一直隐藏</li>
 </ol>
 <h3 id="导出动画代码"><a href="#导出动画代码" class="headerlink" title="导出动画代码"></a>导出动画代码</h3><p>动画都实现了好了以后，就可以导出代码了。</p>
 <p>依次<code>File-&gt;Export Code...</code>，就可以打开导出代码的预览界面：</p>
-<p><img src="http://zorrochen.qiniudn.com/quartzcode_demo_star_animation_8.jpg" alt=""></p>
+<p><img src="/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_8.jpg" alt=""></p>
 <p>右边的选项，按照需要选择，默认的基本可以满足要求，“Export Image Assets”最好选上，可以一同导出图片资源。选项的说明参见文档：<a href="http://www.quartzcodeapp.com/code-generation/code-options/" target="_blank" rel="noopener">http://www.quartzcodeapp.com/code-generation/code-options/</a></p>
 <p>至此，最复杂的动画部分就完成了，不用写一行代码，全部可视化编辑～</p>
 <h2 id="调整、封装代码"><a href="#调整、封装代码" class="headerlink" title="调整、封装代码"></a>调整、封装代码</h2><p>接着就是封装导出的代码，方便使用。</p>
