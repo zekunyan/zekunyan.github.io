@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -15,11 +15,11 @@
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    <meta property="og:title" content="结合访问Out Parameters出现EXC_BAD_ACCESS的例子，反编译汇编解读__autoreleasing"/>
-    <meta property="og:site_name" content="土土哥的技术Blog"/>
+    <meta property="og:title" content="结合访问Out Parameters出现EXC_BAD_ACCESS的例子，反编译汇编解读__autoreleasing">
+    <meta property="og:site_name" content="土土哥的技术Blog">
 
     
-    <meta property="og:image" content="undefined"/>
+    <meta property="og:image" content="undefined">
     
 
     <link rel="icon" type="image/png" href="/favicon.png">
@@ -33,7 +33,7 @@
     
     <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 </head>
-
+</html>
 
 <body>
     <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
@@ -94,12 +94,12 @@
         <li class="side-user">
             <div class="row">
                 <div class="col s4 no-padding">
-                    <img class="avatar-image circle responsive-img" src="http://7nj2iz.com1.z0.glb.clouddn.com/avatar_comic_big.png" alt="User Avatar">
+                    <img class="avatar-image circle responsive-img" src="http://tva1.sinaimg.cn/large/0060lm7Tly1g5g11zm1ccj30cs0csdhq.jpg" alt="User Avatar">
                 </div>
                 <div class="info col s8 valign-wrapper no-padding">
                     <div class="valign">
                         <p class="name">土土哥</p>
-                        <p class="desc">iOS/Android/技术宅</p>
+                        <p class="desc">iOS/Android/技术宅/RCFans</p>
                     </div>
                 </div>
             </div>
@@ -287,11 +287,11 @@
 <h2 id="Out-Parameters-指针的指针"><a href="#Out-Parameters-指针的指针" class="headerlink" title="Out Parameters - 指针的指针"></a>Out Parameters - 指针的指针</h2><p>所谓<code>Out Parameters</code>，其实就是<strong>指针的指针</strong>，熟悉C/C++的朋友应该不陌生，通过指针的指针可以改变指针的值，在Objective-C里面很多地方用到了这种方法，来在函数、方法内部改变参数的原始值，如：</p>
 <figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// NSFileManager的方法</span></span><br><span class="line">- (<span class="keyword">BOOL</span>)removeItemAtURL:(NSURL *)URL <span class="built_in">error</span>:(NSError **)<span class="built_in">error</span></span><br></pre></td></tr></table></figure>
 <p>第二个参数<code>(NSError **)error</code>，就是<code>Out Parameters</code>，调用时传递NSError类型指针的地址即可：</p>
-<figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">NSError *<span class="built_in">error</span> = nil;</span><br><span class="line">[[NSFileManager defaultManager] removeItemAtURL:url <span class="built_in">error</span>:&amp;<span class="built_in">error</span>];</span><br><span class="line"><span class="comment">// 处理error...</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">NSError *<span class="built_in">error</span> = nil;</span><br><span class="line">[[NSFileManager defaultManager] removeItemAtURL:url <span class="built_in">error</span>:&amp;<span class="built_in">error</span>];</span><br><span class="line">// 处理<span class="built_in">error</span>...</span><br></pre></td></tr></table></figure>
 <h2 id="出现EXC-BAD-ACCESS的代码示例"><a href="#出现EXC-BAD-ACCESS的代码示例" class="headerlink" title="出现EXC_BAD_ACCESS的代码示例"></a>出现EXC_BAD_ACCESS的代码示例</h2><p>假设有如下遍历数组检查数值零的方法：</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)checkZeroInArray:(<span class="built_in">NSArray</span> &lt;<span class="built_in">NSNumber</span> *&gt; *)array error:(<span class="built_in">NSError</span> **)error &#123;</span><br><span class="line">    <span class="comment">// 遍历</span></span><br><span class="line">    [array enumerateObjectsUsingBlock:^(<span class="built_in">NSNumber</span> * _Nonnull number, <span class="built_in">NSUInteger</span> index, <span class="built_in">BOOL</span> * _Nonnull stop) &#123;</span><br><span class="line">        <span class="keyword">if</span> (number.integerValue == <span class="number">0</span>) &#123; <span class="comment">// 检查</span></span><br><span class="line">            <span class="keyword">if</span> (error) &#123; <span class="comment">// 指针是否有效</span></span><br><span class="line">                *error = [<span class="built_in">NSError</span> errorWithDomain:<span class="string">@"me.tutuge"</span> code:<span class="number">100</span> userInfo:<span class="literal">nil</span>]; <span class="comment">// 创建NSError实例</span></span><br><span class="line">            &#125;</span><br><span class="line">            *stop = <span class="literal">TRUE</span>; <span class="comment">// 停止遍历</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>调用的时候如下：</p>
-<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">NSError *<span class="keyword">error</span> = nil;</span><br><span class="line">[self checkZeroInArray:numbers <span class="keyword">error</span>:&amp;<span class="keyword">error</span>]; <span class="comment">// 取地址</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">error</span>) &#123;</span><br><span class="line">    NSLog(@<span class="string">"Error: %@"</span>, <span class="keyword">error</span>); <span class="comment">// EXC_BAD_ACCESS错误</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight pony"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">NSError</span> *<span class="keyword">error</span> = nil;</span><br><span class="line">[self checkZeroInArray:numbers <span class="keyword">error</span>:&amp;<span class="keyword">error</span>]; <span class="comment">// 取地址</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">error</span>) &#123;</span><br><span class="line">    <span class="type">NSLog</span>(@<span class="string">"Error: %@"</span>, <span class="keyword">error</span>); <span class="comment">// EXC_BAD_ACCESS错误</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>可以得出，<code>NSLog(@&quot;Error: %@&quot;, error)</code>访问<code>error</code>的时候，<code>error</code>的地址指向的内存空间已经被释放，所以才会出现<code>EXC_BAD_ACCESS</code>错误。</p>
 <p>但是为什么会被释放？什么时候被释放的？经过一番查证，发现跟<code>__autoreleasing</code>和<code>@autoreleasepool</code>有关。</p>
 <p>下面先对<code>__autoreleasing</code>做点研究=。=</p>
@@ -307,7 +307,7 @@
 <p><code>lea rax, qword [ss:rbp+var_18]</code>和<code>mov rdi, rax</code>取了var_18的地址放在<code>rdi</code>寄存器中，<code>mov rsi, rdx</code>将<code>someObj</code>值放到了rsi寄存器中，然后调用<code>id objc_storeStrong(id *object, id value)</code>函数最终将<code>someObj</code>值保存在<code>var_18</code>变量中。</p>
 <p><strong><code>__autoreleasing</code>导致了<code>id objc_retainAutorelease(id value)</code>函数的调用：</strong></p>
 <p><code>call imp___stubs__objc_retainAutorelease</code>，就是对<code>obj</code>变量，也就是<code>var_18</code>，调用了<code>objc_retainAutorelease</code>函数，先retain然后autorelease了一次，其实现大致如下：</p>
-<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">id <span class="title">objc_retainAutorelease</span>(<span class="params">id <span class="keyword">value</span></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> objc_autorelease(objc_retain(<span class="keyword">value</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">id <span class="title">objc_retainAutorelease</span>(<span class="params">id <span class="keyword">value</span></span>)</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> objc_autorelease(objc_retain(<span class="keyword">value</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><code>objc_storeStrong</code>和<code>objc_retainAutorelease</code>可参考：<a href="http://clang.llvm.org/docs/AutomaticReferenceCounting.html#arc-runtime-objc-retainautorelease" target="_blank" rel="noopener">Clang文档-Objective-C Automatic Reference Counting (ARC)</a></p>
 <p>可验证，用<code>__autoreleasing</code>修饰的变量会被添加到当前的autoreleasepool中。</p>
 <h2 id="方法的Out-Parameters参数会自动添加-autoreleasing属性"><a href="#方法的Out-Parameters参数会自动添加-autoreleasing属性" class="headerlink" title="方法的Out Parameters参数会自动添加__autoreleasing属性"></a>方法的Out Parameters参数会自动添加__autoreleasing属性</h2><p>当方法参数里面有Out Parameters参数时，就是有指针的指针类型时，编译器会自动为参数加上<code>__autoreleasing</code>属性，如以下两个方法：</p>
@@ -535,14 +535,6 @@
                 <h5 class="white-text">友情链接</h5>
                 
                     <a class="social-link" href="http://chenrudan.github.io" target="_blank">女朋友的博客😊</a>
-                
-                    <a class="social-link" href="https://raytaylorlin.github.io" target="_blank">raytaylorism主题作者的技术博客</a>
-                
-                    <a class="social-link" href="http://suta.name" target="_blank">很赞的设计师</a>
-                
-                    <a class="social-link" href="http://neoyeelf.github.io" target="_blank">NeOye&#39;s blog</a>
-                
-                    <a class="social-link" href="http://bingyan.farbox.com" target="_blank">Howl写东西的地方</a>
                 
             </div>
             

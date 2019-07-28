@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -15,11 +15,11 @@
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    <meta property="og:title" content="Swift开源项目: TTGEmojiRate的实现"/>
-    <meta property="og:site_name" content="土土哥的技术Blog"/>
+    <meta property="og:title" content="Swift开源项目: TTGEmojiRate的实现">
+    <meta property="og:site_name" content="土土哥的技术Blog">
 
     
-    <meta property="og:image" content="undefined"/>
+    <meta property="og:image" content="undefined">
     
 
     <link rel="icon" type="image/png" href="/favicon.png">
@@ -33,7 +33,7 @@
     
     <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 </head>
-
+</html>
 
 <body>
     <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
@@ -94,12 +94,12 @@
         <li class="side-user">
             <div class="row">
                 <div class="col s4 no-padding">
-                    <img class="avatar-image circle responsive-img" src="http://7nj2iz.com1.z0.glb.clouddn.com/avatar_comic_big.png" alt="User Avatar">
+                    <img class="avatar-image circle responsive-img" src="http://tva1.sinaimg.cn/large/0060lm7Tly1g5g11zm1ccj30cs0csdhq.jpg" alt="User Avatar">
                 </div>
                 <div class="info col s8 valign-wrapper no-padding">
                     <div class="valign">
                         <p class="name">土土哥</p>
-                        <p class="desc">iOS/Android/技术宅</p>
+                        <p class="desc">iOS/Android/技术宅/RCFans</p>
                     </div>
                 </div>
             </div>
@@ -291,7 +291,7 @@
 <p>拖动的时候，直接影响的应该是Rate值，然后在Rate值改变的时候刷新整个控件，刷新的时候重绘。重绘的时候，嘴、眼睛的弧度，颜色的值都要根据Rate值重新计算，如下图：</p>
 <p><img src="/2015/10/25/ttgemojirate-lib/blog_ttgemojirate_1.png" alt="Image"></p>
 <h3 id="拖动改变Rate值"><a href="#拖动改变Rate值" class="headerlink" title="拖动改变Rate值"></a>拖动改变Rate值</h3><p>这个还是很容易实现的，直接重写<code>UIView</code>的touch相关的三个方法，在里面记录拖动在Y轴上的变化值，然后映射到Rate值上就可以了。</p>
-<p>先声明一个CGPoint属性，用来保存手指按下时的点位置：<br><figure class="highlight delphi"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> touchPoint: CGPoint? = <span class="keyword">nil</span></span><br></pre></td></tr></table></figure></p>
+<p>先声明一个CGPoint属性，用来保存手指按下时的点位置：<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> touchPoint: <span class="type">CGPoint?</span> = <span class="literal">nil</span></span><br></pre></td></tr></table></figure></p>
 <p>在手指移动的时候，在<code>touchesMoved</code>方法里面计算当前点跟上一次触摸点的Y轴上的<strong>差值</strong>，然后映射到Rate值上。</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">touchesMoved</span><span class="params">(touches: Set&lt;UITouch&gt;, withEvent event: UIEvent?)</span></span> &#123;</span><br><span class="line">    <span class="comment">// 获取当前触摸点</span></span><br><span class="line">    <span class="keyword">let</span> currentPoint = touches.first?.locationInView(<span class="keyword">self</span>)</span><br><span class="line">    <span class="comment">// 改变Rate值</span></span><br><span class="line">    rateValue = rateValue + <span class="type">Float</span>((currentPoint!.y - touchPoint!.y) / <span class="type">CGRectGetHeight</span>(<span class="keyword">self</span>.bounds) * rateDragSensitivity)</span><br><span class="line">    <span class="comment">// 保存当前触摸点</span></span><br><span class="line">    touchPoint = currentPoint</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>注意：</p>
@@ -550,14 +550,6 @@
                 <h5 class="white-text">友情链接</h5>
                 
                     <a class="social-link" href="http://chenrudan.github.io" target="_blank">女朋友的博客😊</a>
-                
-                    <a class="social-link" href="https://raytaylorlin.github.io" target="_blank">raytaylorism主题作者的技术博客</a>
-                
-                    <a class="social-link" href="http://suta.name" target="_blank">很赞的设计师</a>
-                
-                    <a class="social-link" href="http://neoyeelf.github.io" target="_blank">NeOye&#39;s blog</a>
-                
-                    <a class="social-link" href="http://bingyan.farbox.com" target="_blank">Howl写东西的地方</a>
                 
             </div>
             

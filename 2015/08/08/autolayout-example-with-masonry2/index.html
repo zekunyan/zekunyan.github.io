@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -15,11 +15,11 @@
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    <meta property="og:title" content="有趣的Autolayout示例2-Masonry实现"/>
-    <meta property="og:site_name" content="土土哥的技术Blog"/>
+    <meta property="og:title" content="有趣的Autolayout示例2-Masonry实现">
+    <meta property="og:site_name" content="土土哥的技术Blog">
 
     
-    <meta property="og:image" content="undefined"/>
+    <meta property="og:image" content="undefined">
     
 
     <link rel="icon" type="image/png" href="/favicon.png">
@@ -33,7 +33,7 @@
     
     <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 </head>
-
+</html>
 
 <body>
     <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
@@ -94,12 +94,12 @@
         <li class="side-user">
             <div class="row">
                 <div class="col s4 no-padding">
-                    <img class="avatar-image circle responsive-img" src="http://7nj2iz.com1.z0.glb.clouddn.com/avatar_comic_big.png" alt="User Avatar">
+                    <img class="avatar-image circle responsive-img" src="http://tva1.sinaimg.cn/large/0060lm7Tly1g5g11zm1ccj30cs0csdhq.jpg" alt="User Avatar">
                 </div>
                 <div class="info col s8 valign-wrapper no-padding">
                     <div class="valign">
                         <p class="name">土土哥</p>
-                        <p class="desc">iOS/Android/技术宅</p>
+                        <p class="desc">iOS/Android/技术宅/RCFans</p>
                     </div>
                 </div>
             </div>
@@ -306,7 +306,7 @@
 <figure class="highlight vhdl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">viewB-<span class="keyword">attribute</span> = (viewA-<span class="keyword">attribute</span> - <span class="keyword">constant</span>) / multiplier</span><br></pre></td></tr></table></figure>
 <p>这个转换是如此的简单，小学生都会=。=，只是为了说明，我们在设置约束的时候，既可以从ViewA的角度考虑，也可以从ViewB的角度，两者完全<strong>等价</strong>！。</p>
 <p>说白了就是：“ViewA跟ViewB相距10”和“ViewB跟ViewA相距10”是一样的，如下两段代码，效果是一样的（注意正负数）：</p>
-<figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// View2的顶部距离View1的底部10</span></span><br><span class="line">[view2 mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) &#123;</span><br><span class="line">    <span class="built_in">make</span>.top.equalTo(view1.mas_bottom).with.offset(<span class="number">10</span>);</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line"><span class="comment">// View1的底部距离View2的顶部10</span></span><br><span class="line">[view1 mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) &#123;</span><br><span class="line">    <span class="built_in">make</span>.bottom.equalTo(view2.mas_top).with.offset(<span class="number">-10</span>);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// View2的顶部距离View1的底部10</span></span><br><span class="line">[view2 mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) &#123;</span><br><span class="line">    <span class="built_in">make</span>.top.equalTo(view1.mas_bottom).with.offset(<span class="number">10</span>);</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line"><span class="comment">// View1的底部距离View2的顶部10</span></span><br><span class="line">[view1 mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) &#123;</span><br><span class="line">    <span class="built_in">make</span>.bottom.equalTo(view2.mas_top).with.offset(<span class="number">-10</span>);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
 <p>更进一步说，就是约束只是两个View之间的关系，对于系统来说，ViewA和ViewB的地位是<strong>平等</strong>的，我们设置约束的时候，没有<strong>主次</strong>之分。</p>
 <p>所以，我们在设置约束的时候，要从“<strong>整体</strong>”、“<strong>宏观</strong>”上考虑，更好地把握布局，避免重复约束。</p>
 <h2 id="Case-1-变高UITableViewCell"><a href="#Case-1-变高UITableViewCell" class="headerlink" title="Case 1: 变高UITableViewCell"></a>Case 1: 变高UITableViewCell</h2><p>变高的UITableViewCell，这是个永恒的话题=。=</p>
@@ -353,7 +353,7 @@
 <p>从属性名上就可以看出，这个属性可以为Cell预先指定一个“估计”的高度值，这样的话，系统就可以先按照估计值布局，然后只获取显示范围内的Cell的高度，这样就不会一次性计算全部的了。</p>
 <h4 id="关键代码"><a href="#关键代码" class="headerlink" title="关键代码"></a>关键代码</h4><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="built_in">CGFloat</span>)tableView:(<span class="built_in">UITableView</span> *)tableView heightForRowAtIndexPath:(<span class="built_in">NSIndexPath</span> *)indexPath &#123;</span><br><span class="line">    <span class="keyword">static</span> Case4Cell *templateCell;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;</span><br><span class="line">    <span class="built_in">dispatch_once</span>(&amp;onceToken, ^&#123;</span><br><span class="line">        templateCell = [tableView dequeueReusableCellWithIdentifier:<span class="built_in">NSStringFromClass</span>([Case4Cell <span class="keyword">class</span>])];</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取对应的数据</span></span><br><span class="line">    Case4DataEntity *dataEntity = _data[(<span class="built_in">NSUInteger</span>) indexPath.row];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 填充数据</span></span><br><span class="line">    [templateCell setupData:dataEntity];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 判断高度是否已经计算过</span></span><br><span class="line">    <span class="keyword">if</span> (dataEntity.cellHeight &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// 根据当前数据，计算Cell的高度，注意+1</span></span><br><span class="line">        dataEntity.cellHeight = [templateCell.contentView systemLayoutSizeFittingSize:<span class="built_in">UILayoutFittingCompressedSize</span>].height + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> dataEntity.cellHeight;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="iOS-8的新特性"><a href="#iOS-8的新特性" class="headerlink" title="iOS 8的新特性"></a>iOS 8的新特性</h3><p>iOS 8大大简化了Cell的高度计算，只要设置好Cell的约束，添加下面几行代码：</p>
-<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tableView.rowHeight = UITableViewAutomaticDimension<span class="comment">;</span></span><br><span class="line">tableView.estimatedRowHeight = <span class="number">80</span><span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">tableView.rowHeight</span> = UITableViewAutomaticDimension<span class="comment">;</span></span><br><span class="line"><span class="attr">tableView.estimatedRowHeight</span> = <span class="number">80</span><span class="comment">;</span></span><br></pre></td></tr></table></figure>
 <p>然后：</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="built_in">CGFloat</span>)tableView:(<span class="built_in">UITableView</span> *)tableView heightForRowAtIndexPath:(<span class="built_in">NSIndexPath</span> *)indexPath &#123;</span><br><span class="line">    <span class="comment">// 只用返回这个！</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">UITableViewAutomaticDimension</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>对！就只用这么几行代码就行！</p>
@@ -592,14 +592,6 @@
                 <h5 class="white-text">友情链接</h5>
                 
                     <a class="social-link" href="http://chenrudan.github.io" target="_blank">女朋友的博客😊</a>
-                
-                    <a class="social-link" href="https://raytaylorlin.github.io" target="_blank">raytaylorism主题作者的技术博客</a>
-                
-                    <a class="social-link" href="http://suta.name" target="_blank">很赞的设计师</a>
-                
-                    <a class="social-link" href="http://neoyeelf.github.io" target="_blank">NeOye&#39;s blog</a>
-                
-                    <a class="social-link" href="http://bingyan.farbox.com" target="_blank">Howl写东西的地方</a>
                 
             </div>
             

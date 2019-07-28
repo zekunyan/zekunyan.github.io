@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://tutuge.me/about/index.html</loc>
+    
+    <lastmod>2019-07-28T17:24:15.232Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://tutuge.me/2017/03/08/quartzcode-demo-star-animation/</loc>
     
     <lastmod>2018-10-07T17:37:29.656Z</lastmod>
@@ -37,13 +44,6 @@
   </url>
   
   <url>
-    <loc>http://tutuge.me/2015/03/06/%E5%85%B3%E4%BA%8E%E8%AF%84%E8%AE%BA%E4%B8%8D%E8%A7%81%E4%BA%86/</loc>
-    
-    <lastmod>2018-10-07T17:37:29.568Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://tutuge.me/2017/03/11/TTGDeallocTaskHelper/</loc>
     
     <lastmod>2018-10-07T17:37:29.568Z</lastmod>
@@ -51,14 +51,21 @@
   </url>
   
   <url>
-    <loc>http://tutuge.me/2015/03/17/what-is-autoreleasepool/</loc>
+    <loc>http://tutuge.me/2015/03/06/%E5%85%B3%E4%BA%8E%E8%AF%84%E8%AE%BA%E4%B8%8D%E8%A7%81%E4%BA%86/</loc>
+    
+    <lastmod>2018-10-07T17:37:29.568Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://tutuge.me/2014/11/01/%E7%AC%AC%E4%B8%80%E7%AF%87Blog/</loc>
     
     <lastmod>2018-10-07T17:37:29.550Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://tutuge.me/2014/11/01/%E7%AC%AC%E4%B8%80%E7%AF%87Blog/</loc>
+    <loc>http://tutuge.me/2015/03/17/what-is-autoreleasepool/</loc>
     
     <lastmod>2018-10-07T17:37:29.550Z</lastmod>
     
@@ -128,14 +135,14 @@
   </url>
   
   <url>
-    <loc>http://tutuge.me/2015/02/16/%E5%88%A9%E7%94%A8NSProxy%E5%AE%9E%E7%8E%B0%E6%B6%88%E6%81%AF%E8%BD%AC%E5%8F%91-%E6%A8%A1%E5%9D%97%E5%8C%96%E7%9A%84%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E5%88%9B/</loc>
+    <loc>http://tutuge.me/2015/03/29/bind-data-to-gcd-queue/</loc>
     
     <lastmod>2018-10-07T17:37:29.396Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://tutuge.me/2015/03/29/bind-data-to-gcd-queue/</loc>
+    <loc>http://tutuge.me/2015/02/16/%E5%88%A9%E7%94%A8NSProxy%E5%AE%9E%E7%8E%B0%E6%B6%88%E6%81%AF%E8%BD%AC%E5%8F%91-%E6%A8%A1%E5%9D%97%E5%8C%96%E7%9A%84%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E5%88%9B/</loc>
     
     <lastmod>2018-10-07T17:37:29.396Z</lastmod>
     
@@ -198,14 +205,14 @@
   </url>
   
   <url>
-    <loc>http://tutuge.me/2016/04/10/summary-of-code-organization/</loc>
+    <loc>http://tutuge.me/2017/03/14/xcode8-crash-on-out-parameter/</loc>
     
     <lastmod>2018-10-07T17:37:29.186Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://tutuge.me/2017/03/14/xcode8-crash-on-out-parameter/</loc>
+    <loc>http://tutuge.me/2016/04/10/summary-of-code-organization/</loc>
     
     <lastmod>2018-10-07T17:37:29.186Z</lastmod>
     
@@ -320,13 +327,6 @@
     <loc>http://tutuge.me/comment-policy.html</loc>
     
     <lastmod>2017-08-05T18:22:27.197Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://tutuge.me/about/index.html</loc>
-    
-    <lastmod>2017-08-01T17:30:32.249Z</lastmod>
     
   </url>
   

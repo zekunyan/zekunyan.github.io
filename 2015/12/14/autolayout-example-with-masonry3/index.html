@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -15,11 +15,11 @@
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    <meta property="og:title" content="有趣的Autolayout示例3-Masonry实现"/>
-    <meta property="og:site_name" content="土土哥的技术Blog"/>
+    <meta property="og:title" content="有趣的Autolayout示例3-Masonry实现">
+    <meta property="og:site_name" content="土土哥的技术Blog">
 
     
-    <meta property="og:image" content="undefined"/>
+    <meta property="og:image" content="undefined">
     
 
     <link rel="icon" type="image/png" href="/favicon.png">
@@ -33,7 +33,7 @@
     
     <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 </head>
-
+</html>
 
 <body>
     <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
@@ -94,12 +94,12 @@
         <li class="side-user">
             <div class="row">
                 <div class="col s4 no-padding">
-                    <img class="avatar-image circle responsive-img" src="http://7nj2iz.com1.z0.glb.clouddn.com/avatar_comic_big.png" alt="User Avatar">
+                    <img class="avatar-image circle responsive-img" src="http://tva1.sinaimg.cn/large/0060lm7Tly1g5g11zm1ccj30cs0csdhq.jpg" alt="User Avatar">
                 </div>
                 <div class="info col s8 valign-wrapper no-padding">
                     <div class="valign">
                         <p class="name">土土哥</p>
-                        <p class="desc">iOS/Android/技术宅</p>
+                        <p class="desc">iOS/Android/技术宅/RCFans</p>
                     </div>
                 </div>
             </div>
@@ -302,7 +302,7 @@
 <h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><p>创建Parallax Header的代码如下：</p>
 <figure class="highlight sqf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">_parallaxHeaderView</span> = [UIImageView new];</span><br><span class="line"><span class="comment">// 把Parallax Header放在UITableView的下面</span></span><br><span class="line">[self.view insertSubview:<span class="variable">_parallaxHeaderView</span> belowSubview:<span class="variable">_tableView</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置contentMode</span></span><br><span class="line"><span class="variable">_parallaxHeaderView</span>.contentMode = UIViewContentModeScaleAspectFill;</span><br><span class="line"><span class="variable">_parallaxHeaderView</span>.<span class="built_in">image</span> = [UIImage imageNamed:@<span class="string">"parallax_header_back"</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 添加约束</span></span><br><span class="line">[<span class="variable">_parallaxHeaderView</span> mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">    make.left.<span class="built_in">and</span>.right.equalTo(self.view);</span><br><span class="line">    make.top.equalTo(self.mas_topLayoutGuideBottom);</span><br><span class="line">    <span class="comment">// 保存高度约束</span></span><br><span class="line">    <span class="variable">_parallaxHeaderHeightConstraint</span> = make.height.equalTo(@(ParallaxHeaderHeight));</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
 <p>设置UITableView的<code>contentInset</code></p>
-<figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">_tableView.contentInset = UIEdgeInsetsMake(ParallaxHeaderHeight, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">_tableView.contentInset</span> = UIEdgeInsetsMake(ParallaxHeaderHeight, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
 <h3 id="监听contentOffset属性的两种方法"><a href="#监听contentOffset属性的两种方法" class="headerlink" title="监听contentOffset属性的两种方法"></a>监听<code>contentOffset</code>属性的两种方法</h3><h4 id="方法1：直接实现scrollViewDidScroll"><a href="#方法1：直接实现scrollViewDidScroll" class="headerlink" title="方法1：直接实现scrollViewDidScroll:"></a>方法1：直接实现<code>scrollViewDidScroll:</code></h4><p>这种方法应该是最直接的：</p>
 <figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">-</span> (void)<span class="selector-tag">scrollViewDidScroll</span><span class="selector-pseudo">:(UIScrollView</span> *)<span class="selector-tag">scrollView</span> &#123;</span><br><span class="line">    <span class="selector-tag">if</span> (scrollView.contentOffset.y &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// 增加Parallax Header对应的高度，y是负数，所以减去</span></span><br><span class="line">        <span class="selector-tag">_parallaxHeaderHeightConstraint</span><span class="selector-class">.equalTo</span>(@(ParallaxHeaderHeight - scrollView.contentOffset.y));</span><br><span class="line">    &#125; <span class="selector-tag">else</span> &#123;</span><br><span class="line">        <span class="selector-tag">_parallaxHeaderHeightConstraint</span><span class="selector-class">.equalTo</span>(@(ParallaxHeaderHeight));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h4 id="方法2：KVO监听contentOffset变化"><a href="#方法2：KVO监听contentOffset变化" class="headerlink" title="方法2：KVO监听contentOffset变化"></a>方法2：KVO监听<code>contentOffset</code>变化</h4><p>用KVO的好处就是不用要求当前类实现UITableView的delegate，对于代码的拆分有好处。</p>
@@ -328,7 +328,7 @@
 <h3 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h3><p>为了尽量简单，例子里面的Cell只有三个子控件，第一个UILabel是标题等调试信息，第二个UILabel用来显示多行文本，最后一个UIButton用来切换展开、收回的状态。大致的布局如下：</p>
 <p><img src="/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_3.png" alt="Case2 UITableViewCell布局示意"></p>
 <h4 id="布局的代码"><a href="#布局的代码" class="headerlink" title="布局的代码"></a>布局的代码</h4><p><strong>标题UIlabel</strong></p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">_titleLabel</span> = [UILabel new];</span><br><span class="line"><span class="section">[self.contentView addSubview:_titleLabel]</span><span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="section">[_titleLabel mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span></span><br><span class="line"><span class="section">    make.height.equalTo(@21);</span></span><br><span class="line"><span class="section">    make.left.and.right.and.top.equalTo(self.contentView).with.insets(UIEdgeInsetsMake(4, 8, 4, 8));</span></span><br><span class="line"><span class="section">&#125;]</span><span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">_titleLabel</span> = [UILabel new]<span class="comment">;</span></span><br><span class="line"><span class="section">[self.contentView addSubview:_titleLabel]</span><span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="section">[_titleLabel mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span></span><br><span class="line"><span class="section">    make.height.equalTo(@21);</span></span><br><span class="line"><span class="section">    make.left.and.right.and.top.equalTo(self.contentView).with.insets(UIEdgeInsetsMake(4, 8, 4, 8));</span></span><br><span class="line"><span class="section">&#125;]</span><span class="comment">;</span></span><br></pre></td></tr></table></figure>
 <p><strong>底部“More”按钮</strong></p>
 <figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">_moreButton = [UIButton <span class="string">buttonWithType:</span>UIButtonTypeSystem];</span><br><span class="line">[_moreButton <span class="string">setTitle:</span>@<span class="string">"More"</span> <span class="string">forState:</span>UIControlStateNormal];</span><br><span class="line">[_moreButton <span class="string">addTarget:</span>self <span class="string">action:</span><span class="meta">@selector</span>(<span class="string">switchExpandedState:</span>) <span class="string">forControlEvents:</span>UIControlEventTouchUpInside];</span><br><span class="line">[self.contentView <span class="string">addSubview:</span>_moreButton];</span><br><span class="line"></span><br><span class="line">[_moreButton <span class="string">mas_makeConstraints:</span>^(MASConstraintMaker *make) &#123;</span><br><span class="line">    make.height.equalTo(@<span class="number">32</span>);</span><br><span class="line">    make.left.and.right.and.bottom.equalTo(self.contentView);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
 <p><strong>正文UIlabel</strong></p>
@@ -561,14 +561,6 @@
                 <h5 class="white-text">友情链接</h5>
                 
                     <a class="social-link" href="http://chenrudan.github.io" target="_blank">女朋友的博客😊</a>
-                
-                    <a class="social-link" href="https://raytaylorlin.github.io" target="_blank">raytaylorism主题作者的技术博客</a>
-                
-                    <a class="social-link" href="http://suta.name" target="_blank">很赞的设计师</a>
-                
-                    <a class="social-link" href="http://neoyeelf.github.io" target="_blank">NeOye&#39;s blog</a>
-                
-                    <a class="social-link" href="http://bingyan.farbox.com" target="_blank">Howl写东西的地方</a>
                 
             </div>
             
