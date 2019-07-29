@@ -4,7 +4,7 @@
   
     
     <entry>
-      <title><![CDATA[好久没有更新博客-惭愧啊=。=]]></title>
+      <title><![CDATA[好久没有更新博客了=。=]]></title>
       <url>http://tutuge.me/2019/07/29/2019-07-29-occupied-with-work/</url>
       <content type="html"><![CDATA[<p>周末才发现博客的个人简介图片都挂了。。。<a href="http://tutuge.me/about/">http://tutuge.me/about/</a><br>才想起来好久没有更新了=。=<br>TODO List上攒了一堆的“要写、要分享”的内容<br>但是迟迟没有动手<br>一直以来都用“工作太忙、没想好、积累不够”搪塞自己</p>
 <p>哎。。。<br>其实还是<strong>太懒</strong><br>自从工作了以后<br>Geek精神感觉就被放入了牢笼<br>慢慢陷入了<strong>舒适区</strong><br>虽然工作上一直很顺利<br>但是内心总有不安与悸动</p>
@@ -3526,20 +3526,6 @@
     
     <entry>
       <title></title>
-      <url>http://tutuge.me/comment-policy.html</url>
-      <content type="html"><![CDATA[Comments are welcomed and encouraged on this site, but there are some instances where comments will be edited or deleted as follows:
-
-Comments deemed to be spam or solely promotional in nature will be deleted. Including a link to relevant content is permitted, but comments should be relevant to the post topic.
-Comments including profanity will be deleted.
-Comments containing language or concepts that could be deemed offensive will be deleted. Note this may include abusive, threatening, pornographic, offensive, misleading or libelous language.
-Comments that attack an individual directly will be deleted.
-Comments that harass other posters will be deleted. Please be respectful toward other contributors.
-Anonymous comments will be deleted. We only accept comment from posters who identify themselves.
-The owner of this blog reserves the right to edit or delete any comments submitted to the blog without notice. This comment policy is subject to change at any time. If you have any questions on the commenting policy, please let us know at zekunyan@163.com.]]></content>
-    </entry>
-    
-    <entry>
-      <title></title>
       <url>http://tutuge.me/404.html</url>
       <content type="html"><![CDATA[
 
@@ -3617,6 +3603,20 @@ $(document).ready(function(event) {
 
 </body>
 </html>]]></content>
+    </entry>
+    
+    <entry>
+      <title></title>
+      <url>http://tutuge.me/comment-policy.html</url>
+      <content type="html"><![CDATA[Comments are welcomed and encouraged on this site, but there are some instances where comments will be edited or deleted as follows:
+
+Comments deemed to be spam or solely promotional in nature will be deleted. Including a link to relevant content is permitted, but comments should be relevant to the post topic.
+Comments including profanity will be deleted.
+Comments containing language or concepts that could be deemed offensive will be deleted. Note this may include abusive, threatening, pornographic, offensive, misleading or libelous language.
+Comments that attack an individual directly will be deleted.
+Comments that harass other posters will be deleted. Please be respectful toward other contributors.
+Anonymous comments will be deleted. We only accept comment from posters who identify themselves.
+The owner of this blog reserves the right to edit or delete any comments submitted to the blog without notice. This comment policy is subject to change at any time. If you have any questions on the commenting policy, please let us know at zekunyan@163.com.]]></content>
     </entry>
     
     <entry>
@@ -3708,6 +3708,12 @@ $(document).ready(function(event) {
 <li>日均PV300左右，被收入”<strong><a href="https://github.com/tangqiaoboy/iOSBlogCN" target="_blank" rel="noopener">中文 iOS/Mac 开发博客列表</a></strong>”。</li>
 </ul>
 ]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[tags]]></title>
+      <url>http://tutuge.me/tags/index.html</url>
+      <content type="html"></content>
     </entry>
     
     <entry>
@@ -4577,12 +4583,6 @@ echo 'Clean done at ' `date`
 </code></pre>
 </body>
 </html>]]></content>
-    </entry>
-    
-    <entry>
-      <title><![CDATA[tags]]></title>
-      <url>http://tutuge.me/tags/index.html</url>
-      <content type="html"></content>
     </entry>
     
   
