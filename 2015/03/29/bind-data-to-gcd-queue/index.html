@@ -1,684 +1,137 @@
-<!DOCTYPE HTML>
-<html>
-<head><meta name="generator" content="Hexo 3.9.0">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content='2015-5-28更新 下面评论的好友“@Jim”给了种新的思路，就是在清除context的函数里面，用“_bridge_transfer”转换context，把context的内存管理权限重新交给ARC，这样，就不用显式调用“CFRelease”了。如下：\nvoid cleanStaff(void *context) { //这里用_bridge_transfer转换，将内存管理权限交还给ARC Data *data = (_bridge_transfer Data *)(context); NSLog(@"In clean, context number: %d", data.number); //不用显式释放context的内存！ } 前言 看过GCD（Grand Central Dispatch）的Apple官方文档的朋友一定见过“dispatch_set_context”和“dispatch_get_context”这两个函数，那么这两个函数该怎么用呢？\n我们都知道，GCD的接口参数都是“C语言类型“的，那么，我们如何将NSObject类型（Foundation框架）的数据，传入GCD的接口呢？（即：Core Foundation和Foundation对象的转换）\n本文关键字 GCD：dispatch_set_context，dispatch_get_context __bridge，__bridge_retained，__bridge_transfer Core Foundation, NSObject '><title>为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权</title><link rel=canonical href=https://tutuge.me/2015/03/29/bind-data-to-gcd-queue/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=preload as=style href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href=/scss/style.min.e62e09c60ba428a627e03568fa3df938f6a8224f815b5846f00816c17d4a0be4.css><meta property='og:title' content="为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权"><meta property='og:description' content='2015-5-28更新 下面评论的好友“@Jim”给了种新的思路，就是在清除context的函数里面，用“_bridge_transfer”转换context，把context的内存管理权限重新交给ARC，这样，就不用显式调用“CFRelease”了。如下：\nvoid cleanStaff(void *context) { //这里用_bridge_transfer转换，将内存管理权限交还给ARC Data *data = (_bridge_transfer Data *)(context); NSLog(@"In clean, context number: %d", data.number); //不用显式释放context的内存！ } 前言 看过GCD（Grand Central Dispatch）的Apple官方文档的朋友一定见过“dispatch_set_context”和“dispatch_get_context”这两个函数，那么这两个函数该怎么用呢？\n我们都知道，GCD的接口参数都是“C语言类型“的，那么，我们如何将NSObject类型（Foundation框架）的数据，传入GCD的接口呢？（即：Core Foundation和Foundation对象的转换）\n本文关键字 GCD：dispatch_set_context，dispatch_get_context __bridge，__bridge_retained，__bridge_transfer Core Foundation, NSObject '><meta property='og:url' content='https://tutuge.me/2015/03/29/bind-data-to-gcd-queue/'><meta property='og:site_name' content='土土哥的技术 Blog'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='原创'><meta property='article:tag' content='iOS'><meta property='article:published_time' content='2015-03-29T00:00:00+00:00'><meta property='article:modified_time' content='2015-03-29T00:00:00+00:00'><meta name=twitter:title content="为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权"><meta name=twitter:description content='2015-5-28更新 下面评论的好友“@Jim”给了种新的思路，就是在清除context的函数里面，用“_bridge_transfer”转换context，把context的内存管理权限重新交给ARC，这样，就不用显式调用“CFRelease”了。如下：\nvoid cleanStaff(void *context) { //这里用_bridge_transfer转换，将内存管理权限交还给ARC Data *data = (_bridge_transfer Data *)(context); NSLog(@"In clean, context number: %d", data.number); //不用显式释放context的内存！ } 前言 看过GCD（Grand Central Dispatch）的Apple官方文档的朋友一定见过“dispatch_set_context”和“dispatch_get_context”这两个函数，那么这两个函数该怎么用呢？\n我们都知道，GCD的接口参数都是“C语言类型“的，那么，我们如何将NSObject类型（Foundation框架）的数据，传入GCD的接口呢？（即：Core Foundation和Foundation对象的转换）\n本文关键字 GCD：dispatch_set_context，dispatch_get_context __bridge，__bridge_retained，__bridge_transfer Core Foundation, NSObject '><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar.png width height class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>土土哥的技术 Blog</a></h1><h2 class=site-description>AI / iOS / Android / Flutter / Open Source</h2></div></header><ol class=menu-social><li><a href=https://github.com/zekunyan title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>首页</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav class=toc-nav id=TableOfContents><ul><li><a href=#2015-5-28更新>2015-5-28更新</a></li><li><a href=#前言>前言</a></li><li><a href=#本文关键字>本文关键字</a></li><li><a href=#dispatch_setget_context>dispatch_set(get)_context</a><ul><li><a href=#什么是context>什么是context</a></li></ul></li><li><a href=#用malloc创建context并绑定到队列上>用malloc创建context并绑定到队列上</a></li><li><a href=#nsobject类型的context>NSObject类型的context</a><ul><li><a href=#__bridge>__bridge</a></li><li><a href=#重新定义context>重新定义context</a></li><li><a href=#需要注意的点>需要注意的点</a></li><li><a href=#正确的用法>正确的用法</a></li><li><a href=#运行结果>运行结果</a></li></ul></li><li><a href=#总结>总结</a></li><li><a href=#参考>参考</a></li></ul></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/ios/ style=background-color:#efbeed;color:#3d0f3c>IOS</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/2015/03/29/bind-data-to-gcd-queue/>为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权</a></h2></div><footer class=article-meta><div class=inline-meta><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2015-03-29T00:00:00Z>2015-03-29</time>
+<svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 6 分钟</time></div></footer></div></header><aside class=article-toc><details><summary><div class=article-toc-title><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6-6 6"/></svg>
+<span>目录</span></div></summary><nav class=toc-nav><ul><li><a href=#2015-5-28更新>2015-5-28更新</a></li><li><a href=#前言>前言</a></li><li><a href=#本文关键字>本文关键字</a></li><li><a href=#dispatch_setget_context>dispatch_set(get)_context</a><ul><li><a href=#什么是context>什么是context</a></li></ul></li><li><a href=#用malloc创建context并绑定到队列上>用malloc创建context并绑定到队列上</a></li><li><a href=#nsobject类型的context>NSObject类型的context</a><ul><li><a href=#__bridge>__bridge</a></li><li><a href=#重新定义context>重新定义context</a></li><li><a href=#需要注意的点>需要注意的点</a></li><li><a href=#正确的用法>正确的用法</a></li><li><a href=#运行结果>运行结果</a></li></ul></li><li><a href=#总结>总结</a></li><li><a href=#参考>参考</a></li></ul></nav></details></aside><section class=article-content><h2 id=2015-5-28更新><a href=#2015-5-28%e6%9b%b4%e6%96%b0 class=header-anchor></a>2015-5-28更新</h2><p>下面评论的好友“@Jim”给了种新的思路，就是在清除context的函数里面，用“<strong>_bridge_transfer</strong>”转换context，把context的内存管理权限重新交给ARC，这样，就不用显式调用“<strong>CFRelease</strong>”了。如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>void cleanStaff(void *context) {
+</span></span><span class=line><span class=cl>    //这里用_bridge_transfer转换，将内存管理权限交还给ARC
+</span></span><span class=line><span class=cl>    Data *data = (_bridge_transfer Data *)(context);
+</span></span><span class=line><span class=cl>    NSLog(@&#34;In clean, context number: %d&#34;, data.number);
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    //不用显式释放context的内存！
+</span></span><span class=line><span class=cl>}
+</span></span></code></pre></div><h2 id=前言><a href=#%e5%89%8d%e8%a8%80 class=header-anchor></a>前言</h2><p>看过GCD（Grand Central Dispatch）的Apple<a class=link href=https://developer.apple.com/library/prerelease/mac/documentation/Performance/Reference/GCD_libdispatch_Ref/index.html target=_blank rel=noopener>官方文档</a>的朋友一定见过“<strong>dispatch_set_context</strong>”和“<strong>dispatch_get_context</strong>”这两个函数，那么这两个函数该怎么用呢？</p><p>我们都知道，GCD的接口参数都是“C语言类型“的，那么，我们如何将NSObject类型（Foundation框架）的数据，传入GCD的接口呢？（即：Core Foundation和Foundation对象的转换）</p><h2 id=本文关键字><a href=#%e6%9c%ac%e6%96%87%e5%85%b3%e9%94%ae%e5%ad%97 class=header-anchor></a>本文关键字</h2><ul><li>GCD：dispatch_set_context，dispatch_get_context</li><li>__bridge，__bridge_retained，__bridge_transfer</li><li>Core Foundation, NSObject</li></ul><h2 id=dispatch_setget_context><a href=#dispatch_setget_context class=header-anchor></a>dispatch_set(get)_context</h2><p>先看看这两个函数的原型：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=c1>//设置context
+</span></span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>dispatch_set_context</span> <span class=p>(</span><span class=n>dispatch_object_t</span> <span class=n>object</span><span class=p>,</span> <span class=kt>void</span> <span class=o>*</span><span class=n>context</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=c1>//获取context
+</span></span></span><span class=line><span class=cl><span class=kt>void</span><span class=o>*</span> <span class=nf>dispatch_get_context</span> <span class=p>(</span><span class=n>dispatch_object_t</span> <span class=n>object</span><span class=p>);</span>
+</span></span></code></pre></div><p>这里的object一般指的就是通过dispatch_queue_create创建的队列。</p><p>所以，这两个函数分别完成了将context“绑定”到特定GCD队列和从GCD队列获取对应context的任务。</p><h3 id=什么是context><a href=#%e4%bb%80%e4%b9%88%e6%98%afcontext class=header-anchor></a>什么是context</h3><p>在上述函数原型中，context是一个“<strong>void类型指针</strong>”，学过C语言的朋友应该都知道，void型指针可以指向任意类型，就是说，context在这里可以是任意类型的指针。</p><p>从这里可以得知，我们可以为队列“<strong>set</strong>”任意类型的数据，并在合适的时候取出来用。</p><h2 id=用malloc创建context并绑定到队列上><a href=#%e7%94%a8malloc%e5%88%9b%e5%bb%bacontext%e5%b9%b6%e7%bb%91%e5%ae%9a%e5%88%b0%e9%98%9f%e5%88%97%e4%b8%8a class=header-anchor></a>用malloc创建context并绑定到队列上</h2><p>参考<a class=link href=https://developer.apple.com/library/ios/documentation/General/Conceptual/ConcurrencyProgrammingGuide/OperationQueues/OperationQueues.html#//apple_ref/doc/uid/TP40008091-CH102-SW13 target=_blank rel=noopener>Apple官方的例子</a>，我们先用传统的<strong>malloc</strong>创建context，看看如下简短例子：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=c1>//定义context，即一个结构体
+</span></span></span><span class=line><span class=cl><span class=k>typedef</span> <span class=k>struct</span> <span class=nc>_Data</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>number</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span> <span class=n>Data</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//定义队列的finalizer函数，用于释放context内存
+</span></span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>cleanStaff</span><span class=p>(</span><span class=kt>void</span> <span class=o>*</span><span class=n>context</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>NSLog</span><span class=p>(</span><span class=err>@</span><span class=s>&#34;In clean, context number: %d&#34;</span><span class=p>,</span> <span class=p>((</span><span class=n>Data</span> <span class=o>*</span><span class=p>)</span><span class=n>context</span><span class=p>)</span><span class=o>-&gt;</span><span class=n>number</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=c1>//释放，如果是new出来的对象，就要用delete
+</span></span></span><span class=line><span class=cl>    <span class=n>free</span><span class=p>(</span><span class=n>context</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>-</span> <span class=p>(</span><span class=kt>void</span><span class=p>)</span><span class=n>runTest</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>//创建队列
+</span></span></span><span class=line><span class=cl>    <span class=n>dispatch_queue_t</span> <span class=n>queue</span> <span class=o>=</span> <span class=n>dispatch_queue_create</span><span class=p>(</span><span class=s>&#34;me.tutuge.test.gcd&#34;</span><span class=p>,</span> <span class=n>DISPATCH_QUEUE_SERIAL</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>//创建Data类型context数据并初始化
+</span></span></span><span class=line><span class=cl>    <span class=n>Data</span> <span class=o>*</span><span class=n>myData</span> <span class=o>=</span> <span class=n>malloc</span><span class=p>(</span><span class=k>sizeof</span><span class=p>(</span><span class=n>Data</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=n>myData</span><span class=o>-&gt;</span><span class=n>number</span> <span class=o>=</span> <span class=mi>10</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>//绑定context
+</span></span></span><span class=line><span class=cl>    <span class=n>dispatch_set_context</span><span class=p>(</span><span class=n>queue</span><span class=p>,</span> <span class=n>myData</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>//设置finalizer函数，用于在队列执行完成后释放对应context内存
+</span></span></span><span class=line><span class=cl>    <span class=n>dispatch_set_finalizer_f</span><span class=p>(</span><span class=n>queue</span><span class=p>,</span> <span class=n>cleanStaff</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>dispatch_async</span><span class=p>(</span><span class=n>queue</span><span class=p>,</span> <span class=o>^</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>//获取队列的context数据
+</span></span></span><span class=line><span class=cl>        <span class=n>Data</span> <span class=o>*</span><span class=n>data</span> <span class=o>=</span> <span class=n>dispatch_get_context</span><span class=p>(</span><span class=n>queue</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=c1>//打印
+</span></span></span><span class=line><span class=cl>        <span class=n>NSLog</span><span class=p>(</span><span class=err>@</span><span class=s>&#34;1: context number: %d&#34;</span><span class=p>,</span> <span class=n>data</span><span class=o>-&gt;</span><span class=n>number</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=c1>//修改context保存的数据
+</span></span></span><span class=line><span class=cl>        <span class=n>data</span><span class=o>-&gt;</span><span class=n>number</span> <span class=o>=</span> <span class=mi>20</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>});</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>上面的代码运行后如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-css data-lang=css><span class=line><span class=cl><span class=nt>2015-03-29</span> <span class=nt>20</span><span class=p>:</span><span class=nd>28</span><span class=p>:</span><span class=nd>16</span><span class=p>.</span><span class=nc>854</span> <span class=nt>GCDTest</span><span class=o>[</span><span class=nt>37787</span><span class=p>:</span><span class=nd>1443423</span><span class=o>]</span> <span class=nt>1</span><span class=o>:</span> <span class=nt>context</span> <span class=nt>number</span><span class=o>:</span> <span class=nt>10</span>
+</span></span><span class=line><span class=cl><span class=nt>2015-03-29</span> <span class=nt>20</span><span class=p>:</span><span class=nd>28</span><span class=p>:</span><span class=nd>16</span><span class=p>.</span><span class=nc>855</span> <span class=nt>GCDTest</span><span class=o>[</span><span class=nt>37787</span><span class=p>:</span><span class=nd>1443423</span><span class=o>]</span> <span class=nt>In</span> <span class=nt>clean</span><span class=o>,</span> <span class=nt>context</span> <span class=nt>number</span><span class=o>:</span> <span class=nt>20</span>
+</span></span></code></pre></div><p>看，通过为队列设置context，我们就能为队列绑定自定义的数据，然后在合适的时候取出来用。</p><h2 id=nsobject类型的context><a href=#nsobject%e7%b1%bb%e5%9e%8b%e7%9a%84context class=header-anchor></a>NSObject类型的context</h2><p>在Mac、iOS的开发过程中，我们大部分用的都是Foundation框架下的类，就是如NSString、NSDictionary这些NSObject类型的类。</p><p>但是上面的<strong>dispatch_set(get)_context</strong>接受的context参数是C语言类型的，即Core Foundation类型的，我们如何转换呢？</p><p><strong>由于ARC不能管理Core Foundation Object的生命周期</strong>，所以我们必须先转换context的“类型”，以便转换内存管理权。</p><h3 id=__bridge><a href=#__bridge class=header-anchor></a>__bridge</h3><p>Apple已经为我们提供了用于转换的关键字，如下：</p><ul><li>__bridge: 只做了类型转换，不修改内存管理权；</li><li>__bridge_retained（即CFBridgingRetain）转换类型，同时将内存管理权从ARC中移除，后面需要使用CFRelease来释放对象；</li><li>__bridge_transfer（即CFBridgingRelease）将Core Foundation的对象转换为Objective-C的对象，同时将内存管理权交给ARC。</li></ul><h3 id=重新定义context><a href=#%e9%87%8d%e6%96%b0%e5%ae%9a%e4%b9%89context class=header-anchor></a>重新定义context</h3><p>为了方便下面的说明，我们先定义context类。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>@interface Data : NSObject
+</span></span><span class=line><span class=cl>@property(assign, nonatomic) int number;
+</span></span><span class=line><span class=cl>@end
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>@implementation Data
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>//继承dealloc方法，便于观察对象何时被释放
+</span></span><span class=line><span class=cl>- (void)dealloc {
+</span></span><span class=line><span class=cl>    NSLog(@&#34;Data dealloc...&#34;);
+</span></span><span class=line><span class=cl>}
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>@end
+</span></span></code></pre></div><p>看，我们继承了<strong>dealloc</strong>方法，这样就能知道Data类型对象什么时候被释放。</p><h3 id=需要注意的点><a href=#%e9%9c%80%e8%a6%81%e6%b3%a8%e6%84%8f%e7%9a%84%e7%82%b9 class=header-anchor></a>需要注意的点</h3><p><strong>__bridge</strong>的转换是没有转移内存管理权的，这点要特别注意。</p><p>如果在传context对象时，用的是**__bridge**转换，那么context对象的内存管理权还在ARC手里，一旦当前作用域执行完，context就会被释放，而如果队列的任务用了context对象，就会造成“<strong>EXC_BAD_ACCESS</strong>”崩溃！</p><h3 id=正确的用法><a href=#%e6%ad%a3%e7%a1%ae%e7%9a%84%e7%94%a8%e6%b3%95 class=header-anchor></a>正确的用法</h3><p>重写上面的例子，如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=c1>//定义队列的finalizer函数，用于释放context内存
+</span></span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>cleanStaff</span><span class=p>(</span><span class=kt>void</span> <span class=o>*</span><span class=n>context</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>//这里用__bridge转换，不改变内存管理权
+</span></span></span><span class=line><span class=cl>    <span class=n>Data</span> <span class=o>*</span><span class=n>data</span> <span class=o>=</span> <span class=p>(</span><span class=n>__bridge</span> <span class=n>Data</span> <span class=o>*</span><span class=p>)(</span><span class=n>context</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>NSLog</span><span class=p>(</span><span class=err>@</span><span class=s>&#34;In clean, context number: %d&#34;</span><span class=p>,</span> <span class=n>data</span><span class=p>.</span><span class=n>number</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>//释放context的内存！
+</span></span></span><span class=line><span class=cl>    <span class=n>CFRelease</span><span class=p>(</span><span class=n>context</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>-</span> <span class=p>(</span><span class=kt>void</span><span class=p>)</span><span class=n>testBody</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>//创建队列
+</span></span></span><span class=line><span class=cl>    <span class=n>dispatch_queue_t</span> <span class=n>queue</span> <span class=o>=</span> <span class=n>dispatch_queue_create</span><span class=p>(</span><span class=s>&#34;me.tutuge.test.gcd&#34;</span><span class=p>,</span> <span class=n>DISPATCH_QUEUE_SERIAL</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>//创建Data类型context数据并初始化
+</span></span></span><span class=line><span class=cl>    <span class=n>Data</span> <span class=o>*</span><span class=n>myData</span> <span class=o>=</span> <span class=p>[</span><span class=n>Data</span> <span class=k>new</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=n>myData</span><span class=p>.</span><span class=n>number</span> <span class=o>=</span> <span class=mi>10</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>//绑定context
+</span></span></span><span class=line><span class=cl>    <span class=c1>//这里用__bridge_retained转换，将context的内存管理权从ARC移除，交由我们自己手动释放！
+</span></span></span><span class=line><span class=cl>    <span class=n>dispatch_set_context</span><span class=p>(</span><span class=n>queue</span><span class=p>,</span> <span class=p>(</span><span class=n>__bridge_retained</span> <span class=kt>void</span> <span class=o>*</span><span class=p>)(</span><span class=n>myData</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>//设置finalizer函数，用于在队列执行完成后释放对应context内存
+</span></span></span><span class=line><span class=cl>    <span class=n>dispatch_set_finalizer_f</span><span class=p>(</span><span class=n>queue</span><span class=p>,</span> <span class=n>cleanStaff</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>dispatch_async</span><span class=p>(</span><span class=n>queue</span><span class=p>,</span> <span class=o>^</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>//获取队列的context数据
+</span></span></span><span class=line><span class=cl>        <span class=c1>//这里用__bridge转换，不改变内存管理权
+</span></span></span><span class=line><span class=cl>        <span class=n>Data</span> <span class=o>*</span><span class=n>data</span> <span class=o>=</span> <span class=p>(</span><span class=n>__bridge</span> <span class=n>Data</span> <span class=o>*</span><span class=p>)(</span><span class=n>dispatch_get_context</span><span class=p>(</span><span class=n>queue</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>        <span class=c1>//打印
+</span></span></span><span class=line><span class=cl>        <span class=n>NSLog</span><span class=p>(</span><span class=err>@</span><span class=s>&#34;1: context number: %d&#34;</span><span class=p>,</span> <span class=n>data</span><span class=p>.</span><span class=n>number</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=c1>//修改context保存的数据
+</span></span></span><span class=line><span class=cl>        <span class=n>data</span><span class=p>.</span><span class=n>number</span> <span class=o>=</span> <span class=mi>20</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>});</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><h4 id=解释><a href=#%e8%a7%a3%e9%87%8a class=header-anchor></a>解释</h4><ul><li>在dispatch_set_context的时候用**__bridge_retained**转换，将context的内存管理权从ARC移除，交给我们自己管理。</li><li>在队列任务中，用dispatch_get_context获取context的时候，用**__bridge**转换，维持context的内存管理权不变，防止出了作用域context被释放。</li><li>最后用<strong>CFRelease</strong>释放context内存。</li></ul><h3 id=运行结果><a href=#%e8%bf%90%e8%a1%8c%e7%bb%93%e6%9e%9c class=header-anchor></a>运行结果</h3><div class=highlight><pre tabindex=0 class=chroma><code class=language-css data-lang=css><span class=line><span class=cl><span class=nt>2015-03-29</span> <span class=nt>21</span><span class=p>:</span><span class=nd>12</span><span class=p>:</span><span class=nd>41</span><span class=p>.</span><span class=nc>631</span> <span class=nt>GCDTest</span><span class=o>[</span><span class=nt>38131</span><span class=p>:</span><span class=nd>1465900</span><span class=o>]</span> <span class=nt>1</span><span class=o>:</span> <span class=nt>context</span> <span class=nt>number</span><span class=o>:</span> <span class=nt>10</span>
+</span></span><span class=line><span class=cl><span class=nt>2015-03-29</span> <span class=nt>21</span><span class=p>:</span><span class=nd>12</span><span class=p>:</span><span class=nd>41</span><span class=p>.</span><span class=nc>632</span> <span class=nt>GCDTest</span><span class=o>[</span><span class=nt>38131</span><span class=p>:</span><span class=nd>1465900</span><span class=o>]</span> <span class=nt>In</span> <span class=nt>clean</span><span class=o>,</span> <span class=nt>context</span> <span class=nt>number</span><span class=o>:</span> <span class=nt>20</span>
+</span></span><span class=line><span class=cl><span class=nt>2015-03-29</span> <span class=nt>21</span><span class=p>:</span><span class=nd>12</span><span class=p>:</span><span class=nd>41</span><span class=p>.</span><span class=nc>632</span> <span class=nt>GCDTest</span><span class=o>[</span><span class=nt>38131</span><span class=p>:</span><span class=nd>1465900</span><span class=o>]</span> <span class=nt>Data</span> <span class=nt>dealloc</span><span class=o>...</span>
+</span></span></code></pre></div><p>由结果可知，我们的context对象在最后显式调用<strong>CFRelease</strong>才被释放。</p><h2 id=总结><a href=#%e6%80%bb%e7%bb%93 class=header-anchor></a>总结</h2><p>总的来说，就是合理运用__bridge_retained(transfer)关键字转换对象的内存管理权，让我们自己控制对象的生命周期。</p><h2 id=参考><a href=#%e5%8f%82%e8%80%83 class=header-anchor></a>参考</h2><ul><li><a class=link href=https://developer.apple.com/library/prerelease/mac/documentation/Performance/Reference/GCD_libdispatch_Ref/index.html target=_blank rel=noopener>Grand Central Dispatch (GCD) Reference</a></li><li><a class=link href=https://developer.apple.com/library/ios/documentation/General/Conceptual/ConcurrencyProgrammingGuide/OperationQueues/OperationQueues.html#//apple_ref/doc/uid/TP40008091-CH102-SW13 target=_blank rel=noopener>Concurrency Programming Guide</a></li><li><a class=link href=https://developer.apple.com/library/ios/documentation/CoreFoundation/Conceptual/CFDesignConcepts/Articles/tollFreeBridgedTypes.html target=_blank rel=noopener>Toll-Free Bridged Types</a></li><li><a class=link href=http://blog.csdn.net/diyagoanyhacker/article/details/7573801 target=_blank rel=noopener>Core Foundation 框架</a></li></ul></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/%E5%8E%9F%E5%88%9B/>原创</a>
+<a href=/tags/ios/>IOS</a></section></footer></article><aside><h2 class=section-title>相关文章</h2><div class=subsection-list><div class=article-list--tile><article class=has-image><a href=/2017/04/08/diy-methodSignatureForSelector/><div class=article-image><img alt="Featured image of post 反编译分析并模拟实现methodSignatureForSelector方法" loading=lazy src=/assets/2017/04/08/diy-methodSignatureForSelector/blog_RemakeMethodSignatureForSelector_1.jpg></div><div class=article-details><h2 class=article-title>反编译分析并模拟实现methodSignatureForSelector方法</h2></div></a></article><article class=has-image><a href=/2017/03/14/xcode8-crash-on-out-parameter/><div class=article-image><img alt="Featured image of post 反编译分析Xcode8的Bug, release下连续两次调用有二级指针参数的空方法会Crash" loading=lazy src=/assets/2017/03/14/xcode8-crash-on-out-parameter/xcode8_crash_on_out_parameter_1.jpg></div><div class=article-details><h2 class=article-title>反编译分析Xcode8的Bug, release下连续两次调用有二级指针参数的空方法会Crash</h2></div></a></article><article class=has-image><a href=/2017/03/12/autolayout-example-with-masonry5/><div class=article-image><img alt="Featured image of post 有趣的Autolayout示例5-Masonry实现" loading=lazy src=/assets/2017/03/12/autolayout-example-with-masonry5/blog_autolayout_example_with_masonry5_1.png></div><div class=article-details><h2 class=article-title>有趣的Autolayout示例5-Masonry实现</h2></div></a></article><article class=has-image><a href=/2017/03/11/TTGDeallocTaskHelper/><div class=article-image><img alt="Featured image of post 在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper" loading=lazy src=/assets/2017/03/11/TTGDeallocTaskHelper/TTGDeallocTaskHelper_1.jpg></div><div class=article-details><h2 class=article-title>在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper</h2></div></a></article><article class=has-image><a href=/2017/03/08/quartzcode-demo-star-animation/><div class=article-image><img alt="Featured image of post 用QuartzCode快速实现一个收藏动画" loading=lazy src=/assets/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_1.gif></div><div class=article-details><h2 class=article-title>用QuartzCode快速实现一个收藏动画</h2></div></a></article></div></div></aside><footer class=site-footer><section class=copyright>&copy;
+2014 -
+2026 tutuge</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=4.0.3>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><script type=module>
+    import gallery from '\/ts\/gallery.js';
 
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
     
-
-    <title>为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权 | iOS程序猿.目前阿里,喜欢各种技术,RCFans</title>
-    <meta name="author" content="土土哥">
-    
-    <meta name="description" content="iOS程序猿.目前阿里,喜欢各种技术,RCFans">
-    
-    
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-    <meta property="og:title" content="为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权">
-    <meta property="og:site_name" content="土土哥的Blog">
-
-    
-    <meta property="og:image" content="undefined">
-    
-
-    <link rel="icon" type="image/png" href="/favicon.png">
-    <link rel="alternate" href="/atom.xml" title="土土哥的Blog" type="application/atom+xml">
-    <link rel="stylesheet" href="/css/lib/materialize.min.css">
-    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
-    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-
-    
-        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
-    
-    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-</head>
-</html>
-
-<body>
-    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
-
-    <nav class="blue-grey">
-    <div class="nav-wrapper">
-        <a href="#" data-activates="main-menu" class="button-collapse">
-            <i class="fa fa-navicon"></i>
-        </a>
-        <div class="">
-            <a href="/" class="brand-logo hide-on-med-and-down">土土哥的Blog</a>
-            <ul class="right hide-on-med-and-down">
-                
-                    <li>
-                        <a class="menu-home " href="/" >
-                            <i class="fa fa-home "></i>
-                            
-                            首页
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-archive " href="/archives" >
-                            <i class="fa fa-archive "></i>
-                            
-                            归档
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
-                            <i class="fa fa-bookmark "></i>
-                            
-                            分类
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-about " href="/about" >
-                            <i class="fa fa-user "></i>
-                            
-                            关于
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-search modal-trigger " href="#search" >
-                            <i class="fa fa-search "></i>
-                            
-                            搜索
-                        </a>
-                    </li>
-                
-            </ul>
-            <div>
-    <ul class="side-nav blue-grey darken-1" id="main-menu">
-        
-        <li class="side-user">
-            <div class="row">
-                <div class="col s4 no-padding">
-                    <img class="avatar-image circle responsive-img" src="http://tutuge.me/2019/07/29/2019-07-29-occupied-with-work/avatar_comic.jpg" alt="User Avatar">
-                </div>
-                <div class="info col s8 valign-wrapper no-padding">
-                    <div class="valign">
-                        <p class="name">土土哥</p>
-                        <p class="desc">iOS/Android/技术宅/RCFans</p>
-                    </div>
-                </div>
-            </div>
-        </li>
-        
-
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-home " href="/" >
-                    <i class="fa fa-home "></i>
-                    
-                    首页
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-archive " href="/archives" >
-                    <i class="fa fa-archive "></i>
-                    
-                    归档
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
-                    <i class="fa fa-bookmark "></i>
-                    
-                    分类
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-about " href="/about" >
-                    <i class="fa fa-user "></i>
-                    
-                    关于
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-search modal-trigger " href="#search" >
-                    <i class="fa fa-search "></i>
-                    
-                    搜索
-                </a>
-            </li>
-        
-    </ul>
-
-    <ul class="side-nav blue-grey darken-1" id="category-menu">
-    
-
-            
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/其它/">
-                    其它 <span class="right">5 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/iOS/">
-                    iOS <span class="right">37 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/Android/">
-                    Android <span class="right">1 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/Mac/">
-                    Mac <span class="right">1 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/服务端/">
-                    服务端 <span class="right">2 篇</span></a>
-                </a>
-            </li>
-
-        
-
-    </ul>
-</div>
-
-        </div>
-    </div>
-</nav>
-
-<div id="search" class="modal search-modal">
-    <div class="row">
-        <div class="input-field col s12">
-              <input id="search-input" type="text">
-              <label for="search-input">搜索</label>
-        </div>
-
-    </div>
-    <div id="search-result" class="search-result col s12">
-
-    </div>
-</div>
-
-
-    <main>
-        <div class="container main-container">
-    
-<nav class="page-nav hide-on-small-only">
-    <div class="nav-wrapper blue-grey">
-        <span class="breadcrumb">当前位置（分类目录）</span>
-        
-            
-    
-    
-    <a class="breadcrumb" href="/categories/iOS/">iOS</a>
-
-
-        
-
-        
-    </div>
-</nav>
-
-<article>
-    <div class="card">
-        <div class="card-content">
-            
-
-            <div class="article-title">
-                
-    
-        <h1>为GCD队列绑定NSObject类型上下文数据-利用__bridge_retained(transfer)转移内存管理权</h1>
-    
-
-
-            </div>
-            <time class="teal-link-context" datetime="2015-03-29T11:27:40.000Z"><a href="/2015/03/29/bind-data-to-gcd-queue/">2015-03-29</a></time>
-
-            <span id="busuanzi_container_page_pv" class="read-times-container">
-    <i class="fa fa-eye"></i>
-    <span id="busuanzi_value_page_pv"></span>
-</span>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
-        
-            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
-        
-    </div>
-
-
-            <div class="toc teal-link-context hide-on-med-and-down">
-    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#2015-5-28更新"><span class="section table-of-contents-text">2015-5-28更新</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#前言"><span class="section table-of-contents-text">前言</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#本文关键字"><span class="section table-of-contents-text">本文关键字</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#dispatch-set-get-context"><span class="section table-of-contents-text">dispatch_set(get)_context</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#什么是context"><span class="section table-of-contents-text">什么是context</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#用malloc创建context并绑定到队列上"><span class="section table-of-contents-text">用malloc创建context并绑定到队列上</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#NSObject类型的context"><span class="section table-of-contents-text">NSObject类型的context</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#bridge"><span class="section table-of-contents-text">__bridge</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#重新定义context"><span class="section table-of-contents-text">重新定义context</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#需要注意的点"><span class="section table-of-contents-text">需要注意的点</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#正确的用法"><span class="section table-of-contents-text">正确的用法</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#解释"><span class="section table-of-contents-text">解释</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#运行结果"><span class="section table-of-contents-text">运行结果</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#总结"><span class="section table-of-contents-text">总结</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#参考"><span class="section table-of-contents-text">参考</span></a></li></ol>
-</div>
-
-
-            <div class="entry teal-link-context">
-                <h2 id="2015-5-28更新"><a href="#2015-5-28更新" class="headerlink" title="2015-5-28更新"></a>2015-5-28更新</h2><p>下面评论的好友“@Jim”给了种新的思路，就是在清除context的函数里面，用“<strong>_bridge_transfer</strong>”转换context，把context的内存管理权限重新交给ARC，这样，就不用显式调用“<strong>CFRelease</strong>”了。如下：</p>
-<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">void</span> cleanStaff(<span class="literal">void</span> *context) &#123;</span><br><span class="line">    <span class="comment">//这里用_bridge_transfer转换，将内存管理权限交还给ARC</span></span><br><span class="line">    <span class="built_in">Data</span> *<span class="built_in">data</span> = (_bridge_transfer <span class="built_in">Data</span> *)(context);</span><br><span class="line">    NSLog(@<span class="string">"In clean, context number: %d"</span>, <span class="built_in">data</span>.number);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//不用显式释放context的内存！</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>看过GCD（Grand Central Dispatch）的Apple<a href="https://developer.apple.com/library/prerelease/mac/documentation/Performance/Reference/GCD_libdispatch_Ref/index.html" target="_blank" rel="noopener">官方文档</a>的朋友一定见过“<strong>dispatch_set_context</strong>”和“<strong>dispatch_get_context</strong>”这两个函数，那么这两个函数该怎么用呢？</p>
-<p>我们都知道，GCD的接口参数都是“C语言类型“的，那么，我们如何将NSObject类型（Foundation框架）的数据，传入GCD的接口呢？（即：Core Foundation和Foundation对象的转换）</p>
-<h2 id="本文关键字"><a href="#本文关键字" class="headerlink" title="本文关键字"></a>本文关键字</h2><ul>
-<li>GCD：dispatch_set_context，dispatch_get_context</li>
-<li>__bridge，__bridge_retained，__bridge_transfer</li>
-<li>Core Foundation, NSObject</li>
-</ul>
-<a id="more"></a>
-<h2 id="dispatch-set-get-context"><a href="#dispatch-set-get-context" class="headerlink" title="dispatch_set(get)_context"></a>dispatch_set(get)_context</h2><p>先看看这两个函数的原型：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//设置context</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dispatch_set_context</span> <span class="params">(<span class="keyword">dispatch_object_t</span> object, <span class="keyword">void</span> *context)</span></span>;</span><br><span class="line"><span class="comment">//获取context</span></span><br><span class="line"><span class="function"><span class="keyword">void</span>* <span class="title">dispatch_get_context</span> <span class="params">(<span class="keyword">dispatch_object_t</span> object)</span></span>;</span><br></pre></td></tr></table></figure>
-<p>这里的object一般指的就是通过dispatch_queue_create创建的队列。</p>
-<p>所以，这两个函数分别完成了将context“绑定”到特定GCD队列和从GCD队列获取对应context的任务。</p>
-<h3 id="什么是context"><a href="#什么是context" class="headerlink" title="什么是context"></a>什么是context</h3><p>在上述函数原型中，context是一个“<strong>void类型指针</strong>”，学过C语言的朋友应该都知道，void型指针可以指向任意类型，就是说，context在这里可以是任意类型的指针。</p>
-<p>从这里可以得知，我们可以为队列“<strong>set</strong>”任意类型的数据，并在合适的时候取出来用。</p>
-<h2 id="用malloc创建context并绑定到队列上"><a href="#用malloc创建context并绑定到队列上" class="headerlink" title="用malloc创建context并绑定到队列上"></a>用malloc创建context并绑定到队列上</h2><p>参考<a href="https://developer.apple.com/library/ios/documentation/General/Conceptual/ConcurrencyProgrammingGuide/OperationQueues/OperationQueues.html#//apple_ref/doc/uid/TP40008091-CH102-SW13" target="_blank" rel="noopener">Apple官方的例子</a>，我们先用传统的<strong>malloc</strong>创建context，看看如下简短例子：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//定义context，即一个结构体</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">Data</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> number;</span><br><span class="line">&#125; Data;</span><br><span class="line"></span><br><span class="line"><span class="comment">//定义队列的finalizer函数，用于释放context内存</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">cleanStaff</span><span class="params">(<span class="keyword">void</span> *context)</span> </span>&#123;</span><br><span class="line">    NSLog(@<span class="string">"In clean, context number: %d"</span>, ((Data *)context)-&gt;number);</span><br><span class="line">    <span class="comment">//释放，如果是new出来的对象，就要用delete</span></span><br><span class="line">    <span class="built_in">free</span>(context);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)runTest &#123;</span><br><span class="line">    <span class="comment">//创建队列</span></span><br><span class="line">    <span class="keyword">dispatch_queue_t</span> <span class="built_in">queue</span> = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//创建Data类型context数据并初始化</span></span><br><span class="line">    Data *myData = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Data));</span><br><span class="line">    myData-&gt;number = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//绑定context</span></span><br><span class="line">    dispatch_set_context(<span class="built_in">queue</span>, myData);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//设置finalizer函数，用于在队列执行完成后释放对应context内存</span></span><br><span class="line">    dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);</span><br><span class="line"></span><br><span class="line">    dispatch_async(<span class="built_in">queue</span>, ^&#123;</span><br><span class="line">        <span class="comment">//获取队列的context数据</span></span><br><span class="line">        Data *data = dispatch_get_context(<span class="built_in">queue</span>);</span><br><span class="line">        <span class="comment">//打印</span></span><br><span class="line">        NSLog(@<span class="string">"1: context number: %d"</span>, data-&gt;number);</span><br><span class="line">        <span class="comment">//修改context保存的数据</span></span><br><span class="line">        data-&gt;number = <span class="number">20</span>;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上面的代码运行后如下：</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">2015<span class="selector-tag">-03-29</span> 20<span class="selector-pseudo">:28</span><span class="selector-pseudo">:16.854</span> <span class="selector-tag">GCDTest</span><span class="selector-attr">[37787:1443423]</span> 1: <span class="selector-tag">context</span> <span class="selector-tag">number</span>: 10</span><br><span class="line">2015<span class="selector-tag">-03-29</span> 20<span class="selector-pseudo">:28</span><span class="selector-pseudo">:16.855</span> <span class="selector-tag">GCDTest</span><span class="selector-attr">[37787:1443423]</span> <span class="selector-tag">In</span> <span class="selector-tag">clean</span>, <span class="selector-tag">context</span> <span class="selector-tag">number</span>: 20</span><br></pre></td></tr></table></figure>
-<p>看，通过为队列设置context，我们就能为队列绑定自定义的数据，然后在合适的时候取出来用。</p>
-<h2 id="NSObject类型的context"><a href="#NSObject类型的context" class="headerlink" title="NSObject类型的context"></a>NSObject类型的context</h2><p>在Mac、iOS的开发过程中，我们大部分用的都是Foundation框架下的类，就是如NSString、NSDictionary这些NSObject类型的类。  </p>
-<p>但是上面的<strong>dispatch_set(get)_context</strong>接受的context参数是C语言类型的，即Core Foundation类型的，我们如何转换呢？</p>
-<p><strong>由于ARC不能管理Core Foundation Object的生命周期</strong>，所以我们必须先转换context的“类型”，以便转换内存管理权。</p>
-<h3 id="bridge"><a href="#bridge" class="headerlink" title="__bridge"></a>__bridge</h3><p>Apple已经为我们提供了用于转换的关键字，如下：</p>
-<ul>
-<li>__bridge: 只做了类型转换，不修改内存管理权；</li>
-<li>__bridge_retained（即CFBridgingRetain）转换类型，同时将内存管理权从ARC中移除，后面需要使用CFRelease来释放对象；</li>
-<li>__bridge_transfer（即CFBridgingRelease）将Core Foundation的对象转换为Objective-C的对象，同时将内存管理权交给ARC。</li>
-</ul>
-<h3 id="重新定义context"><a href="#重新定义context" class="headerlink" title="重新定义context"></a>重新定义context</h3><p>为了方便下面的说明，我们先定义context类。</p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">@interface</span> <span class="attribute">Data </span>: NSObject</span><br><span class="line"><span class="variable">@property</span>(assign, nonatomic) int number;</span><br><span class="line"><span class="variable">@end</span></span><br><span class="line"></span><br><span class="line"><span class="variable">@implementation</span> Data</span><br><span class="line"></span><br><span class="line"><span class="comment">//继承dealloc方法，便于观察对象何时被释放</span></span><br><span class="line">- (void)dealloc &#123;</span><br><span class="line">    <span class="selector-tag">NSLog</span>(@<span class="string">"Data dealloc..."</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@<span class="selector-tag">end</span></span><br></pre></td></tr></table></figure>
-<p>看，我们继承了<strong>dealloc</strong>方法，这样就能知道Data类型对象什么时候被释放。</p>
-<h3 id="需要注意的点"><a href="#需要注意的点" class="headerlink" title="需要注意的点"></a>需要注意的点</h3><p><strong>__bridge</strong>的转换是没有转移内存管理权的，这点要特别注意。</p>
-<p>如果在传context对象时，用的是<strong>__bridge</strong>转换，那么context对象的内存管理权还在ARC手里，一旦当前作用域执行完，context就会被释放，而如果队列的任务用了context对象，就会造成“<strong>EXC_BAD_ACCESS</strong>”崩溃！</p>
-<h3 id="正确的用法"><a href="#正确的用法" class="headerlink" title="正确的用法"></a>正确的用法</h3><p>重写上面的例子，如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//定义队列的finalizer函数，用于释放context内存</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">cleanStaff</span><span class="params">(<span class="keyword">void</span> *context)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//这里用__bridge转换，不改变内存管理权</span></span><br><span class="line">    Data *data = (__bridge Data *)(context);</span><br><span class="line">    NSLog(@<span class="string">"In clean, context number: %d"</span>, data.number);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//释放context的内存！</span></span><br><span class="line">    CFRelease(context);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)testBody &#123;</span><br><span class="line">    <span class="comment">//创建队列</span></span><br><span class="line">    <span class="keyword">dispatch_queue_t</span> <span class="built_in">queue</span> = dispatch_queue_create(<span class="string">"me.tutuge.test.gcd"</span>, DISPATCH_QUEUE_SERIAL);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//创建Data类型context数据并初始化</span></span><br><span class="line">    Data *myData = [Data <span class="keyword">new</span>];</span><br><span class="line">    myData.number = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//绑定context</span></span><br><span class="line">    <span class="comment">//这里用__bridge_retained转换，将context的内存管理权从ARC移除，交由我们自己手动释放！</span></span><br><span class="line">    dispatch_set_context(<span class="built_in">queue</span>, (__bridge_retained <span class="keyword">void</span> *)(myData));</span><br><span class="line"></span><br><span class="line">    <span class="comment">//设置finalizer函数，用于在队列执行完成后释放对应context内存</span></span><br><span class="line">    dispatch_set_finalizer_f(<span class="built_in">queue</span>, cleanStaff);</span><br><span class="line"></span><br><span class="line">    dispatch_async(<span class="built_in">queue</span>, ^&#123;</span><br><span class="line">        <span class="comment">//获取队列的context数据</span></span><br><span class="line">        <span class="comment">//这里用__bridge转换，不改变内存管理权</span></span><br><span class="line">        Data *data = (__bridge Data *)(dispatch_get_context(<span class="built_in">queue</span>));</span><br><span class="line">        <span class="comment">//打印</span></span><br><span class="line">        NSLog(@<span class="string">"1: context number: %d"</span>, data.number);</span><br><span class="line">        <span class="comment">//修改context保存的数据</span></span><br><span class="line">        data.number = <span class="number">20</span>;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h4><ul>
-<li>在dispatch_set_context的时候用<strong>__bridge_retained</strong>转换，将context的内存管理权从ARC移除，交给我们自己管理。</li>
-<li>在队列任务中，用dispatch_get_context获取context的时候，用<strong>__bridge</strong>转换，维持context的内存管理权不变，防止出了作用域context被释放。</li>
-<li>最后用<strong>CFRelease</strong>释放context内存。</li>
-</ul>
-<h3 id="运行结果"><a href="#运行结果" class="headerlink" title="运行结果"></a>运行结果</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">2015<span class="selector-tag">-03-29</span> 21<span class="selector-pseudo">:12</span><span class="selector-pseudo">:41.631</span> <span class="selector-tag">GCDTest</span><span class="selector-attr">[38131:1465900]</span> 1: <span class="selector-tag">context</span> <span class="selector-tag">number</span>: 10</span><br><span class="line">2015<span class="selector-tag">-03-29</span> 21<span class="selector-pseudo">:12</span><span class="selector-pseudo">:41.632</span> <span class="selector-tag">GCDTest</span><span class="selector-attr">[38131:1465900]</span> <span class="selector-tag">In</span> <span class="selector-tag">clean</span>, <span class="selector-tag">context</span> <span class="selector-tag">number</span>: 20</span><br><span class="line">2015<span class="selector-tag">-03-29</span> 21<span class="selector-pseudo">:12</span><span class="selector-pseudo">:41.632</span> <span class="selector-tag">GCDTest</span><span class="selector-attr">[38131:1465900]</span> <span class="selector-tag">Data</span> <span class="selector-tag">dealloc</span>...</span><br></pre></td></tr></table></figure>
-<p>由结果可知，我们的context对象在最后显式调用<strong>CFRelease</strong>才被释放。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>总的来说，就是合理运用__bridge_retained(transfer)关键字转换对象的内存管理权，让我们自己控制对象的生命周期。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><a href="https://developer.apple.com/library/prerelease/mac/documentation/Performance/Reference/GCD_libdispatch_Ref/index.html" target="_blank" rel="noopener">Grand Central Dispatch (GCD) Reference</a></li>
-<li><a href="https://developer.apple.com/library/ios/documentation/General/Conceptual/ConcurrencyProgrammingGuide/OperationQueues/OperationQueues.html#//apple_ref/doc/uid/TP40008091-CH102-SW13" target="_blank" rel="noopener">Concurrency Programming Guide</a></li>
-<li><a href="https://developer.apple.com/library/ios/documentation/CoreFoundation/Conceptual/CFDesignConcepts/Articles/tollFreeBridgedTypes.html" target="_blank" rel="noopener">Toll-Free Bridged Types</a></li>
-<li><a href="http://blog.csdn.net/diyagoanyhacker/article/details/7573801" target="_blank" rel="noopener">Core Foundation 框架</a></li>
-</ul>
-
-                
-<p class="teal-link-context">
-    <a href="/2015/04/03/something-about-gcd/" rel="next" title="GCD使用经验与技巧浅谈">
-    上一篇：GCD使用经验与技巧浅谈
-  </a>
-</p>
-
-
-
-<p class="teal-link-context">
-    <a href="/2015/03/21/effective-objective-c-5-enum/" rel="next" title="Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5">
-    下一篇：Enum-枚举的正确使用-Effective-Objective-C-读书笔记-Item-5
-  </a>
-</p>
-
-
-            </div>
-
-            
-			
-        </div>
-    </div>
-</article>
-
-
-
-
-    <section id="comment">
-        <div id="disqus_thread"></div>
-        <script>
-            var disqus_config = function() {
-                this.page.url = 'http://tutuge.me/2015/03/29/bind-data-to-gcd-queue/';
-                this.page.identifier = '2015/03/29/bind-data-to-gcd-queue/';
-            };
-            (function() {
-                var d = document,
-                    s = d.createElement('script');
-                s.src = '//tutuge-me.disqus.com/embed.js';
-                s.setAttribute('data-timestamp', + new Date());
-                (d.head || d.body).appendChild(s);
-            })();
-        </script>
-        <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
-        </noscript>
-    </section>
-
-
-
-</div>
-
-        <div class="fixed-action-btn float-sitemap">
-    <a class="btn-floating btn-large teal">
-      <i class="fa fa-caret-square-o-up"></i>
-    </a>
-    <ul>
-      <li><a class="btn-return-top btn-floating waves-effect teal accent-4" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
-      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
-    </ul>
-  </div>
-
-    </main>
-    <footer class="page-footer blue-grey darken-1">
-    
-    <div class="footer-container container">
-        <div class="row">
-            
-            <div class="social-group col m4 s12">
-                <h5 class="white-text">社交</h5>
-                
-                    <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
-                        <i class="fa fa-2x fa-weibo"></i>
-                    </a>
-                
-                    <a class="social-link" href="https://github.com/zekunyan" target="_blank">
-                        <i class="fa fa-2x fa-github"></i>
-                    </a>
-                
-                    <a class="social-link" href="/atom.xml" target="_blank">
-                        <i class="fa fa-2x fa-rss"></i>
-                    </a>
-                
-                
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
-    </script>
-    <div class="site-visitors-container white-text">
-        <span>
-            <i class="fa fa-user"></i>
-            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
-        </span>
-        <span>&nbsp;|&nbsp;</span>
-        <span>
-            <i class="fa fa-eye"></i>
-            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
-        </span>
-    </div>
-
-
-            </div>
-            
-
-            
-            <div class="col m8 s12">
-                <h5 class="white-text">友情链接</h5>
-                
-                    <a class="social-link" href="http://chenrudan.github.io" target="_blank">女朋友的博客😊</a>
-                
-            </div>
-            
-        </div>
-        <p>Hosted by <a href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a></p>
-    </div>
-    
-
-    <div class="footer-copyright teal-link-context">
-        <div class="container">
-            © 2020 tutuge.me, All rights reserved.
-            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
-        </div>
-    </div>
-</footer>
-
-
-    <noscript>
-    <div class="noscript">
-        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
-    </div>
-</noscript>
-<div class="noscript">
-    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
-</div>
-
-
-<script src="/js/jquery.min.js"></script>
-<script src="/js/materialize.min.js"></script>
-
-<script>
-    (function($) {
-        $(document).ready(function() {
-            // 隐藏禁用javascript（针对微信内置浏览器）的提示
-            $('.noscript').hide();
-
-            // 图片缩放效果
-            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
-
-            // 给图片加上点击放大效果（materialbox插件）
-            $imgs.addClass('materialboxed').each(function(i, el) {
-                $(this).attr('data-caption', $(this).attr('alt') || ' ');
-            }).materialbox();
-
-            // 优化表格的显示
-            $('table').each(function() {
-                var $table = $(this);
-                // 除去多行代码的情况
-                if ($table.find('pre').length == 0) {
-                    $table.addClass('responsive-table striped bordered');
-                }
-            });
-
-            // 首页幻灯片
-            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
-
-            $(".button-collapse").sideNav();
-            $(".category-menu").sideNav();
-
-            // 针对gallery post
-            $('.carousel').carousel({full_width: true});
-            $('.carousel-control.prev').click(function() {
-                $('.carousel').carousel('prev');
-            });
-            $('.carousel-control.next').click(function() {
-                $('.carousel').carousel('next');
-            });
-
-            // 文章目录
-            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
-
-            // 目录随屏幕滚动（防止目录过长越过footer）
-            var $toc = $('.toc');
-            var scrollTargetTop = 0;
-            $(window).scroll(function() {
-                var $activeLink = $toc.find('a.active.section');
-                if ($(window).scrollTop() < 100) {
-                    scrollTargetTop = 0;
-                } else {
-                    if ($activeLink[0]) {
-                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
-                    }
-                }
-                $toc.css('top', '-' + scrollTargetTop + 'px');
-            });
-
-            // 修正文章目录的left-border颜色
-            var color = $('.table-of-contents-text').css('color');
-            $('.table-of-contents-link').css('border-left-color', color);
-
-            // 针对移动端做的优化：FAB按钮点击一下收回
-            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                $('.fixed-action-btn').addClass('click-to-toggle');
-            }
-            // 回到顶部
-            $('.btn-return-top').click(function() {
-                $('body, html').animate({
-                    scrollTop: 0
-                }, 500);
-            });
-
-            // 重置读书页面的Tab标签页的颜色
-            $('li.tab a').hover(function() {
-                $(this).toggleClass('text-lighten-4');
-            });
-            $('.indicator').addClass('teal lighten-2');
-
-            
-            // 添加new标签
-            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
-            
-
-            // 搜索功能
-            $('.modal-trigger').leanModal({
-                // 打开搜索框时自动聚焦
-                ready: function() {
-                    if ($('#search').is(":visible")) {
-                        $('#search-input').focus();
-                    }
-                }
-            });
-            var searchXml = "search.xml";
-            if (searchXml.length == 0) {
-             	searchXml = "search.xml";
-            }
-            var searchPath = "/" + searchXml;
-            initSearch(searchPath, 'search-input', 'search-result');
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
         });
-
-        // 初始化搜索与匹配函数
-        var initSearch = function(path, search_id, content_id) {
-            'use strict';
-            $.ajax({
-                url: path,
-                dataType: "xml",
-                success: function(xmlResponse) {
-                    // get the contents from search data
-                    var datas = $("entry", xmlResponse).map(function() {
-                        return {
-                            title: $("title", this).text(),
-                            content: $("content", this).text(),
-                            url: $("url", this).text()
-                        };
-                    }).get();
-                    var $input = document.getElementById(search_id);
-                    var $resultContent = document.getElementById(content_id);
-                    $input.addEventListener('input', function() {
-                        var str = '<ul class=\"search-result-list\">';
-                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
-                        $resultContent.innerHTML = "";
-                        if (this.value.trim().length <= 0) {
-                            return;
-                        }
-                        // perform local searching
-                        datas.forEach(function(data) {
-                            var isMatch = true;
-                            var content_index = [];
-                            var data_title = data.title.trim().toLowerCase();
-                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
-                            var data_url = data.url;
-                            var index_title = -1;
-                            var index_content = -1;
-                            var first_occur = -1;
-                            // only match artiles with not empty titles and contents
-                            if (data_title != '' && data_content != '') {
-                                keywords.forEach(function(keyword, i) {
-                                    index_title = data_title.indexOf(keyword);
-                                    index_content = data_content.indexOf(keyword);
-                                    if (index_title < 0 && index_content < 0) {
-                                        isMatch = false;
-                                    } else {
-                                        if (index_content < 0) {
-                                            index_content = 0;
-                                        }
-                                        if (i == 0) {
-                                            first_occur = index_content;
-                                        }
-                                    }
-                                });
-                            }
-                            // show search results
-                            if (isMatch) {
-                                keywords.forEach(function(keyword) {
-                                    var regS = new RegExp(keyword, "gi");
-                                    data_title = data_title.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
-                                });
-
-                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
-                                var content = data.content.trim().replace(/<[^>]+>/g, "");
-                                if (first_occur >= 0) {
-                                    // cut out 100 characters
-                                    var start = first_occur - 20;
-                                    var end = first_occur + 80;
-                                    if (start < 0) {
-                                        start = 0;
-                                    }
-                                    if (start == 0) {
-                                        end = 100;
-                                    }
-                                    if (end > content.length) {
-                                        end = content.length;
-                                    }
-                                    var match_content = content.substring(start, end);
-                                    // highlight all keywords
-                                    keywords.forEach(function(keyword) {
-                                        var regS = new RegExp(keyword, "gi");
-                                        match_content = match_content.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
-                                    });
-
-                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
-                                }
-                                str += "</li>";
-                            }
-                        });
-                        str += "</ul>";
-                        $resultContent.innerHTML = str;
-                    });
-                }
-            });
-        }
-    })(jQuery);
-</script>
-
-
-<script src="/js/prettify.js"></script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $("pre").addClass("prettyprint");
-        prettyPrint();
-    });
-</script>
-
-
-<script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-68058110-1', 'auto');
-    ga('send', 'pageview');
-
-</script>
-
-
-
-<script type="text/javascript" src="http://tajs.qq.com/stats?sId=55079830" charset="UTF-8"></script>
-
-
-
-
-
-</body>
-</html>
+        lightbox.init();
+    }
+</script></main></div><script type=text/javascript src=/ts/main.f856840516f7c2ad1769a8f5937e3d08d6cb386e2cd2dd025ae696e0ff207958.js defer></script></body></html>

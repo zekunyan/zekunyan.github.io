@@ -1,702 +1,125 @@
-<!DOCTYPE HTML>
-<html>
-<head><meta name="generator" content="Hexo 3.9.0">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="更新 2015-12-21: 其实用Category按照业务拆分网络请求接口的代码也是非常棒的，目前我自己就是这么做的=。=，文章就当做熟悉下NSProxy吧~ 前言 之前在做项目的时候，所有业务的网络接口方法，全部都写在了一个文件里面，一开始还好，毕竟每个方法的代码也只是十几行，增加、修改也比较容易。但是随着接口的增多，这个文件慢慢居然超过了1000行，里面几十个方法都写在一起，实在是不好维护。\n虽然保持这样也没有什么，多用用Cmd+F就能找到。但是，真是越看越不顺眼😳， 代码一定要有“美感”啊~😝\n所以在查阅了大量文章后，终于想出了本文即将说明的办法，越发觉得Objective-C的“消息”机制是多么的赞~😚\nGithub 示例 贴上本文中的示例工程：https://github.com/zekunyan/HttpProxyExample\n"><title>利用NSProxy实现消息转发-模块化的网络接口层设计-原创</title><link rel=canonical href=https://tutuge.me/2015/02/16/%E5%88%A9%E7%94%A8NSProxy%E5%AE%9E%E7%8E%B0%E6%B6%88%E6%81%AF%E8%BD%AC%E5%8F%91-%E6%A8%A1%E5%9D%97%E5%8C%96%E7%9A%84%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E5%88%9B/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=preload as=style href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href=/scss/style.min.e62e09c60ba428a627e03568fa3df938f6a8224f815b5846f00816c17d4a0be4.css><meta property='og:title' content="利用NSProxy实现消息转发-模块化的网络接口层设计-原创"><meta property='og:description' content="更新 2015-12-21: 其实用Category按照业务拆分网络请求接口的代码也是非常棒的，目前我自己就是这么做的=。=，文章就当做熟悉下NSProxy吧~ 前言 之前在做项目的时候，所有业务的网络接口方法，全部都写在了一个文件里面，一开始还好，毕竟每个方法的代码也只是十几行，增加、修改也比较容易。但是随着接口的增多，这个文件慢慢居然超过了1000行，里面几十个方法都写在一起，实在是不好维护。\n虽然保持这样也没有什么，多用用Cmd+F就能找到。但是，真是越看越不顺眼😳， 代码一定要有“美感”啊~😝\n所以在查阅了大量文章后，终于想出了本文即将说明的办法，越发觉得Objective-C的“消息”机制是多么的赞~😚\nGithub 示例 贴上本文中的示例工程：https://github.com/zekunyan/HttpProxyExample\n"><meta property='og:url' content='https://tutuge.me/2015/02/16/%E5%88%A9%E7%94%A8NSProxy%E5%AE%9E%E7%8E%B0%E6%B6%88%E6%81%AF%E8%BD%AC%E5%8F%91-%E6%A8%A1%E5%9D%97%E5%8C%96%E7%9A%84%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E5%88%9B/'><meta property='og:site_name' content='土土哥的技术 Blog'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='原创'><meta property='article:tag' content='iOS'><meta property='article:published_time' content='2015-02-16T00:00:00+00:00'><meta property='article:modified_time' content='2015-02-16T00:00:00+00:00'><meta property='og:image' content='https://tutuge.me/assets/2015/02/16/%E5%88%A9%E7%94%A8NSProxy%E5%AE%9E%E7%8E%B0%E6%B6%88%E6%81%AF%E8%BD%AC%E5%8F%91-%E6%A8%A1%E5%9D%97%E5%8C%96%E7%9A%84%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E5%88%9B/blog_ios_http_proxy_1_1.jpg'><meta name=twitter:title content="利用NSProxy实现消息转发-模块化的网络接口层设计-原创"><meta name=twitter:description content="更新 2015-12-21: 其实用Category按照业务拆分网络请求接口的代码也是非常棒的，目前我自己就是这么做的=。=，文章就当做熟悉下NSProxy吧~ 前言 之前在做项目的时候，所有业务的网络接口方法，全部都写在了一个文件里面，一开始还好，毕竟每个方法的代码也只是十几行，增加、修改也比较容易。但是随着接口的增多，这个文件慢慢居然超过了1000行，里面几十个方法都写在一起，实在是不好维护。\n虽然保持这样也没有什么，多用用Cmd+F就能找到。但是，真是越看越不顺眼😳， 代码一定要有“美感”啊~😝\n所以在查阅了大量文章后，终于想出了本文即将说明的办法，越发觉得Objective-C的“消息”机制是多么的赞~😚\nGithub 示例 贴上本文中的示例工程：https://github.com/zekunyan/HttpProxyExample\n"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://tutuge.me/assets/2015/02/16/%E5%88%A9%E7%94%A8NSProxy%E5%AE%9E%E7%8E%B0%E6%B6%88%E6%81%AF%E8%BD%AC%E5%8F%91-%E6%A8%A1%E5%9D%97%E5%8C%96%E7%9A%84%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E5%88%9B/blog_ios_http_proxy_1_1.jpg'><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar.png width height class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>土土哥的技术 Blog</a></h1><h2 class=site-description>AI / iOS / Android / Flutter / Open Source</h2></div></header><ol class=menu-social><li><a href=https://github.com/zekunyan title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>首页</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav class=toc-nav id=TableOfContents><ul><li><a href=#更新>更新</a></li><li><a href=#前言>前言</a></li><li><a href=#github-示例>Github 示例</a></li><li><a href=#问题>问题</a></li><li><a href=#需求>需求</a></li><li><a href=#关键>关键</a></li><li><a href=#nsproxy>NSProxy</a></li><li><a href=#实现>实现</a><ul><li><a href=#定义>定义</a></li><li><a href=#找到消息对应的实现类对象>找到消息对应的实现类对象</a></li><li><a href=#实现消息的转发>实现消息的转发</a></li></ul></li><li><a href=#example>Example</a></li><li><a href=#总结>总结</a></li><li><a href=#参考>参考</a></li></ul></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/2015/02/16/%E5%88%A9%E7%94%A8NSProxy%E5%AE%9E%E7%8E%B0%E6%B6%88%E6%81%AF%E8%BD%AC%E5%8F%91-%E6%A8%A1%E5%9D%97%E5%8C%96%E7%9A%84%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E5%88%9B/><img alt="Featured image of post 利用NSProxy实现消息转发-模块化的网络接口层设计-原创" loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/blog_ios_http_proxy_1_1.jpg></a></div><div class=article-details><header class=article-category><a href=/categories/ios/ style=background-color:#efbeed;color:#3d0f3c>IOS</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/2015/02/16/%E5%88%A9%E7%94%A8NSProxy%E5%AE%9E%E7%8E%B0%E6%B6%88%E6%81%AF%E8%BD%AC%E5%8F%91-%E6%A8%A1%E5%9D%97%E5%8C%96%E7%9A%84%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E5%88%9B/>利用NSProxy实现消息转发-模块化的网络接口层设计-原创</a></h2></div><footer class=article-meta><div class=inline-meta><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2015-02-16T00:00:00Z>2015-02-16</time>
+<svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 6 分钟</time></div></footer></div></header><aside class=article-toc><details><summary><div class=article-toc-title><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6-6 6"/></svg>
+<span>目录</span></div></summary><nav class=toc-nav><ul><li><a href=#更新>更新</a></li><li><a href=#前言>前言</a></li><li><a href=#github-示例>Github 示例</a></li><li><a href=#问题>问题</a></li><li><a href=#需求>需求</a></li><li><a href=#关键>关键</a></li><li><a href=#nsproxy>NSProxy</a></li><li><a href=#实现>实现</a><ul><li><a href=#定义>定义</a></li><li><a href=#找到消息对应的实现类对象>找到消息对应的实现类对象</a></li><li><a href=#实现消息的转发>实现消息的转发</a></li></ul></li><li><a href=#example>Example</a></li><li><a href=#总结>总结</a></li><li><a href=#参考>参考</a></li></ul></nav></details></aside><section class=article-content><h2 id=更新><a href=#%e6%9b%b4%e6%96%b0 class=header-anchor></a>更新</h2><ul><li>2015-12-21: 其实用Category按照业务拆分网络请求接口的代码也是非常棒的，目前我自己就是这么做的=。=，文章就当做熟悉下NSProxy吧~</li></ul><h2 id=前言><a href=#%e5%89%8d%e8%a8%80 class=header-anchor></a>前言</h2><p>之前在做项目的时候，所有业务的网络接口方法，全部都写在了一个文件里面，一开始还好，毕竟每个方法的代码也只是十几行，增加、修改也比较容易。但是随着接口的增多，这个文件慢慢居然超过了1000行，里面几十个方法都写在一起，实在是不好维护。</p><p>虽然保持这样也没有什么，多用用Cmd+F就能找到。但是，真是越看越不顺眼😳， 代码一定要有“美感”啊~😝</p><p>所以在查阅了大量文章后，终于想出了本文即将说明的办法，越发觉得Objective-C的“消息”机制是多么的赞~😚</p><h2 id=github-示例><a href=#github-%e7%a4%ba%e4%be%8b class=header-anchor></a>Github 示例</h2><p>贴上本文中的示例工程：<a class=link href=https://github.com/zekunyan/HttpProxyExample target=_blank rel=noopener>https://github.com/zekunyan/HttpProxyExample</a></p><h2 id=问题><a href=#%e9%97%ae%e9%a2%98 class=header-anchor></a>问题</h2><p>先抛出问题。</p><p>一款互联网应用，免不了要跟服务器打交道，在iOS项目中，最有名的网络库应该就是<a class=link href=https://github.com/AFNetworking/AFNetworking target=_blank rel=noopener>AFNetworking</a>了。所以，很多人就会利用AFnetworking提供的Get、Post等基本Http请求接口，封装自己的网络接口层代码，我自己在项目中也是这么做的。</p><p>但是，AFNetworking只是提供了Get、Post、Json传输等基本的Http请求方法，所以一旦落实到具体的业务相关的请求上，我们要为每个请求（URL）都写一个单独的接口方法。</p><p><strong>那么，问题就来了</strong></p><p>业务相关的接口那么多，举个例子，什么“通过用户ID获取用户基本信息”、“获取用户的所有评论”等，每个请求都是一个方法，这么多方法该怎么组织呢？全部放在一起？那这个接口类岂不是会非常乱？不放在一起？那岂不是会有很多个网络请求类？(至于要不要统一接口入口，我想这个根据项目来决定吧=。=)</p><h2 id=需求><a href=#%e9%9c%80%e6%b1%82 class=header-anchor></a>需求</h2><ul><li>所有网络接口都从统一的类调用，如HttpProxy。</li><li>网络接口的具体实现，按照业务划分到不同的类中，如“<strong>UserHttpHandler</strong>”、“<strong>CommentHttpHandler</strong>”。</li></ul><p>其实，按照面向对象的原则，就是接口代理类<strong>HttpProxy</strong>拥有若干个按照业务划分的接口（Interface），这些接口的所有方法组成了网络层的不同的Http请求。如下图：</p><p><img alt=请求示意图 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/blog_ios_http_proxy_1_1.jpg></p><p>那么，调用的时候，所有接口都用HttpProxy调用，如：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-scss data-lang=scss><span class=line><span class=cl><span class=c1>//实际调用的是UserHttpHandler类的方法
+</span></span></span><span class=line><span class=cl><span class=o>[[</span><span class=nt>HttpProxy</span> <span class=nt>sharedInstance</span><span class=o>]</span> <span class=nt>getUserWithID</span><span class=nd>:</span><span class=o>@</span><span class=nt>100</span><span class=o>]</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//实际调用的是CommentHttpHandler类的方法
+</span></span></span><span class=line><span class=cl><span class=o>[[</span><span class=nt>HttpProxy</span> <span class=nt>sharedInstance</span><span class=o>]</span> <span class=nt>getCommentsWithDate</span><span class=nd>:date</span><span class=o>]</span><span class=p>;</span>
+</span></span></code></pre></div><h2 id=关键><a href=#%e5%85%b3%e9%94%ae class=header-anchor></a>关键</h2><p>根据前面的描述，我们可以得出，关键就是：<strong>消息转发（Message Forward）</strong></p><p>Objective-C里面没有我们传统的“方法调用”，取而代之的是“消息”，所有的方法都是通过向对象发送“消息”实现调用的。而这个机制，也就为我们的实现提供了方便。</p><p>也就是说：我们要将发给“<strong>HttpProxy</strong>”的消息，让HttpProxy转发给真正能接受这个消息的对象，HttpProxy就是个<strong>代理</strong>。</p><p>苹果已经给我们提供了这个“代理”类了-NSProxy。</p><h2 id=nsproxy><a href=#nsproxy class=header-anchor></a>NSProxy</h2><p>什么是NSProxy：</p><ul><li>NSProxy没有父类，是顶级类(根类)，跟NSObject同等地位。</li><li>NSProxy和NSObject都实现了“<strong>NSObject</strong> Protocol”。</li><li>NSProxy设计时就是以“抽象类”设计的，专门为<strong>转发消息</strong>而生。</li></ul><p>实现要求:</p><ol><li>继承NSProxy的子类要实现自己的初始化方法，如“init”、“initWith”。</li><li>重写<code>- forwardInvocation:</code>和<code>- methodSignatureForSelector:</code>方法，完成消息转发。</li></ol><p>详细内容参考Apple的<a class=link href=https://developer.apple.com/library/ios/documentation/Cocoa/Reference/Foundation/Classes/NSProxy_Class/index.html#//apple_ref/occ/instm/NSProxy/forwardInvocation: target=_blank rel=noopener>文档</a>。</p><h2 id=实现><a href=#%e5%ae%9e%e7%8e%b0 class=header-anchor></a>实现</h2><h3 id=定义><a href=#%e5%ae%9a%e4%b9%89 class=header-anchor></a>定义</h3><p>先不管HttpProxy，咱们看看具体的接口，先举两个例子：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>//UserHttpHandler.h
+</span></span><span class=line><span class=cl>//用户相关接口
+</span></span><span class=line><span class=cl>@protocol UserHttpHandler &lt;NSObject&gt;
+</span></span><span class=line><span class=cl>- (void)getUserWithID:(NSNumber *)userID;
+</span></span><span class=line><span class=cl>@end
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>//CommentHttpHandler.h
+</span></span><span class=line><span class=cl>//评论相关接口
+</span></span><span class=line><span class=cl>@protocol CommentHttpHandler &lt;NSObject&gt;
+</span></span><span class=line><span class=cl>- (void)getCommentsWithDate:(NSDate *)date;
+</span></span><span class=line><span class=cl>@end
+</span></span></code></pre></div><p>好的，接口有了，我们的HttpProxy类应该“实现”了这两个接口。
+然后，最好是单例类，所以还要有个获取单例的方法。
+最后，还需要一个向HttpProxy注册具体实现了接口Protocol的方法。</p><p>所以，HttpProxy应该是这个样子的：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-groovy data-lang=groovy><span class=line><span class=cl><span class=c1>//HttpProxy.h
+</span></span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//1. 继承了NSproxy。 2. “实现”了网络接口Protocol
+</span></span></span><span class=line><span class=cl><span class=nd>@interface</span> <span class=n>HttpProxy</span> <span class=o>:</span> <span class=n>NSProxy</span> <span class=o>&lt;</span><span class=n>UserHttpHandler</span><span class=o>,</span> <span class=n>CommentHttpHandler</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//获取单例
+</span></span></span><span class=line><span class=cl><span class=o>+</span> <span class=o>(</span><span class=n>instancetype</span><span class=o>)</span><span class=n>sharedInstance</span><span class=o>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//注册具体实现类
+</span></span></span><span class=line><span class=cl><span class=o>-</span> <span class=o>(</span><span class=kt>void</span><span class=o>)</span><span class=nl>registerHttpProtocol:</span><span class=o>(</span><span class=n>Protocol</span> <span class=o>*)</span><span class=n>httpProtocol</span> <span class=nl>handler:</span><span class=o>(</span><span class=n>id</span><span class=o>)</span><span class=n>handler</span><span class=o>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nd>@end</span>
+</span></span></code></pre></div><h3 id=找到消息对应的实现类对象><a href=#%e6%89%be%e5%88%b0%e6%b6%88%e6%81%af%e5%af%b9%e5%ba%94%e7%9a%84%e5%ae%9e%e7%8e%b0%e7%b1%bb%e5%af%b9%e8%b1%a1 class=header-anchor></a>找到消息对应的实现类对象</h3><p>如何在HttpProxy做消息转发时，找到某个消息对应的真正的实现类对象呢？</p><p>最好的办法就是保存每个接口方法到其实现类对象的映射，可以用Dictionary保存，关系如下图：</p><p><img alt=image loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/blog_ios_http_proxy_1_2.jpg></p><p>所以，<code>registerHttpProtocol:handler:</code>方法的职责就是：</p><ol><li>遍历Protocol的所有方法（利用Objective-C的<a class=link href=https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html target=_blank rel=noopener>Runtime</a>）。</li><li>保存Protocol所有方法到实现类的对象的映射关系。（用方法的字符串表示作为key，实现类对象为value）</li></ol><p>所以，HttpProxy应该持有一个Dictionary的实例，用于保存映射关系，HttpProxy的实现部分如：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>//HttpProxy.m
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>@interface HttpProxy ()
+</span></span><span class=line><span class=cl>//保存映射关系的字典。
+</span></span><span class=line><span class=cl>@property(strong, nonatomic) NSMutableDictionary *selToHandlerMap;
+</span></span><span class=line><span class=cl>@end
+</span></span></code></pre></div><p>注册方法实现如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=p>-</span> <span class=p>(</span><span class=kt>void</span><span class=p>)</span><span class=nf>registerHttpProtocol:</span><span class=p>(</span><span class=n>Protocol</span> <span class=o>*</span><span class=p>)</span><span class=nv>httpProtocol</span> <span class=nf>handler:</span><span class=p>(</span><span class=kt>id</span><span class=p>)</span><span class=nv>handler</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>unsigned</span> <span class=kt>int</span> <span class=n>numberOfMethods</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>//获取Protocol的所有方法
+</span></span></span><span class=line><span class=cl>    <span class=k>struct</span> <span class=n>objc_method_description</span> <span class=o>*</span><span class=n>methods</span> <span class=o>=</span> <span class=n>protocol_copyMethodDescriptionList</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>httpProtocol</span><span class=p>,</span> <span class=nb>YES</span><span class=p>,</span> <span class=nb>YES</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>numberOfMethods</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>//为Protocol的每个方法注册真正的实现类对象handler
+</span></span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=p>(</span><span class=kt>unsigned</span> <span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>numberOfMethods</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>struct</span> <span class=n>objc_method_description</span> <span class=n>method</span> <span class=o>=</span> <span class=n>methods</span><span class=p>[</span><span class=n>i</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>        <span class=p>[</span><span class=n>_selToHandlerMap</span> <span class=nl>setValue</span><span class=p>:</span><span class=n>handler</span> <span class=nl>forKey</span><span class=p>:</span><span class=n>NSStringFromSelector</span><span class=p>(</span><span class=n>method</span><span class=p>.</span><span class=n>name</span><span class=p>)];</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><h3 id=实现消息的转发><a href=#%e5%ae%9e%e7%8e%b0%e6%b6%88%e6%81%af%e7%9a%84%e8%bd%ac%e5%8f%91 class=header-anchor></a>实现消息的转发</h3><p>我们已经可以注册接口、保存映射关系了，剩下的就是重写NSProxy的两个方法，以实现消息的转发，至于这两个方法具体作用是什么，读者可以自行查阅相关资料。如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-groovy data-lang=groovy><span class=line><span class=cl><span class=c1>//HttpProxy.m
+</span></span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//获取Method signature
+</span></span></span><span class=line><span class=cl><span class=o>-</span> <span class=o>(</span><span class=n>NSMethodSignature</span> <span class=o>*)</span><span class=nl>methodSignatureForSelector:</span><span class=o>(</span><span class=n>SEL</span><span class=o>)</span><span class=n>sel</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>//获取method的字符串表示
+</span></span></span><span class=line><span class=cl>    <span class=n>NSString</span> <span class=o>*</span><span class=n>methodsName</span> <span class=o>=</span> <span class=n>NSStringFromSelector</span><span class=o>(</span><span class=n>sel</span><span class=o>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>//查找对应实现类对象
+</span></span></span><span class=line><span class=cl>    <span class=n>id</span> <span class=n>handler</span> <span class=o>=</span> <span class=o>[</span><span class=n>_selToHandlerMap</span> <span class=nl>valueForKey:</span><span class=n>methodsName</span><span class=o>];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>//再次检查handler是否可以相应此消息
+</span></span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=o>(</span><span class=n>handler</span> <span class=o>!=</span> <span class=n>nil</span> <span class=o>&amp;&amp;</span> <span class=o>[</span><span class=n>handler</span> <span class=nl>respondsToSelector:</span><span class=n>sel</span><span class=o>])</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=o>[</span><span class=n>handler</span> <span class=nl>methodSignatureForSelector:</span><span class=n>sel</span><span class=o>];</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span> <span class=k>else</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=o>[</span><span class=kd>super</span> <span class=nl>methodSignatureForSelector:</span><span class=n>sel</span><span class=o>];</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//转发方法消息
+</span></span></span><span class=line><span class=cl><span class=o>-</span> <span class=o>(</span><span class=kt>void</span><span class=o>)</span><span class=nl>forwardInvocation:</span><span class=o>(</span><span class=n>NSInvocation</span> <span class=o>*)</span><span class=n>invocation</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>NSString</span> <span class=o>*</span><span class=n>methodsName</span> <span class=o>=</span> <span class=n>NSStringFromSelector</span><span class=o>(</span><span class=n>invocation</span><span class=o>.</span><span class=na>selector</span><span class=o>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>id</span> <span class=n>handler</span> <span class=o>=</span> <span class=o>[</span><span class=n>_selToHandlerMap</span> <span class=nl>valueForKey:</span><span class=n>methodsName</span><span class=o>];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=o>(</span><span class=n>handler</span> <span class=o>!=</span> <span class=n>nil</span> <span class=o>&amp;&amp;</span> <span class=o>[</span><span class=n>handler</span> <span class=nl>respondsToSelector:</span><span class=n>invocation</span><span class=o>.</span><span class=na>selector</span><span class=o>])</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=o>[</span><span class=n>invocation</span> <span class=nl>invokeWithTarget:</span><span class=n>handler</span><span class=o>];</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span> <span class=k>else</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=o>[</span><span class=kd>super</span> <span class=nl>forwardInvocation:</span><span class=n>invocation</span><span class=o>];</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span></code></pre></div><h2 id=example><a href=#example class=header-anchor></a>Example</h2><p>看看如何使用HttpProxy：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-groovy data-lang=groovy><span class=line><span class=cl><span class=c1>//初始化，注册Protocol对应的实现类对象
+</span></span></span><span class=line><span class=cl><span class=o>[[</span><span class=n>HttpProxy</span> <span class=n>sharedInstance</span><span class=o>]</span> <span class=nl>registerHttpProtocol:</span><span class=nd>@protocol</span><span class=o>(</span><span class=n>UserHttpHandler</span><span class=o>)</span> <span class=nl>handler:</span><span class=o>[</span><span class=n>UserHttpHandlerImp</span> <span class=k>new</span><span class=o>]];</span>
+</span></span><span class=line><span class=cl><span class=o>[[</span><span class=n>HttpProxy</span> <span class=n>sharedInstance</span><span class=o>]</span> <span class=nl>registerHttpProtocol:</span><span class=nd>@protocol</span><span class=o>(</span><span class=n>CommentHttpHandler</span><span class=o>)</span> <span class=nl>handler:</span><span class=o>[</span><span class=n>CommentHttpHandlerImp</span> <span class=k>new</span><span class=o>]];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//调用
+</span></span></span><span class=line><span class=cl><span class=o>[[</span><span class=n>HttpProxy</span> <span class=n>sharedInstance</span><span class=o>]</span> <span class=nl>getUserWithID:</span><span class=err>@</span><span class=mi>100</span><span class=o>];</span>
+</span></span><span class=line><span class=cl><span class=o>[[</span><span class=n>HttpProxy</span> <span class=n>sharedInstance</span><span class=o>]</span> <span class=nl>getCommentsWithDate:</span><span class=o>[</span><span class=n>NSDate</span> <span class=k>new</span><span class=o>]];</span>
+</span></span></code></pre></div><h2 id=总结><a href=#%e6%80%bb%e7%bb%93 class=header-anchor></a>总结</h2><p>所有的代码及示例都提交到Github了，<a class=link href=https://github.com/zekunyan/HttpProxyExample target=_blank rel=noopener>HttpProxyExample</a>。</p><p>总的来说，就是利用Objective-C的“消息”机制，继承NSProxy抽象类，实现自己定义的转发机制，将网络接口层的各个方法的实现与声明分离，提升项目代码的可维护性，更加模块化。如下图表示:</p><p><img alt=image loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/blog_ios_http_proxy_1_3.jpg></p><p>以上，就是我自己在项目中，利用NSProxy设计并实现的网络接口层结构。💪</p><p>从了解NSProxy、Runtime到设计、实现出这个网络层架构，着实花了点时间，收获真是不少。其实像这种纯代码层次的重构，很多人会觉得“吃力不讨好”😨，但我觉得，正是这样，才能真正让自己提升。</p><p>代码是具有美感的！嗯！😝</p><h2 id=参考><a href=#%e5%8f%82%e8%80%83 class=header-anchor></a>参考</h2><ul><li><a class=link href=https://developer.apple.com/library/ios/documentation/Cocoa/Reference/Foundation/Classes/NSProxy_Class/index.html#//apple_ref/occ/instm/NSProxy target=_blank rel=noopener>NSProxy Class Reference</a></li><li><a class=link href=http://objectivetoast.com/2014/05/12/nsproxy-nsobjects-lesser-known-sibling/ target=_blank rel=noopener>NSProxy, NSObject’s Lesser-Known Sibling</a></li><li><a class=link href=https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html target=_blank rel=noopener>Objective-C Runtime Programming Guide</a></li></ul></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/%E5%8E%9F%E5%88%9B/>原创</a>
+<a href=/tags/ios/>IOS</a></section></footer></article><aside><h2 class=section-title>相关文章</h2><div class=subsection-list><div class=article-list--tile><article class=has-image><a href=/2017/04/08/diy-methodSignatureForSelector/><div class=article-image><img alt="Featured image of post 反编译分析并模拟实现methodSignatureForSelector方法" loading=lazy src=/assets/2017/04/08/diy-methodSignatureForSelector/blog_RemakeMethodSignatureForSelector_1.jpg></div><div class=article-details><h2 class=article-title>反编译分析并模拟实现methodSignatureForSelector方法</h2></div></a></article><article class=has-image><a href=/2017/03/14/xcode8-crash-on-out-parameter/><div class=article-image><img alt="Featured image of post 反编译分析Xcode8的Bug, release下连续两次调用有二级指针参数的空方法会Crash" loading=lazy src=/assets/2017/03/14/xcode8-crash-on-out-parameter/xcode8_crash_on_out_parameter_1.jpg></div><div class=article-details><h2 class=article-title>反编译分析Xcode8的Bug, release下连续两次调用有二级指针参数的空方法会Crash</h2></div></a></article><article class=has-image><a href=/2017/03/12/autolayout-example-with-masonry5/><div class=article-image><img alt="Featured image of post 有趣的Autolayout示例5-Masonry实现" loading=lazy src=/assets/2017/03/12/autolayout-example-with-masonry5/blog_autolayout_example_with_masonry5_1.png></div><div class=article-details><h2 class=article-title>有趣的Autolayout示例5-Masonry实现</h2></div></a></article><article class=has-image><a href=/2017/03/11/TTGDeallocTaskHelper/><div class=article-image><img alt="Featured image of post 在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper" loading=lazy src=/assets/2017/03/11/TTGDeallocTaskHelper/TTGDeallocTaskHelper_1.jpg></div><div class=article-details><h2 class=article-title>在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper</h2></div></a></article><article class=has-image><a href=/2017/03/08/quartzcode-demo-star-animation/><div class=article-image><img alt="Featured image of post 用QuartzCode快速实现一个收藏动画" loading=lazy src=/assets/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_1.gif></div><div class=article-details><h2 class=article-title>用QuartzCode快速实现一个收藏动画</h2></div></a></article></div></div></aside><footer class=site-footer><section class=copyright>&copy;
+2014 -
+2026 tutuge</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=4.0.3>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><script type=module>
+    import gallery from '\/ts\/gallery.js';
 
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
     
-
-    <title>利用NSProxy实现消息转发-模块化的网络接口层设计-原创 | iOS程序猿.目前阿里,喜欢各种技术,RCFans</title>
-    <meta name="author" content="土土哥">
-    
-    <meta name="description" content="iOS程序猿.目前阿里,喜欢各种技术,RCFans">
-    
-    
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-    <meta property="og:title" content="利用NSProxy实现消息转发-模块化的网络接口层设计-原创">
-    <meta property="og:site_name" content="土土哥的Blog">
-
-    
-    <meta property="og:image" content="undefined">
-    
-
-    <link rel="icon" type="image/png" href="/favicon.png">
-    <link rel="alternate" href="/atom.xml" title="土土哥的Blog" type="application/atom+xml">
-    <link rel="stylesheet" href="/css/lib/materialize.min.css">
-    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
-    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-
-    
-        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
-    
-    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-</head>
-</html>
-
-<body>
-    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
-
-    <nav class="blue-grey">
-    <div class="nav-wrapper">
-        <a href="#" data-activates="main-menu" class="button-collapse">
-            <i class="fa fa-navicon"></i>
-        </a>
-        <div class="">
-            <a href="/" class="brand-logo hide-on-med-and-down">土土哥的Blog</a>
-            <ul class="right hide-on-med-and-down">
-                
-                    <li>
-                        <a class="menu-home " href="/" >
-                            <i class="fa fa-home "></i>
-                            
-                            首页
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-archive " href="/archives" >
-                            <i class="fa fa-archive "></i>
-                            
-                            归档
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
-                            <i class="fa fa-bookmark "></i>
-                            
-                            分类
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-about " href="/about" >
-                            <i class="fa fa-user "></i>
-                            
-                            关于
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-search modal-trigger " href="#search" >
-                            <i class="fa fa-search "></i>
-                            
-                            搜索
-                        </a>
-                    </li>
-                
-            </ul>
-            <div>
-    <ul class="side-nav blue-grey darken-1" id="main-menu">
-        
-        <li class="side-user">
-            <div class="row">
-                <div class="col s4 no-padding">
-                    <img class="avatar-image circle responsive-img" src="http://tutuge.me/2019/07/29/2019-07-29-occupied-with-work/avatar_comic.jpg" alt="User Avatar">
-                </div>
-                <div class="info col s8 valign-wrapper no-padding">
-                    <div class="valign">
-                        <p class="name">土土哥</p>
-                        <p class="desc">iOS/Android/技术宅/RCFans</p>
-                    </div>
-                </div>
-            </div>
-        </li>
-        
-
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-home " href="/" >
-                    <i class="fa fa-home "></i>
-                    
-                    首页
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-archive " href="/archives" >
-                    <i class="fa fa-archive "></i>
-                    
-                    归档
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
-                    <i class="fa fa-bookmark "></i>
-                    
-                    分类
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-about " href="/about" >
-                    <i class="fa fa-user "></i>
-                    
-                    关于
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-search modal-trigger " href="#search" >
-                    <i class="fa fa-search "></i>
-                    
-                    搜索
-                </a>
-            </li>
-        
-    </ul>
-
-    <ul class="side-nav blue-grey darken-1" id="category-menu">
-    
-
-            
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/其它/">
-                    其它 <span class="right">5 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/iOS/">
-                    iOS <span class="right">37 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/Android/">
-                    Android <span class="right">1 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/Mac/">
-                    Mac <span class="right">1 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/服务端/">
-                    服务端 <span class="right">2 篇</span></a>
-                </a>
-            </li>
-
-        
-
-    </ul>
-</div>
-
-        </div>
-    </div>
-</nav>
-
-<div id="search" class="modal search-modal">
-    <div class="row">
-        <div class="input-field col s12">
-              <input id="search-input" type="text">
-              <label for="search-input">搜索</label>
-        </div>
-
-    </div>
-    <div id="search-result" class="search-result col s12">
-
-    </div>
-</div>
-
-
-    <main>
-        <div class="container main-container">
-    
-<nav class="page-nav hide-on-small-only">
-    <div class="nav-wrapper blue-grey">
-        <span class="breadcrumb">当前位置（分类目录）</span>
-        
-            
-    
-    
-    <a class="breadcrumb" href="/categories/iOS/">iOS</a>
-
-
-        
-
-        
-    </div>
-</nav>
-
-<article>
-    <div class="card">
-        <div class="card-content">
-            
-
-            <div class="article-title">
-                
-    
-        <h1>利用NSProxy实现消息转发-模块化的网络接口层设计-原创</h1>
-    
-
-
-            </div>
-            <time class="teal-link-context" datetime="2015-02-16T10:52:08.000Z"><a href="/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/">2015-02-16</a></time>
-
-            <span id="busuanzi_container_page_pv" class="read-times-container">
-    <i class="fa fa-eye"></i>
-    <span id="busuanzi_value_page_pv"></span>
-</span>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
-        
-            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
-        
-    </div>
-
-
-            <div class="toc teal-link-context hide-on-med-and-down">
-    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#更新"><span class="section table-of-contents-text">更新</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#前言"><span class="section table-of-contents-text">前言</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Github-示例"><span class="section table-of-contents-text">Github 示例</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#问题"><span class="section table-of-contents-text">问题</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#需求"><span class="section table-of-contents-text">需求</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#关键"><span class="section table-of-contents-text">关键</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#NSProxy"><span class="section table-of-contents-text">NSProxy</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#实现"><span class="section table-of-contents-text">实现</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#定义"><span class="section table-of-contents-text">定义</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#找到消息对应的实现类对象"><span class="section table-of-contents-text">找到消息对应的实现类对象</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#实现消息的转发"><span class="section table-of-contents-text">实现消息的转发</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Example"><span class="section table-of-contents-text">Example</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#总结"><span class="section table-of-contents-text">总结</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#参考"><span class="section table-of-contents-text">参考</span></a></li></ol>
-</div>
-
-
-            <div class="entry teal-link-context">
-                <h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><ul>
-<li>2015-12-21: 其实用Category按照业务拆分网络请求接口的代码也是非常棒的，目前我自己就是这么做的=。=，文章就当做熟悉下NSProxy吧~</li>
-</ul>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>之前在做项目的时候，所有业务的网络接口方法，全部都写在了一个文件里面，一开始还好，毕竟每个方法的代码也只是十几行，增加、修改也比较容易。但是随着接口的增多，这个文件慢慢居然超过了1000行，里面几十个方法都写在一起，实在是不好维护。</p>
-<p>虽然保持这样也没有什么，多用用Cmd+F就能找到。但是，真是越看越不顺眼😳， 代码一定要有“美感”啊~😝</p>
-<p>所以在查阅了大量文章后，终于想出了本文即将说明的办法，越发觉得Objective-C的“消息”机制是多么的赞~😚</p>
-<h2 id="Github-示例"><a href="#Github-示例" class="headerlink" title="Github 示例"></a>Github 示例</h2><p>贴上本文中的示例工程：<a href="https://github.com/zekunyan/HttpProxyExample" target="_blank" rel="noopener">https://github.com/zekunyan/HttpProxyExample</a></p>
-<a id="more"></a>
-<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>先抛出问题。</p>
-<p>一款互联网应用，免不了要跟服务器打交道，在iOS项目中，最有名的网络库应该就是<a href="https://github.com/AFNetworking/AFNetworking" target="_blank" rel="noopener">AFNetworking</a>了。所以，很多人就会利用AFnetworking提供的Get、Post等基本Http请求接口，封装自己的网络接口层代码，我自己在项目中也是这么做的。</p>
-<p>但是，AFNetworking只是提供了Get、Post、Json传输等基本的Http请求方法，所以一旦落实到具体的业务相关的请求上，我们要为每个请求（URL）都写一个单独的接口方法。</p>
-<p><strong>那么，问题就来了</strong></p>
-<p>业务相关的接口那么多，举个例子，什么“通过用户ID获取用户基本信息”、“获取用户的所有评论”等，每个请求都是一个方法，这么多方法该怎么组织呢？全部放在一起？那这个接口类岂不是会非常乱？不放在一起？那岂不是会有很多个网络请求类？(至于要不要统一接口入口，我想这个根据项目来决定吧=。=)</p>
-<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><ul>
-<li>所有网络接口都从统一的类调用，如HttpProxy。</li>
-<li>网络接口的具体实现，按照业务划分到不同的类中，如“<strong>UserHttpHandler</strong>”、“<strong>CommentHttpHandler</strong>”。</li>
-</ul>
-<p>其实，按照面向对象的原则，就是接口代理类<strong>HttpProxy</strong>拥有若干个按照业务划分的接口（Interface），这些接口的所有方法组成了网络层的不同的Http请求。如下图：</p>
-<p><img src="blog_ios_http_proxy_1_1.jpg" alt="请求示意图"></p>
-<p>那么，调用的时候，所有接口都用HttpProxy调用，如：</p>
-<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//实际调用的是UserHttpHandler类的方法</span></span><br><span class="line"><span class="selector-attr">[[HttpProxy sharedInstance]</span> getUserWithID:@<span class="number">100</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//实际调用的是CommentHttpHandler类的方法</span></span><br><span class="line"><span class="selector-attr">[[HttpProxy sharedInstance]</span> getCommentsWithDate:date];</span><br></pre></td></tr></table></figure>
-<h2 id="关键"><a href="#关键" class="headerlink" title="关键"></a>关键</h2><p>根据前面的描述，我们可以得出，关键就是：<strong>消息转发（Message Forward）</strong></p>
-<p>Objective-C里面没有我们传统的“方法调用”，取而代之的是“消息”，所有的方法都是通过向对象发送“消息”实现调用的。而这个机制，也就为我们的实现提供了方便。</p>
-<p>也就是说：我们要将发给“<strong>HttpProxy</strong>”的消息，让HttpProxy转发给真正能接受这个消息的对象，HttpProxy就是个<strong>代理</strong>。</p>
-<p>苹果已经给我们提供了这个“代理”类了-NSProxy。</p>
-<h2 id="NSProxy"><a href="#NSProxy" class="headerlink" title="NSProxy"></a>NSProxy</h2><p>什么是NSProxy：</p>
-<ul>
-<li>NSProxy没有父类，是顶级类(根类)，跟NSObject同等地位。</li>
-<li>NSProxy和NSObject都实现了“<strong>NSObject</strong> Protocol”。</li>
-<li>NSProxy设计时就是以“抽象类”设计的，专门为<strong>转发消息</strong>而生。</li>
-</ul>
-<p>实现要求:</p>
-<ol>
-<li>继承NSProxy的子类要实现自己的初始化方法，如“init”、“initWith”。</li>
-<li>重写<code>- forwardInvocation:</code>和<code>- methodSignatureForSelector:</code>方法，完成消息转发。</li>
-</ol>
-<p>详细内容参考Apple的<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Reference/Foundation/Classes/NSProxy_Class/index.html#//apple_ref/occ/instm/NSProxy/forwardInvocation:" target="_blank" rel="noopener">文档</a>。</p>
-<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>先不管HttpProxy，咱们看看具体的接口，先举两个例子：</p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//UserHttpHandler.h</span></span><br><span class="line"><span class="comment">//用户相关接口</span></span><br><span class="line"><span class="variable">@protocol</span> UserHttpHandler &lt;NSObject&gt;</span><br><span class="line">- (void)<span class="attribute">getUserWithID</span>:(NSNumber *)userID;</span><br><span class="line"><span class="variable">@end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//CommentHttpHandler.h</span></span><br><span class="line"><span class="comment">//评论相关接口</span></span><br><span class="line"><span class="variable">@protocol</span> CommentHttpHandler &lt;NSObject&gt;</span><br><span class="line">- (void)<span class="attribute">getCommentsWithDate</span>:(NSDate *)date;</span><br><span class="line"><span class="variable">@end</span></span><br></pre></td></tr></table></figure>
-<p>好的，接口有了，我们的HttpProxy类应该“实现”了这两个接口。<br>然后，最好是单例类，所以还要有个获取单例的方法。<br>最后，还需要一个向HttpProxy注册具体实现了接口Protocol的方法。</p>
-<p>所以，HttpProxy应该是这个样子的：</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//HttpProxy.h</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//1. 继承了NSproxy。 2. “实现”了网络接口Protocol</span></span><br><span class="line"><span class="meta">@interface</span> <span class="string">HttpProxy :</span> NSProxy &lt;UserHttpHandler, CommentHttpHandler&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取单例</span></span><br><span class="line">+ (instancetype)sharedInstance;</span><br><span class="line"></span><br><span class="line"><span class="comment">//注册具体实现类</span></span><br><span class="line">- (<span class="keyword">void</span>)<span class="string">registerHttpProtocol:</span>(Protocol *)httpProtocol <span class="string">handler:</span>(id)handler;</span><br><span class="line"></span><br><span class="line"><span class="meta">@end</span></span><br></pre></td></tr></table></figure>
-<h3 id="找到消息对应的实现类对象"><a href="#找到消息对应的实现类对象" class="headerlink" title="找到消息对应的实现类对象"></a>找到消息对应的实现类对象</h3><p>如何在HttpProxy做消息转发时，找到某个消息对应的真正的实现类对象呢？</p>
-<p>最好的办法就是保存每个接口方法到其实现类对象的映射，可以用Dictionary保存，关系如下图：</p>
-<p><img src="blog_ios_http_proxy_1_2.jpg" alt="image"></p>
-<p>所以，<code>registerHttpProtocol:handler:</code>方法的职责就是：</p>
-<ol>
-<li>遍历Protocol的所有方法（利用Objective-C的<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html" target="_blank" rel="noopener">Runtime</a>）。</li>
-<li>保存Protocol所有方法到实现类的对象的映射关系。（用方法的字符串表示作为key，实现类对象为value）</li>
-</ol>
-<p>所以，HttpProxy应该持有一个Dictionary的实例，用于保存映射关系，HttpProxy的实现部分如：</p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//HttpProxy.m</span></span><br><span class="line"></span><br><span class="line"><span class="variable">@interface</span> HttpProxy ()</span><br><span class="line"><span class="comment">//保存映射关系的字典。</span></span><br><span class="line"><span class="variable">@property</span>(strong, nonatomic) NSMutableDictionary *selToHandlerMap;</span><br><span class="line"><span class="variable">@end</span></span><br></pre></td></tr></table></figure>
-<p>注册方法实现如下：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)registerHttpProtocol:(Protocol *)httpProtocol handler:(<span class="keyword">id</span>)handler &#123;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> numberOfMethods = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//获取Protocol的所有方法</span></span><br><span class="line">    <span class="keyword">struct</span> objc_method_description *methods = protocol_copyMethodDescriptionList(</span><br><span class="line">            httpProtocol, <span class="literal">YES</span>, <span class="literal">YES</span>, &amp;numberOfMethods);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//为Protocol的每个方法注册真正的实现类对象handler</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">unsigned</span> <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; numberOfMethods; i++) &#123;</span><br><span class="line">        <span class="keyword">struct</span> objc_method_description method = methods[i];</span><br><span class="line">        [_selToHandlerMap setValue:handler forKey:<span class="built_in">NSStringFromSelector</span>(method.name)];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="实现消息的转发"><a href="#实现消息的转发" class="headerlink" title="实现消息的转发"></a>实现消息的转发</h3><p>我们已经可以注册接口、保存映射关系了，剩下的就是重写NSProxy的两个方法，以实现消息的转发，至于这两个方法具体作用是什么，读者可以自行查阅相关资料。如下：</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//HttpProxy.m</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//获取Method signature</span></span><br><span class="line">- (NSMethodSignature *)<span class="string">methodSignatureForSelector:</span>(SEL)sel &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//获取method的字符串表示</span></span><br><span class="line">    NSString *methodsName = NSStringFromSelector(sel);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//查找对应实现类对象</span></span><br><span class="line">    id handler = [_selToHandlerMap <span class="string">valueForKey:</span>methodsName];</span><br><span class="line"></span><br><span class="line">    <span class="comment">//再次检查handler是否可以相应此消息</span></span><br><span class="line">    <span class="keyword">if</span> (handler != nil &amp;&amp; [handler <span class="string">respondsToSelector:</span>sel]) &#123;</span><br><span class="line">        <span class="keyword">return</span> [handler <span class="string">methodSignatureForSelector:</span>sel];</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> [<span class="keyword">super</span> <span class="string">methodSignatureForSelector:</span>sel];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//转发方法消息</span></span><br><span class="line">- (<span class="keyword">void</span>)<span class="string">forwardInvocation:</span>(NSInvocation *)invocation &#123;</span><br><span class="line">    NSString *methodsName = NSStringFromSelector(invocation.selector);</span><br><span class="line">    id handler = [_selToHandlerMap <span class="string">valueForKey:</span>methodsName];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (handler != nil &amp;&amp; [handler <span class="string">respondsToSelector:</span>invocation.selector]) &#123;</span><br><span class="line">        [invocation <span class="string">invokeWithTarget:</span>handler];</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        [<span class="keyword">super</span> <span class="string">forwardInvocation:</span>invocation];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h2><p>看看如何使用HttpProxy：</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//初始化，注册Protocol对应的实现类对象</span></span><br><span class="line">[[HttpProxy sharedInstance] <span class="string">registerHttpProtocol:</span><span class="meta">@protocol</span>(UserHttpHandler) <span class="string">handler:</span>[UserHttpHandlerImp <span class="keyword">new</span>]];</span><br><span class="line">[[HttpProxy sharedInstance] <span class="string">registerHttpProtocol:</span><span class="meta">@protocol</span>(CommentHttpHandler) <span class="string">handler:</span>[CommentHttpHandlerImp <span class="keyword">new</span>]];</span><br><span class="line"></span><br><span class="line"><span class="comment">//调用</span></span><br><span class="line">[[HttpProxy sharedInstance] <span class="string">getUserWithID:</span>@<span class="number">100</span>];</span><br><span class="line">[[HttpProxy sharedInstance] <span class="string">getCommentsWithDate:</span>[NSDate <span class="keyword">new</span>]];</span><br></pre></td></tr></table></figure>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>所有的代码及示例都提交到Github了，<a href="https://github.com/zekunyan/HttpProxyExample" target="_blank" rel="noopener">HttpProxyExample</a>。</p>
-<p>总的来说，就是利用Objective-C的“消息”机制，继承NSProxy抽象类，实现自己定义的转发机制，将网络接口层的各个方法的实现与声明分离，提升项目代码的可维护性，更加模块化。如下图表示:</p>
-<p><img src="blog_ios_http_proxy_1_3.jpg" alt="image"></p>
-<p>以上，就是我自己在项目中，利用NSProxy设计并实现的网络接口层结构。💪</p>
-<p>从了解NSProxy、Runtime到设计、实现出这个网络层架构，着实花了点时间，收获真是不少。其实像这种纯代码层次的重构，很多人会觉得“吃力不讨好”😨，但我觉得，正是这样，才能真正让自己提升。</p>
-<p>代码是具有美感的！嗯！😝</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Reference/Foundation/Classes/NSProxy_Class/index.html#//apple_ref/occ/instm/NSProxy" target="_blank" rel="noopener">NSProxy Class Reference</a></li>
-<li><a href="http://objectivetoast.com/2014/05/12/nsproxy-nsobjects-lesser-known-sibling/" target="_blank" rel="noopener">NSProxy, NSObject’s Lesser-Known Sibling</a></li>
-<li><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html" target="_blank" rel="noopener">Objective-C Runtime Programming Guide</a></li>
-</ul>
-
-                
-<p class="teal-link-context">
-    <a href="/2015/02/18/NSString的Copy与内存分配/" rel="next" title="NSString的Copy与内存分配">
-    上一篇：NSString的Copy与内存分配
-  </a>
-</p>
-
-
-
-<p class="teal-link-context">
-    <a href="/2015/02/14/Effective-Objective-C-读书笔记-Item-3/" rel="next" title="Effective-Objective-C-读书笔记-Item-3">
-    下一篇：Effective-Objective-C-读书笔记-Item-3
-  </a>
-</p>
-
-
-            </div>
-
-            
-			
-        </div>
-    </div>
-</article>
-
-
-
-
-    <section id="comment">
-        <div id="disqus_thread"></div>
-        <script>
-            var disqus_config = function() {
-                this.page.url = 'http://tutuge.me/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/';
-                this.page.identifier = '2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/';
-            };
-            (function() {
-                var d = document,
-                    s = d.createElement('script');
-                s.src = '//tutuge-me.disqus.com/embed.js';
-                s.setAttribute('data-timestamp', + new Date());
-                (d.head || d.body).appendChild(s);
-            })();
-        </script>
-        <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
-        </noscript>
-    </section>
-
-
-
-</div>
-
-        <div class="fixed-action-btn float-sitemap">
-    <a class="btn-floating btn-large teal">
-      <i class="fa fa-caret-square-o-up"></i>
-    </a>
-    <ul>
-      <li><a class="btn-return-top btn-floating waves-effect teal accent-4" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
-      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
-    </ul>
-  </div>
-
-    </main>
-    <footer class="page-footer blue-grey darken-1">
-    
-    <div class="footer-container container">
-        <div class="row">
-            
-            <div class="social-group col m4 s12">
-                <h5 class="white-text">社交</h5>
-                
-                    <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
-                        <i class="fa fa-2x fa-weibo"></i>
-                    </a>
-                
-                    <a class="social-link" href="https://github.com/zekunyan" target="_blank">
-                        <i class="fa fa-2x fa-github"></i>
-                    </a>
-                
-                    <a class="social-link" href="/atom.xml" target="_blank">
-                        <i class="fa fa-2x fa-rss"></i>
-                    </a>
-                
-                
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
-    </script>
-    <div class="site-visitors-container white-text">
-        <span>
-            <i class="fa fa-user"></i>
-            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
-        </span>
-        <span>&nbsp;|&nbsp;</span>
-        <span>
-            <i class="fa fa-eye"></i>
-            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
-        </span>
-    </div>
-
-
-            </div>
-            
-
-            
-            <div class="col m8 s12">
-                <h5 class="white-text">友情链接</h5>
-                
-                    <a class="social-link" href="http://chenrudan.github.io" target="_blank">女朋友的博客😊</a>
-                
-            </div>
-            
-        </div>
-        <p>Hosted by <a href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a></p>
-    </div>
-    
-
-    <div class="footer-copyright teal-link-context">
-        <div class="container">
-            © 2020 tutuge.me, All rights reserved.
-            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
-        </div>
-    </div>
-</footer>
-
-
-    <noscript>
-    <div class="noscript">
-        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
-    </div>
-</noscript>
-<div class="noscript">
-    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
-</div>
-
-
-<script src="/js/jquery.min.js"></script>
-<script src="/js/materialize.min.js"></script>
-
-<script>
-    (function($) {
-        $(document).ready(function() {
-            // 隐藏禁用javascript（针对微信内置浏览器）的提示
-            $('.noscript').hide();
-
-            // 图片缩放效果
-            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
-
-            // 给图片加上点击放大效果（materialbox插件）
-            $imgs.addClass('materialboxed').each(function(i, el) {
-                $(this).attr('data-caption', $(this).attr('alt') || ' ');
-            }).materialbox();
-
-            // 优化表格的显示
-            $('table').each(function() {
-                var $table = $(this);
-                // 除去多行代码的情况
-                if ($table.find('pre').length == 0) {
-                    $table.addClass('responsive-table striped bordered');
-                }
-            });
-
-            // 首页幻灯片
-            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
-
-            $(".button-collapse").sideNav();
-            $(".category-menu").sideNav();
-
-            // 针对gallery post
-            $('.carousel').carousel({full_width: true});
-            $('.carousel-control.prev').click(function() {
-                $('.carousel').carousel('prev');
-            });
-            $('.carousel-control.next').click(function() {
-                $('.carousel').carousel('next');
-            });
-
-            // 文章目录
-            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
-
-            // 目录随屏幕滚动（防止目录过长越过footer）
-            var $toc = $('.toc');
-            var scrollTargetTop = 0;
-            $(window).scroll(function() {
-                var $activeLink = $toc.find('a.active.section');
-                if ($(window).scrollTop() < 100) {
-                    scrollTargetTop = 0;
-                } else {
-                    if ($activeLink[0]) {
-                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
-                    }
-                }
-                $toc.css('top', '-' + scrollTargetTop + 'px');
-            });
-
-            // 修正文章目录的left-border颜色
-            var color = $('.table-of-contents-text').css('color');
-            $('.table-of-contents-link').css('border-left-color', color);
-
-            // 针对移动端做的优化：FAB按钮点击一下收回
-            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                $('.fixed-action-btn').addClass('click-to-toggle');
-            }
-            // 回到顶部
-            $('.btn-return-top').click(function() {
-                $('body, html').animate({
-                    scrollTop: 0
-                }, 500);
-            });
-
-            // 重置读书页面的Tab标签页的颜色
-            $('li.tab a').hover(function() {
-                $(this).toggleClass('text-lighten-4');
-            });
-            $('.indicator').addClass('teal lighten-2');
-
-            
-            // 添加new标签
-            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
-            
-
-            // 搜索功能
-            $('.modal-trigger').leanModal({
-                // 打开搜索框时自动聚焦
-                ready: function() {
-                    if ($('#search').is(":visible")) {
-                        $('#search-input').focus();
-                    }
-                }
-            });
-            var searchXml = "search.xml";
-            if (searchXml.length == 0) {
-             	searchXml = "search.xml";
-            }
-            var searchPath = "/" + searchXml;
-            initSearch(searchPath, 'search-input', 'search-result');
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
         });
-
-        // 初始化搜索与匹配函数
-        var initSearch = function(path, search_id, content_id) {
-            'use strict';
-            $.ajax({
-                url: path,
-                dataType: "xml",
-                success: function(xmlResponse) {
-                    // get the contents from search data
-                    var datas = $("entry", xmlResponse).map(function() {
-                        return {
-                            title: $("title", this).text(),
-                            content: $("content", this).text(),
-                            url: $("url", this).text()
-                        };
-                    }).get();
-                    var $input = document.getElementById(search_id);
-                    var $resultContent = document.getElementById(content_id);
-                    $input.addEventListener('input', function() {
-                        var str = '<ul class=\"search-result-list\">';
-                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
-                        $resultContent.innerHTML = "";
-                        if (this.value.trim().length <= 0) {
-                            return;
-                        }
-                        // perform local searching
-                        datas.forEach(function(data) {
-                            var isMatch = true;
-                            var content_index = [];
-                            var data_title = data.title.trim().toLowerCase();
-                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
-                            var data_url = data.url;
-                            var index_title = -1;
-                            var index_content = -1;
-                            var first_occur = -1;
-                            // only match artiles with not empty titles and contents
-                            if (data_title != '' && data_content != '') {
-                                keywords.forEach(function(keyword, i) {
-                                    index_title = data_title.indexOf(keyword);
-                                    index_content = data_content.indexOf(keyword);
-                                    if (index_title < 0 && index_content < 0) {
-                                        isMatch = false;
-                                    } else {
-                                        if (index_content < 0) {
-                                            index_content = 0;
-                                        }
-                                        if (i == 0) {
-                                            first_occur = index_content;
-                                        }
-                                    }
-                                });
-                            }
-                            // show search results
-                            if (isMatch) {
-                                keywords.forEach(function(keyword) {
-                                    var regS = new RegExp(keyword, "gi");
-                                    data_title = data_title.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
-                                });
-
-                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
-                                var content = data.content.trim().replace(/<[^>]+>/g, "");
-                                if (first_occur >= 0) {
-                                    // cut out 100 characters
-                                    var start = first_occur - 20;
-                                    var end = first_occur + 80;
-                                    if (start < 0) {
-                                        start = 0;
-                                    }
-                                    if (start == 0) {
-                                        end = 100;
-                                    }
-                                    if (end > content.length) {
-                                        end = content.length;
-                                    }
-                                    var match_content = content.substring(start, end);
-                                    // highlight all keywords
-                                    keywords.forEach(function(keyword) {
-                                        var regS = new RegExp(keyword, "gi");
-                                        match_content = match_content.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
-                                    });
-
-                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
-                                }
-                                str += "</li>";
-                            }
-                        });
-                        str += "</ul>";
-                        $resultContent.innerHTML = str;
-                    });
-                }
-            });
-        }
-    })(jQuery);
-</script>
-
-
-<script src="/js/prettify.js"></script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $("pre").addClass("prettyprint");
-        prettyPrint();
-    });
-</script>
-
-
-<script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-68058110-1', 'auto');
-    ga('send', 'pageview');
-
-</script>
-
-
-
-<script type="text/javascript" src="http://tajs.qq.com/stats?sId=55079830" charset="UTF-8"></script>
-
-
-
-
-
-</body>
-</html>
+        lightbox.init();
+    }
+</script></main></div><script type=text/javascript src=/ts/main.f856840516f7c2ad1769a8f5937e3d08d6cb386e2cd2dd025ae696e0ff207958.js defer></script></body></html>

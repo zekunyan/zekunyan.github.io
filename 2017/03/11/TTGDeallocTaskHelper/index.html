@@ -1,704 +1,135 @@
-<!DOCTYPE HTML>
-<html>
-<head><meta name="generator" content="Hexo 3.9.0">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="前言 最近更新了下以前写的TTGDeallocTaskHelper库，功能非常简单，就是**在不改变原有代码的情况下，不用Runtime的Method Swizzling给任意对象添加任务Block，在对象dealloc的后期执行Block。**使用时：\n// 给object对象添加dealloc后期要执行的任务Block [object ttg_addDeallocTask:^(__unsafe_unretained id target, NSUInteger identifier) { // 执行任务 }]; Github地址：https://github.com/zekunyan/TTGDeallocTaskHelper\n一张图说明原理：\n库的详细原理、限制、注意事项，为什么说“后期”执行，将在下文给出。\n"><title>在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper</title><link rel=canonical href=https://tutuge.me/2017/03/11/TTGDeallocTaskHelper/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=preload as=style href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href=/scss/style.min.e62e09c60ba428a627e03568fa3df938f6a8224f815b5846f00816c17d4a0be4.css><meta property='og:title' content="在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper"><meta property='og:description' content="前言 最近更新了下以前写的TTGDeallocTaskHelper库，功能非常简单，就是**在不改变原有代码的情况下，不用Runtime的Method Swizzling给任意对象添加任务Block，在对象dealloc的后期执行Block。**使用时：\n// 给object对象添加dealloc后期要执行的任务Block [object ttg_addDeallocTask:^(__unsafe_unretained id target, NSUInteger identifier) { // 执行任务 }]; Github地址：https://github.com/zekunyan/TTGDeallocTaskHelper\n一张图说明原理：\n库的详细原理、限制、注意事项，为什么说“后期”执行，将在下文给出。\n"><meta property='og:url' content='https://tutuge.me/2017/03/11/TTGDeallocTaskHelper/'><meta property='og:site_name' content='土土哥的技术 Blog'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='原创'><meta property='article:tag' content='iOS'><meta property='article:tag' content='开源'><meta property='article:published_time' content='2017-03-11T00:00:00+00:00'><meta property='article:modified_time' content='2017-03-11T00:00:00+00:00'><meta property='og:image' content='https://tutuge.me/assets/2017/03/11/TTGDeallocTaskHelper/TTGDeallocTaskHelper_1.jpg'><meta name=twitter:title content="在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper"><meta name=twitter:description content="前言 最近更新了下以前写的TTGDeallocTaskHelper库，功能非常简单，就是**在不改变原有代码的情况下，不用Runtime的Method Swizzling给任意对象添加任务Block，在对象dealloc的后期执行Block。**使用时：\n// 给object对象添加dealloc后期要执行的任务Block [object ttg_addDeallocTask:^(__unsafe_unretained id target, NSUInteger identifier) { // 执行任务 }]; Github地址：https://github.com/zekunyan/TTGDeallocTaskHelper\n一张图说明原理：\n库的详细原理、限制、注意事项，为什么说“后期”执行，将在下文给出。\n"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://tutuge.me/assets/2017/03/11/TTGDeallocTaskHelper/TTGDeallocTaskHelper_1.jpg'><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar.png width height class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>土土哥的技术 Blog</a></h1><h2 class=site-description>AI / iOS / Android / Flutter / Open Source</h2></div></header><ol class=menu-social><li><a href=https://github.com/zekunyan title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>首页</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav class=toc-nav id=TableOfContents><ul><li><a href=#前言>前言</a></li><li><a href=#使用案例>使用案例</a><ul><li><a href=#删除notification监听>删除Notification监听</a></li><li><a href=#快速debug内存泄漏>快速Debug内存泄漏</a></li><li><a href=#事件打点>事件打点</a></li></ul></li><li><a href=#原理>原理</a><ul><li><a href=#在对象dealloc的时候做操作的四种办法>在对象dealloc的时候做操作的四种办法</a></li><li><a href=#用associated-object挂载任务>用Associated Object挂载任务</a></li><li><a href=#associated-object---taskmodel>Associated Object - TaskModel</a></li><li><a href=#添加任务block>添加任务Block</a></li><li><a href=#删除任务block>删除任务Block</a></li><li><a href=#dealloc执行block>dealloc执行Block</a></li><li><a href=#给nsobject添加category>给NSObject添加Category</a></li></ul></li><li><a href=#限制与注意事项>限制与注意事项</a><ul><li><a href=#nsobject对象的dealloc过程>NSObject对象的dealloc过程</a></li><li><a href=#不建议在block里面调用target原对象的方法>不建议在Block里面调用target原对象的方法</a></li></ul></li><li><a href=#最后>最后</a></li></ul></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/2017/03/11/TTGDeallocTaskHelper/><img alt="Featured image of post 在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper" loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2017/03/11/TTGDeallocTaskHelper/TTGDeallocTaskHelper_1.jpg></a></div><div class=article-details><header class=article-category><a href=/categories/ios/ style=background-color:#efbeed;color:#3d0f3c>IOS</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/2017/03/11/TTGDeallocTaskHelper/>在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper</a></h2></div><footer class=article-meta><div class=inline-meta><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2017-03-11T00:00:00Z>2017-03-11</time>
+<svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 6 分钟</time></div></footer></div></header><aside class=article-toc><details><summary><div class=article-toc-title><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6-6 6"/></svg>
+<span>目录</span></div></summary><nav class=toc-nav><ul><li><a href=#前言>前言</a></li><li><a href=#使用案例>使用案例</a><ul><li><a href=#删除notification监听>删除Notification监听</a></li><li><a href=#快速debug内存泄漏>快速Debug内存泄漏</a></li><li><a href=#事件打点>事件打点</a></li></ul></li><li><a href=#原理>原理</a><ul><li><a href=#在对象dealloc的时候做操作的四种办法>在对象dealloc的时候做操作的四种办法</a></li><li><a href=#用associated-object挂载任务>用Associated Object挂载任务</a></li><li><a href=#associated-object---taskmodel>Associated Object - TaskModel</a></li><li><a href=#添加任务block>添加任务Block</a></li><li><a href=#删除任务block>删除任务Block</a></li><li><a href=#dealloc执行block>dealloc执行Block</a></li><li><a href=#给nsobject添加category>给NSObject添加Category</a></li></ul></li><li><a href=#限制与注意事项>限制与注意事项</a><ul><li><a href=#nsobject对象的dealloc过程>NSObject对象的dealloc过程</a></li><li><a href=#不建议在block里面调用target原对象的方法>不建议在Block里面调用target原对象的方法</a></li></ul></li><li><a href=#最后>最后</a></li></ul></nav></details></aside><section class=article-content><h2 id=前言><a href=#%e5%89%8d%e8%a8%80 class=header-anchor></a>前言</h2><p>最近更新了下以前写的TTGDeallocTaskHelper库，功能非常简单，就是**在不改变原有代码的情况下，不用Runtime的Method Swizzling给任意对象添加任务Block，在对象dealloc的后期执行Block。**使用时：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=c1>// 给object对象添加dealloc后期要执行的任务Block
+</span></span></span><span class=line><span class=cl><span class=p>[</span><span class=n>object</span> <span class=nl>ttg_addDeallocTask</span><span class=p>:</span><span class=o>^</span><span class=p>(</span><span class=n>__unsafe_unretained</span> <span class=kt>id</span> <span class=n>target</span><span class=p>,</span> <span class=n>NSUInteger</span> <span class=n>identifier</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 执行任务
+</span></span></span><span class=line><span class=cl><span class=p>}];</span>
+</span></span></code></pre></div><p>Github地址：<a class=link href=https://github.com/zekunyan/TTGDeallocTaskHelper/ target=_blank rel=noopener>https://github.com/zekunyan/TTGDeallocTaskHelper</a></p><p>一张图说明原理：</p><p><img alt=总体结构 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2017/03/11/TTGDeallocTaskHelper/TTGDeallocTaskHelper_1.jpg></p><p>库的详细原理、限制、注意事项，为什么说“<strong>后期</strong>”执行，将在下文给出。</p><h2 id=使用案例><a href=#%e4%bd%bf%e7%94%a8%e6%a1%88%e4%be%8b class=header-anchor></a>使用案例</h2><p>先给出几个使用案例。</p><h3 id=删除notification监听><a href=#%e5%88%a0%e9%99%a4notification%e7%9b%91%e5%90%ac class=header-anchor></a>删除Notification监听</h3><p>比如你给一个第三方类对象添加了Notification通知，要在对象release后删除Notification的监听，就可以：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=p>[</span><span class=n>object</span> <span class=nl>ttg_addDeallocTask</span><span class=p>:</span><span class=o>^</span><span class=p>(</span><span class=n>__unsafe_unretained</span> <span class=n>SomeClass</span> <span class=o>*</span><span class=n>object</span><span class=p>,</span> <span class=n>NSUInteger</span> <span class=n>identifier</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=c1>// 删除Notification监听
+</span></span></span><span class=line><span class=cl>    <span class=p>[[</span><span class=n>NSNotificationCenter</span> <span class=n>defaultCenter</span><span class=p>]</span> <span class=nl>removeObserver</span><span class=p>:</span><span class=n>object</span><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=p>}];</span>
+</span></span></code></pre></div><h3 id=快速debug内存泄漏><a href=#%e5%bf%ab%e9%80%9fdebug%e5%86%85%e5%ad%98%e6%b3%84%e6%bc%8f class=header-anchor></a>快速Debug内存泄漏</h3><p>有时你想快速验证一下一个类有没有释放，存不存在内存泄漏，比如一个ViewController返回后，就可以这么做：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=p>[</span><span class=n>someViewController</span> <span class=nl>ttg_addDeallocTask</span><span class=p>:</span><span class=o>^</span><span class=p>(</span><span class=n>__unsafe_unretained</span> <span class=n>UIViewController</span> <span class=o>*</span><span class=n>controller</span><span class=p>,</span> <span class=n>NSUInteger</span> <span class=n>identifier</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>NSLog</span><span class=p>(</span><span class=s>@&#34;我正常释放了！哈哈哈！&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}];</span>
+</span></span></code></pre></div><h3 id=事件打点><a href=#%e4%ba%8b%e4%bb%b6%e6%89%93%e7%82%b9 class=header-anchor></a>事件打点</h3><p>业务开发中，想监听某个事件什么时候销毁，就可以：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=p>[</span><span class=n>someEvent</span> <span class=nl>ttg_addDeallocTask</span><span class=p>:</span><span class=o>^</span><span class=p>(</span><span class=n>__unsafe_unretained</span> <span class=n>SomeEvent</span> <span class=o>*</span><span class=n>event</span><span class=p>,</span> <span class=n>NSUInteger</span> <span class=n>identifier</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 打点。。。
+</span></span></span><span class=line><span class=cl><span class=p>}];</span>
+</span></span></code></pre></div><p>是不是很方便！没有对原有的代码做任何侵入。
+接下来看看实现原理。</p><h2 id=原理><a href=#%e5%8e%9f%e7%90%86 class=header-anchor></a>原理</h2><h3 id=在对象dealloc的时候做操作的四种办法><a href=#%e5%9c%a8%e5%af%b9%e8%b1%a1dealloc%e7%9a%84%e6%97%b6%e5%80%99%e5%81%9a%e6%93%8d%e4%bd%9c%e7%9a%84%e5%9b%9b%e7%a7%8d%e5%8a%9e%e6%b3%95 class=header-anchor></a>在对象dealloc的时候做操作的四种办法</h3><p>在对象dealloc的时候做操作，有好几种方法：</p><ul><li><strong>继承</strong>：这个应该是最“正常”的方法了，继承对应的类，在子类中实现<code>dealloc</code>方法，执行相关的任务。缺点是要修改用到类的地方为自己定义的子类</li><li><strong>Method Swizzling</strong>：方法交换，直接自己定义新的dealloc方法实现，实现任务的调用。但是坏处是所有的对象都会被替换，侵入性太大</li><li><strong>ISA Swizzling</strong>：动态的生成对象的子类，在子类继承方法，实现调用任务，然后设置对象的isa指针，使其指向子类。这种方法的好处是只会影响到单个对象，但是系统KVO也是用这个方法，重复设置isa的话，会有问题。</li><li><strong>利用Associated Object</strong>：Associated Object会在对象释放时自动释放，所以可以用来“挂载”要执行的任务。</li></ul><p>对比了上面的四种方法后，选定用Associated Object的方式实现TTGDeallocTaskHelper。</p><h3 id=用associated-object挂载任务><a href=#%e7%94%a8associated-object%e6%8c%82%e8%bd%bd%e4%bb%bb%e5%8a%a1 class=header-anchor></a>用Associated Object挂载任务</h3><p>总的思路是：</p><ol><li>给对象添加Associated Object</li><li>在Associated Object里面保存要执行的任务Block</li><li>实现Associated Object的<code>dealloc</code>方法，在Associated Object释放的时候，批量执行之前添加的Block</li></ol><p>图示如下：</p><p><img alt=总体结构 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2017/03/11/TTGDeallocTaskHelper/TTGDeallocTaskHelper_1.jpg></p><h3 id=associated-object---taskmodel><a href=#associated-object---taskmodel class=header-anchor></a>Associated Object - TaskModel</h3><p><strong>属性</strong></p><p>上图中的TaskModel，就是库代码里面的<code>TTGDeallocTaskModel</code>类，包含三个属性：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>nonatomic</span><span class=p>,</span> <span class=k>assign</span><span class=p>)</span> <span class=n>pthread_mutex_t</span> <span class=n>lock</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>nonatomic</span><span class=p>,</span> <span class=k>strong</span><span class=p>)</span> <span class=n>NSMutableDictionary</span> <span class=o>*</span><span class=n>tasksDict</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>nonatomic</span><span class=p>,</span> <span class=k>unsafe_unretained</span><span class=p>)</span> <span class=kt>id</span> <span class=n>target</span><span class=p>;</span>
+</span></span></code></pre></div><ul><li><code>tasksDict</code>保存要执行的任务Block</li><li><code>lock</code>锁用来保证多线程下操作<code>tasksDict</code>的安全性</li><li><code>target</code>指向的是原对象，是<code>unsafe_unretained</code>的，保证始终不为nil，所以也建议不要在任务Block里面调用target的方法</li></ul><h3 id=添加任务block><a href=#%e6%b7%bb%e5%8a%a0%e4%bb%bb%e5%8a%a1block class=header-anchor></a>添加任务Block</h3><p><code>TTGDeallocTaskModel</code>的<code>tasksDict</code>就是用来保存要执行的任务Block的，为了能在添加了以后删除，所以要以Key-Value的形式保存。
+Key的类型是NSUInteger，全局自增，保证唯一。</p><h4 id=osatomicincrement64实现线程安全的自增整型key-identifier><a href=#osatomicincrement64%e5%ae%9e%e7%8e%b0%e7%ba%bf%e7%a8%8b%e5%ae%89%e5%85%a8%e7%9a%84%e8%87%aa%e5%a2%9e%e6%95%b4%e5%9e%8bkey-identifier class=header-anchor></a>OSAtomicIncrement64实现线程安全的自增整型Key-identifier</h4><p>为了保证自增的Key的线程安全，同时平衡性能，所以此处用<code>OSAtomicIncrement64</code>实现原子整型数自增：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=c1>// 全局静态变量
+</span></span></span><span class=line><span class=cl><span class=k>static</span> <span class=k>volatile</span> <span class=n>int64_t</span> <span class=n>globalIdentifier</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=c1>// 自增+1，生成新的Key
+</span></span></span><span class=line><span class=cl><span class=n>NSUInteger</span> <span class=n>newIdentifier</span> <span class=o>=</span> <span class=p>(</span><span class=n>NSUInteger</span><span class=p>)</span><span class=n>OSAtomicIncrement64</span><span class=p>(</span><span class=o>&amp;</span><span class=n>globalIdentifier</span><span class=p>);</span>
+</span></span></code></pre></div><h4 id=pthread_mutex_t保证操作字典的线程安全><a href=#pthread_mutex_t%e4%bf%9d%e8%af%81%e6%93%8d%e4%bd%9c%e5%ad%97%e5%85%b8%e7%9a%84%e7%ba%bf%e7%a8%8b%e5%ae%89%e5%85%a8 class=header-anchor></a>pthread_mutex_t保证操作字典的线程安全</h4><p>为了保证NSMutableDictionary的多线程操作的安全，用pthread_mutex_t对添加Block的操作加锁：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=n>pthread_mutex_lock</span><span class=p>(</span><span class=o>&amp;</span><span class=n>_lock</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>_tasksDict</span> <span class=nl>setObject</span><span class=p>:[</span><span class=n>taskBlock</span> <span class=k>copy</span><span class=p>]</span> <span class=nl>forKey</span><span class=p>:</span><span class=n>newIdentifierNumber</span><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=n>pthread_mutex_unlock</span><span class=p>(</span><span class=o>&amp;</span><span class=n>_lock</span><span class=p>);</span>
+</span></span></code></pre></div><h3 id=删除任务block><a href=#%e5%88%a0%e9%99%a4%e4%bb%bb%e5%8a%a1block class=header-anchor></a>删除任务Block</h3><p>删除任务有两种，分别是删除一个identifier key对应的Block，和删除所有Block，同样，都要加锁保证线程安全：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=c1>// 加锁
+</span></span></span><span class=line><span class=cl><span class=n>pthread_mutex_lock</span><span class=p>(</span><span class=o>&amp;</span><span class=n>_lock</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=c1>// 删除某个identifier对应的Block
+</span></span></span><span class=line><span class=cl><span class=p>[</span><span class=n>_tasksDict</span> <span class=nl>removeObjectForKey</span><span class=p>:</span><span class=n>identifierNumber</span><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=c1>// 或删除所有
+</span></span></span><span class=line><span class=cl><span class=p>[</span><span class=n>_tasksDict</span> <span class=n>removeAllObjects</span><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=c1>// 解除锁
+</span></span></span><span class=line><span class=cl><span class=n>pthread_mutex_unlock</span><span class=p>(</span><span class=o>&amp;</span><span class=n>_lock</span><span class=p>);</span>
+</span></span></code></pre></div><h3 id=dealloc执行block><a href=#dealloc%e6%89%a7%e8%a1%8cblock class=header-anchor></a>dealloc执行Block</h3><p>最终在TaskModel被释放的时候，要批量执行所有添加的Block：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=p>-</span> <span class=p>(</span><span class=kt>void</span><span class=p>)</span><span class=nf>dealloc</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 批量执行Block
+</span></span></span><span class=line><span class=cl>    <span class=p>[</span><span class=n>_tasksDict</span> <span class=nl>enumerateKeysAndObjectsUsingBlock</span><span class=p>:</span><span class=o>^</span><span class=p>(</span><span class=n>NSNumber</span> <span class=o>*</span><span class=n>identifier</span><span class=p>,</span> <span class=n>TTGDeallocTaskBlock</span> <span class=n>block</span><span class=p>,</span> <span class=kt>BOOL</span> <span class=o>*</span> <span class=n>_Nonnull</span> <span class=n>stop</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>block</span><span class=p>(</span><span class=n>_target</span><span class=p>,</span> <span class=n>identifier</span><span class=p>.</span><span class=n>unsignedIntegerValue</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}];</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 销毁锁
+</span></span></span><span class=line><span class=cl>    <span class=n>pthread_mutex_destroy</span><span class=p>(</span><span class=o>&amp;</span><span class=n>_lock</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><h3 id=给nsobject添加category><a href=#%e7%bb%99nsobject%e6%b7%bb%e5%8a%a0category class=header-anchor></a>给NSObject添加Category</h3><p>上面是TaskModel的部分，接下来是NSObject的。</p><p>给NSObject添加Categor <code>NSObject (TTGDeallocTaskHelper)</code>，保存<code>TTGDeallocTaskModel</code>，封装调用。</p><h4 id=封装-添加任务block><a href=#%e5%b0%81%e8%a3%85-%e6%b7%bb%e5%8a%a0%e4%bb%bb%e5%8a%a1block class=header-anchor></a>封装-添加任务Block</h4><p><strong>Associated Object给对象添加TaskModel属性</strong></p><p>用<code>objc_setAssociatedObject</code>实现给任意对象添加对应的TaskModel对象。</p><p><strong>@synchronized保证多线程下TaskModel的唯一性</strong></p><p>首次添加任务Block，会创建TaskModel，为了保证多线程下的唯一性，所以创建的部分要用<code>@synchronized</code>保护起来。</p><p>所以，添加任务Block的代码如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=p>-</span> <span class=p>(</span><span class=n>NSUInteger</span><span class=p>)</span><span class=nf>ttg_addDeallocTask:</span><span class=p>(</span><span class=n>TTGDeallocTaskBlock</span><span class=p>)</span><span class=nv>taskBlock</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=n>taskBlock</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// block为空
+</span></span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>TTGDeallocTaskIllegalIdentifier</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>TTGDeallocTaskModel</span> <span class=o>*</span><span class=n>model</span> <span class=o>=</span> <span class=nb>nil</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 线程安全
+</span></span></span><span class=line><span class=cl>    <span class=k>@synchronized</span> <span class=p>(</span><span class=nb>self</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>model</span> <span class=o>=</span> <span class=n>objc_getAssociatedObject</span><span class=p>(</span><span class=nb>self</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>TTGDeallocTaskModelKey</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=n>model</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// 创建
+</span></span></span><span class=line><span class=cl>            <span class=n>model</span> <span class=o>=</span> <span class=p>[[</span><span class=n>TTGDeallocTaskModel</span> <span class=n>alloc</span><span class=p>]</span> <span class=nl>initWithTarget</span><span class=p>:</span><span class=nb>self</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// 保存
+</span></span></span><span class=line><span class=cl>            <span class=n>objc_setAssociatedObject</span><span class=p>(</span><span class=nb>self</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>TTGDeallocTaskModelKey</span><span class=p>,</span> <span class=n>model</span><span class=p>,</span> <span class=n>OBJC_ASSOCIATION_RETAIN_NONATOMIC</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 添加新的Block
+</span></span></span><span class=line><span class=cl>    <span class=n>NSUInteger</span> <span class=n>newIdentifier</span> <span class=o>=</span> <span class=p>[</span><span class=n>model</span> <span class=nl>addTask</span><span class=p>:</span><span class=n>taskBlock</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>newIdentifier</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><h4 id=封装-删除block><a href=#%e5%b0%81%e8%a3%85-%e5%88%a0%e9%99%a4block class=header-anchor></a>封装-删除Block</h4><p>直接获取当前对象的TaskModel对象，调用相应的方法即可，不再贴代码。</p><h2 id=限制与注意事项><a href=#%e9%99%90%e5%88%b6%e4%b8%8e%e6%b3%a8%e6%84%8f%e4%ba%8b%e9%a1%b9 class=header-anchor></a>限制与注意事项</h2><p>原理和实现说完了，接下来是库的限制与注意事项。</p><h3 id=nsobject对象的dealloc过程><a href=#nsobject%e5%af%b9%e8%b1%a1%e7%9a%84dealloc%e8%bf%87%e7%a8%8b class=header-anchor></a>NSObject对象的dealloc过程</h3><p>先来看看Associated Object在<code>dealloc</code>的什么时候释放。</p><p>NSObject对象dealloc的具体细节，sunnyxx在他的<a class=link href=http://blog.sunnyxx.com/2014/04/02/objc_dig_arc_dealloc/ target=_blank rel=noopener>《ARC下dealloc过程及.cxx_destruct的探究》</a>已经说的很清楚了。简单来说，就是对象dealloc的时候，最终会调用到<code>objc_destructInstance</code>方法上：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=c1>// 源码：objc4-706 objc-class.mm
+</span></span></span><span class=line><span class=cl><span class=cm>/***********************************************************************
+</span></span></span><span class=line><span class=cl><span class=cm>* objc_destructInstance
+</span></span></span><span class=line><span class=cl><span class=cm>* Destroys an instance without freeing memory.
+</span></span></span><span class=line><span class=cl><span class=cm>* Calls C++ destructors.
+</span></span></span><span class=line><span class=cl><span class=cm>* Removes associative references.
+</span></span></span><span class=line><span class=cl><span class=cm>* Returns `obj`. Does nothing if `obj` is nil.
+</span></span></span><span class=line><span class=cl><span class=cm>* CoreFoundation and other clients do call this under GC.
+</span></span></span><span class=line><span class=cl><span class=cm>**********************************************************************/</span>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=o>*</span><span class=nf>objc_destructInstance</span><span class=p>(</span><span class=kt>id</span> <span class=n>obj</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>obj</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>Class</span> <span class=n>isa</span> <span class=o>=</span> <span class=n>obj</span><span class=o>-&gt;</span><span class=n>getIsa</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>isa</span><span class=o>-&gt;</span><span class=n>hasCxxDtor</span><span class=p>())</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// 1. 释放property
+</span></span></span><span class=line><span class=cl>            <span class=n>object_cxxDestruct</span><span class=p>(</span><span class=n>obj</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>isa</span><span class=o>-&gt;</span><span class=n>instancesHaveAssociatedObjects</span><span class=p>())</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// 2. 删除对象的associated objects
+</span></span></span><span class=line><span class=cl>            <span class=n>_object_remove_assocations</span><span class=p>(</span><span class=n>obj</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 3. 设置所有指向此对象的weak指针为nil
+</span></span></span><span class=line><span class=cl>        <span class=n>objc_clear_deallocating</span><span class=p>(</span><span class=n>obj</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>obj</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>主要是3步：</p><ol><li><code>object_cxxDestruct</code>释放对象的ivar、property</li><li><code>_object_remove_assocations</code>释放对象的Associated Object</li><li><code>objc_clear_deallocating</code>重置所有指向对象的weak指针为空</li></ol><h3 id=不建议在block里面调用target原对象的方法><a href=#%e4%b8%8d%e5%bb%ba%e8%ae%ae%e5%9c%a8block%e9%87%8c%e9%9d%a2%e8%b0%83%e7%94%a8target%e5%8e%9f%e5%af%b9%e8%b1%a1%e7%9a%84%e6%96%b9%e6%b3%95 class=header-anchor></a>不建议在Block里面调用target原对象的方法</h3><p>从dealloc的流程可知，Associated Object是在第二步被释放的，这个时候，原对象的属性已被release，并且，Associated Object对象自己的dealloc不一定在什么时候会被调用（比如加到了autorelease pool里面），所以，不建议在任务Block里面调用target原对象的方法。</p><h2 id=最后><a href=#%e6%9c%80%e5%90%8e class=header-anchor></a>最后</h2><p>什么时候Associated Object的释放能在对象属性release之前就好了=。=</p></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/%E5%8E%9F%E5%88%9B/>原创</a>
+<a href=/tags/ios/>IOS</a>
+<a href=/tags/%E5%BC%80%E6%BA%90/>开源</a></section></footer></article><aside><h2 class=section-title>相关文章</h2><div class=subsection-list><div class=article-list--tile><article class=has-image><a href=/2017/03/08/quartzcode-demo-star-animation/><div class=article-image><img alt="Featured image of post 用QuartzCode快速实现一个收藏动画" loading=lazy src=/assets/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_1.gif></div><div class=article-details><h2 class=article-title>用QuartzCode快速实现一个收藏动画</h2></div></a></article><article class=has-image><a href=/2016/12/25/TTGPuzzleVerify/><div class=article-image><img alt="Featured image of post 开源项目-拼图验证控件TTGPuzzleVerify的实现" loading=lazy src=/assets/2016/12/25/TTGPuzzleVerify/blog_TTGPuzzleVerify_gif.gif></div><div class=article-details><h2 class=article-title>开源项目-拼图验证控件TTGPuzzleVerify的实现</h2></div></a></article><article class=has-image><a href=/2015/12/31/TTGTagCollectionView/><div class=article-image><img alt="Featured image of post 开源项目-TTGTagCollectionView" loading=lazy src=/assets/2015/12/31/TTGTagCollectionView/TTGTagCollectionView_screenshot.png></div><div class=article-details><h2 class=article-title>开源项目-TTGTagCollectionView</h2></div></a></article><article class=has-image><a href=/2015/10/25/ttgemojirate-lib/><div class=article-image><img alt="Featured image of post Swift开源项目: TTGEmojiRate的实现" loading=lazy src=/assets/2015/10/25/ttgemojirate-lib/TTGEmojiRate_screenshot2.gif></div><div class=article-details><h2 class=article-title>Swift开源项目: TTGEmojiRate的实现</h2></div></a></article><article class=has-image><a href=/2015/10/09/ttgsnackbar-lib/><div class=article-image><img alt="Featured image of post Swift写的库-TTGSnackbar" loading=lazy src=/assets/2015/10/09/ttgsnackbar-lib/TTGSnackbar_screen_shot.png></div><div class=article-details><h2 class=article-title>Swift写的库-TTGSnackbar</h2></div></a></article></div></div></aside><footer class=site-footer><section class=copyright>&copy;
+2014 -
+2026 tutuge</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=4.0.3>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><script type=module>
+    import gallery from '\/ts\/gallery.js';
 
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
     
-
-    <title>在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper | iOS程序猿.目前阿里,喜欢各种技术,RCFans</title>
-    <meta name="author" content="土土哥">
-    
-    <meta name="description" content="iOS程序猿.目前阿里,喜欢各种技术,RCFans">
-    
-    
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-    <meta property="og:title" content="在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper">
-    <meta property="og:site_name" content="土土哥的Blog">
-
-    
-    <meta property="og:image" content="undefined">
-    
-
-    <link rel="icon" type="image/png" href="/favicon.png">
-    <link rel="alternate" href="/atom.xml" title="土土哥的Blog" type="application/atom+xml">
-    <link rel="stylesheet" href="/css/lib/materialize.min.css">
-    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
-    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-
-    
-        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
-    
-    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-</head>
-</html>
-
-<body>
-    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
-
-    <nav class="blue-grey">
-    <div class="nav-wrapper">
-        <a href="#" data-activates="main-menu" class="button-collapse">
-            <i class="fa fa-navicon"></i>
-        </a>
-        <div class="">
-            <a href="/" class="brand-logo hide-on-med-and-down">土土哥的Blog</a>
-            <ul class="right hide-on-med-and-down">
-                
-                    <li>
-                        <a class="menu-home " href="/" >
-                            <i class="fa fa-home "></i>
-                            
-                            首页
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-archive " href="/archives" >
-                            <i class="fa fa-archive "></i>
-                            
-                            归档
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
-                            <i class="fa fa-bookmark "></i>
-                            
-                            分类
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-about " href="/about" >
-                            <i class="fa fa-user "></i>
-                            
-                            关于
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-search modal-trigger " href="#search" >
-                            <i class="fa fa-search "></i>
-                            
-                            搜索
-                        </a>
-                    </li>
-                
-            </ul>
-            <div>
-    <ul class="side-nav blue-grey darken-1" id="main-menu">
-        
-        <li class="side-user">
-            <div class="row">
-                <div class="col s4 no-padding">
-                    <img class="avatar-image circle responsive-img" src="http://tutuge.me/2019/07/29/2019-07-29-occupied-with-work/avatar_comic.jpg" alt="User Avatar">
-                </div>
-                <div class="info col s8 valign-wrapper no-padding">
-                    <div class="valign">
-                        <p class="name">土土哥</p>
-                        <p class="desc">iOS/Android/技术宅/RCFans</p>
-                    </div>
-                </div>
-            </div>
-        </li>
-        
-
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-home " href="/" >
-                    <i class="fa fa-home "></i>
-                    
-                    首页
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-archive " href="/archives" >
-                    <i class="fa fa-archive "></i>
-                    
-                    归档
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
-                    <i class="fa fa-bookmark "></i>
-                    
-                    分类
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-about " href="/about" >
-                    <i class="fa fa-user "></i>
-                    
-                    关于
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-search modal-trigger " href="#search" >
-                    <i class="fa fa-search "></i>
-                    
-                    搜索
-                </a>
-            </li>
-        
-    </ul>
-
-    <ul class="side-nav blue-grey darken-1" id="category-menu">
-    
-
-            
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/其它/">
-                    其它 <span class="right">5 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/iOS/">
-                    iOS <span class="right">37 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/Android/">
-                    Android <span class="right">1 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/Mac/">
-                    Mac <span class="right">1 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/服务端/">
-                    服务端 <span class="right">2 篇</span></a>
-                </a>
-            </li>
-
-        
-
-    </ul>
-</div>
-
-        </div>
-    </div>
-</nav>
-
-<div id="search" class="modal search-modal">
-    <div class="row">
-        <div class="input-field col s12">
-              <input id="search-input" type="text">
-              <label for="search-input">搜索</label>
-        </div>
-
-    </div>
-    <div id="search-result" class="search-result col s12">
-
-    </div>
-</div>
-
-
-    <main>
-        <div class="container main-container">
-    
-<nav class="page-nav hide-on-small-only">
-    <div class="nav-wrapper blue-grey">
-        <span class="breadcrumb">当前位置（分类目录）</span>
-        
-            
-    
-    
-    <a class="breadcrumb" href="/categories/iOS/">iOS</a>
-
-
-        
-
-        
-    </div>
-</nav>
-
-<article>
-    <div class="card">
-        <div class="card-content">
-            
-
-            <div class="article-title">
-                
-    
-        <h1>在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper</h1>
-    
-
-
-            </div>
-            <time class="teal-link-context" datetime="2017-03-11T03:11:11.000Z"><a href="/2017/03/11/TTGDeallocTaskHelper/">2017-03-11</a></time>
-
-            <span id="busuanzi_container_page_pv" class="read-times-container">
-    <i class="fa fa-eye"></i>
-    <span id="busuanzi_value_page_pv"></span>
-</span>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
-        
-            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
-        
-            <a href="/tags/开源/" class="chip teal accent-4">开源</a>
-        
-    </div>
-
-
-            <div class="toc teal-link-context hide-on-med-and-down">
-    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#前言"><span class="section table-of-contents-text">前言</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#使用案例"><span class="section table-of-contents-text">使用案例</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#删除Notification监听"><span class="section table-of-contents-text">删除Notification监听</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#快速Debug内存泄漏"><span class="section table-of-contents-text">快速Debug内存泄漏</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#事件打点"><span class="section table-of-contents-text">事件打点</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#原理"><span class="section table-of-contents-text">原理</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#在对象dealloc的时候做操作的四种办法"><span class="section table-of-contents-text">在对象dealloc的时候做操作的四种办法</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#用Associated-Object挂载任务"><span class="section table-of-contents-text">用Associated Object挂载任务</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#Associated-Object-TaskModel"><span class="section table-of-contents-text">Associated Object - TaskModel</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#添加任务Block"><span class="section table-of-contents-text">添加任务Block</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#OSAtomicIncrement64实现线程安全的自增整型Key-identifier"><span class="section table-of-contents-text">OSAtomicIncrement64实现线程安全的自增整型Key-identifier</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#pthread-mutex-t保证操作字典的线程安全"><span class="section table-of-contents-text">pthread_mutex_t保证操作字典的线程安全</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#删除任务Block"><span class="section table-of-contents-text">删除任务Block</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#dealloc执行Block"><span class="section table-of-contents-text">dealloc执行Block</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#给NSObject添加Category"><span class="section table-of-contents-text">给NSObject添加Category</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#封装-添加任务Block"><span class="section table-of-contents-text">封装-添加任务Block</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#封装-删除Block"><span class="section table-of-contents-text">封装-删除Block</span></a></li></ol></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#限制与注意事项"><span class="section table-of-contents-text">限制与注意事项</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#NSObject对象的dealloc过程"><span class="section table-of-contents-text">NSObject对象的dealloc过程</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#不建议在Block里面调用target原对象的方法"><span class="section table-of-contents-text">不建议在Block里面调用target原对象的方法</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#最后"><span class="section table-of-contents-text">最后</span></a></li></ol>
-</div>
-
-
-            <div class="entry teal-link-context">
-                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近更新了下以前写的TTGDeallocTaskHelper库，功能非常简单，就是<strong>在不改变原有代码的情况下，不用Runtime的Method Swizzling给任意对象添加任务Block，在对象dealloc的后期执行Block。</strong>使用时：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 给object对象添加dealloc后期要执行的任务Block</span></span><br><span class="line">[object ttg_addDeallocTask:^(__<span class="keyword">unsafe_unretained</span> <span class="keyword">id</span> target, <span class="built_in">NSUInteger</span> identifier) &#123;</span><br><span class="line">    <span class="comment">// 执行任务</span></span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
-<p>Github地址：<a href="https://github.com/zekunyan/TTGDeallocTaskHelper/" target="_blank" rel="noopener">https://github.com/zekunyan/TTGDeallocTaskHelper</a></p>
-<p>一张图说明原理：</p>
-<p><img src="/2017/03/11/TTGDeallocTaskHelper/TTGDeallocTaskHelper_1.jpg" alt="总体结构"></p>
-<p>库的详细原理、限制、注意事项，为什么说“<strong>后期</strong>”执行，将在下文给出。</p>
-<a id="more"></a>
-<h2 id="使用案例"><a href="#使用案例" class="headerlink" title="使用案例"></a>使用案例</h2><p>先给出几个使用案例。</p>
-<h3 id="删除Notification监听"><a href="#删除Notification监听" class="headerlink" title="删除Notification监听"></a>删除Notification监听</h3><p>比如你给一个第三方类对象添加了Notification通知，要在对象release后删除Notification的监听，就可以：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[object ttg_addDeallocTask:^(__<span class="keyword">unsafe_unretained</span> SomeClass *object, <span class="built_in">NSUInteger</span> identifier) &#123;</span><br><span class="line">	<span class="comment">// 删除Notification监听</span></span><br><span class="line">    [[<span class="built_in">NSNotificationCenter</span> defaultCenter] removeObserver:object];</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
-<h3 id="快速Debug内存泄漏"><a href="#快速Debug内存泄漏" class="headerlink" title="快速Debug内存泄漏"></a>快速Debug内存泄漏</h3><p>有时你想快速验证一下一个类有没有释放，存不存在内存泄漏，比如一个ViewController返回后，就可以这么做：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[someViewController ttg_addDeallocTask:^(__<span class="keyword">unsafe_unretained</span> <span class="built_in">UIViewController</span> *controller, <span class="built_in">NSUInteger</span> identifier) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"我正常释放了！哈哈哈！"</span>);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
-<h3 id="事件打点"><a href="#事件打点" class="headerlink" title="事件打点"></a>事件打点</h3><p>业务开发中，想监听某个事件什么时候销毁，就可以：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[someEvent ttg_addDeallocTask:^(__<span class="keyword">unsafe_unretained</span> SomeEvent *event, <span class="built_in">NSUInteger</span> identifier) &#123;</span><br><span class="line">    <span class="comment">// 打点。。。</span></span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
-<p>是不是很方便！没有对原有的代码做任何侵入。<br>接下来看看实现原理。</p>
-<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><h3 id="在对象dealloc的时候做操作的四种办法"><a href="#在对象dealloc的时候做操作的四种办法" class="headerlink" title="在对象dealloc的时候做操作的四种办法"></a>在对象dealloc的时候做操作的四种办法</h3><p>在对象dealloc的时候做操作，有好几种方法：</p>
-<ul>
-<li><strong>继承</strong>：这个应该是最“正常”的方法了，继承对应的类，在子类中实现<code>dealloc</code>方法，执行相关的任务。缺点是要修改用到类的地方为自己定义的子类</li>
-<li><strong>Method Swizzling</strong>：方法交换，直接自己定义新的dealloc方法实现，实现任务的调用。但是坏处是所有的对象都会被替换，侵入性太大</li>
-<li><strong>ISA Swizzling</strong>：动态的生成对象的子类，在子类继承方法，实现调用任务，然后设置对象的isa指针，使其指向子类。这种方法的好处是只会影响到单个对象，但是系统KVO也是用这个方法，重复设置isa的话，会有问题。</li>
-<li><strong>利用Associated Object</strong>：Associated Object会在对象释放时自动释放，所以可以用来“挂载”要执行的任务。</li>
-</ul>
-<p>对比了上面的四种方法后，选定用Associated Object的方式实现TTGDeallocTaskHelper。</p>
-<h3 id="用Associated-Object挂载任务"><a href="#用Associated-Object挂载任务" class="headerlink" title="用Associated Object挂载任务"></a>用Associated Object挂载任务</h3><p>总的思路是：</p>
-<ol>
-<li>给对象添加Associated Object</li>
-<li>在Associated Object里面保存要执行的任务Block</li>
-<li>实现Associated Object的<code>dealloc</code>方法，在Associated Object释放的时候，批量执行之前添加的Block</li>
-</ol>
-<p>图示如下：</p>
-<p><img src="/2017/03/11/TTGDeallocTaskHelper/TTGDeallocTaskHelper_1.jpg" alt="总体结构"></p>
-<h3 id="Associated-Object-TaskModel"><a href="#Associated-Object-TaskModel" class="headerlink" title="Associated Object - TaskModel"></a>Associated Object - TaskModel</h3><p><strong>属性</strong></p>
-<p>上图中的TaskModel，就是库代码里面的<code>TTGDeallocTaskModel</code>类，包含三个属性：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) pthread_mutex_t lock;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSMutableDictionary</span> *tasksDict;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">unsafe_unretained</span>) <span class="keyword">id</span> target;</span><br></pre></td></tr></table></figure>
-<ul>
-<li><code>tasksDict</code>保存要执行的任务Block</li>
-<li><code>lock</code>锁用来保证多线程下操作<code>tasksDict</code>的安全性</li>
-<li><code>target</code>指向的是原对象，是<code>unsafe_unretained</code>的，保证始终不为nil，所以也建议不要在任务Block里面调用target的方法</li>
-</ul>
-<h3 id="添加任务Block"><a href="#添加任务Block" class="headerlink" title="添加任务Block"></a>添加任务Block</h3><p><code>TTGDeallocTaskModel</code>的<code>tasksDict</code>就是用来保存要执行的任务Block的，为了能在添加了以后删除，所以要以Key-Value的形式保存。<br>Key的类型是NSUInteger，全局自增，保证唯一。</p>
-<h4 id="OSAtomicIncrement64实现线程安全的自增整型Key-identifier"><a href="#OSAtomicIncrement64实现线程安全的自增整型Key-identifier" class="headerlink" title="OSAtomicIncrement64实现线程安全的自增整型Key-identifier"></a>OSAtomicIncrement64实现线程安全的自增整型Key-identifier</h4><p>为了保证自增的Key的线程安全，同时平衡性能，所以此处用<code>OSAtomicIncrement64</code>实现原子整型数自增：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 全局静态变量</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">volatile</span> int64_t globalIdentifier = <span class="number">0</span>;</span><br><span class="line"><span class="comment">// 自增+1，生成新的Key</span></span><br><span class="line"><span class="built_in">NSUInteger</span> newIdentifier = (<span class="built_in">NSUInteger</span>)OSAtomicIncrement64(&amp;globalIdentifier);</span><br></pre></td></tr></table></figure>
-<h4 id="pthread-mutex-t保证操作字典的线程安全"><a href="#pthread-mutex-t保证操作字典的线程安全" class="headerlink" title="pthread_mutex_t保证操作字典的线程安全"></a>pthread_mutex_t保证操作字典的线程安全</h4><p>为了保证NSMutableDictionary的多线程操作的安全，用pthread_mutex_t对添加Block的操作加锁：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pthread_mutex_lock(&amp;_lock);</span><br><span class="line">[_tasksDict setObject:[taskBlock <span class="keyword">copy</span>] forKey:newIdentifierNumber];</span><br><span class="line">pthread_mutex_unlock(&amp;_lock);</span><br></pre></td></tr></table></figure>
-<h3 id="删除任务Block"><a href="#删除任务Block" class="headerlink" title="删除任务Block"></a>删除任务Block</h3><p>删除任务有两种，分别是删除一个identifier key对应的Block，和删除所有Block，同样，都要加锁保证线程安全：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 加锁</span></span><br><span class="line">pthread_mutex_lock(&amp;_lock);</span><br><span class="line"><span class="comment">// 删除某个identifier对应的Block</span></span><br><span class="line">[_tasksDict removeObjectForKey:identifierNumber];</span><br><span class="line"><span class="comment">// 或删除所有</span></span><br><span class="line">[_tasksDict removeAllObjects];</span><br><span class="line"><span class="comment">// 解除锁</span></span><br><span class="line">pthread_mutex_unlock(&amp;_lock);</span><br></pre></td></tr></table></figure>
-<h3 id="dealloc执行Block"><a href="#dealloc执行Block" class="headerlink" title="dealloc执行Block"></a>dealloc执行Block</h3><p>最终在TaskModel被释放的时候，要批量执行所有添加的Block：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)dealloc &#123;</span><br><span class="line">    <span class="comment">// 批量执行Block</span></span><br><span class="line">    [_tasksDict enumerateKeysAndObjectsUsingBlock:^(<span class="built_in">NSNumber</span> *identifier, TTGDeallocTaskBlock block, <span class="built_in">BOOL</span> * _Nonnull stop) &#123;</span><br><span class="line">        block(_target, identifier.unsignedIntegerValue);</span><br><span class="line">    &#125;];</span><br><span class="line">    <span class="comment">// 销毁锁</span></span><br><span class="line">    pthread_mutex_destroy(&amp;_lock);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="给NSObject添加Category"><a href="#给NSObject添加Category" class="headerlink" title="给NSObject添加Category"></a>给NSObject添加Category</h3><p>上面是TaskModel的部分，接下来是NSObject的。</p>
-<p>给NSObject添加Categor <code>NSObject (TTGDeallocTaskHelper)</code>，保存<code>TTGDeallocTaskModel</code>，封装调用。</p>
-<h4 id="封装-添加任务Block"><a href="#封装-添加任务Block" class="headerlink" title="封装-添加任务Block"></a>封装-添加任务Block</h4><p><strong>Associated Object给对象添加TaskModel属性</strong></p>
-<p>用<code>objc_setAssociatedObject</code>实现给任意对象添加对应的TaskModel对象。</p>
-<p><strong>@synchronized保证多线程下TaskModel的唯一性</strong></p>
-<p>首次添加任务Block，会创建TaskModel，为了保证多线程下的唯一性，所以创建的部分要用<code>@synchronized</code>保护起来。</p>
-<p>所以，添加任务Block的代码如下：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="built_in">NSUInteger</span>)ttg_addDeallocTask:(TTGDeallocTaskBlock)taskBlock &#123;</span><br><span class="line">    <span class="keyword">if</span> (!taskBlock) &#123;</span><br><span class="line">        <span class="comment">// block为空</span></span><br><span class="line">        <span class="keyword">return</span> TTGDeallocTaskIllegalIdentifier;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    TTGDeallocTaskModel *model = <span class="literal">nil</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 线程安全</span></span><br><span class="line">    <span class="keyword">@synchronized</span> (<span class="keyword">self</span>) &#123;</span><br><span class="line">        model = objc_getAssociatedObject(<span class="keyword">self</span>, &amp;TTGDeallocTaskModelKey);</span><br><span class="line">        <span class="keyword">if</span> (!model) &#123;</span><br><span class="line">            <span class="comment">// 创建</span></span><br><span class="line">            model = [[TTGDeallocTaskModel alloc] initWithTarget:<span class="keyword">self</span>];</span><br><span class="line">            <span class="comment">// 保存</span></span><br><span class="line">            objc_setAssociatedObject(<span class="keyword">self</span>, &amp;TTGDeallocTaskModelKey, model, OBJC_ASSOCIATION_RETAIN_NONATOMIC);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 添加新的Block</span></span><br><span class="line">    <span class="built_in">NSUInteger</span> newIdentifier = [model addTask:taskBlock];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> newIdentifier;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="封装-删除Block"><a href="#封装-删除Block" class="headerlink" title="封装-删除Block"></a>封装-删除Block</h4><p>直接获取当前对象的TaskModel对象，调用相应的方法即可，不再贴代码。</p>
-<h2 id="限制与注意事项"><a href="#限制与注意事项" class="headerlink" title="限制与注意事项"></a>限制与注意事项</h2><p>原理和实现说完了，接下来是库的限制与注意事项。</p>
-<h3 id="NSObject对象的dealloc过程"><a href="#NSObject对象的dealloc过程" class="headerlink" title="NSObject对象的dealloc过程"></a>NSObject对象的dealloc过程</h3><p>先来看看Associated Object在<code>dealloc</code>的什么时候释放。</p>
-<p>NSObject对象dealloc的具体细节，sunnyxx在他的<a href="http://blog.sunnyxx.com/2014/04/02/objc_dig_arc_dealloc/" target="_blank" rel="noopener">《ARC下dealloc过程及.cxx_destruct的探究》</a>已经说的很清楚了。简单来说，就是对象dealloc的时候，最终会调用到<code>objc_destructInstance</code>方法上：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 源码：objc4-706 objc-class.mm</span></span><br><span class="line"><span class="comment">/***********************************************************************</span></span><br><span class="line"><span class="comment">* objc_destructInstance</span></span><br><span class="line"><span class="comment">* Destroys an instance without freeing memory. </span></span><br><span class="line"><span class="comment">* Calls C++ destructors.</span></span><br><span class="line"><span class="comment">* Removes associative references.</span></span><br><span class="line"><span class="comment">* Returns `obj`. Does nothing if `obj` is nil.</span></span><br><span class="line"><span class="comment">* CoreFoundation and other clients do call this under GC.</span></span><br><span class="line"><span class="comment">**********************************************************************/</span></span><br><span class="line"><span class="keyword">void</span> *objc_destructInstance(<span class="keyword">id</span> obj) </span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (obj) &#123;</span><br><span class="line">        Class isa = obj-&gt;getIsa();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (isa-&gt;hasCxxDtor()) &#123;</span><br><span class="line">            <span class="comment">// 1. 释放property</span></span><br><span class="line">            object_cxxDestruct(obj);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (isa-&gt;instancesHaveAssociatedObjects()) &#123;</span><br><span class="line">            <span class="comment">// 2. 删除对象的associated objects</span></span><br><span class="line">            _object_remove_assocations(obj);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 3. 设置所有指向此对象的weak指针为nil</span></span><br><span class="line">        objc_clear_deallocating(obj);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> obj;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>主要是3步：</p>
-<ol>
-<li><code>object_cxxDestruct</code>释放对象的ivar、property</li>
-<li><code>_object_remove_assocations</code>释放对象的Associated Object</li>
-<li><code>objc_clear_deallocating</code>重置所有指向对象的weak指针为空</li>
-</ol>
-<h3 id="不建议在Block里面调用target原对象的方法"><a href="#不建议在Block里面调用target原对象的方法" class="headerlink" title="不建议在Block里面调用target原对象的方法"></a>不建议在Block里面调用target原对象的方法</h3><p>从dealloc的流程可知，Associated Object是在第二步被释放的，这个时候，原对象的属性已被release，并且，Associated Object对象自己的dealloc不一定在什么时候会被调用（比如加到了autorelease pool里面），所以，不建议在任务Block里面调用target原对象的方法。</p>
-<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>什么时候Associated Object的释放能在对象属性release之前就好了=。=</p>
-
-                
-<p class="teal-link-context">
-    <a href="/2017/03/12/autolayout-example-with-masonry5/" rel="next" title="有趣的Autolayout示例5-Masonry实现">
-    上一篇：有趣的Autolayout示例5-Masonry实现
-  </a>
-</p>
-
-
-
-<p class="teal-link-context">
-    <a href="/2017/03/08/quartzcode-demo-star-animation/" rel="next" title="用QuartzCode快速实现一个收藏动画">
-    下一篇：用QuartzCode快速实现一个收藏动画
-  </a>
-</p>
-
-
-            </div>
-
-            
-			
-        </div>
-    </div>
-</article>
-
-
-
-
-    <section id="comment">
-        <div id="disqus_thread"></div>
-        <script>
-            var disqus_config = function() {
-                this.page.url = 'http://tutuge.me/2017/03/11/TTGDeallocTaskHelper/';
-                this.page.identifier = '2017/03/11/TTGDeallocTaskHelper/';
-            };
-            (function() {
-                var d = document,
-                    s = d.createElement('script');
-                s.src = '//tutuge-me.disqus.com/embed.js';
-                s.setAttribute('data-timestamp', + new Date());
-                (d.head || d.body).appendChild(s);
-            })();
-        </script>
-        <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
-        </noscript>
-    </section>
-
-
-
-</div>
-
-        <div class="fixed-action-btn float-sitemap">
-    <a class="btn-floating btn-large teal">
-      <i class="fa fa-caret-square-o-up"></i>
-    </a>
-    <ul>
-      <li><a class="btn-return-top btn-floating waves-effect teal accent-4" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
-      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
-    </ul>
-  </div>
-
-    </main>
-    <footer class="page-footer blue-grey darken-1">
-    
-    <div class="footer-container container">
-        <div class="row">
-            
-            <div class="social-group col m4 s12">
-                <h5 class="white-text">社交</h5>
-                
-                    <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
-                        <i class="fa fa-2x fa-weibo"></i>
-                    </a>
-                
-                    <a class="social-link" href="https://github.com/zekunyan" target="_blank">
-                        <i class="fa fa-2x fa-github"></i>
-                    </a>
-                
-                    <a class="social-link" href="/atom.xml" target="_blank">
-                        <i class="fa fa-2x fa-rss"></i>
-                    </a>
-                
-                
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
-    </script>
-    <div class="site-visitors-container white-text">
-        <span>
-            <i class="fa fa-user"></i>
-            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
-        </span>
-        <span>&nbsp;|&nbsp;</span>
-        <span>
-            <i class="fa fa-eye"></i>
-            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
-        </span>
-    </div>
-
-
-            </div>
-            
-
-            
-            <div class="col m8 s12">
-                <h5 class="white-text">友情链接</h5>
-                
-                    <a class="social-link" href="http://chenrudan.github.io" target="_blank">女朋友的博客😊</a>
-                
-            </div>
-            
-        </div>
-        <p>Hosted by <a href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a></p>
-    </div>
-    
-
-    <div class="footer-copyright teal-link-context">
-        <div class="container">
-            © 2020 tutuge.me, All rights reserved.
-            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
-        </div>
-    </div>
-</footer>
-
-
-    <noscript>
-    <div class="noscript">
-        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
-    </div>
-</noscript>
-<div class="noscript">
-    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
-</div>
-
-
-<script src="/js/jquery.min.js"></script>
-<script src="/js/materialize.min.js"></script>
-
-<script>
-    (function($) {
-        $(document).ready(function() {
-            // 隐藏禁用javascript（针对微信内置浏览器）的提示
-            $('.noscript').hide();
-
-            // 图片缩放效果
-            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
-
-            // 给图片加上点击放大效果（materialbox插件）
-            $imgs.addClass('materialboxed').each(function(i, el) {
-                $(this).attr('data-caption', $(this).attr('alt') || ' ');
-            }).materialbox();
-
-            // 优化表格的显示
-            $('table').each(function() {
-                var $table = $(this);
-                // 除去多行代码的情况
-                if ($table.find('pre').length == 0) {
-                    $table.addClass('responsive-table striped bordered');
-                }
-            });
-
-            // 首页幻灯片
-            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
-
-            $(".button-collapse").sideNav();
-            $(".category-menu").sideNav();
-
-            // 针对gallery post
-            $('.carousel').carousel({full_width: true});
-            $('.carousel-control.prev').click(function() {
-                $('.carousel').carousel('prev');
-            });
-            $('.carousel-control.next').click(function() {
-                $('.carousel').carousel('next');
-            });
-
-            // 文章目录
-            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
-
-            // 目录随屏幕滚动（防止目录过长越过footer）
-            var $toc = $('.toc');
-            var scrollTargetTop = 0;
-            $(window).scroll(function() {
-                var $activeLink = $toc.find('a.active.section');
-                if ($(window).scrollTop() < 100) {
-                    scrollTargetTop = 0;
-                } else {
-                    if ($activeLink[0]) {
-                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
-                    }
-                }
-                $toc.css('top', '-' + scrollTargetTop + 'px');
-            });
-
-            // 修正文章目录的left-border颜色
-            var color = $('.table-of-contents-text').css('color');
-            $('.table-of-contents-link').css('border-left-color', color);
-
-            // 针对移动端做的优化：FAB按钮点击一下收回
-            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                $('.fixed-action-btn').addClass('click-to-toggle');
-            }
-            // 回到顶部
-            $('.btn-return-top').click(function() {
-                $('body, html').animate({
-                    scrollTop: 0
-                }, 500);
-            });
-
-            // 重置读书页面的Tab标签页的颜色
-            $('li.tab a').hover(function() {
-                $(this).toggleClass('text-lighten-4');
-            });
-            $('.indicator').addClass('teal lighten-2');
-
-            
-            // 添加new标签
-            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
-            
-
-            // 搜索功能
-            $('.modal-trigger').leanModal({
-                // 打开搜索框时自动聚焦
-                ready: function() {
-                    if ($('#search').is(":visible")) {
-                        $('#search-input').focus();
-                    }
-                }
-            });
-            var searchXml = "search.xml";
-            if (searchXml.length == 0) {
-             	searchXml = "search.xml";
-            }
-            var searchPath = "/" + searchXml;
-            initSearch(searchPath, 'search-input', 'search-result');
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
         });
-
-        // 初始化搜索与匹配函数
-        var initSearch = function(path, search_id, content_id) {
-            'use strict';
-            $.ajax({
-                url: path,
-                dataType: "xml",
-                success: function(xmlResponse) {
-                    // get the contents from search data
-                    var datas = $("entry", xmlResponse).map(function() {
-                        return {
-                            title: $("title", this).text(),
-                            content: $("content", this).text(),
-                            url: $("url", this).text()
-                        };
-                    }).get();
-                    var $input = document.getElementById(search_id);
-                    var $resultContent = document.getElementById(content_id);
-                    $input.addEventListener('input', function() {
-                        var str = '<ul class=\"search-result-list\">';
-                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
-                        $resultContent.innerHTML = "";
-                        if (this.value.trim().length <= 0) {
-                            return;
-                        }
-                        // perform local searching
-                        datas.forEach(function(data) {
-                            var isMatch = true;
-                            var content_index = [];
-                            var data_title = data.title.trim().toLowerCase();
-                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
-                            var data_url = data.url;
-                            var index_title = -1;
-                            var index_content = -1;
-                            var first_occur = -1;
-                            // only match artiles with not empty titles and contents
-                            if (data_title != '' && data_content != '') {
-                                keywords.forEach(function(keyword, i) {
-                                    index_title = data_title.indexOf(keyword);
-                                    index_content = data_content.indexOf(keyword);
-                                    if (index_title < 0 && index_content < 0) {
-                                        isMatch = false;
-                                    } else {
-                                        if (index_content < 0) {
-                                            index_content = 0;
-                                        }
-                                        if (i == 0) {
-                                            first_occur = index_content;
-                                        }
-                                    }
-                                });
-                            }
-                            // show search results
-                            if (isMatch) {
-                                keywords.forEach(function(keyword) {
-                                    var regS = new RegExp(keyword, "gi");
-                                    data_title = data_title.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
-                                });
-
-                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
-                                var content = data.content.trim().replace(/<[^>]+>/g, "");
-                                if (first_occur >= 0) {
-                                    // cut out 100 characters
-                                    var start = first_occur - 20;
-                                    var end = first_occur + 80;
-                                    if (start < 0) {
-                                        start = 0;
-                                    }
-                                    if (start == 0) {
-                                        end = 100;
-                                    }
-                                    if (end > content.length) {
-                                        end = content.length;
-                                    }
-                                    var match_content = content.substring(start, end);
-                                    // highlight all keywords
-                                    keywords.forEach(function(keyword) {
-                                        var regS = new RegExp(keyword, "gi");
-                                        match_content = match_content.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
-                                    });
-
-                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
-                                }
-                                str += "</li>";
-                            }
-                        });
-                        str += "</ul>";
-                        $resultContent.innerHTML = str;
-                    });
-                }
-            });
-        }
-    })(jQuery);
-</script>
-
-
-<script src="/js/prettify.js"></script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $("pre").addClass("prettyprint");
-        prettyPrint();
-    });
-</script>
-
-
-<script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-68058110-1', 'auto');
-    ga('send', 'pageview');
-
-</script>
-
-
-
-<script type="text/javascript" src="http://tajs.qq.com/stats?sId=55079830" charset="UTF-8"></script>
-
-
-
-
-
-</body>
-</html>
+        lightbox.init();
+    }
+</script></main></div><script type=text/javascript src=/ts/main.f856840516f7c2ad1769a8f5937e3d08d6cb386e2cd2dd025ae696e0ff207958.js defer></script></body></html>

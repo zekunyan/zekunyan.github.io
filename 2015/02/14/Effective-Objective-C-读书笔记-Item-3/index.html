@@ -1,669 +1,92 @@
-<!DOCTYPE HTML>
-<html>
-<head><meta name="generator" content="Hexo 3.9.0">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="前言 item 3讲的是Objective-C里面的“字面量语法”-“Literal Syntax”，个人觉得非常有用。\nItem 3 - Prefer Literal Syntax over the Equivalent Methods 本节讲了Objective-C中的“字面量语法”，并且建议我们更多的使用这种语法，而不是使用传统的等价的函数方法。\n"><title>Effective-Objective-C-读书笔记-Item-3</title><link rel=canonical href=https://tutuge.me/2015/02/14/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-3/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=preload as=style href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href=/scss/style.min.e62e09c60ba428a627e03568fa3df938f6a8224f815b5846f00816c17d4a0be4.css><meta property='og:title' content="Effective-Objective-C-读书笔记-Item-3"><meta property='og:description' content="前言 item 3讲的是Objective-C里面的“字面量语法”-“Literal Syntax”，个人觉得非常有用。\nItem 3 - Prefer Literal Syntax over the Equivalent Methods 本节讲了Objective-C中的“字面量语法”，并且建议我们更多的使用这种语法，而不是使用传统的等价的函数方法。\n"><meta property='og:url' content='https://tutuge.me/2015/02/14/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-3/'><meta property='og:site_name' content='土土哥的技术 Blog'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='原创'><meta property='article:tag' content='iOS'><meta property='article:tag' content='翻译'><meta property='article:tag' content='笔记'><meta property='article:published_time' content='2015-02-14T00:00:00+00:00'><meta property='article:modified_time' content='2015-02-14T00:00:00+00:00'><meta name=twitter:title content="Effective-Objective-C-读书笔记-Item-3"><meta name=twitter:description content="前言 item 3讲的是Objective-C里面的“字面量语法”-“Literal Syntax”，个人觉得非常有用。\nItem 3 - Prefer Literal Syntax over the Equivalent Methods 本节讲了Objective-C中的“字面量语法”，并且建议我们更多的使用这种语法，而不是使用传统的等价的函数方法。\n"><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar.png width height class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>土土哥的技术 Blog</a></h1><h2 class=site-description>AI / iOS / Android / Flutter / Open Source</h2></div></header><ol class=menu-social><li><a href=https://github.com/zekunyan title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>首页</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav class=toc-nav id=TableOfContents><ul><li><a href=#前言>前言</a></li><li><a href=#item-3---prefer-literal-syntax-over-the-equivalent-methods>Item 3 - Prefer Literal Syntax over the Equivalent Methods</a></li><li><a href=#引子>引子</a></li><li><a href=#nsnumber>NSNumber</a></li><li><a href=#nsarray>NSArray</a><ul><li><a href=#创建>创建</a></li><li><a href=#存取值>存取值</a></li><li><a href=#要注意的地方>要注意的地方</a></li></ul></li><li><a href=#nsdictionary>NSDictionary</a><ul><li><a href=#创建-1>创建</a></li><li><a href=#存取值-1>存取值</a></li><li><a href=#注意>注意</a></li></ul></li><li><a href=#总结>总结</a></li></ul></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/ios/ style=background-color:#efbeed;color:#3d0f3c>IOS</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/2015/02/14/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-3/>Effective-Objective-C-读书笔记-Item-3</a></h2></div><footer class=article-meta><div class=inline-meta><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2015-02-14T00:00:00Z>2015-02-14</time>
+<svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 3 分钟</time></div></footer></div></header><aside class=article-toc><details><summary><div class=article-toc-title><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6-6 6"/></svg>
+<span>目录</span></div></summary><nav class=toc-nav><ul><li><a href=#前言>前言</a></li><li><a href=#item-3---prefer-literal-syntax-over-the-equivalent-methods>Item 3 - Prefer Literal Syntax over the Equivalent Methods</a></li><li><a href=#引子>引子</a></li><li><a href=#nsnumber>NSNumber</a></li><li><a href=#nsarray>NSArray</a><ul><li><a href=#创建>创建</a></li><li><a href=#存取值>存取值</a></li><li><a href=#要注意的地方>要注意的地方</a></li></ul></li><li><a href=#nsdictionary>NSDictionary</a><ul><li><a href=#创建-1>创建</a></li><li><a href=#存取值-1>存取值</a></li><li><a href=#注意>注意</a></li></ul></li><li><a href=#总结>总结</a></li></ul></nav></details></aside><section class=article-content><h2 id=前言><a href=#%e5%89%8d%e8%a8%80 class=header-anchor></a>前言</h2><p>item 3讲的是Objective-C里面的“字面量语法”-“Literal Syntax”，个人觉得非常有用。</p><h2 id=item-3---prefer-literal-syntax-over-the-equivalent-methods><a href=#item-3---prefer-literal-syntax-over-the-equivalent-methods class=header-anchor></a>Item 3 - Prefer Literal Syntax over the Equivalent Methods</h2><p>本节讲了Objective-C中的“字面量语法”，并且建议我们更多的使用这种语法，而不是使用传统的等价的函数方法。</p><h2 id=引子><a href=#%e5%bc%95%e5%ad%90 class=header-anchor></a>引子</h2><p>当我们使用Objective-C编程的时候，总会经常使用到几种Foundation框架中的基本类，如NSString、NSNumber、NSArray、NSDictionary，或者是它们的子类。例如，当我们想创建一个字符串的时候，会这么写：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-armasm data-lang=armasm><span class=line><span class=cl>NSString <span class=err>*str</span> <span class=err>=</span> <span class=c1>@&#34;a string&#34;;
+</span></span></span></code></pre></div><p>不知道各位写这句的时候有没有觉得奇怪？为什么不用先“alloc”，再“initWithXXX”这么来创建呢。是的，这里创建字符串，就用到了Objective-C提供的“字面量语法”-“Literal Syntax”，而这种语法的“标志”就是“@”符号。
+有了字面量语法，我们就不用每次创建一些基本类型的时候，写一大堆alloc、init了。</p><h2 id=nsnumber><a href=#nsnumber class=header-anchor></a>NSNumber</h2><p>字符串可以用字面量语法创建，数字类NSNumber肯定也可以，如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=n>NSNumber</span> <span class=o>*</span><span class=n>intNum</span> <span class=o>=</span> <span class=mi>@1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=n>NSNumber</span> <span class=o>*</span><span class=n>floatNum</span> <span class=o>=</span> <span class=mf>@1.1f</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=n>NSNumber</span> <span class=o>*</span><span class=n>doubleNum</span> <span class=o>=</span> <span class=mf>@1.1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=n>NSNumber</span> <span class=o>*</span><span class=n>boolNum</span> <span class=o>=</span> <span class=m>@YES</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=n>NSNumber</span> <span class=o>*</span><span class=n>charNum</span> <span class=o>=</span> <span class=sc>@&#39;a&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//不用字面量语法
+</span></span></span><span class=line><span class=cl><span class=n>NSNumber</span> <span class=o>*</span><span class=n>intNumber</span> <span class=o>=</span> <span class=p>[[</span><span class=n>NSNumber</span> <span class=n>alloc</span><span class=p>]</span> <span class=nl>initWithInt</span><span class=p>:</span><span class=mi>1</span><span class=p>];</span>
+</span></span></code></pre></div><p>看，是不是很方便~</p><h2 id=nsarray><a href=#nsarray class=header-anchor></a>NSArray</h2><h3 id=创建><a href=#%e5%88%9b%e5%bb%ba class=header-anchor></a>创建</h3><p>数组算是最常用的一种数据结构了，如果没有字面量语法，创建数组可能是这样：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-elixir data-lang=elixir><span class=line><span class=cl><span class=nc>NSArray</span> <span class=o>*</span><span class=n>numbers</span> <span class=o>=</span> <span class=p>[[</span><span class=nc>NSArray</span> <span class=n>alloc</span><span class=p>]</span> <span class=n>initWithObjects</span><span class=p>:</span><span class=err>@</span><span class=mi>1</span><span class=p>,</span> <span class=err>@</span><span class=mf>1.1</span><span class=p>,</span> <span class=err>@</span><span class=mf>2.0</span><span class=n>f</span><span class=p>,</span> <span class=err>@</span><span class=nc>YES</span><span class=p>,</span> <span class=no>nil</span><span class=p>];</span>
+</span></span></code></pre></div><p>用字面量语法的话，就是这样：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-autoit data-lang=autoit><span class=line><span class=cl><span class=n>NSArray</span> <span class=o>*</span><span class=n>numbers</span> <span class=o>=</span> <span class=n>@</span><span class=p>[</span><span class=n>@1</span><span class=p>,</span> <span class=n>@1</span><span class=o>.</span><span class=mi>1</span><span class=p>,</span> <span class=n>@2</span><span class=o>.</span><span class=mi>0</span><span class=n>f</span><span class=p>,</span> <span class=nv>@YES</span><span class=p>]</span><span class=c1>;
+</span></span></span></code></pre></div><h3 id=存取值><a href=#%e5%ad%98%e5%8f%96%e5%80%bc class=header-anchor></a>存取值</h3><p>创建了数组，肯定要从数组里面取值，用NSArray的方法就是这样：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>//取
+</span></span><span class=line><span class=cl>NSNumber *aNumber = [numbers objectAtIndex:2];
+</span></span><span class=line><span class=cl>//存
+</span></span><span class=line><span class=cl>NSMutableArray *mutableArray = [[NSMutableArray alloc] initWithArray:@[@1, @2, @3]];
+</span></span><span class=line><span class=cl>[mutableArray replaceObjectAtIndex:1 withObject:@4];
+</span></span></code></pre></div><p>跟C语言、Java这些语法很不一样啊，人家都是通过中括号“[]”直接用下标取值就可以。有了字面量同语法，Objective-C也可以这样:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>//取
+</span></span><span class=line><span class=cl>NSNumber *aNumber = numbers[2];
+</span></span><span class=line><span class=cl>//存
+</span></span><span class=line><span class=cl>NSMutableArray *mutableArray = [[NSMutableArray alloc] initWithArray:@[@1, @2, @3]];
+</span></span><span class=line><span class=cl>mutableArray[1] = @4;
+</span></span></code></pre></div><h3 id=要注意的地方><a href=#%e8%a6%81%e6%b3%a8%e6%84%8f%e7%9a%84%e5%9c%b0%e6%96%b9 class=header-anchor></a>要注意的地方</h3><p>传统的通过“initWithObjects”方法创建数组的时候，是根据最后的“nil”判断数组是否结束的，也就是说，用于初始化数组的元素中有“nil”值也不会导致异常（Exception），如下语句：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=n>NSNumber</span> <span class=o>*</span><span class=n>number1</span> <span class=o>=</span> <span class=mi>@1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=n>NSNumber</span> <span class=o>*</span><span class=n>number2</span> <span class=o>=</span> <span class=nb>nil</span><span class=p>;</span> <span class=c1>//空指针
+</span></span></span><span class=line><span class=cl><span class=n>NSNumber</span> <span class=o>*</span><span class=n>number3</span> <span class=o>=</span> <span class=mi>@3</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//创建
+</span></span></span><span class=line><span class=cl><span class=n>NSArray</span> <span class=o>*</span><span class=n>numbers</span> <span class=o>=</span> <span class=p>[[</span><span class=n>NSArray</span> <span class=n>alloc</span><span class=p>]</span> <span class=nl>initWithObjects</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>  <span class=n>number1</span><span class=p>,</span> <span class=n>number2</span><span class=p>,</span> <span class=n>number3</span><span class=p>,</span> <span class=nb>nil</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//输出为1，因为number2，创建到number2就截止了
+</span></span></span><span class=line><span class=cl><span class=n>NSLog</span><span class=p>(</span><span class=s>@&#34;numbers count: %d&#34;</span><span class=p>,</span> <span class=n>numbers</span><span class=p>.</span><span class=n>count</span><span class=p>);</span>
+</span></span></code></pre></div><p>但是，如果用字面量语法创建，就是出问题：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=n>NSNumber</span> <span class=o>*</span><span class=n>number1</span> <span class=o>=</span> <span class=mi>@1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=n>NSNumber</span> <span class=o>*</span><span class=n>number2</span> <span class=o>=</span> <span class=nb>nil</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=n>NSNumber</span> <span class=o>*</span><span class=n>number3</span> <span class=o>=</span> <span class=mi>@3</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//创建出现异常！！！
+</span></span></span><span class=line><span class=cl><span class=n>NSArray</span> <span class=o>*</span><span class=n>numbers</span> <span class=o>=</span> <span class=l>@[</span><span class=n>number1</span><span class=p>,</span> <span class=n>number2</span><span class=p>,</span> <span class=n>number3</span><span class=l>]</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>NSLog</span><span class=p>(</span><span class=s>@&#34;numbers count: %d&#34;</span><span class=p>,</span> <span class=n>numbers</span><span class=p>.</span><span class=n>count</span><span class=p>);</span>
+</span></span></code></pre></div><p>因为字面量语法只是单纯的将中括号中的元素全部加到数组中，但是，Objective-C中的数组是不可以存放nil值的，所以程序会运行时抛出异常。</p><h2 id=nsdictionary><a href=#nsdictionary class=header-anchor></a>NSDictionary</h2><h3 id=创建-1><a href=#%e5%88%9b%e5%bb%ba-1 class=header-anchor></a>创建</h3><p>如果不用字面量语法创建字典，传统的创建函数简直令人匪夷所思：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=c1>// number1-&gt;@1
+</span></span></span><span class=line><span class=cl><span class=c1>// number2-&gt;@2
+</span></span></span><span class=line><span class=cl><span class=n>NSDictionary</span> <span class=o>*</span><span class=n>dict</span> <span class=o>=</span> <span class=p>[[</span><span class=n>NSDictionary</span> <span class=n>alloc</span><span class=p>]</span> <span class=nl>initWithObjectsAndKeys</span><span class=p>:</span><span class=mi>@1</span><span class=p>,</span> <span class=s>@&#34;number1&#34;</span><span class=p>,</span> <span class=mi>@2</span><span class=p>,</span> <span class=s>@&#34;number2&#34;</span><span class=p>,</span> <span class=nb>nil</span><span class=p>];</span>
+</span></span></code></pre></div><p>是不是很奇怪，<strong>value在前面，key在后面</strong></p><p>所以，还是用新的语法吧：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-gherkin data-lang=gherkin><span class=line><span class=cl><span class=nf>NSDictionary *dict = </span><span class=nt>@{@&#34;number1&#34;</span><span class=nf> : </span><span class=nt>@1,</span><span class=nf> </span><span class=nt>@&#34;number2&#34;</span><span class=nf> : </span><span class=nt>@2};</span><span class=nf>
+</span></span></span></code></pre></div><p>这样才符合“常识”嘛，key在前，value在后面，跟JSON的定义一样。</p><h3 id=存取值-1><a href=#%e5%ad%98%e5%8f%96%e5%80%bc-1 class=header-anchor></a>存取值</h3><p>取值的语法跟NSArray的语法很想，只不过是将下标数字变成了key：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-groovy data-lang=groovy><span class=line><span class=cl><span class=c1>//传统
+</span></span></span><span class=line><span class=cl><span class=n>NSNumber</span> <span class=o>*</span><span class=n>number1</span> <span class=o>=</span> <span class=o>[</span><span class=n>dict</span> <span class=nl>objectForKey:</span><span class=err>@</span><span class=s2>&#34;number1&#34;</span><span class=o>];</span>
+</span></span><span class=line><span class=cl><span class=o>[</span><span class=n>dict</span> <span class=nl>setValue:</span><span class=err>@</span><span class=mi>5</span> <span class=nl>forKey:</span><span class=err>@</span><span class=s2>&#34;number1&#34;</span><span class=o>];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//字面量语法
+</span></span></span><span class=line><span class=cl><span class=n>NSNumber</span> <span class=o>*</span><span class=n>number2</span> <span class=o>=</span> <span class=n>dict</span><span class=o>[</span><span class=err>@</span><span class=s2>&#34;number1&#34;</span><span class=o>];</span>
+</span></span><span class=line><span class=cl><span class=n>dict</span><span class=o>[</span><span class=err>@</span><span class=s2>&#34;number1&#34;</span><span class=o>]</span> <span class=o>=</span> <span class=err>@</span><span class=mi>6</span><span class=o>;</span>
+</span></span></code></pre></div><h3 id=注意><a href=#%e6%b3%a8%e6%84%8f class=header-anchor></a>注意</h3><p>需要注意的地方，跟创建数组一样，NSDictionary的value不能为nil值，否则会抛出异常。</p><h2 id=总结><a href=#%e6%80%bb%e7%bb%93 class=header-anchor></a>总结</h2><p>总的来说，使用字面量语法可以让代码更加清晰、简单，毕竟，更少的代码，有时候意味着更少的错误。</p></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/%E5%8E%9F%E5%88%9B/>原创</a>
+<a href=/tags/ios/>IOS</a>
+<a href=/tags/%E7%BF%BB%E8%AF%91/>翻译</a>
+<a href=/tags/%E7%AC%94%E8%AE%B0/>笔记</a></section></footer></article><aside><h2 class=section-title>相关文章</h2><div class=subsection-list><div class=article-list--tile><article><a href=/2015/03/11/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-4-%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%AE%9A%E4%B9%89%E5%B8%B8%E9%87%8F/><div class=article-details><h2 class=article-title>Effective-Objective-C-读书笔记-Item-4-如何正确定义常量</h2></div></a></article><article><a href=/2015/02/06/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-2/><div class=article-details><h2 class=article-title>Effective-Objective-C-读书笔记-Item-2</h2></div></a></article><article class=has-image><a href=/2015/02/05/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-1/><div class=article-image><img alt="Featured image of post Effective-Objective-C-读书笔记-Item-1" loading=lazy src=/assets/2015/02/05/Effective-Objective-C-读书笔记-Item-1/blog_effective_objective_c_item_1_1.jpg></div><div class=article-details><h2 class=article-title>Effective-Objective-C-读书笔记-Item-1</h2></div></a></article><article class=has-image><a href=/2017/04/08/diy-methodSignatureForSelector/><div class=article-image><img alt="Featured image of post 反编译分析并模拟实现methodSignatureForSelector方法" loading=lazy src=/assets/2017/04/08/diy-methodSignatureForSelector/blog_RemakeMethodSignatureForSelector_1.jpg></div><div class=article-details><h2 class=article-title>反编译分析并模拟实现methodSignatureForSelector方法</h2></div></a></article><article class=has-image><a href=/2017/03/14/xcode8-crash-on-out-parameter/><div class=article-image><img alt="Featured image of post 反编译分析Xcode8的Bug, release下连续两次调用有二级指针参数的空方法会Crash" loading=lazy src=/assets/2017/03/14/xcode8-crash-on-out-parameter/xcode8_crash_on_out_parameter_1.jpg></div><div class=article-details><h2 class=article-title>反编译分析Xcode8的Bug, release下连续两次调用有二级指针参数的空方法会Crash</h2></div></a></article></div></div></aside><footer class=site-footer><section class=copyright>&copy;
+2014 -
+2026 tutuge</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=4.0.3>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><script type=module>
+    import gallery from '\/ts\/gallery.js';
 
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
     
-
-    <title>Effective-Objective-C-读书笔记-Item-3 | iOS程序猿.目前阿里,喜欢各种技术,RCFans</title>
-    <meta name="author" content="土土哥">
-    
-    <meta name="description" content="iOS程序猿.目前阿里,喜欢各种技术,RCFans">
-    
-    
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-    <meta property="og:title" content="Effective-Objective-C-读书笔记-Item-3">
-    <meta property="og:site_name" content="土土哥的Blog">
-
-    
-    <meta property="og:image" content="undefined">
-    
-
-    <link rel="icon" type="image/png" href="/favicon.png">
-    <link rel="alternate" href="/atom.xml" title="土土哥的Blog" type="application/atom+xml">
-    <link rel="stylesheet" href="/css/lib/materialize.min.css">
-    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
-    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-
-    
-        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
-    
-    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-</head>
-</html>
-
-<body>
-    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
-
-    <nav class="blue-grey">
-    <div class="nav-wrapper">
-        <a href="#" data-activates="main-menu" class="button-collapse">
-            <i class="fa fa-navicon"></i>
-        </a>
-        <div class="">
-            <a href="/" class="brand-logo hide-on-med-and-down">土土哥的Blog</a>
-            <ul class="right hide-on-med-and-down">
-                
-                    <li>
-                        <a class="menu-home " href="/" >
-                            <i class="fa fa-home "></i>
-                            
-                            首页
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-archive " href="/archives" >
-                            <i class="fa fa-archive "></i>
-                            
-                            归档
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
-                            <i class="fa fa-bookmark "></i>
-                            
-                            分类
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-about " href="/about" >
-                            <i class="fa fa-user "></i>
-                            
-                            关于
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-search modal-trigger " href="#search" >
-                            <i class="fa fa-search "></i>
-                            
-                            搜索
-                        </a>
-                    </li>
-                
-            </ul>
-            <div>
-    <ul class="side-nav blue-grey darken-1" id="main-menu">
-        
-        <li class="side-user">
-            <div class="row">
-                <div class="col s4 no-padding">
-                    <img class="avatar-image circle responsive-img" src="http://tutuge.me/2019/07/29/2019-07-29-occupied-with-work/avatar_comic.jpg" alt="User Avatar">
-                </div>
-                <div class="info col s8 valign-wrapper no-padding">
-                    <div class="valign">
-                        <p class="name">土土哥</p>
-                        <p class="desc">iOS/Android/技术宅/RCFans</p>
-                    </div>
-                </div>
-            </div>
-        </li>
-        
-
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-home " href="/" >
-                    <i class="fa fa-home "></i>
-                    
-                    首页
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-archive " href="/archives" >
-                    <i class="fa fa-archive "></i>
-                    
-                    归档
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
-                    <i class="fa fa-bookmark "></i>
-                    
-                    分类
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-about " href="/about" >
-                    <i class="fa fa-user "></i>
-                    
-                    关于
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-search modal-trigger " href="#search" >
-                    <i class="fa fa-search "></i>
-                    
-                    搜索
-                </a>
-            </li>
-        
-    </ul>
-
-    <ul class="side-nav blue-grey darken-1" id="category-menu">
-    
-
-            
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/其它/">
-                    其它 <span class="right">5 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/iOS/">
-                    iOS <span class="right">37 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/Android/">
-                    Android <span class="right">1 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/Mac/">
-                    Mac <span class="right">1 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/服务端/">
-                    服务端 <span class="right">2 篇</span></a>
-                </a>
-            </li>
-
-        
-
-    </ul>
-</div>
-
-        </div>
-    </div>
-</nav>
-
-<div id="search" class="modal search-modal">
-    <div class="row">
-        <div class="input-field col s12">
-              <input id="search-input" type="text">
-              <label for="search-input">搜索</label>
-        </div>
-
-    </div>
-    <div id="search-result" class="search-result col s12">
-
-    </div>
-</div>
-
-
-    <main>
-        <div class="container main-container">
-    
-<nav class="page-nav hide-on-small-only">
-    <div class="nav-wrapper blue-grey">
-        <span class="breadcrumb">当前位置（分类目录）</span>
-        
-            
-    
-    
-    <a class="breadcrumb" href="/categories/iOS/">iOS</a>
-
-
-        
-
-        
-    </div>
-</nav>
-
-<article>
-    <div class="card">
-        <div class="card-content">
-            
-
-            <div class="article-title">
-                
-    
-        <h1>Effective-Objective-C-读书笔记-Item-3</h1>
-    
-
-
-            </div>
-            <time class="teal-link-context" datetime="2015-02-14T08:51:51.000Z"><a href="/2015/02/14/Effective-Objective-C-读书笔记-Item-3/">2015-02-14</a></time>
-
-            <span id="busuanzi_container_page_pv" class="read-times-container">
-    <i class="fa fa-eye"></i>
-    <span id="busuanzi_value_page_pv"></span>
-</span>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
-        
-            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
-        
-            <a href="/tags/翻译/" class="chip teal accent-4">翻译</a>
-        
-            <a href="/tags/笔记/" class="chip teal accent-4">笔记</a>
-        
-    </div>
-
-
-            <div class="toc teal-link-context hide-on-med-and-down">
-    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#前言"><span class="section table-of-contents-text">前言</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Item-3-Prefer-Literal-Syntax-over-the-Equivalent-Methods"><span class="section table-of-contents-text">Item 3 - Prefer Literal Syntax over the Equivalent Methods</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#引子"><span class="section table-of-contents-text">引子</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#NSNumber"><span class="section table-of-contents-text">NSNumber</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#NSArray"><span class="section table-of-contents-text">NSArray</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#创建"><span class="section table-of-contents-text">创建</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#存取值"><span class="section table-of-contents-text">存取值</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#要注意的地方"><span class="section table-of-contents-text">要注意的地方</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#NSDictionary"><span class="section table-of-contents-text">NSDictionary</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#创建-1"><span class="section table-of-contents-text">创建</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#存取值-1"><span class="section table-of-contents-text">存取值</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#注意"><span class="section table-of-contents-text">注意</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#总结"><span class="section table-of-contents-text">总结</span></a></li></ol>
-</div>
-
-
-            <div class="entry teal-link-context">
-                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>item 3讲的是Objective-C里面的“字面量语法”-“Literal Syntax”，个人觉得非常有用。</p>
-<h2 id="Item-3-Prefer-Literal-Syntax-over-the-Equivalent-Methods"><a href="#Item-3-Prefer-Literal-Syntax-over-the-Equivalent-Methods" class="headerlink" title="Item 3 - Prefer Literal Syntax over the Equivalent Methods"></a>Item 3 - Prefer Literal Syntax over the Equivalent Methods</h2><p>本节讲了Objective-C中的“字面量语法”，并且建议我们更多的使用这种语法，而不是使用传统的等价的函数方法。</p>
-<a id="more"></a>
-<h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>当我们使用Objective-C编程的时候，总会经常使用到几种Foundation框架中的基本类，如NSString、NSNumber、NSArray、NSDictionary，或者是它们的子类。例如，当我们想创建一个字符串的时候，会这么写：</p>
-<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">NSString</span> *<span class="keyword">str </span>= <span class="comment">@"a string";</span></span><br></pre></td></tr></table></figure>
-<p>不知道各位写这句的时候有没有觉得奇怪？为什么不用先“alloc”，再“initWithXXX”这么来创建呢。是的，这里创建字符串，就用到了Objective-C提供的“字面量语法”-“Literal Syntax”，而这种语法的“标志”就是“@”符号。<br>有了字面量语法，我们就不用每次创建一些基本类型的时候，写一大堆alloc、init了。</p>
-<h2 id="NSNumber"><a href="#NSNumber" class="headerlink" title="NSNumber"></a>NSNumber</h2><p>字符串可以用字面量语法创建，数字类NSNumber肯定也可以，如下：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSNumber</span> *intNum = @<span class="number">1</span>;</span><br><span class="line"><span class="built_in">NSNumber</span> *floatNum = @<span class="number">1.1</span>f;</span><br><span class="line"><span class="built_in">NSNumber</span> *doubleNum = @<span class="number">1.1</span>;</span><br><span class="line"><span class="built_in">NSNumber</span> *boolNum = @YES;</span><br><span class="line"><span class="built_in">NSNumber</span> *charNum = @<span class="string">'a'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//不用字面量语法</span></span><br><span class="line"><span class="built_in">NSNumber</span> *intNumber = [[<span class="built_in">NSNumber</span> alloc] initWithInt:<span class="number">1</span>];</span><br></pre></td></tr></table></figure>
-<p>看，是不是很方便~</p>
-<h2 id="NSArray"><a href="#NSArray" class="headerlink" title="NSArray"></a>NSArray</h2><h3 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h3><p>数组算是最常用的一种数据结构了，如果没有字面量语法，创建数组可能是这样：</p>
-<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSArray *numbers = [[NSArray alloc] <span class="symbol">initWithObjects:</span><span class="variable">@1</span>, <span class="variable">@1</span>.<span class="number">1</span>, <span class="variable">@2</span>.0f, <span class="variable">@YES</span>, <span class="keyword">nil</span>];</span><br></pre></td></tr></table></figure>
-<p>用字面量语法的话，就是这样：</p>
-<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSArray *numbers = <span class="symbol">@[</span><span class="symbol">@1</span>, <span class="symbol">@1</span><span class="number">.1</span>, <span class="symbol">@2</span><span class="number">.0</span>f, <span class="symbol">@YES]</span><span class="comment">;</span></span><br></pre></td></tr></table></figure>
-<h3 id="存取值"><a href="#存取值" class="headerlink" title="存取值"></a>存取值</h3><p>创建了数组，肯定要从数组里面取值，用NSArray的方法就是这样：</p>
-<figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//取</span></span><br><span class="line">NSNumber *aNumber = [numbers objectAtIndex:<span class="number">2</span>];</span><br><span class="line"><span class="comment">//存</span></span><br><span class="line">NSMutableArray *mutableArray = [[NSMutableArray alloc] initWithArray:@[@1, @2, @3]];</span><br><span class="line">[mutableArray replaceObjectAtIndex:<span class="number">1</span> withObject:@4];</span><br></pre></td></tr></table></figure>
-<p>跟C语言、Java这些语法很不一样啊，人家都是通过中括号“[]”直接用下标取值就可以。有了字面量同语法，Objective-C也可以这样:</p>
-<figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//取</span></span><br><span class="line">NSNumber *aNumber = numbers[<span class="number">2</span>];</span><br><span class="line"><span class="comment">//存</span></span><br><span class="line">NSMutableArray *mutableArray = [[NSMutableArray alloc] initWithArray:@[@1, @2, @3]];</span><br><span class="line">mutableArray[<span class="number">1</span>] = @4;</span><br></pre></td></tr></table></figure>
-<h3 id="要注意的地方"><a href="#要注意的地方" class="headerlink" title="要注意的地方"></a>要注意的地方</h3><p>传统的通过“initWithObjects”方法创建数组的时候，是根据最后的“nil”判断数组是否结束的，也就是说，用于初始化数组的元素中有“nil”值也不会导致异常（Exception），如下语句：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSNumber</span> *number1 = @<span class="number">1</span>;</span><br><span class="line"><span class="built_in">NSNumber</span> *number2 = <span class="literal">nil</span>; <span class="comment">//空指针</span></span><br><span class="line"><span class="built_in">NSNumber</span> *number3 = @<span class="number">3</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建</span></span><br><span class="line"><span class="built_in">NSArray</span> *numbers = [[<span class="built_in">NSArray</span> alloc] initWithObjects:</span><br><span class="line">  number1, number2, number3, <span class="literal">nil</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//输出为1，因为number2，创建到number2就截止了</span></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"numbers count: %d"</span>, numbers.count);</span><br></pre></td></tr></table></figure>
-<p>但是，如果用字面量语法创建，就是出问题：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSNumber</span> *number1 = @<span class="number">1</span>;</span><br><span class="line"><span class="built_in">NSNumber</span> *number2 = <span class="literal">nil</span>;</span><br><span class="line"><span class="built_in">NSNumber</span> *number3 = @<span class="number">3</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建出现异常！！！</span></span><br><span class="line"><span class="built_in">NSArray</span> *numbers = @[number1, number2, number3];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"numbers count: %d"</span>, numbers.count);</span><br></pre></td></tr></table></figure>
-<p>因为字面量语法只是单纯的将中括号中的元素全部加到数组中，但是，Objective-C中的数组是不可以存放nil值的，所以程序会运行时抛出异常。</p>
-<h2 id="NSDictionary"><a href="#NSDictionary" class="headerlink" title="NSDictionary"></a>NSDictionary</h2><h3 id="创建-1"><a href="#创建-1" class="headerlink" title="创建"></a>创建</h3><p>如果不用字面量语法创建字典，传统的创建函数简直令人匪夷所思：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// number1-&gt;@1</span></span><br><span class="line"><span class="comment">// number2-&gt;@2</span></span><br><span class="line"><span class="built_in">NSDictionary</span> *dict = [[<span class="built_in">NSDictionary</span> alloc] initWithObjectsAndKeys:@<span class="number">1</span>, <span class="string">@"number1"</span>, @<span class="number">2</span>, <span class="string">@"number2"</span>, <span class="literal">nil</span>];</span><br></pre></td></tr></table></figure>
-<p>是不是很奇怪，<strong>value在前面，key在后面</strong></p>
-<p>所以，还是用新的语法吧：</p>
-<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSDictionary <span class="symbol">*</span>dict = <span class="meta">@&#123;</span><span class="meta">@"number1"</span> : <span class="meta">@1,</span> <span class="meta">@"number2"</span> : <span class="meta">@2&#125;;</span></span><br></pre></td></tr></table></figure>
-<p>这样才符合“常识”嘛，key在前，value在后面，跟JSON的定义一样。</p>
-<h3 id="存取值-1"><a href="#存取值-1" class="headerlink" title="存取值"></a>存取值</h3><p>取值的语法跟NSArray的语法很想，只不过是将下标数字变成了key：</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//传统</span></span><br><span class="line">NSNumber *number1 = [dict <span class="string">objectForKey:</span>@<span class="string">"number1"</span>];</span><br><span class="line">[dict <span class="string">setValue:</span>@<span class="number">5</span> <span class="string">forKey:</span>@<span class="string">"number1"</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//字面量语法</span></span><br><span class="line">NSNumber *number2 = dict[@<span class="string">"number1"</span>];</span><br><span class="line">dict[@<span class="string">"number1"</span>] = @<span class="number">6</span>;</span><br></pre></td></tr></table></figure>
-<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>需要注意的地方，跟创建数组一样，NSDictionary的value不能为nil值，否则会抛出异常。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>总的来说，使用字面量语法可以让代码更加清晰、简单，毕竟，更少的代码，有时候意味着更少的错误。</p>
-
-                
-<p class="teal-link-context">
-    <a href="/2015/02/16/利用NSProxy实现消息转发-模块化的网络接口层设计-原创/" rel="next" title="利用NSProxy实现消息转发-模块化的网络接口层设计-原创">
-    上一篇：利用NSProxy实现消息转发-模块化的网络接口层设计-原创
-  </a>
-</p>
-
-
-
-<p class="teal-link-context">
-    <a href="/2015/02/06/Effective-Objective-C-读书笔记-Item-2/" rel="next" title="Effective-Objective-C-读书笔记-Item-2">
-    下一篇：Effective-Objective-C-读书笔记-Item-2
-  </a>
-</p>
-
-
-            </div>
-
-            
-			
-        </div>
-    </div>
-</article>
-
-
-
-
-    <section id="comment">
-        <div id="disqus_thread"></div>
-        <script>
-            var disqus_config = function() {
-                this.page.url = 'http://tutuge.me/2015/02/14/Effective-Objective-C-读书笔记-Item-3/';
-                this.page.identifier = '2015/02/14/Effective-Objective-C-读书笔记-Item-3/';
-            };
-            (function() {
-                var d = document,
-                    s = d.createElement('script');
-                s.src = '//tutuge-me.disqus.com/embed.js';
-                s.setAttribute('data-timestamp', + new Date());
-                (d.head || d.body).appendChild(s);
-            })();
-        </script>
-        <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
-        </noscript>
-    </section>
-
-
-
-</div>
-
-        <div class="fixed-action-btn float-sitemap">
-    <a class="btn-floating btn-large teal">
-      <i class="fa fa-caret-square-o-up"></i>
-    </a>
-    <ul>
-      <li><a class="btn-return-top btn-floating waves-effect teal accent-4" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
-      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
-    </ul>
-  </div>
-
-    </main>
-    <footer class="page-footer blue-grey darken-1">
-    
-    <div class="footer-container container">
-        <div class="row">
-            
-            <div class="social-group col m4 s12">
-                <h5 class="white-text">社交</h5>
-                
-                    <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
-                        <i class="fa fa-2x fa-weibo"></i>
-                    </a>
-                
-                    <a class="social-link" href="https://github.com/zekunyan" target="_blank">
-                        <i class="fa fa-2x fa-github"></i>
-                    </a>
-                
-                    <a class="social-link" href="/atom.xml" target="_blank">
-                        <i class="fa fa-2x fa-rss"></i>
-                    </a>
-                
-                
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
-    </script>
-    <div class="site-visitors-container white-text">
-        <span>
-            <i class="fa fa-user"></i>
-            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
-        </span>
-        <span>&nbsp;|&nbsp;</span>
-        <span>
-            <i class="fa fa-eye"></i>
-            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
-        </span>
-    </div>
-
-
-            </div>
-            
-
-            
-            <div class="col m8 s12">
-                <h5 class="white-text">友情链接</h5>
-                
-                    <a class="social-link" href="http://chenrudan.github.io" target="_blank">女朋友的博客😊</a>
-                
-            </div>
-            
-        </div>
-        <p>Hosted by <a href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a></p>
-    </div>
-    
-
-    <div class="footer-copyright teal-link-context">
-        <div class="container">
-            © 2020 tutuge.me, All rights reserved.
-            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
-        </div>
-    </div>
-</footer>
-
-
-    <noscript>
-    <div class="noscript">
-        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
-    </div>
-</noscript>
-<div class="noscript">
-    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
-</div>
-
-
-<script src="/js/jquery.min.js"></script>
-<script src="/js/materialize.min.js"></script>
-
-<script>
-    (function($) {
-        $(document).ready(function() {
-            // 隐藏禁用javascript（针对微信内置浏览器）的提示
-            $('.noscript').hide();
-
-            // 图片缩放效果
-            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
-
-            // 给图片加上点击放大效果（materialbox插件）
-            $imgs.addClass('materialboxed').each(function(i, el) {
-                $(this).attr('data-caption', $(this).attr('alt') || ' ');
-            }).materialbox();
-
-            // 优化表格的显示
-            $('table').each(function() {
-                var $table = $(this);
-                // 除去多行代码的情况
-                if ($table.find('pre').length == 0) {
-                    $table.addClass('responsive-table striped bordered');
-                }
-            });
-
-            // 首页幻灯片
-            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
-
-            $(".button-collapse").sideNav();
-            $(".category-menu").sideNav();
-
-            // 针对gallery post
-            $('.carousel').carousel({full_width: true});
-            $('.carousel-control.prev').click(function() {
-                $('.carousel').carousel('prev');
-            });
-            $('.carousel-control.next').click(function() {
-                $('.carousel').carousel('next');
-            });
-
-            // 文章目录
-            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
-
-            // 目录随屏幕滚动（防止目录过长越过footer）
-            var $toc = $('.toc');
-            var scrollTargetTop = 0;
-            $(window).scroll(function() {
-                var $activeLink = $toc.find('a.active.section');
-                if ($(window).scrollTop() < 100) {
-                    scrollTargetTop = 0;
-                } else {
-                    if ($activeLink[0]) {
-                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
-                    }
-                }
-                $toc.css('top', '-' + scrollTargetTop + 'px');
-            });
-
-            // 修正文章目录的left-border颜色
-            var color = $('.table-of-contents-text').css('color');
-            $('.table-of-contents-link').css('border-left-color', color);
-
-            // 针对移动端做的优化：FAB按钮点击一下收回
-            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                $('.fixed-action-btn').addClass('click-to-toggle');
-            }
-            // 回到顶部
-            $('.btn-return-top').click(function() {
-                $('body, html').animate({
-                    scrollTop: 0
-                }, 500);
-            });
-
-            // 重置读书页面的Tab标签页的颜色
-            $('li.tab a').hover(function() {
-                $(this).toggleClass('text-lighten-4');
-            });
-            $('.indicator').addClass('teal lighten-2');
-
-            
-            // 添加new标签
-            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
-            
-
-            // 搜索功能
-            $('.modal-trigger').leanModal({
-                // 打开搜索框时自动聚焦
-                ready: function() {
-                    if ($('#search').is(":visible")) {
-                        $('#search-input').focus();
-                    }
-                }
-            });
-            var searchXml = "search.xml";
-            if (searchXml.length == 0) {
-             	searchXml = "search.xml";
-            }
-            var searchPath = "/" + searchXml;
-            initSearch(searchPath, 'search-input', 'search-result');
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
         });
-
-        // 初始化搜索与匹配函数
-        var initSearch = function(path, search_id, content_id) {
-            'use strict';
-            $.ajax({
-                url: path,
-                dataType: "xml",
-                success: function(xmlResponse) {
-                    // get the contents from search data
-                    var datas = $("entry", xmlResponse).map(function() {
-                        return {
-                            title: $("title", this).text(),
-                            content: $("content", this).text(),
-                            url: $("url", this).text()
-                        };
-                    }).get();
-                    var $input = document.getElementById(search_id);
-                    var $resultContent = document.getElementById(content_id);
-                    $input.addEventListener('input', function() {
-                        var str = '<ul class=\"search-result-list\">';
-                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
-                        $resultContent.innerHTML = "";
-                        if (this.value.trim().length <= 0) {
-                            return;
-                        }
-                        // perform local searching
-                        datas.forEach(function(data) {
-                            var isMatch = true;
-                            var content_index = [];
-                            var data_title = data.title.trim().toLowerCase();
-                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
-                            var data_url = data.url;
-                            var index_title = -1;
-                            var index_content = -1;
-                            var first_occur = -1;
-                            // only match artiles with not empty titles and contents
-                            if (data_title != '' && data_content != '') {
-                                keywords.forEach(function(keyword, i) {
-                                    index_title = data_title.indexOf(keyword);
-                                    index_content = data_content.indexOf(keyword);
-                                    if (index_title < 0 && index_content < 0) {
-                                        isMatch = false;
-                                    } else {
-                                        if (index_content < 0) {
-                                            index_content = 0;
-                                        }
-                                        if (i == 0) {
-                                            first_occur = index_content;
-                                        }
-                                    }
-                                });
-                            }
-                            // show search results
-                            if (isMatch) {
-                                keywords.forEach(function(keyword) {
-                                    var regS = new RegExp(keyword, "gi");
-                                    data_title = data_title.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
-                                });
-
-                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
-                                var content = data.content.trim().replace(/<[^>]+>/g, "");
-                                if (first_occur >= 0) {
-                                    // cut out 100 characters
-                                    var start = first_occur - 20;
-                                    var end = first_occur + 80;
-                                    if (start < 0) {
-                                        start = 0;
-                                    }
-                                    if (start == 0) {
-                                        end = 100;
-                                    }
-                                    if (end > content.length) {
-                                        end = content.length;
-                                    }
-                                    var match_content = content.substring(start, end);
-                                    // highlight all keywords
-                                    keywords.forEach(function(keyword) {
-                                        var regS = new RegExp(keyword, "gi");
-                                        match_content = match_content.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
-                                    });
-
-                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
-                                }
-                                str += "</li>";
-                            }
-                        });
-                        str += "</ul>";
-                        $resultContent.innerHTML = str;
-                    });
-                }
-            });
-        }
-    })(jQuery);
-</script>
-
-
-<script src="/js/prettify.js"></script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $("pre").addClass("prettyprint");
-        prettyPrint();
-    });
-</script>
-
-
-<script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-68058110-1', 'auto');
-    ga('send', 'pageview');
-
-</script>
-
-
-
-<script type="text/javascript" src="http://tajs.qq.com/stats?sId=55079830" charset="UTF-8"></script>
-
-
-
-
-
-</body>
-</html>
+        lightbox.init();
+    }
+</script></main></div><script type=text/javascript src=/ts/main.f856840516f7c2ad1769a8f5937e3d08d6cb386e2cd2dd025ae696e0ff207958.js defer></script></body></html>

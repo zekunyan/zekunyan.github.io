@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mac on 土土哥的技术 Blog</title><link>https://tutuge.me/tags/mac/</link><description>Recent content in Mac on 土土哥的技术 Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>tutuge</copyright><lastBuildDate>Sun, 28 Aug 2016 00:00:00 +0000</lastBuildDate><atom:link href="https://tutuge.me/tags/mac/index.xml" rel="self" type="application/rss+xml"/><item><title>Swift开源Mac App - BingWallPaper</title><link>https://tutuge.me/2016/08/28/TTGBingWallPaper/</link><pubDate>Sun, 28 Aug 2016 14:37:02 +0000</pubDate><guid>https://tutuge.me/2016/08/28/TTGBingWallPaper/</guid><description>&lt;img src="https://tutuge.me/assets/2016/08/28/TTGBingWallPaper/BingWallPaper_banner.png" alt="Featured image of post Swift开源Mac App - BingWallPaper" /&gt;&lt;h2 id="更新"&gt;&lt;a href="#%e6%9b%b4%e6%96%b0" class="header-anchor"&gt;&lt;/a&gt;更新
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;2016-09-05: &lt;a class="link" href="https://github.com/zekunyan/TTGBingWallPaper/releases/download/0.3/BingWallPaper.app.zip" target="_blank" rel="noopener"
+ &gt;新版0.3&lt;/a&gt;增加子Menu，整理选项；增加“History Wallpapers”打开历史图片文件夹；增加“Launch at startup”开机启动。&lt;/li&gt;
+&lt;li&gt;2016-09-03: &lt;a class="link" href="https://github.com/zekunyan/TTGBingWallPaper/releases/download/0.2.0/BingWallPaper.app.zip" target="_blank" rel="noopener"
+ &gt;新版0.2.0！&lt;/a&gt;增加“Auto Update”选项；增加“Random”随机选择设置壁纸；修复自动更新不准的Bug。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="Banner" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/08/28/TTGBingWallPaper/BingWallPaper_banner.png"&gt;&lt;/p&gt;
+&lt;p&gt;极简的壁纸Mac App，每天&lt;strong&gt;自动&lt;/strong&gt;下载最新微软Bing的每日壁纸并设置为桌面背景。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="ScreenShot1" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/08/28/TTGBingWallPaper/BingWallPaper_screenshot_2.png"&gt;&lt;/p&gt;
+&lt;p&gt;Github: &lt;a class="link" href="https://github.com/zekunyan/TTGBingWallPaper" target="_blank" rel="noopener"
+ &gt;https://github.com/zekunyan/TTGBingWallPaper&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id="由来"&gt;&lt;a href="#%e7%94%b1%e6%9d%a5" class="header-anchor"&gt;&lt;/a&gt;由来
+&lt;/h2&gt;&lt;p&gt;其实最开始只是很喜欢Bing的首页的壁纸图片，然后手动下载回来做壁纸，后来发现手动太麻烦，作为一个程序员，自己动手丰衣足食！=。= 然后花了个周末写了这个超简单的Mac App。&lt;/p&gt;
+&lt;h2 id="安装"&gt;&lt;a href="#%e5%ae%89%e8%a3%85" class="header-anchor"&gt;&lt;/a&gt;安装
+&lt;/h2&gt;&lt;p&gt;到Github的项目页面，即&lt;a class="link" href="https://github.com/zekunyan/TTGBingWallPaper" target="_blank" rel="noopener"
+ &gt;https://github.com/zekunyan/TTGBingWallPaper&lt;/a&gt;，从&lt;code&gt;release&lt;/code&gt;里面下载最新的&lt;code&gt;BingWallPaper.app.zip&lt;/code&gt;压缩包，解压出&lt;code&gt;BingWallPaper.app&lt;/code&gt;，拖到&lt;code&gt;Applications&lt;/code&gt;应用程序文件夹里面，打开即可。&lt;/p&gt;
+&lt;h2 id="开发"&gt;&lt;a href="#%e5%bc%80%e5%8f%91" class="header-anchor"&gt;&lt;/a&gt;开发
+&lt;/h2&gt;&lt;p&gt;用Swift 2.2写的，目前唯一依赖的库是&lt;a class="link" href="https://github.com/SwiftyJSON/SwiftyJSON" target="_blank" rel="noopener"
+ &gt;SwiftyJSON/SwiftyJSON&lt;/a&gt;，需要&lt;a class="link" href="https://github.com/Carthage/Carthage" target="_blank" rel="noopener"
+ &gt;Carthage&lt;/a&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;git clone git@github.com:zekunyan/TTGBingWallPaper.git&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;cd TTGBingWallPaper&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;carthage update&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;open BingWallPaper.xcodeproj&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;编译、安装、运行&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="未来"&gt;&lt;a href="#%e6%9c%aa%e6%9d%a5" class="header-anchor"&gt;&lt;/a&gt;未来
+&lt;/h2&gt;&lt;p&gt;还有很多点可以做，一点一点来吧=。=&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;TODO&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;支持多国地区的Bing每日图片壁纸的获取&lt;/li&gt;
+&lt;li&gt;支持多语言&lt;/li&gt;
+&lt;li&gt;支持浏览历史图片&lt;/li&gt;
+&lt;li&gt;导出图片&lt;/li&gt;
+&lt;li&gt;…&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

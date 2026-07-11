@@ -1,726 +1,148 @@
-<!DOCTYPE HTML>
-<html>
-<head><meta name="generator" content="Hexo 3.9.0">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="前言 前段时间在Dribbble上发现了一个Rating控件的演示动画，控件以Emoji表情为基础，结合了上下滑动手势，正好最近正在深入学习iOS动画、绘图相关的知识，就尝试着用UIBezierPath实现了出来。本文就是TTGEmojiRate的实现过程。\nGithub: https://github.com/zekunyan/TTGEmojiRate\n"><title>Swift开源项目: TTGEmojiRate的实现</title><link rel=canonical href=https://tutuge.me/2015/10/25/ttgemojirate-lib/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=preload as=style href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href=/scss/style.min.e62e09c60ba428a627e03568fa3df938f6a8224f815b5846f00816c17d4a0be4.css><meta property='og:title' content="Swift开源项目: TTGEmojiRate的实现"><meta property='og:description' content="前言 前段时间在Dribbble上发现了一个Rating控件的演示动画，控件以Emoji表情为基础，结合了上下滑动手势，正好最近正在深入学习iOS动画、绘图相关的知识，就尝试着用UIBezierPath实现了出来。本文就是TTGEmojiRate的实现过程。\nGithub: https://github.com/zekunyan/TTGEmojiRate\n"><meta property='og:url' content='https://tutuge.me/2015/10/25/ttgemojirate-lib/'><meta property='og:site_name' content='土土哥的技术 Blog'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='原创'><meta property='article:tag' content='iOS'><meta property='article:tag' content='开源'><meta property='article:tag' content='Swift'><meta property='article:published_time' content='2015-10-25T00:00:00+00:00'><meta property='article:modified_time' content='2015-10-25T00:00:00+00:00'><meta property='og:image' content='https://tutuge.me/assets/2015/10/25/ttgemojirate-lib/TTGEmojiRate_screenshot2.gif'><meta name=twitter:title content="Swift开源项目: TTGEmojiRate的实现"><meta name=twitter:description content="前言 前段时间在Dribbble上发现了一个Rating控件的演示动画，控件以Emoji表情为基础，结合了上下滑动手势，正好最近正在深入学习iOS动画、绘图相关的知识，就尝试着用UIBezierPath实现了出来。本文就是TTGEmojiRate的实现过程。\nGithub: https://github.com/zekunyan/TTGEmojiRate\n"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://tutuge.me/assets/2015/10/25/ttgemojirate-lib/TTGEmojiRate_screenshot2.gif'><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar.png width height class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>土土哥的技术 Blog</a></h1><h2 class=site-description>AI / iOS / Android / Flutter / Open Source</h2></div></header><ol class=menu-social><li><a href=https://github.com/zekunyan title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>首页</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav class=toc-nav id=TableOfContents><ul><li><a href=#前言>前言</a></li><li><a href=#分析>分析</a></li><li><a href=#实现>实现</a><ul><li><a href=#思路>思路</a></li><li><a href=#拖动改变rate值>拖动改变Rate值</a></li><li><a href=#uibezierpath---贝塞尔曲线>UIBezierPath - 贝塞尔曲线</a></li><li><a href=#脸>脸</a></li><li><a href=#嘴眼睛>嘴、眼睛</a></li><li><a href=#颜色的渐变>颜色的渐变</a></li><li><a href=#善于使用didset>善于使用didSet</a></li><li><a href=#ibdesignableibinspectable>@IBDesignable、@IBInspectable</a></li><li><a href=#回调>回调</a></li></ul></li><li><a href=#总结>总结</a></li><li><a href=#参考>参考</a></li></ul></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/2015/10/25/ttgemojirate-lib/><img alt="Featured image of post Swift开源项目: TTGEmojiRate的实现" loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2015/10/25/ttgemojirate-lib/TTGEmojiRate_screenshot2.gif></a></div><div class=article-details><header class=article-category><a href=/categories/ios/ style=background-color:#efbeed;color:#3d0f3c>IOS</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/2015/10/25/ttgemojirate-lib/>Swift开源项目: TTGEmojiRate的实现</a></h2></div><footer class=article-meta><div class=inline-meta><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2015-10-25T00:00:00Z>2015-10-25</time>
+<svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 6 分钟</time></div></footer></div></header><aside class=article-toc><details><summary><div class=article-toc-title><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6-6 6"/></svg>
+<span>目录</span></div></summary><nav class=toc-nav><ul><li><a href=#前言>前言</a></li><li><a href=#分析>分析</a></li><li><a href=#实现>实现</a><ul><li><a href=#思路>思路</a></li><li><a href=#拖动改变rate值>拖动改变Rate值</a></li><li><a href=#uibezierpath---贝塞尔曲线>UIBezierPath - 贝塞尔曲线</a></li><li><a href=#脸>脸</a></li><li><a href=#嘴眼睛>嘴、眼睛</a></li><li><a href=#颜色的渐变>颜色的渐变</a></li><li><a href=#善于使用didset>善于使用didSet</a></li><li><a href=#ibdesignableibinspectable>@IBDesignable、@IBInspectable</a></li><li><a href=#回调>回调</a></li></ul></li><li><a href=#总结>总结</a></li><li><a href=#参考>参考</a></li></ul></nav></details></aside><section class=article-content><h2 id=前言><a href=#%e5%89%8d%e8%a8%80 class=header-anchor></a>前言</h2><p>前段时间在Dribbble上发现了一个<a class=link href=https://dribbble.com/shots/2211556-Rating-Version-A target=_blank rel=noopener>Rating控件</a>的演示动画，控件以Emoji表情为基础，结合了上下滑动手势，正好最近正在深入学习iOS动画、绘图相关的知识，就尝试着用<code>UIBezierPath</code>实现了出来。本文就是TTGEmojiRate的实现过程。</p><p>Github: <a class=link href=https://github.com/zekunyan/TTGEmojiRate target=_blank rel=noopener>https://github.com/zekunyan/TTGEmojiRate</a></p><p><img alt="TTGEmojiRate Example" loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2015/10/25/ttgemojirate-lib/TTGEmojiRate_screenshot2.gif></p><h2 id=分析><a href=#%e5%88%86%e6%9e%90 class=header-anchor></a>分析</h2><p>先看看原本的效果：<a class=link href=https://dribbble.com/shots/2211556-Rating-Version-A target=_blank rel=noopener>Rating Version A - Hoang Nguyen</a></p><p><img alt="Rating Version A - Hoang Nguyen" loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2015/10/25/ttgemojirate-lib/TTGEmojiRate_Dribbble.gif></p><p>可以看出来，主要的特点如下：</p><ul><li>可以上下拖动，改变Emoji表情嘴的弧度。</li><li>拖动的时候Rate的值也会随之变化，从0到5，并且跟表情的“喜怒”相对应。</li><li>颜色也会变化，从绿色到蓝色再到红色，也对应表情的“喜怒”。</li></ul><p>实际实现的时候，增加了眼睛元素，并且增强了自定义，如颜色的变化范围、线条的粗细等都可以设定，基本的思路还是不变的。</p><h2 id=实现><a href=#%e5%ae%9e%e7%8e%b0 class=header-anchor></a>实现</h2><h3 id=思路><a href=#%e6%80%9d%e8%b7%af class=header-anchor></a>思路</h3><p>开始写代码之前，先理理思路。</p><p>拖动的时候，直接影响的应该是Rate值，然后在Rate值改变的时候刷新整个控件，刷新的时候重绘。重绘的时候，嘴、眼睛的弧度，颜色的值都要根据Rate值重新计算，如下图：</p><p><img alt=Image loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2015/10/25/ttgemojirate-lib/blog_ttgemojirate_1.png></p><h3 id=拖动改变rate值><a href=#%e6%8b%96%e5%8a%a8%e6%94%b9%e5%8f%98rate%e5%80%bc class=header-anchor></a>拖动改变Rate值</h3><p>这个还是很容易实现的，直接重写<code>UIView</code>的touch相关的三个方法，在里面记录拖动在Y轴上的变化值，然后映射到Rate值上就可以了。</p><p>先声明一个CGPoint属性，用来保存手指按下时的点位置：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-swift data-lang=swift><span class=line><span class=cl><span class=kd>private</span> <span class=kd>var</span> <span class=nv>touchPoint</span><span class=p>:</span> <span class=n>CGPoint</span><span class=p>?</span> <span class=p>=</span> <span class=kc>nil</span>
+</span></span></code></pre></div><p>在手指移动的时候，在<code>touchesMoved</code>方法里面计算当前点跟上一次触摸点的Y轴上的<strong>差值</strong>，然后映射到Rate值上。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-swift data-lang=swift><span class=line><span class=cl><span class=kd>public</span> <span class=kr>override</span> <span class=kd>func</span> <span class=nf>touchesMoved</span><span class=p>(</span><span class=n>touches</span><span class=p>:</span> <span class=n>Set</span><span class=p>&lt;</span><span class=n>UITouch</span><span class=p>&gt;,</span> <span class=n>withEvent</span> <span class=n>event</span><span class=p>:</span> <span class=n>UIEvent</span><span class=p>?)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 获取当前触摸点</span>
+</span></span><span class=line><span class=cl>    <span class=kd>let</span> <span class=nv>currentPoint</span> <span class=p>=</span> <span class=n>touches</span><span class=p>.</span><span class=bp>first</span><span class=p>?.</span><span class=n>locationInView</span><span class=p>(</span><span class=kc>self</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 改变Rate值</span>
+</span></span><span class=line><span class=cl>    <span class=n>rateValue</span> <span class=p>=</span> <span class=n>rateValue</span> <span class=o>+</span> <span class=nb>Float</span><span class=p>((</span><span class=n>currentPoint</span><span class=p>!.</span><span class=n>y</span> <span class=o>-</span> <span class=n>touchPoint</span><span class=p>!.</span><span class=n>y</span><span class=p>)</span> <span class=o>/</span> <span class=n>CGRectGetHeight</span><span class=p>(</span><span class=kc>self</span><span class=p>.</span><span class=n>bounds</span><span class=p>)</span> <span class=o>*</span> <span class=n>rateDragSensitivity</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 保存当前触摸点</span>
+</span></span><span class=line><span class=cl>    <span class=n>touchPoint</span> <span class=p>=</span> <span class=n>currentPoint</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>注意：</p><ul><li>计算Y轴差值的时候，除以了当前控件的高度，这是为了保证Rate值按比例增减。</li><li>增加了一个<code>rateDragSensitivity</code>属性，用来调节改变Rate值的“灵敏度”</li></ul><h3 id=uibezierpath---贝塞尔曲线><a href=#uibezierpath---%e8%b4%9d%e5%a1%9e%e5%b0%94%e6%9b%b2%e7%ba%bf class=header-anchor></a>UIBezierPath - 贝塞尔曲线</h3><p>控件的主要内容都是用<code>UIBezierPath</code>绘制出来的。网上关于<code>UIBezierPath</code>的讲解很多，在这里就不详细说了。</p><p>简单来说，<code>UIBezierPath</code>用来绘制矢量路径，是一种参数曲线，在使用的时候，只需要先设定好锚点、控制点，系统就可以根据贝塞尔曲线的算法，绘制出对应的线，并且保证锚点和对应的控制点的连线与曲线相切。</p><p>这里有一个演示绘制贝塞尔曲线过程的网站：<a class=link href=http://myst729.github.io/bezier-curve/ target=_blank rel=noopener>Bézier curve</a></p><h3 id=脸><a href=#%e8%84%b8 class=header-anchor></a>脸</h3><p>脸是最简单的，就是一个圆，直接用一个方法就可以：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-swift data-lang=swift><span class=line><span class=cl><span class=kd>private</span> <span class=kd>func</span> <span class=nf>drawFaceWithRect</span><span class=p>(</span><span class=n>rect</span><span class=p>:</span> <span class=n>CGRect</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>let</span> <span class=nv>facePath</span> <span class=p>=</span> <span class=n>UIBezierPath</span><span class=p>(</span><span class=n>ovalInRect</span><span class=p>:</span> <span class=n>rect</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>rateColor</span><span class=p>.</span><span class=n>setStroke</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>facePath</span><span class=p>.</span><span class=n>lineWidth</span> <span class=p>=</span> <span class=n>rateLineWidth</span> <span class=c1>// 线粗细</span>
+</span></span><span class=line><span class=cl>    <span class=n>facePath</span><span class=p>.</span><span class=n>stroke</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>实际实现的时候可以加上Margin，防止线画到View的边界之外。</p><h3 id=嘴眼睛><a href=#%e5%98%b4%e7%9c%bc%e7%9d%9b class=header-anchor></a>嘴、眼睛</h3><p>先看看<code>UIBezierPath</code>提供的可以用来绘制曲线的方法：
+<code>addCurveToPoint(_:controlPoint1:controlPoint2:)</code>和<code>addQuadCurveToPoint(_:controlPoint:)</code>，如下图:</p><p><img alt=UIBezierPath loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2015/10/25/ttgemojirate-lib/blog_ttgemojirate_2.png></p><p>直观上来讲，嘴、眼睛的绘制跟<code>addQuadCurveToPoint</code>方法绘制的效果基本一致，但是这样的效果没法调整，因为只能控制唯一的一个控制点，所以还是要用<code>addCurveToPoint</code>方法，对称的绘制两条曲线，拼接起来，如下图：</p><p><img alt=Curve拼接 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2015/10/25/ttgemojirate-lib/blog_ttgemojirate_3.png></p><p>这样的话，就可以通过调整两个控制点，来控制嘴、眼睛的弯曲宽度、形状。</p><p>以绘制嘴为例：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-arduino data-lang=arduino><span class=line><span class=cl><span class=k>private</span> <span class=n>func</span> <span class=nf>drawMouthWithRect</span><span class=p>(</span><span class=nf>rect</span><span class=o>:</span> <span class=n>CGRect</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>let</span> <span class=nf>width</span> <span class=o>=</span> <span class=n>CGRectGetWidth</span><span class=p>(</span><span class=nf>rect</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>let</span> <span class=nf>height</span> <span class=o>=</span> <span class=n>CGRectGetWidth</span><span class=p>(</span><span class=nf>rect</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 左端点
+</span></span></span><span class=line><span class=cl>    <span class=n>let</span> <span class=n>leftPoint</span> <span class=o>=</span> <span class=n>CGPointMake</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=nf>width</span> <span class=o>*</span> <span class=p>(</span><span class=mi>1</span> <span class=o>-</span> <span class=n>rateMouthWidth</span><span class=p>)</span> <span class=o>/</span> <span class=mi>2</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nf>height</span> <span class=o>*</span> <span class=p>(</span><span class=mi>1</span> <span class=o>-</span> <span class=n>rateMouthVerticalPosition</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 右端点
+</span></span></span><span class=line><span class=cl>    <span class=n>let</span> <span class=n>rightPoint</span> <span class=o>=</span> <span class=n>CGPointMake</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=nf>width</span> <span class=o>-</span> <span class=n>leftPoint</span><span class=p>.</span><span class=n>x</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>leftPoint</span><span class=p>.</span><span class=n>y</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 中间点 - Y值根据当前的Rate值计算，0.3为系数
+</span></span></span><span class=line><span class=cl>    <span class=n>let</span> <span class=n>centerPoint</span> <span class=o>=</span> <span class=n>CGPointMake</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=nf>width</span> <span class=o>/</span> <span class=mi>2</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>leftPoint</span><span class=p>.</span><span class=n>y</span> <span class=o>+</span> <span class=nf>height</span> <span class=o>*</span> <span class=mf>0.3</span> <span class=o>*</span> <span class=p>(</span><span class=n>CGFloat</span><span class=p>(</span><span class=n>rateValue</span><span class=p>)</span> <span class=o>-</span> <span class=mf>2.5</span><span class=p>)</span> <span class=o>/</span> <span class=mi>5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 控制点跟中间点在X轴上的距离
+</span></span></span><span class=line><span class=cl>    <span class=n>let</span> <span class=n>halfLipWidth</span> <span class=o>=</span> <span class=nf>width</span> <span class=o>*</span> <span class=n>rateMouthWidth</span> <span class=o>*</span> <span class=n>rateLipWidth</span> <span class=o>/</span> <span class=mi>2</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 创建贝塞尔曲线
+</span></span></span><span class=line><span class=cl>    <span class=n>let</span> <span class=n>mouthPath</span> <span class=o>=</span> <span class=n>UIBezierPath</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 移动到起始点
+</span></span></span><span class=line><span class=cl>    <span class=n>mouthPath</span><span class=p>.</span><span class=n>moveToPoint</span><span class=p>(</span><span class=n>leftPoint</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 添加左半边曲线路径
+</span></span></span><span class=line><span class=cl>    <span class=n>mouthPath</span><span class=p>.</span><span class=n>addCurveToPoint</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=n>centerPoint</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nl>controlPoint1</span><span class=p>:</span> <span class=n>leftPoint</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nl>controlPoint2</span><span class=p>:</span> <span class=n>CGPointMake</span><span class=p>(</span><span class=n>centerPoint</span><span class=p>.</span><span class=n>x</span> <span class=o>-</span> <span class=n>halfLipWidth</span><span class=p>,</span> <span class=n>centerPoint</span><span class=p>.</span><span class=n>y</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 添加右半边曲线路径
+</span></span></span><span class=line><span class=cl>    <span class=n>mouthPath</span><span class=p>.</span><span class=n>addCurveToPoint</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=n>rightPoint</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nl>controlPoint1</span><span class=p>:</span> <span class=n>CGPointMake</span><span class=p>(</span><span class=n>centerPoint</span><span class=p>.</span><span class=n>x</span> <span class=o>+</span> <span class=n>halfLipWidth</span><span class=p>,</span> <span class=n>centerPoint</span><span class=p>.</span><span class=n>y</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>        <span class=nl>controlPoint2</span><span class=p>:</span> <span class=n>rightPoint</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 设定样式
+</span></span></span><span class=line><span class=cl>    <span class=n>mouthPath</span><span class=p>.</span><span class=n>lineCapStyle</span> <span class=o>=</span> <span class=n>CGLineCap</span><span class=p>.</span><span class=n>Round</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>rateColor</span><span class=p>.</span><span class=n>setStroke</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>mouthPath</span><span class=p>.</span><span class=n>lineWidth</span> <span class=o>=</span> <span class=n>rateLineWidth</span>
+</span></span><span class=line><span class=cl>    <span class=n>mouthPath</span><span class=p>.</span><span class=nf>stroke</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>说明：</p><ul><li>所有的距离、坐标都是根据当前控件的大小计算出来的。</li><li><code>rateMouthWidth</code>为嘴的宽度与整个控件宽度的比值，即相对值。</li><li><code>rateMouthVerticalPosition</code>为嘴的左右两个端点的Y轴坐标值，也为相对值。</li><li><code>rateLipWidth</code>为中心点的两个控制点的距离与嘴宽度的比值，也是相对值。</li></ul><p>眼睛的绘制跟嘴原理一致，就不再说明。</p><h3 id=颜色的渐变><a href=#%e9%a2%9c%e8%89%b2%e7%9a%84%e6%b8%90%e5%8f%98 class=header-anchor></a>颜色的渐变</h3><p>Dribbble的演示中，控件的线条颜色也是会变化的，从红色到蓝色再到绿色，是连续变化的。这个时候用常见的<strong>RGB色彩模式</strong>是不好控制的，效果也不好。</p><p>所以这个时候要用<strong>HSB色彩模式</strong></p><blockquote><p>HSB 色彩模式是基于人眼的一种颜色模式。是普及型设计软件中常见的色彩模式，其中H代表色相；S代表饱和度；B代表亮度。- <a class=link href=http://baike.baidu.com/view/1006662.htm target=_blank rel=noopener>百度百科</a></p></blockquote><p><img alt=HSB色彩模式 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2015/10/25/ttgemojirate-lib/blog_ttgemojirate_4.jpg></p><p>对应到<code>UIColor</code>类，就是下面两个方法：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=o>//</span> <span class=err>创建</span><span class=n>UIColor</span>
+</span></span><span class=line><span class=cl><span class=n>init</span><span class=p>(</span><span class=n>hue</span> <span class=n>hue</span><span class=p>:</span> <span class=n>CGFloat</span><span class=p>,</span> <span class=n>saturation</span> <span class=n>saturation</span><span class=p>:</span> <span class=n>CGFloat</span><span class=p>,</span> <span class=n>brightness</span> <span class=n>brightness</span><span class=p>:</span> <span class=n>CGFloat</span><span class=p>,</span> <span class=n>alpha</span> <span class=n>alpha</span><span class=p>:</span> <span class=n>CGFloat</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=o>//</span> <span class=err>获取</span><span class=n>HSB值</span><span class=err>，注意参数</span>
+</span></span><span class=line><span class=cl><span class=k>func</span> <span class=n>getHue</span><span class=p>(</span><span class=n>_</span> <span class=n>hue</span><span class=p>:</span> <span class=n>UnsafeMutablePointer</span><span class=o>&lt;</span><span class=n>CGFloat</span><span class=o>&gt;</span><span class=p>,</span> <span class=n>saturation</span> <span class=n>saturation</span><span class=p>:</span> <span class=n>UnsafeMutablePointer</span><span class=o>&lt;</span><span class=n>CGFloat</span><span class=o>&gt;</span><span class=p>,</span> <span class=n>brightness</span> <span class=n>brightness</span><span class=p>:</span> <span class=n>UnsafeMutablePointer</span><span class=o>&lt;</span><span class=n>CGFloat</span><span class=o>&gt;</span><span class=p>,</span> <span class=n>alpha</span> <span class=n>alpha</span><span class=p>:</span> <span class=n>UnsafeMutablePointer</span><span class=o>&lt;</span><span class=n>CGFloat</span><span class=o>&gt;</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Bool</span>
+</span></span></code></pre></div><p>实现的时候，为了增加可定制性，控件颜色的变化范围是可以设置的，用以下属性保存：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-groovy data-lang=groovy><span class=line><span class=cl><span class=kd>public</span> <span class=kt>var</span> <span class=nl>rateColorRange:</span> <span class=o>(</span><span class=nl>from:</span> <span class=n>UIColor</span><span class=o>,</span> <span class=nl>to:</span> <span class=n>UIColor</span><span class=o>)</span>
+</span></span></code></pre></div><p>刷新时，就可以根据当前的Rate值，重新计算颜色的HSB和alpha值：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dts data-lang=dts><span class=line><span class=cl><span class=n>let</span><span class=w> </span><span class=nl>rate</span><span class=p>:</span><span class=w> </span><span class=na>CGFloat</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>CGFloat</span><span class=p>(</span><span class=n>rateValue</span><span class=w> </span><span class=o>/</span><span class=w> </span><span class=mi>5</span><span class=p>)</span><span class=w> </span><span class=c1>// Rate值归一化
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=n>self</span><span class=p>.</span><span class=na>rateColor</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>UIColor</span><span class=p>.</span><span class=n>init</span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nl>hue</span><span class=p>:</span><span class=w> </span><span class=n>hueFrom</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>hueDelta</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=n>rate</span><span class=p>,</span><span class=w> </span><span class=c1>// 色相
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nl>saturation</span><span class=p>:</span><span class=w> </span><span class=n>saturationFrom</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>saturationDelta</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=n>rate</span><span class=p>,</span><span class=w> </span><span class=c1>// 饱和度
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nl>brightness</span><span class=p>:</span><span class=w> </span><span class=n>brightnessFrom</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>brightnessDelta</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=n>rate</span><span class=p>,</span><span class=w> </span><span class=c1>// 亮度
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nl>alpha</span><span class=p>:</span><span class=w> </span><span class=n>alphaFrom</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>alphaDelta</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=n>rate</span><span class=w> </span><span class=c1>// 透明度
+</span></span></span><span class=line><span class=cl><span class=p>)</span><span class=w>
+</span></span></span></code></pre></div><p>说明：</p><ul><li>所有的颜色参数都是根据Rate值做线性增减。</li><li><code>xxxFrom</code>、<code>xxxDelta</code>分别指HSB和alpha的起始值与变化范围，在设置<code>rateColorRange</code>时计算保存下来。</li></ul><p>这样，颜色就能做到跟Rate值做连续的线性变化。</p><h3 id=善于使用didset><a href=#%e5%96%84%e4%ba%8e%e4%bd%bf%e7%94%a8didset class=header-anchor></a>善于使用didSet</h3><p>实现控件的时候，对外暴露了很多属性，如线的宽度<code>rateLineWidth</code>、嘴的宽度<code>rateMouthWidth</code>等。为了对这些属性做校验，并且在设置后刷新控件，就要用到<code>didSet</code>。</p><p><code>didSet</code>在Swift里面，跟类的属性是一一绑定的，在对属性赋值后会被调用。</p><p>控件的大部分属性都做了校验、刷新，如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-swift data-lang=swift><span class=line><span class=cl><span class=c1>/// Mouth width. From 0.2 to 0.7.</span>
+</span></span><span class=line><span class=cl><span class=kr>@IBInspectable</span> <span class=kd>public</span> <span class=kd>var</span> <span class=nv>rateMouthWidth</span><span class=p>:</span> <span class=n>CGFloat</span> <span class=p>=</span> <span class=mf>0.6</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>didSet</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 判断上限</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>rateMouthWidth</span> <span class=o>&gt;</span> <span class=mf>0.7</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>rateMouthWidth</span> <span class=p>=</span> <span class=mf>0.7</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 判断下限</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>rateMouthWidth</span> <span class=o>&lt;</span> <span class=mf>0.2</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>rateMouthWidth</span> <span class=p>=</span> <span class=mf>0.2</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 刷新、重绘</span>
+</span></span><span class=line><span class=cl>        <span class=kc>self</span><span class=p>.</span><span class=n>setNeedsDisplay</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><h3 id=ibdesignableibinspectable><a href=#ibdesignableibinspectable class=header-anchor></a>@IBDesignable、@IBInspectable</h3><p>为了能在XIB、StoryBoard里面使用、编辑控件，就要用到<code>@IBDesignable</code>和<code>@IBInspectable</code>这两个关键字。</p><p>在类的前面加上<code>@IBDesignable</code>关键字，使IB可以预览控件：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-kotlin data-lang=kotlin><span class=line><span class=cl><span class=nd>@IBDesignable</span>
+</span></span><span class=line><span class=cl><span class=k>public</span> <span class=k>class</span> <span class=nc>EmojiRateView</span><span class=p>:</span> <span class=n>UIView</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// ...
+</span></span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>在属性前面加上<code>@IBInspectable</code>，就可以在IB里面编辑属性，实时预览：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-groovy data-lang=groovy><span class=line><span class=cl><span class=nd>@IBInspectable</span> <span class=kd>public</span> <span class=kt>var</span> <span class=nl>rateLineWidth:</span> <span class=n>CGFloat</span> <span class=o>=</span> <span class=mi>14</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// ...
+</span></span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span></code></pre></div><p>详细的使用可以参考NSHipster上的文章：<a class=link href=http://nshipster.cn/ibinspectable-ibdesignable/ target=_blank rel=noopener>IBInspectable / IBDesignable</a></p><p>最后，在IB里面就是下面这样：
+<img alt="IB example" loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2015/10/25/ttgemojirate-lib/TTGEmojiRate_IBExample.png></p><p><strong>By the way =。=</strong>
+属性名字太长，在IB里面显示不完整，咋办。。。</p><h3 id=回调><a href=#%e5%9b%9e%e8%b0%83 class=header-anchor></a>回调</h3><p>拖动改变Rate值的时候，肯定要有回调，如下定义：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-haxe data-lang=haxe><span class=line><span class=cl><span class=kd>public</span> <span class=kd>var</span> rateValueChangeCallback<span class=p>:</span> <span class=p>((</span><span class=n>newRateValue</span><span class=err>:</span> <span class=err>Float</span><span class=p>)</span> <span class=p>-&gt;</span> <span class=n>Void</span><span class=p>)</span><span class=err>?</span> <span class=err>=</span> <span class=n>nil</span>
+</span></span></code></pre></div><p>在<code>rateValue</code>的<code>didSet</code>里面回调：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-swift data-lang=swift><span class=line><span class=cl><span class=kr>@IBInspectable</span> <span class=kd>public</span> <span class=kd>var</span> <span class=nv>rateValue</span><span class=p>:</span> <span class=nb>Float</span> <span class=p>=</span> <span class=mf>2.5</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>didSet</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 回调</span>
+</span></span><span class=line><span class=cl>        <span class=kc>self</span><span class=p>.</span><span class=n>rateValueChangeCallback</span><span class=p>?(</span><span class=n>newRateValue</span><span class=p>:</span> <span class=n>rateValue</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><h2 id=总结><a href=#%e6%80%bb%e7%bb%93 class=header-anchor></a>总结</h2><p>看似简单的一个Rating控件，从构思到实现，再到完善，一点一点朝着完美去做，收获不少~</p><p>最后，Dribbble是个好地方，贝塞尔曲线好强大，XCode 7.1写Swift还是有点卡=。=</p><p>以上。</p><h2 id=参考><a href=#%e5%8f%82%e8%80%83 class=header-anchor></a>参考</h2><ul><li><a class=link href=https://zh.wikipedia.org/wiki/%E8%B2%9D%E8%8C%B2%E6%9B%B2%E7%B7%9A target=_blank rel=noopener>维基百科 - 贝塞尔曲线</a></li><li><a class=link href=https://developer.apple.com/library/ios/documentation/2DDrawing/Conceptual/DrawingPrintingiOS/BezierPaths/BezierPaths.html target=_blank rel=noopener>Drawing Shapes Using Bézier Paths</a></li><li><a class=link href=http://baike.baidu.com/view/1006662.htm target=_blank rel=noopener>HSB色彩模式</a></li><li><a class=link href=http://nshipster.cn/ibinspectable-ibdesignable/ target=_blank rel=noopener>IBInspectable / IBDesignable</a></li></ul></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/%E5%8E%9F%E5%88%9B/>原创</a>
+<a href=/tags/ios/>IOS</a>
+<a href=/tags/%E5%BC%80%E6%BA%90/>开源</a>
+<a href=/tags/swift/>Swift</a></section></footer></article><aside><h2 class=section-title>相关文章</h2><div class=subsection-list><div class=article-list--tile><article class=has-image><a href=/2015/10/09/ttgsnackbar-lib/><div class=article-image><img alt="Featured image of post Swift写的库-TTGSnackbar" loading=lazy src=/assets/2015/10/09/ttgsnackbar-lib/TTGSnackbar_screen_shot.png></div><div class=article-details><h2 class=article-title>Swift写的库-TTGSnackbar</h2></div></a></article><article class=has-image><a href=/2017/03/11/TTGDeallocTaskHelper/><div class=article-image><img alt="Featured image of post 在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper" loading=lazy src=/assets/2017/03/11/TTGDeallocTaskHelper/TTGDeallocTaskHelper_1.jpg></div><div class=article-details><h2 class=article-title>在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper</h2></div></a></article><article class=has-image><a href=/2017/03/08/quartzcode-demo-star-animation/><div class=article-image><img alt="Featured image of post 用QuartzCode快速实现一个收藏动画" loading=lazy src=/assets/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_1.gif></div><div class=article-details><h2 class=article-title>用QuartzCode快速实现一个收藏动画</h2></div></a></article><article class=has-image><a href=/2016/12/25/TTGPuzzleVerify/><div class=article-image><img alt="Featured image of post 开源项目-拼图验证控件TTGPuzzleVerify的实现" loading=lazy src=/assets/2016/12/25/TTGPuzzleVerify/blog_TTGPuzzleVerify_gif.gif></div><div class=article-details><h2 class=article-title>开源项目-拼图验证控件TTGPuzzleVerify的实现</h2></div></a></article><article class=has-image><a href=/2015/12/31/TTGTagCollectionView/><div class=article-image><img alt="Featured image of post 开源项目-TTGTagCollectionView" loading=lazy src=/assets/2015/12/31/TTGTagCollectionView/TTGTagCollectionView_screenshot.png></div><div class=article-details><h2 class=article-title>开源项目-TTGTagCollectionView</h2></div></a></article></div></div></aside><footer class=site-footer><section class=copyright>&copy;
+2014 -
+2026 tutuge</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=4.0.3>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><script type=module>
+    import gallery from '\/ts\/gallery.js';
 
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
     
-
-    <title>Swift开源项目: TTGEmojiRate的实现 | iOS程序猿.目前阿里,喜欢各种技术,RCFans</title>
-    <meta name="author" content="土土哥">
-    
-    <meta name="description" content="iOS程序猿.目前阿里,喜欢各种技术,RCFans">
-    
-    
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-    <meta property="og:title" content="Swift开源项目: TTGEmojiRate的实现">
-    <meta property="og:site_name" content="土土哥的Blog">
-
-    
-    <meta property="og:image" content="undefined">
-    
-
-    <link rel="icon" type="image/png" href="/favicon.png">
-    <link rel="alternate" href="/atom.xml" title="土土哥的Blog" type="application/atom+xml">
-    <link rel="stylesheet" href="/css/lib/materialize.min.css">
-    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
-    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-
-    
-        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
-    
-    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-</head>
-</html>
-
-<body>
-    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
-
-    <nav class="blue-grey">
-    <div class="nav-wrapper">
-        <a href="#" data-activates="main-menu" class="button-collapse">
-            <i class="fa fa-navicon"></i>
-        </a>
-        <div class="">
-            <a href="/" class="brand-logo hide-on-med-and-down">土土哥的Blog</a>
-            <ul class="right hide-on-med-and-down">
-                
-                    <li>
-                        <a class="menu-home " href="/" >
-                            <i class="fa fa-home "></i>
-                            
-                            首页
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-archive " href="/archives" >
-                            <i class="fa fa-archive "></i>
-                            
-                            归档
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
-                            <i class="fa fa-bookmark "></i>
-                            
-                            分类
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-about " href="/about" >
-                            <i class="fa fa-user "></i>
-                            
-                            关于
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-search modal-trigger " href="#search" >
-                            <i class="fa fa-search "></i>
-                            
-                            搜索
-                        </a>
-                    </li>
-                
-            </ul>
-            <div>
-    <ul class="side-nav blue-grey darken-1" id="main-menu">
-        
-        <li class="side-user">
-            <div class="row">
-                <div class="col s4 no-padding">
-                    <img class="avatar-image circle responsive-img" src="http://tutuge.me/2019/07/29/2019-07-29-occupied-with-work/avatar_comic.jpg" alt="User Avatar">
-                </div>
-                <div class="info col s8 valign-wrapper no-padding">
-                    <div class="valign">
-                        <p class="name">土土哥</p>
-                        <p class="desc">iOS/Android/技术宅/RCFans</p>
-                    </div>
-                </div>
-            </div>
-        </li>
-        
-
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-home " href="/" >
-                    <i class="fa fa-home "></i>
-                    
-                    首页
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-archive " href="/archives" >
-                    <i class="fa fa-archive "></i>
-                    
-                    归档
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
-                    <i class="fa fa-bookmark "></i>
-                    
-                    分类
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-about " href="/about" >
-                    <i class="fa fa-user "></i>
-                    
-                    关于
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-search modal-trigger " href="#search" >
-                    <i class="fa fa-search "></i>
-                    
-                    搜索
-                </a>
-            </li>
-        
-    </ul>
-
-    <ul class="side-nav blue-grey darken-1" id="category-menu">
-    
-
-            
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/其它/">
-                    其它 <span class="right">5 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/iOS/">
-                    iOS <span class="right">37 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/Android/">
-                    Android <span class="right">1 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/Mac/">
-                    Mac <span class="right">1 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/服务端/">
-                    服务端 <span class="right">2 篇</span></a>
-                </a>
-            </li>
-
-        
-
-    </ul>
-</div>
-
-        </div>
-    </div>
-</nav>
-
-<div id="search" class="modal search-modal">
-    <div class="row">
-        <div class="input-field col s12">
-              <input id="search-input" type="text">
-              <label for="search-input">搜索</label>
-        </div>
-
-    </div>
-    <div id="search-result" class="search-result col s12">
-
-    </div>
-</div>
-
-
-    <main>
-        <div class="container main-container">
-    
-<nav class="page-nav hide-on-small-only">
-    <div class="nav-wrapper blue-grey">
-        <span class="breadcrumb">当前位置（分类目录）</span>
-        
-            
-    
-    
-    <a class="breadcrumb" href="/categories/iOS/">iOS</a>
-
-
-        
-
-        
-    </div>
-</nav>
-
-<article>
-    <div class="card">
-        <div class="card-content">
-            
-
-            <div class="article-title">
-                
-    
-        <h1>Swift开源项目: TTGEmojiRate的实现</h1>
-    
-
-
-            </div>
-            <time class="teal-link-context" datetime="2015-10-25T11:32:42.000Z"><a href="/2015/10/25/ttgemojirate-lib/">2015-10-25</a></time>
-
-            <span id="busuanzi_container_page_pv" class="read-times-container">
-    <i class="fa fa-eye"></i>
-    <span id="busuanzi_value_page_pv"></span>
-</span>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
-        
-            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
-        
-            <a href="/tags/开源/" class="chip teal accent-4">开源</a>
-        
-            <a href="/tags/Swift/" class="chip teal accent-4">Swift</a>
-        
-    </div>
-
-
-            <div class="toc teal-link-context hide-on-med-and-down">
-    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#前言"><span class="section table-of-contents-text">前言</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#分析"><span class="section table-of-contents-text">分析</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#实现"><span class="section table-of-contents-text">实现</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#思路"><span class="section table-of-contents-text">思路</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#拖动改变Rate值"><span class="section table-of-contents-text">拖动改变Rate值</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#UIBezierPath-贝塞尔曲线"><span class="section table-of-contents-text">UIBezierPath - 贝塞尔曲线</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#脸"><span class="section table-of-contents-text">脸</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#嘴、眼睛"><span class="section table-of-contents-text">嘴、眼睛</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#颜色的渐变"><span class="section table-of-contents-text">颜色的渐变</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#善于使用didSet"><span class="section table-of-contents-text">善于使用didSet</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#IBDesignable、-IBInspectable"><span class="section table-of-contents-text">@IBDesignable、@IBInspectable</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#回调"><span class="section table-of-contents-text">回调</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#总结"><span class="section table-of-contents-text">总结</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#参考"><span class="section table-of-contents-text">参考</span></a></li></ol>
-</div>
-
-
-            <div class="entry teal-link-context">
-                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前段时间在Dribbble上发现了一个<a href="https://dribbble.com/shots/2211556-Rating-Version-A" target="_blank" rel="noopener">Rating控件</a>的演示动画，控件以Emoji表情为基础，结合了上下滑动手势，正好最近正在深入学习iOS动画、绘图相关的知识，就尝试着用<code>UIBezierPath</code>实现了出来。本文就是TTGEmojiRate的实现过程。</p>
-<p>Github: <a href="https://github.com/zekunyan/TTGEmojiRate" target="_blank" rel="noopener">https://github.com/zekunyan/TTGEmojiRate</a></p>
-<p><img src="/2015/10/25/ttgemojirate-lib/TTGEmojiRate_screenshot2.gif" alt="TTGEmojiRate Example"></p>
-<a id="more"></a>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>先看看原本的效果：<a href="https://dribbble.com/shots/2211556-Rating-Version-A" target="_blank" rel="noopener">Rating Version A - Hoang Nguyen</a></p>
-<p><img src="/2015/10/25/ttgemojirate-lib/TTGEmojiRate_Dribbble.gif" alt="Rating Version A - Hoang Nguyen"></p>
-<p>可以看出来，主要的特点如下：</p>
-<ul>
-<li>可以上下拖动，改变Emoji表情嘴的弧度。</li>
-<li>拖动的时候Rate的值也会随之变化，从0到5，并且跟表情的“喜怒”相对应。</li>
-<li>颜色也会变化，从绿色到蓝色再到红色，也对应表情的“喜怒”。</li>
-</ul>
-<p>实际实现的时候，增加了眼睛元素，并且增强了自定义，如颜色的变化范围、线条的粗细等都可以设定，基本的思路还是不变的。</p>
-<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>开始写代码之前，先理理思路。</p>
-<p>拖动的时候，直接影响的应该是Rate值，然后在Rate值改变的时候刷新整个控件，刷新的时候重绘。重绘的时候，嘴、眼睛的弧度，颜色的值都要根据Rate值重新计算，如下图：</p>
-<p><img src="/2015/10/25/ttgemojirate-lib/blog_ttgemojirate_1.png" alt="Image"></p>
-<h3 id="拖动改变Rate值"><a href="#拖动改变Rate值" class="headerlink" title="拖动改变Rate值"></a>拖动改变Rate值</h3><p>这个还是很容易实现的，直接重写<code>UIView</code>的touch相关的三个方法，在里面记录拖动在Y轴上的变化值，然后映射到Rate值上就可以了。</p>
-<p>先声明一个CGPoint属性，用来保存手指按下时的点位置：<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> touchPoint: <span class="type">CGPoint?</span> = <span class="literal">nil</span></span><br></pre></td></tr></table></figure></p>
-<p>在手指移动的时候，在<code>touchesMoved</code>方法里面计算当前点跟上一次触摸点的Y轴上的<strong>差值</strong>，然后映射到Rate值上。</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">touchesMoved</span><span class="params">(touches: Set&lt;UITouch&gt;, withEvent event: UIEvent?)</span></span> &#123;</span><br><span class="line">    <span class="comment">// 获取当前触摸点</span></span><br><span class="line">    <span class="keyword">let</span> currentPoint = touches.first?.locationInView(<span class="keyword">self</span>)</span><br><span class="line">    <span class="comment">// 改变Rate值</span></span><br><span class="line">    rateValue = rateValue + <span class="type">Float</span>((currentPoint!.y - touchPoint!.y) / <span class="type">CGRectGetHeight</span>(<span class="keyword">self</span>.bounds) * rateDragSensitivity)</span><br><span class="line">    <span class="comment">// 保存当前触摸点</span></span><br><span class="line">    touchPoint = currentPoint</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>注意：</p>
-<ul>
-<li>计算Y轴差值的时候，除以了当前控件的高度，这是为了保证Rate值按比例增减。</li>
-<li>增加了一个<code>rateDragSensitivity</code>属性，用来调节改变Rate值的“灵敏度”</li>
-</ul>
-<h3 id="UIBezierPath-贝塞尔曲线"><a href="#UIBezierPath-贝塞尔曲线" class="headerlink" title="UIBezierPath - 贝塞尔曲线"></a>UIBezierPath - 贝塞尔曲线</h3><p>控件的主要内容都是用<code>UIBezierPath</code>绘制出来的。网上关于<code>UIBezierPath</code>的讲解很多，在这里就不详细说了。</p>
-<p>简单来说，<code>UIBezierPath</code>用来绘制矢量路径，是一种参数曲线，在使用的时候，只需要先设定好锚点、控制点，系统就可以根据贝塞尔曲线的算法，绘制出对应的线，并且保证锚点和对应的控制点的连线与曲线相切。</p>
-<p>这里有一个演示绘制贝塞尔曲线过程的网站：<a href="http://myst729.github.io/bezier-curve/" target="_blank" rel="noopener">Bézier curve</a></p>
-<h3 id="脸"><a href="#脸" class="headerlink" title="脸"></a>脸</h3><p>脸是最简单的，就是一个圆，直接用一个方法就可以：</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">func</span> <span class="title">drawFaceWithRect</span><span class="params">(rect: CGRect)</span></span> &#123;</span><br><span class="line">    <span class="keyword">let</span> facePath = <span class="type">UIBezierPath</span>(ovalInRect: rect)</span><br><span class="line">    rateColor.setStroke()</span><br><span class="line">    facePath.lineWidth = rateLineWidth <span class="comment">// 线粗细</span></span><br><span class="line">    facePath.stroke()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>实际实现的时候可以加上Margin，防止线画到View的边界之外。</p>
-<h3 id="嘴、眼睛"><a href="#嘴、眼睛" class="headerlink" title="嘴、眼睛"></a>嘴、眼睛</h3><p>先看看<code>UIBezierPath</code>提供的可以用来绘制曲线的方法：<br><code>addCurveToPoint(_:controlPoint1:controlPoint2:)</code>和<code>addQuadCurveToPoint(_:controlPoint:)</code>，如下图:</p>
-<p><img src="/2015/10/25/ttgemojirate-lib/blog_ttgemojirate_2.png" alt="UIBezierPath"></p>
-<p>直观上来讲，嘴、眼睛的绘制跟<code>addQuadCurveToPoint</code>方法绘制的效果基本一致，但是这样的效果没法调整，因为只能控制唯一的一个控制点，所以还是要用<code>addCurveToPoint</code>方法，对称的绘制两条曲线，拼接起来，如下图：</p>
-<p><img src="/2015/10/25/ttgemojirate-lib/blog_ttgemojirate_3.png" alt="Curve拼接"></p>
-<p>这样的话，就可以通过调整两个控制点，来控制嘴、眼睛的弯曲宽度、形状。</p>
-<p>以绘制嘴为例：</p>
-<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> func drawMouthWithRect(<span class="built_in">rect</span>: CGRect) &#123;</span><br><span class="line">    let <span class="built_in">width</span> = CGRectGetWidth(<span class="built_in">rect</span>)</span><br><span class="line">    let <span class="built_in">height</span> = CGRectGetWidth(<span class="built_in">rect</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 左端点</span></span><br><span class="line">    let leftPoint = CGPointMake(</span><br><span class="line">        <span class="built_in">width</span> * (<span class="number">1</span> - rateMouthWidth) / <span class="number">2</span>,</span><br><span class="line">        <span class="built_in">height</span> * (<span class="number">1</span> - rateMouthVerticalPosition))</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 右端点</span></span><br><span class="line">    let rightPoint = CGPointMake(</span><br><span class="line">        <span class="built_in">width</span> - leftPoint.x,</span><br><span class="line">        leftPoint.y)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 中间点 - Y值根据当前的Rate值计算，0.3为系数</span></span><br><span class="line">    let centerPoint = CGPointMake(</span><br><span class="line">        <span class="built_in">width</span> / <span class="number">2</span>,</span><br><span class="line">        leftPoint.y + <span class="built_in">height</span> * <span class="number">0.3</span> * (CGFloat(rateValue) - <span class="number">2.5</span>) / <span class="number">5</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 控制点跟中间点在X轴上的距离</span></span><br><span class="line">    let halfLipWidth = <span class="built_in">width</span> * rateMouthWidth * rateLipWidth / <span class="number">2</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建贝塞尔曲线</span></span><br><span class="line">    let mouthPath = UIBezierPath()</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 移动到起始点</span></span><br><span class="line">    mouthPath.moveToPoint(leftPoint)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 添加左半边曲线路径</span></span><br><span class="line">    mouthPath.addCurveToPoint(</span><br><span class="line">        centerPoint,</span><br><span class="line">        controlPoint1: leftPoint,</span><br><span class="line">        controlPoint2: CGPointMake(centerPoint.x - halfLipWidth, centerPoint.y))</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 添加右半边曲线路径</span></span><br><span class="line">    mouthPath.addCurveToPoint(</span><br><span class="line">        rightPoint,</span><br><span class="line">        controlPoint1: CGPointMake(centerPoint.x + halfLipWidth, centerPoint.y),</span><br><span class="line">        controlPoint2: rightPoint)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设定样式</span></span><br><span class="line">    mouthPath.lineCapStyle = CGLineCap.Round;</span><br><span class="line">    rateColor.setStroke()</span><br><span class="line">    mouthPath.lineWidth = rateLineWidth</span><br><span class="line">    mouthPath.<span class="built_in">stroke</span>()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>说明：</p>
-<ul>
-<li>所有的距离、坐标都是根据当前控件的大小计算出来的。</li>
-<li><code>rateMouthWidth</code>为嘴的宽度与整个控件宽度的比值，即相对值。</li>
-<li><code>rateMouthVerticalPosition</code>为嘴的左右两个端点的Y轴坐标值，也为相对值。</li>
-<li><code>rateLipWidth</code>为中心点的两个控制点的距离与嘴宽度的比值，也是相对值。</li>
-</ul>
-<p>眼睛的绘制跟嘴原理一致，就不再说明。</p>
-<h3 id="颜色的渐变"><a href="#颜色的渐变" class="headerlink" title="颜色的渐变"></a>颜色的渐变</h3><p>Dribbble的演示中，控件的线条颜色也是会变化的，从红色到蓝色再到绿色，是连续变化的。这个时候用常见的<strong>RGB色彩模式</strong>是不好控制的，效果也不好。</p>
-<p>所以这个时候要用<strong>HSB色彩模式</strong></p>
-<blockquote>
-<p>HSB 色彩模式是基于人眼的一种颜色模式。是普及型设计软件中常见的色彩模式，其中H代表色相；S代表饱和度；B代表亮度。- <a href="http://baike.baidu.com/view/1006662.htm" target="_blank" rel="noopener">百度百科</a></p>
-</blockquote>
-<p><img src="/2015/10/25/ttgemojirate-lib/blog_ttgemojirate_4.jpg" alt="HSB色彩模式"></p>
-<p>对应到<code>UIColor</code>类，就是下面两个方法：</p>
-<figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建UIColor</span></span><br><span class="line">init(<span class="built_in">hue</span> <span class="built_in">hue</span>: CGFloat, <span class="built_in">saturation</span> <span class="built_in">saturation</span>: CGFloat, <span class="built_in">brightness</span> <span class="built_in">brightness</span>: CGFloat, <span class="built_in">alpha</span> <span class="built_in">alpha</span>: CGFloat)</span><br><span class="line"><span class="comment">// 获取HSB值，注意参数</span></span><br><span class="line">func getHue(_ <span class="built_in">hue</span>: UnsafeMutablePointer&lt;CGFloat&gt;, <span class="built_in">saturation</span> <span class="built_in">saturation</span>: UnsafeMutablePointer&lt;CGFloat&gt;, <span class="built_in">brightness</span> <span class="built_in">brightness</span>: UnsafeMutablePointer&lt;CGFloat&gt;, <span class="built_in">alpha</span> <span class="built_in">alpha</span>: UnsafeMutablePointer&lt;CGFloat&gt;) -&gt; Bool</span><br></pre></td></tr></table></figure>
-<p>实现的时候，为了增加可定制性，控件颜色的变化范围是可以设置的，用以下属性保存：</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> var <span class="string">rateColorRange:</span> (<span class="string">from:</span> UIColor, <span class="string">to:</span> UIColor)</span><br></pre></td></tr></table></figure>
-<p>刷新时，就可以根据当前的Rate值，重新计算颜色的HSB和alpha值：</p>
-<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">let rate: CGFloat = CGFloat(rateValue / <span class="number">5</span>) <span class="comment">// Rate值归一化</span></span><br><span class="line"></span><br><span class="line">self.rateColor = UIColor.init(</span><br><span class="line"><span class="symbol">    hue:</span> hueFrom + hueDelta * rate, <span class="comment">// 色相</span></span><br><span class="line"><span class="symbol">    saturation:</span> saturationFrom + saturationDelta * rate, <span class="comment">// 饱和度</span></span><br><span class="line"><span class="symbol">    brightness:</span> brightnessFrom + brightnessDelta * rate, <span class="comment">// 亮度</span></span><br><span class="line"><span class="symbol">    alpha:</span> alphaFrom + alphaDelta * rate <span class="comment">// 透明度</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<p>说明：</p>
-<ul>
-<li>所有的颜色参数都是根据Rate值做线性增减。</li>
-<li><code>xxxFrom</code>、<code>xxxDelta</code>分别指HSB和alpha的起始值与变化范围，在设置<code>rateColorRange</code>时计算保存下来。</li>
-</ul>
-<p>这样，颜色就能做到跟Rate值做连续的线性变化。</p>
-<h3 id="善于使用didSet"><a href="#善于使用didSet" class="headerlink" title="善于使用didSet"></a>善于使用didSet</h3><p>实现控件的时候，对外暴露了很多属性，如线的宽度<code>rateLineWidth</code>、嘴的宽度<code>rateMouthWidth</code>等。为了对这些属性做校验，并且在设置后刷新控件，就要用到<code>didSet</code>。</p>
-<p><code>didSet</code>在Swift里面，跟类的属性是一一绑定的，在对属性赋值后会被调用。</p>
-<p>控件的大部分属性都做了校验、刷新，如下：</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// Mouth width. From 0.2 to 0.7.</span></span><br><span class="line"><span class="meta">@IBInspectable</span> <span class="keyword">public</span> <span class="keyword">var</span> rateMouthWidth: <span class="type">CGFloat</span> = <span class="number">0.6</span> &#123;</span><br><span class="line">    <span class="keyword">didSet</span> &#123;</span><br><span class="line">        <span class="comment">// 判断上限</span></span><br><span class="line">        <span class="keyword">if</span> rateMouthWidth &gt; <span class="number">0.7</span> &#123;</span><br><span class="line">            rateMouthWidth = <span class="number">0.7</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 判断下限</span></span><br><span class="line">        <span class="keyword">if</span> rateMouthWidth &lt; <span class="number">0.2</span> &#123;</span><br><span class="line">            rateMouthWidth = <span class="number">0.2</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 刷新、重绘</span></span><br><span class="line">        <span class="keyword">self</span>.setNeedsDisplay()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="IBDesignable、-IBInspectable"><a href="#IBDesignable、-IBInspectable" class="headerlink" title="@IBDesignable、@IBInspectable"></a>@IBDesignable、@IBInspectable</h3><p>为了能在XIB、StoryBoard里面使用、编辑控件，就要用到<code>@IBDesignable</code>和<code>@IBInspectable</code>这两个关键字。</p>
-<p>在类的前面加上<code>@IBDesignable</code>关键字，使IB可以预览控件：</p>
-<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@IBDesignable</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EmojiRateView</span>: <span class="type">UIView &#123;</span></span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在属性前面加上<code>@IBInspectable</code>，就可以在IB里面编辑属性，实时预览：</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@IBInspectable</span> <span class="keyword">public</span> var <span class="string">rateLineWidth:</span> CGFloat = <span class="number">14</span> &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>详细的使用可以参考NSHipster上的文章：<a href="http://nshipster.cn/ibinspectable-ibdesignable/" target="_blank" rel="noopener">IBInspectable / IBDesignable</a></p>
-<p>最后，在IB里面就是下面这样：<br><img src="/2015/10/25/ttgemojirate-lib/TTGEmojiRate_IBExample.png" alt="IB example"></p>
-<p><strong>By the way =。=</strong><br>属性名字太长，在IB里面显示不完整，咋办。。。</p>
-<h3 id="回调"><a href="#回调" class="headerlink" title="回调"></a>回调</h3><p>拖动改变Rate值的时候，肯定要有回调，如下定义：</p>
-<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">var</span> rateValueChangeCallback: <span class="type"></span>((<span class="keyword">new</span><span class="type">RateValue</span>: <span class="keyword">Float</span>) -&gt; <span class="keyword">Void</span>)? = nil</span><br></pre></td></tr></table></figure>
-<p>在<code>rateValue</code>的<code>didSet</code>里面回调：</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@IBInspectable</span> <span class="keyword">public</span> <span class="keyword">var</span> rateValue: <span class="type">Float</span> = <span class="number">2.5</span> &#123;</span><br><span class="line">    <span class="keyword">didSet</span> &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="comment">// 回调</span></span><br><span class="line">        <span class="keyword">self</span>.rateValueChangeCallback?(newRateValue: rateValue)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>看似简单的一个Rating控件，从构思到实现，再到完善，一点一点朝着完美去做，收获不少~</p>
-<p>最后，Dribbble是个好地方，贝塞尔曲线好强大，XCode 7.1写Swift还是有点卡=。=</p>
-<p>以上。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><a href="https://zh.wikipedia.org/wiki/%E8%B2%9D%E8%8C%B2%E6%9B%B2%E7%B7%9A" target="_blank" rel="noopener">维基百科 - 贝塞尔曲线</a></li>
-<li><a href="https://developer.apple.com/library/ios/documentation/2DDrawing/Conceptual/DrawingPrintingiOS/BezierPaths/BezierPaths.html" target="_blank" rel="noopener">Drawing Shapes Using Bézier Paths</a></li>
-<li><a href="http://baike.baidu.com/view/1006662.htm" target="_blank" rel="noopener">HSB色彩模式</a></li>
-<li><a href="http://nshipster.cn/ibinspectable-ibdesignable/" target="_blank" rel="noopener">IBInspectable / IBDesignable</a></li>
-</ul>
-
-                
-<p class="teal-link-context">
-    <a href="/2015/12/14/autolayout-example-with-masonry3/" rel="next" title="有趣的Autolayout示例3-Masonry实现">
-    上一篇：有趣的Autolayout示例3-Masonry实现
-  </a>
-</p>
-
-
-
-<p class="teal-link-context">
-    <a href="/2015/10/09/ttgsnackbar-lib/" rel="next" title="Swift写的库-TTGSnackbar">
-    下一篇：Swift写的库-TTGSnackbar
-  </a>
-</p>
-
-
-            </div>
-
-            
-			
-        </div>
-    </div>
-</article>
-
-
-
-
-    <section id="comment">
-        <div id="disqus_thread"></div>
-        <script>
-            var disqus_config = function() {
-                this.page.url = 'http://tutuge.me/2015/10/25/ttgemojirate-lib/';
-                this.page.identifier = '2015/10/25/ttgemojirate-lib/';
-            };
-            (function() {
-                var d = document,
-                    s = d.createElement('script');
-                s.src = '//tutuge-me.disqus.com/embed.js';
-                s.setAttribute('data-timestamp', + new Date());
-                (d.head || d.body).appendChild(s);
-            })();
-        </script>
-        <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
-        </noscript>
-    </section>
-
-
-
-</div>
-
-        <div class="fixed-action-btn float-sitemap">
-    <a class="btn-floating btn-large teal">
-      <i class="fa fa-caret-square-o-up"></i>
-    </a>
-    <ul>
-      <li><a class="btn-return-top btn-floating waves-effect teal accent-4" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
-      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
-    </ul>
-  </div>
-
-    </main>
-    <footer class="page-footer blue-grey darken-1">
-    
-    <div class="footer-container container">
-        <div class="row">
-            
-            <div class="social-group col m4 s12">
-                <h5 class="white-text">社交</h5>
-                
-                    <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
-                        <i class="fa fa-2x fa-weibo"></i>
-                    </a>
-                
-                    <a class="social-link" href="https://github.com/zekunyan" target="_blank">
-                        <i class="fa fa-2x fa-github"></i>
-                    </a>
-                
-                    <a class="social-link" href="/atom.xml" target="_blank">
-                        <i class="fa fa-2x fa-rss"></i>
-                    </a>
-                
-                
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
-    </script>
-    <div class="site-visitors-container white-text">
-        <span>
-            <i class="fa fa-user"></i>
-            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
-        </span>
-        <span>&nbsp;|&nbsp;</span>
-        <span>
-            <i class="fa fa-eye"></i>
-            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
-        </span>
-    </div>
-
-
-            </div>
-            
-
-            
-            <div class="col m8 s12">
-                <h5 class="white-text">友情链接</h5>
-                
-                    <a class="social-link" href="http://chenrudan.github.io" target="_blank">女朋友的博客😊</a>
-                
-            </div>
-            
-        </div>
-        <p>Hosted by <a href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a></p>
-    </div>
-    
-
-    <div class="footer-copyright teal-link-context">
-        <div class="container">
-            © 2020 tutuge.me, All rights reserved.
-            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
-        </div>
-    </div>
-</footer>
-
-
-    <noscript>
-    <div class="noscript">
-        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
-    </div>
-</noscript>
-<div class="noscript">
-    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
-</div>
-
-
-<script src="/js/jquery.min.js"></script>
-<script src="/js/materialize.min.js"></script>
-
-<script>
-    (function($) {
-        $(document).ready(function() {
-            // 隐藏禁用javascript（针对微信内置浏览器）的提示
-            $('.noscript').hide();
-
-            // 图片缩放效果
-            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
-
-            // 给图片加上点击放大效果（materialbox插件）
-            $imgs.addClass('materialboxed').each(function(i, el) {
-                $(this).attr('data-caption', $(this).attr('alt') || ' ');
-            }).materialbox();
-
-            // 优化表格的显示
-            $('table').each(function() {
-                var $table = $(this);
-                // 除去多行代码的情况
-                if ($table.find('pre').length == 0) {
-                    $table.addClass('responsive-table striped bordered');
-                }
-            });
-
-            // 首页幻灯片
-            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
-
-            $(".button-collapse").sideNav();
-            $(".category-menu").sideNav();
-
-            // 针对gallery post
-            $('.carousel').carousel({full_width: true});
-            $('.carousel-control.prev').click(function() {
-                $('.carousel').carousel('prev');
-            });
-            $('.carousel-control.next').click(function() {
-                $('.carousel').carousel('next');
-            });
-
-            // 文章目录
-            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
-
-            // 目录随屏幕滚动（防止目录过长越过footer）
-            var $toc = $('.toc');
-            var scrollTargetTop = 0;
-            $(window).scroll(function() {
-                var $activeLink = $toc.find('a.active.section');
-                if ($(window).scrollTop() < 100) {
-                    scrollTargetTop = 0;
-                } else {
-                    if ($activeLink[0]) {
-                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
-                    }
-                }
-                $toc.css('top', '-' + scrollTargetTop + 'px');
-            });
-
-            // 修正文章目录的left-border颜色
-            var color = $('.table-of-contents-text').css('color');
-            $('.table-of-contents-link').css('border-left-color', color);
-
-            // 针对移动端做的优化：FAB按钮点击一下收回
-            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                $('.fixed-action-btn').addClass('click-to-toggle');
-            }
-            // 回到顶部
-            $('.btn-return-top').click(function() {
-                $('body, html').animate({
-                    scrollTop: 0
-                }, 500);
-            });
-
-            // 重置读书页面的Tab标签页的颜色
-            $('li.tab a').hover(function() {
-                $(this).toggleClass('text-lighten-4');
-            });
-            $('.indicator').addClass('teal lighten-2');
-
-            
-            // 添加new标签
-            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
-            
-
-            // 搜索功能
-            $('.modal-trigger').leanModal({
-                // 打开搜索框时自动聚焦
-                ready: function() {
-                    if ($('#search').is(":visible")) {
-                        $('#search-input').focus();
-                    }
-                }
-            });
-            var searchXml = "search.xml";
-            if (searchXml.length == 0) {
-             	searchXml = "search.xml";
-            }
-            var searchPath = "/" + searchXml;
-            initSearch(searchPath, 'search-input', 'search-result');
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
         });
-
-        // 初始化搜索与匹配函数
-        var initSearch = function(path, search_id, content_id) {
-            'use strict';
-            $.ajax({
-                url: path,
-                dataType: "xml",
-                success: function(xmlResponse) {
-                    // get the contents from search data
-                    var datas = $("entry", xmlResponse).map(function() {
-                        return {
-                            title: $("title", this).text(),
-                            content: $("content", this).text(),
-                            url: $("url", this).text()
-                        };
-                    }).get();
-                    var $input = document.getElementById(search_id);
-                    var $resultContent = document.getElementById(content_id);
-                    $input.addEventListener('input', function() {
-                        var str = '<ul class=\"search-result-list\">';
-                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
-                        $resultContent.innerHTML = "";
-                        if (this.value.trim().length <= 0) {
-                            return;
-                        }
-                        // perform local searching
-                        datas.forEach(function(data) {
-                            var isMatch = true;
-                            var content_index = [];
-                            var data_title = data.title.trim().toLowerCase();
-                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
-                            var data_url = data.url;
-                            var index_title = -1;
-                            var index_content = -1;
-                            var first_occur = -1;
-                            // only match artiles with not empty titles and contents
-                            if (data_title != '' && data_content != '') {
-                                keywords.forEach(function(keyword, i) {
-                                    index_title = data_title.indexOf(keyword);
-                                    index_content = data_content.indexOf(keyword);
-                                    if (index_title < 0 && index_content < 0) {
-                                        isMatch = false;
-                                    } else {
-                                        if (index_content < 0) {
-                                            index_content = 0;
-                                        }
-                                        if (i == 0) {
-                                            first_occur = index_content;
-                                        }
-                                    }
-                                });
-                            }
-                            // show search results
-                            if (isMatch) {
-                                keywords.forEach(function(keyword) {
-                                    var regS = new RegExp(keyword, "gi");
-                                    data_title = data_title.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
-                                });
-
-                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
-                                var content = data.content.trim().replace(/<[^>]+>/g, "");
-                                if (first_occur >= 0) {
-                                    // cut out 100 characters
-                                    var start = first_occur - 20;
-                                    var end = first_occur + 80;
-                                    if (start < 0) {
-                                        start = 0;
-                                    }
-                                    if (start == 0) {
-                                        end = 100;
-                                    }
-                                    if (end > content.length) {
-                                        end = content.length;
-                                    }
-                                    var match_content = content.substring(start, end);
-                                    // highlight all keywords
-                                    keywords.forEach(function(keyword) {
-                                        var regS = new RegExp(keyword, "gi");
-                                        match_content = match_content.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
-                                    });
-
-                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
-                                }
-                                str += "</li>";
-                            }
-                        });
-                        str += "</ul>";
-                        $resultContent.innerHTML = str;
-                    });
-                }
-            });
-        }
-    })(jQuery);
-</script>
-
-
-<script src="/js/prettify.js"></script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $("pre").addClass("prettyprint");
-        prettyPrint();
-    });
-</script>
-
-
-<script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-68058110-1', 'auto');
-    ga('send', 'pageview');
-
-</script>
-
-
-
-<script type="text/javascript" src="http://tajs.qq.com/stats?sId=55079830" charset="UTF-8"></script>
-
-
-
-
-
-</body>
-</html>
+        lightbox.init();
+    }
+</script></main></div><script type=text/javascript src=/ts/main.f856840516f7c2ad1769a8f5937e3d08d6cb386e2cd2dd025ae696e0ff207958.js defer></script></body></html>

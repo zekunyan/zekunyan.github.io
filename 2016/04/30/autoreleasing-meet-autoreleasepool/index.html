@@ -1,711 +1,122 @@
-<!DOCTYPE HTML>
-<html>
-<head><meta name="generator" content="Hexo 3.9.0">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="更新 2016-05-01: 补充了一点本文涉及的汇编知识\n前言 本文结合一段访问Out Parameters出现了EXC_BAD_ACCESS错误的代码，通过反编译等手段验证Objective-C中__autoreleasing的一些特点。\n"><title>结合访问Out Parameters出现EXC_BAD_ACCESS的例子，反编译汇编解读__autoreleasing</title><link rel=canonical href=https://tutuge.me/2016/04/30/autoreleasing-meet-autoreleasepool/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=preload as=style href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href=/scss/style.min.e62e09c60ba428a627e03568fa3df938f6a8224f815b5846f00816c17d4a0be4.css><meta property='og:title' content="结合访问Out Parameters出现EXC_BAD_ACCESS的例子，反编译汇编解读__autoreleasing"><meta property='og:description' content="更新 2016-05-01: 补充了一点本文涉及的汇编知识\n前言 本文结合一段访问Out Parameters出现了EXC_BAD_ACCESS错误的代码，通过反编译等手段验证Objective-C中__autoreleasing的一些特点。\n"><meta property='og:url' content='https://tutuge.me/2016/04/30/autoreleasing-meet-autoreleasepool/'><meta property='og:site_name' content='土土哥的技术 Blog'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='原创'><meta property='article:tag' content='iOS'><meta property='article:published_time' content='2016-04-30T00:00:00+00:00'><meta property='article:modified_time' content='2016-04-30T00:00:00+00:00'><meta property='og:image' content='https://tutuge.me/assets/2016/04/30/autoreleasing-meet-autoreleasepool/autoreleasing-meet-autoreleasepool_1.jpg'><meta name=twitter:title content="结合访问Out Parameters出现EXC_BAD_ACCESS的例子，反编译汇编解读__autoreleasing"><meta name=twitter:description content="更新 2016-05-01: 补充了一点本文涉及的汇编知识\n前言 本文结合一段访问Out Parameters出现了EXC_BAD_ACCESS错误的代码，通过反编译等手段验证Objective-C中__autoreleasing的一些特点。\n"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://tutuge.me/assets/2016/04/30/autoreleasing-meet-autoreleasepool/autoreleasing-meet-autoreleasepool_1.jpg'><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar.png width height class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>土土哥的技术 Blog</a></h1><h2 class=site-description>AI / iOS / Android / Flutter / Open Source</h2></div></header><ol class=menu-social><li><a href=https://github.com/zekunyan title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>首页</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav class=toc-nav id=TableOfContents><ul><li><a href=#更新>更新</a></li><li><a href=#前言>前言</a></li><li><a href=#2016-05-01更新---关于本文的反编译汇编代码>2016-05-01更新 - 关于本文的反编译汇编代码</a></li><li><a href=#out-parameters---指针的指针>Out Parameters - 指针的指针</a></li><li><a href=#出现exc_bad_access的代码示例>出现EXC_BAD_ACCESS的代码示例</a></li><li><a href=#__autoreleasing---变量所有权ownership修饰符>__autoreleasing - 变量所有权(ownership)修饰符</a></li><li><a href=#方法的out-parameters参数会自动添加__autoreleasing属性>方法的Out Parameters参数会自动添加__autoreleasing属性</a></li><li><a href=#如果传给out-parameters参数的变量没有用__autoreleasing修饰编译器会创建一个临时变量并以__autoreleasing修饰再传入>如果传给Out Parameters参数的变量没有用__autoreleasing修饰，编译器会创建一个临时变量并以__autoreleasing修饰再传入</a></li><li><a href=#开头例子出现exc_bad_access错误的原因>开头例子出现EXC_BAD_ACCESS错误的原因</a></li><li><a href=#总结>总结</a></li><li><a href=#参考>参考</a></li></ul></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/2016/04/30/autoreleasing-meet-autoreleasepool/><img alt="Featured image of post 结合访问Out Parameters出现EXC_BAD_ACCESS的例子，反编译汇编解读__autoreleasing" loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2016/04/30/autoreleasing-meet-autoreleasepool/autoreleasing-meet-autoreleasepool_1.jpg></a></div><div class=article-details><header class=article-category><a href=/categories/ios/ style=background-color:#efbeed;color:#3d0f3c>IOS</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/2016/04/30/autoreleasing-meet-autoreleasepool/>结合访问Out Parameters出现EXC_BAD_ACCESS的例子，反编译汇编解读__autoreleasing</a></h2></div><footer class=article-meta><div class=inline-meta><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2016-04-30T00:00:00Z>2016-04-30</time>
+<svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 7 分钟</time></div></footer></div></header><aside class=article-toc><details><summary><div class=article-toc-title><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6-6 6"/></svg>
+<span>目录</span></div></summary><nav class=toc-nav><ul><li><a href=#更新>更新</a></li><li><a href=#前言>前言</a></li><li><a href=#2016-05-01更新---关于本文的反编译汇编代码>2016-05-01更新 - 关于本文的反编译汇编代码</a></li><li><a href=#out-parameters---指针的指针>Out Parameters - 指针的指针</a></li><li><a href=#出现exc_bad_access的代码示例>出现EXC_BAD_ACCESS的代码示例</a></li><li><a href=#__autoreleasing---变量所有权ownership修饰符>__autoreleasing - 变量所有权(ownership)修饰符</a></li><li><a href=#方法的out-parameters参数会自动添加__autoreleasing属性>方法的Out Parameters参数会自动添加__autoreleasing属性</a></li><li><a href=#如果传给out-parameters参数的变量没有用__autoreleasing修饰编译器会创建一个临时变量并以__autoreleasing修饰再传入>如果传给Out Parameters参数的变量没有用__autoreleasing修饰，编译器会创建一个临时变量并以__autoreleasing修饰再传入</a></li><li><a href=#开头例子出现exc_bad_access错误的原因>开头例子出现EXC_BAD_ACCESS错误的原因</a></li><li><a href=#总结>总结</a></li><li><a href=#参考>参考</a></li></ul></nav></details></aside><section class=article-content><h2 id=更新><a href=#%e6%9b%b4%e6%96%b0 class=header-anchor></a>更新</h2><p>2016-05-01: 补充了一点本文涉及的汇编知识</p><h2 id=前言><a href=#%e5%89%8d%e8%a8%80 class=header-anchor></a>前言</h2><p>本文结合一段访问<code>Out Parameters</code>出现了<code>EXC_BAD_ACCESS</code>错误的代码，通过反编译等手段验证Objective-C中<code>__autoreleasing</code>的一些特点。</p><h2 id=2016-05-01更新---关于本文的反编译汇编代码><a href=#2016-05-01%e6%9b%b4%e6%96%b0---%e5%85%b3%e4%ba%8e%e6%9c%ac%e6%96%87%e7%9a%84%e5%8f%8d%e7%bc%96%e8%af%91%e6%b1%87%e7%bc%96%e4%bb%a3%e7%a0%81 class=header-anchor></a>2016-05-01更新 - 关于本文的反编译汇编代码</h2><p>本文的反编译基于MachO 64bits，即System V X86_64，读懂本文需要的最简单Calling convention如下：</p><p>函数参数顺序：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=err>rdi,</span> <span class=err>rsi,</span> <span class=err>rdx,</span> <span class=err>rcx等寄存器</span>
+</span></span><span class=line><span class=cl><span class=err>对应到</span>
+</span></span><span class=line><span class=cl><span class=err>id</span> <span class=err>objc_msgSend</span> <span class=err>(</span> <span class=err>id</span> <span class=err>object,</span> <span class=err>SEL</span> <span class=err>cmd,</span> <span class=err>arg1,</span> <span class=err>arg2</span> <span class=err>...</span> <span class=err>);</span>
+</span></span><span class=line><span class=cl><span class=err>就是</span>
+</span></span><span class=line><span class=cl><span class=nv>rdi</span> <span class=o>=</span> object <span class=c1># 被调用对象</span>
+</span></span><span class=line><span class=cl><span class=nv>rsi</span> <span class=o>=</span> cmd <span class=c1># 方法selector</span>
+</span></span><span class=line><span class=cl><span class=nv>rdx</span> <span class=o>=</span> arg1 <span class=c1># 方法第一个参数</span>
+</span></span><span class=line><span class=cl><span class=nv>rcx</span> <span class=o>=</span> arg2 <span class=c1># 方法第二个参数</span>
+</span></span></code></pre></div><p>函数返回值：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=nf>本文只涉及</span><span class=o>:</span> <span class=n>rax</span>寄存器
+</span></span></code></pre></div><p>详细可参考：</p><ul><li><a class=link href=https://developer.apple.com/library/ios/documentation/Xcode/Conceptual/iPhoneOSABIReference/Introduction/Introduction.html target=_blank rel=noopener>iOS ABI Function Call Guide</a></li><li><a class=link href=https://developer.apple.com/library/mac/documentation/DeveloperTools/Conceptual/LowLevelABI/000-Introduction/introduction.html#//apple_ref/doc/uid/TP40002437-SW1 target=_blank rel=noopener>OS X ABI Function Call Guide</a></li><li><a class=link href=http://wiki.osdev.org/Calling_Conventions target=_blank rel=noopener>OS DEV Calling Conventions</a></li></ul><h2 id=out-parameters---指针的指针><a href=#out-parameters---%e6%8c%87%e9%92%88%e7%9a%84%e6%8c%87%e9%92%88 class=header-anchor></a>Out Parameters - 指针的指针</h2><p>所谓<code>Out Parameters</code>，其实就是<strong>指针的指针</strong>，熟悉C/C++的朋友应该不陌生，通过指针的指针可以改变指针的值，在Objective-C里面很多地方用到了这种方法，来在函数、方法内部改变参数的原始值，如：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>// NSFileManager的方法
+</span></span><span class=line><span class=cl>- (BOOL)removeItemAtURL:(NSURL *)URL error:(NSError **)error
+</span></span></code></pre></div><p>第二个参数<code>(NSError **)error</code>，就是<code>Out Parameters</code>，调用时传递NSError类型指针的地址即可：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>NSError *error = nil;
+</span></span><span class=line><span class=cl>[[NSFileManager defaultManager] removeItemAtURL:url error:&amp;error];
+</span></span><span class=line><span class=cl>// 处理error...
+</span></span></code></pre></div><h2 id=出现exc_bad_access的代码示例><a href=#%e5%87%ba%e7%8e%b0exc_bad_access%e7%9a%84%e4%bb%a3%e7%a0%81%e7%a4%ba%e4%be%8b class=header-anchor></a>出现EXC_BAD_ACCESS的代码示例</h2><p>假设有如下遍历数组检查数值零的方法：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=p>-</span> <span class=p>(</span><span class=kt>void</span><span class=p>)</span><span class=nf>checkZeroInArray:</span><span class=p>(</span><span class=n>NSArray</span> <span class=o>&lt;</span><span class=n>NSNumber</span> <span class=o>*&gt;</span> <span class=o>*</span><span class=p>)</span><span class=nv>array</span> <span class=nf>error:</span><span class=p>(</span><span class=n>NSError</span> <span class=o>**</span><span class=p>)</span><span class=nv>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 遍历
+</span></span></span><span class=line><span class=cl>    <span class=p>[</span><span class=n>array</span> <span class=nl>enumerateObjectsUsingBlock</span><span class=p>:</span><span class=o>^</span><span class=p>(</span><span class=n>NSNumber</span> <span class=o>*</span> <span class=n>_Nonnull</span> <span class=n>number</span><span class=p>,</span> <span class=n>NSUInteger</span> <span class=n>index</span><span class=p>,</span> <span class=kt>BOOL</span> <span class=o>*</span> <span class=n>_Nonnull</span> <span class=n>stop</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>number</span><span class=p>.</span><span class=n>integerValue</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span> <span class=c1>// 检查
+</span></span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=n>error</span><span class=p>)</span> <span class=p>{</span> <span class=c1>// 指针是否有效
+</span></span></span><span class=line><span class=cl>                <span class=o>*</span><span class=n>error</span> <span class=o>=</span> <span class=p>[</span><span class=n>NSError</span> <span class=nl>errorWithDomain</span><span class=p>:</span><span class=s>@&#34;me.tutuge&#34;</span> <span class=nl>code</span><span class=p>:</span><span class=mi>100</span> <span class=nl>userInfo</span><span class=p>:</span><span class=nb>nil</span><span class=p>];</span> <span class=c1>// 创建NSError实例
+</span></span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=o>*</span><span class=n>stop</span> <span class=o>=</span> <span class=nb>TRUE</span><span class=p>;</span> <span class=c1>// 停止遍历
+</span></span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}];</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>调用的时候如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-pony data-lang=pony><span class=line><span class=cl><span class=nc>NSError</span> <span class=o>*</span><span class=k>error</span> <span class=o>=</span> <span class=n>nil</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>self</span> <span class=n>checkZeroInArray</span><span class=p>:</span><span class=n>numbers</span> <span class=k>error</span><span class=p>:&amp;</span><span class=k>error</span><span class=p>];</span> <span class=c1>// 取地址
+</span></span></span><span class=line><span class=cl><span class=k>if</span> <span class=p>(</span><span class=k>error</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nc>NSLog</span><span class=p>(</span><span class=err>@</span><span class=s>&#34;Error: %@&#34;</span><span class=p>,</span> <span class=k>error</span><span class=p>);</span> <span class=c1>// EXC_BAD_ACCESS错误
+</span></span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>可以得出，<code>NSLog(@"Error: %@", error)</code>访问<code>error</code>的时候，<code>error</code>的地址指向的内存空间已经被释放，所以才会出现<code>EXC_BAD_ACCESS</code>错误。</p><p>但是为什么会被释放？什么时候被释放的？经过一番查证，发现跟<code>__autoreleasing</code>和<code>@autoreleasepool</code>有关。</p><p>下面先对<code>__autoreleasing</code>做点研究=。=</p><h2 id=__autoreleasing---变量所有权ownership修饰符><a href=#__autoreleasing---%e5%8f%98%e9%87%8f%e6%89%80%e6%9c%89%e6%9d%83ownership%e4%bf%ae%e9%a5%b0%e7%ac%a6 class=header-anchor></a>__autoreleasing - 变量所有权(ownership)修饰符</h2><p>先看看<code>__autoreleasing</code>的定义及一些特点。</p><p><code>__autoreleasing</code>是变量所有权修饰符的一种，除了它，还有<code>__strong</code>、<code>__weak</code>和<code>__unsafe_unretained</code>，详细的说明可以参考：<a class=link href=http://clang.llvm.org/docs/AutomaticReferenceCounting.html#ownership-qualification target=_blank rel=noopener>Clang文档-Objective-C Automatic Reference Counting (ARC)</a></p><p>简单来说，就是被<code>__autoreleasing</code>修饰的变量会被加入到当前的autoreleasepool中，可以理解为如下两段分别在ARC和MRC中的代码等价：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=c1>// ARC
+</span></span></span><span class=line><span class=cl><span class=kt>id</span> <span class=k>__autoreleasing</span> <span class=n>obj</span> <span class=o>=</span> <span class=n>someObj</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// MRC
+</span></span></span><span class=line><span class=cl><span class=kt>id</span> <span class=n>obj</span> <span class=o>=</span> <span class=p>[[</span><span class=n>someObj</span> <span class=k>retain</span><span class=p>]</span> <span class=n>autorelease</span><span class=p>];</span>
+</span></span></code></pre></div><p>再进一步，除开各种影响因素，假设有如下函数：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=p>-</span> <span class=p>(</span><span class=kt>void</span><span class=p>)</span><span class=nf>funcWithObj:</span><span class=p>(</span><span class=kt>id</span><span class=p>)</span><span class=nv>someObj</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>id</span> <span class=k>__autoreleasing</span> <span class=n>obj</span> <span class=o>=</span> <span class=n>someObj</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>用Hopper Disassembler反编译后为如下汇编代码(MachO 64bits)：</p><p><img alt=funcWithObj:反汇编 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2016/04/30/autoreleasing-meet-autoreleasepool/autoreleasing-meet-autoreleasepool_1.jpg></p><p><strong><code>var_18</code>就是obj变量：</strong></p><p><code>lea rax, qword [ss:rbp+var_18]</code>和<code>mov rdi, rax</code>取了var_18的地址放在<code>rdi</code>寄存器中，<code>mov rsi, rdx</code>将<code>someObj</code>值放到了rsi寄存器中，然后调用<code>id objc_storeStrong(id *object, id value)</code>函数最终将<code>someObj</code>值保存在<code>var_18</code>变量中。</p><p><strong><code>__autoreleasing</code>导致了<code>id objc_retainAutorelease(id value)</code>函数的调用：</strong></p><p><code>call imp___stubs__objc_retainAutorelease</code>，就是对<code>obj</code>变量，也就是<code>var_18</code>，调用了<code>objc_retainAutorelease</code>函数，先retain然后autorelease了一次，其实现大致如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=n>id</span> <span class=n>objc_retainAutorelease</span><span class=p>(</span><span class=n>id</span> <span class=k>value</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=n>objc_autorelease</span><span class=p>(</span><span class=n>objc_retain</span><span class=p>(</span><span class=k>value</span><span class=p>));</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><code>objc_storeStrong</code>和<code>objc_retainAutorelease</code>可参考：<a class=link href=http://clang.llvm.org/docs/AutomaticReferenceCounting.html#arc-runtime-objc-retainautorelease target=_blank rel=noopener>Clang文档-Objective-C Automatic Reference Counting (ARC)</a></p><p>可验证，用<code>__autoreleasing</code>修饰的变量会被添加到当前的autoreleasepool中。</p><h2 id=方法的out-parameters参数会自动添加__autoreleasing属性><a href=#%e6%96%b9%e6%b3%95%e7%9a%84out-parameters%e5%8f%82%e6%95%b0%e4%bc%9a%e8%87%aa%e5%8a%a8%e6%b7%bb%e5%8a%a0__autoreleasing%e5%b1%9e%e6%80%a7 class=header-anchor></a>方法的Out Parameters参数会自动添加__autoreleasing属性</h2><p>当方法参数里面有Out Parameters参数时，就是有指针的指针类型时，编译器会自动为参数加上<code>__autoreleasing</code>属性，如以下两个方法：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>- (void)generateError1:(NSError **)error {
+</span></span><span class=line><span class=cl>    *error = [NSError new];
+</span></span><span class=line><span class=cl>}
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>- (void)generateError2:(NSError * __autoreleasing *)error {
+</span></span><span class=line><span class=cl>    *error = [NSError new];
+</span></span><span class=line><span class=cl>}
+</span></span></code></pre></div><p>编译时，<code>generateError1:</code>会对参数<code>error</code>自动添加<code>__autoreleasing</code>，然后就跟<code>generateError2:</code>的实现完全一致了。</p><p>通过反汇编也可看出两者完全一致：</p><p><img alt="Out Parameters参数会自动添加__autoreleasing属性" loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2016/04/30/autoreleasing-meet-autoreleasepool/autoreleasing-meet-autoreleasepool_2.jpg></p><p>在<code>call imp___stubs__objc_msgSend</code>完成后，<code>rax</code>寄存器保存了<code>[NSError new]</code>的对象，然后<code>mov rdi, rax</code>，转移到<code>rdi</code>寄存器，作为<code>objc_autorelease</code>函数的参数被调用，<code>*error</code>被加到了当前的autoreleasepool中。</p><h2 id=如果传给out-parameters参数的变量没有用__autoreleasing修饰编译器会创建一个临时变量并以__autoreleasing修饰再传入><a href=#%e5%a6%82%e6%9e%9c%e4%bc%a0%e7%bb%99out-parameters%e5%8f%82%e6%95%b0%e7%9a%84%e5%8f%98%e9%87%8f%e6%b2%a1%e6%9c%89%e7%94%a8__autoreleasing%e4%bf%ae%e9%a5%b0%e7%bc%96%e8%af%91%e5%99%a8%e4%bc%9a%e5%88%9b%e5%bb%ba%e4%b8%80%e4%b8%aa%e4%b8%b4%e6%97%b6%e5%8f%98%e9%87%8f%e5%b9%b6%e4%bb%a5__autoreleasing%e4%bf%ae%e9%a5%b0%e5%86%8d%e4%bc%a0%e5%85%a5 class=header-anchor></a>如果传给Out Parameters参数的变量没有用__autoreleasing修饰，编译器会创建一个临时变量并以__autoreleasing修饰再传入</h2><p>根据苹果的<a class=link href=https://developer.apple.com/library/mac/releasenotes/ObjectiveC/RN-TransitioningToARC/Introduction/Introduction.html target=_blank rel=noopener>Transitioning to ARC Release Notes</a>文档可知，如果有如下调用:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>NSError *error; // 默认__strong类型
+</span></span><span class=line><span class=cl>[self generateError1:&amp;error]；
+</span></span></code></pre></div><p>编译器检测到<code>generateError1:</code>方法的Out Parameters类型参数，但是调用时的<code>error</code>又不是<code>__autoreleasing</code>修饰的，就会自动创建一个<code>__autoreleasing</code>修饰的临时变量，用来代替<code>error</code>传入，编译器重写后如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=n>NSError</span> <span class=o>*</span> <span class=n>error</span><span class=p>;</span> <span class=c1>// 默认__strong类型
+</span></span></span><span class=line><span class=cl><span class=n>NSError</span> <span class=o>*</span> <span class=k>__autoreleasing</span> <span class=n>tmp</span> <span class=o>=</span> <span class=n>error</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=nb>self</span> <span class=nl>generateError1</span><span class=p>:</span><span class=o>&amp;</span><span class=n>tmp</span><span class=p>]</span><span class=err>；</span>
+</span></span></code></pre></div><p>通过汇编来验证一下：</p><p>假如有如下调用：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=p>-</span> <span class=p>(</span><span class=kt>void</span><span class=p>)</span><span class=nf>runTest</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>NSError</span> <span class=o>*</span><span class=n>error</span> <span class=o>=</span> <span class=nb>nil</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=nb>self</span> <span class=nl>generateError1</span><span class=p>:</span><span class=o>&amp;</span><span class=n>error</span><span class=p>];</span> <span class=c1>// 就是上面的实现
+</span></span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>反汇编后，如下：</p><p><img alt=自动添加__autoreleasing临时变量 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2016/04/30/autoreleasing-meet-autoreleasepool/autoreleasing-meet-autoreleasepool_3.jpg></p><p>代码有点多=。=，从图中汇编可知：<code>var_20</code>就是自动生成的临时变量，<code>var_18</code>是我们定义的<code>error</code>变量。</p><p><code>mov qword [ss:rbp+var_18], 0x0</code>对<code>var_18</code>做初始化，也就是赋<code>nil</code>值，然后<code>mov rdi, qword [ss:rbp+var_18]</code>和<code>mov qword [ss:rbp+var_20], rdi</code>就是用<code>var_18</code>初始化了<code>var_20</code>临时变量。</p><p><code>lea rdx, qword [ss:rbp+var_20]</code>将<code>var_20</code>临时变量的地址存到了<code>rdx</code>寄存器中，作为<code>objc_msgSend</code>实现<code>generateError1:</code>调用时的第三个参数，也就是<code>(NSError **):error</code>参数，完成调用。</p><p>调用完成后，通过如下调用，将临时变量<code>var_20</code>的值保存到<code>var_18</code>，即<code>error</code>变量中。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=n>lea</span> <span class=n>rdx</span><span class=p>,</span> <span class=n>qword</span> <span class=p>[</span><span class=n>ss</span><span class=p>:</span><span class=n>rbp</span><span class=o>+</span><span class=n>var_18</span><span class=p>]</span> <span class=c1># var_18为objc_storeStrong第一个参数</span>
+</span></span><span class=line><span class=cl><span class=n>mov</span> <span class=n>rsi</span><span class=p>,</span> <span class=n>qword</span> <span class=p>[</span><span class=n>ss</span><span class=p>:</span><span class=n>rbp</span><span class=o>+</span><span class=n>var_20</span><span class=p>]</span> <span class=c1># var_20为objc_storeStrong第二个参数</span>
+</span></span><span class=line><span class=cl><span class=n>mov</span> <span class=n>rdi</span><span class=p>,</span> <span class=n>rdx</span>
+</span></span><span class=line><span class=cl><span class=n>call</span> <span class=n>imp___stubs__objc_storeStrong</span>
+</span></span></code></pre></div><h2 id=开头例子出现exc_bad_access错误的原因><a href=#%e5%bc%80%e5%a4%b4%e4%be%8b%e5%ad%90%e5%87%ba%e7%8e%b0exc_bad_access%e9%94%99%e8%af%af%e7%9a%84%e5%8e%9f%e5%9b%a0 class=header-anchor></a>开头例子出现EXC_BAD_ACCESS错误的原因</h2><p>经过上面一番对<code>__autoreleasing</code>的总结，再来看看开头例子的错误原因就比较容易懂了。</p><p><strong>enumerateObjectsUsingBlock会在循环内部自动添加autoreleasepool</strong></p><p>首先应该明确的就是<code>enumerateObjectsUsingBlock:</code>在用block迭代遍历NSArray的元素时，会自动添加autoreleasepool，对于例子来说，相当于：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=c1>// 枚举遍历
+</span></span></span><span class=line><span class=cl><span class=p>[</span><span class=n>array</span> <span class=nl>enumerateObjectsUsingBlock</span><span class=p>:</span><span class=o>^</span><span class=p>(</span><span class=n>NSNumber</span> <span class=o>*</span> <span class=n>_Nonnull</span> <span class=n>number</span><span class=p>,</span> <span class=n>NSUInteger</span> <span class=n>index</span><span class=p>,</span> <span class=kt>BOOL</span> <span class=o>*</span> <span class=n>_Nonnull</span> <span class=n>stop</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>number</span><span class=p>.</span><span class=n>integerValue</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>error</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=o>*</span><span class=n>error</span> <span class=o>=</span> <span class=p>[</span><span class=n>NSError</span> <span class=nl>errorWithDomain</span><span class=p>:</span><span class=s>@&#34;me.tutuge&#34;</span> <span class=nl>code</span><span class=p>:</span><span class=mi>100</span> <span class=nl>userInfo</span><span class=p>:</span><span class=nb>nil</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=o>*</span><span class=n>stop</span> <span class=o>=</span> <span class=nb>TRUE</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}];</span>
+</span></span></code></pre></div><p>结合<code>__autoreleasing</code>后，重写为：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=n>NSNumber</span> <span class=o>*</span><span class=n>number</span> <span class=o>=</span> <span class=nb>nil</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kt>BOOL</span> <span class=n>stop</span> <span class=o>=</span> <span class=nb>FALSE</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=p>(</span><span class=n>NSUInteger</span> <span class=n>index</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>index</span> <span class=o>&lt;</span> <span class=n>array</span><span class=p>.</span><span class=n>count</span> <span class=o>&amp;&amp;</span> <span class=o>!</span><span class=n>stop</span><span class=p>;</span> <span class=n>index</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>@autoreleasepool</span> <span class=p>{</span> <span class=c1>// 自动添加
+</span></span></span><span class=line><span class=cl>        <span class=n>number</span> <span class=o>=</span> <span class=n>array</span><span class=p>[</span><span class=n>index</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>error</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=o>*</span><span class=n>error</span> <span class=o>=</span> <span class=p>[[</span><span class=n>NSError</span> <span class=nl>errorWithDomain</span><span class=p>:</span><span class=s>@&#34;me.tutuge&#34;</span> <span class=nl>code</span><span class=p>:</span><span class=mi>100</span> <span class=nl>userInfo</span><span class=p>:</span><span class=nb>nil</span><span class=p>]</span> <span class=n>autorelease</span><span class=p>];</span> <span class=c1>// 注意这个autorelease !
+</span></span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=n>stop</span> <span class=o>=</span> <span class=nb>TRUE</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>而<code>autorelease</code>对应的函数<code>id objc_autorelease(id value)</code>的官方解释：</p><blockquote><p>If value is null, this call has no effect. Otherwise, it adds the object to the innermost autorelease pool exactly as if the object had been sent the autorelease message.</p></blockquote><p>其中的<strong>innermost autorelease pool</strong>表示的就是“最内层”的autoreleasepool，对于例子来说就是<code>*error</code>被添加到了循环内的autoreleasepool中，当然，导致的结果就是本次循环结束后，<code>*error</code>也随着一起被释放了。</p><p>最终导致了外部访问了已经被释放的<code>*error</code>，出现了EXC_BAD_ACCESS错误。</p><h2 id=总结><a href=#%e6%80%bb%e7%bb%93 class=header-anchor></a>总结</h2><p>很多时候不能想当然的写代码=。=，要不然出了问题找都找不到，每个细节都很重要。
+嗯，现在读汇编快多了。。。</p><h2 id=参考><a href=#%e5%8f%82%e8%80%83 class=header-anchor></a>参考</h2><ul><li><a class=link href=http://clang.llvm.org/docs/AutomaticReferenceCounting.html target=_blank rel=noopener>Clang document: Objective-C Automatic Reference Counting (ARC)</a></li><li><a class=link href=https://developer.apple.com/library/mac/releasenotes/ObjectiveC/RN-TransitioningToARC/Introduction/Introduction.html target=_blank rel=noopener>Transitioning to ARC Release Notes</a></li><li><a class=link href=http://blog.sunnyxx.com/2014/10/15/behind-autorelease/ target=_blank rel=noopener>黑幕背后的Autorelease</a></li></ul></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/%E5%8E%9F%E5%88%9B/>原创</a>
+<a href=/tags/ios/>IOS</a></section></footer></article><aside><h2 class=section-title>相关文章</h2><div class=subsection-list><div class=article-list--tile><article class=has-image><a href=/2017/04/08/diy-methodSignatureForSelector/><div class=article-image><img alt="Featured image of post 反编译分析并模拟实现methodSignatureForSelector方法" loading=lazy src=/assets/2017/04/08/diy-methodSignatureForSelector/blog_RemakeMethodSignatureForSelector_1.jpg></div><div class=article-details><h2 class=article-title>反编译分析并模拟实现methodSignatureForSelector方法</h2></div></a></article><article class=has-image><a href=/2017/03/14/xcode8-crash-on-out-parameter/><div class=article-image><img alt="Featured image of post 反编译分析Xcode8的Bug, release下连续两次调用有二级指针参数的空方法会Crash" loading=lazy src=/assets/2017/03/14/xcode8-crash-on-out-parameter/xcode8_crash_on_out_parameter_1.jpg></div><div class=article-details><h2 class=article-title>反编译分析Xcode8的Bug, release下连续两次调用有二级指针参数的空方法会Crash</h2></div></a></article><article class=has-image><a href=/2017/03/12/autolayout-example-with-masonry5/><div class=article-image><img alt="Featured image of post 有趣的Autolayout示例5-Masonry实现" loading=lazy src=/assets/2017/03/12/autolayout-example-with-masonry5/blog_autolayout_example_with_masonry5_1.png></div><div class=article-details><h2 class=article-title>有趣的Autolayout示例5-Masonry实现</h2></div></a></article><article class=has-image><a href=/2017/03/11/TTGDeallocTaskHelper/><div class=article-image><img alt="Featured image of post 在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper" loading=lazy src=/assets/2017/03/11/TTGDeallocTaskHelper/TTGDeallocTaskHelper_1.jpg></div><div class=article-details><h2 class=article-title>在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper</h2></div></a></article><article class=has-image><a href=/2017/03/08/quartzcode-demo-star-animation/><div class=article-image><img alt="Featured image of post 用QuartzCode快速实现一个收藏动画" loading=lazy src=/assets/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_1.gif></div><div class=article-details><h2 class=article-title>用QuartzCode快速实现一个收藏动画</h2></div></a></article></div></div></aside><footer class=site-footer><section class=copyright>&copy;
+2014 -
+2026 tutuge</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=4.0.3>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><script type=module>
+    import gallery from '\/ts\/gallery.js';
 
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
     
-
-    <title>结合访问Out Parameters出现EXC_BAD_ACCESS的例子，反编译汇编解读__autoreleasing | iOS程序猿.目前阿里,喜欢各种技术,RCFans</title>
-    <meta name="author" content="土土哥">
-    
-    <meta name="description" content="iOS程序猿.目前阿里,喜欢各种技术,RCFans">
-    
-    
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-    <meta property="og:title" content="结合访问Out Parameters出现EXC_BAD_ACCESS的例子，反编译汇编解读__autoreleasing">
-    <meta property="og:site_name" content="土土哥的Blog">
-
-    
-    <meta property="og:image" content="undefined">
-    
-
-    <link rel="icon" type="image/png" href="/favicon.png">
-    <link rel="alternate" href="/atom.xml" title="土土哥的Blog" type="application/atom+xml">
-    <link rel="stylesheet" href="/css/lib/materialize.min.css">
-    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
-    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-
-    
-        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
-    
-    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-</head>
-</html>
-
-<body>
-    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
-
-    <nav class="blue-grey">
-    <div class="nav-wrapper">
-        <a href="#" data-activates="main-menu" class="button-collapse">
-            <i class="fa fa-navicon"></i>
-        </a>
-        <div class="">
-            <a href="/" class="brand-logo hide-on-med-and-down">土土哥的Blog</a>
-            <ul class="right hide-on-med-and-down">
-                
-                    <li>
-                        <a class="menu-home " href="/" >
-                            <i class="fa fa-home "></i>
-                            
-                            首页
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-archive " href="/archives" >
-                            <i class="fa fa-archive "></i>
-                            
-                            归档
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
-                            <i class="fa fa-bookmark "></i>
-                            
-                            分类
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-about " href="/about" >
-                            <i class="fa fa-user "></i>
-                            
-                            关于
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-search modal-trigger " href="#search" >
-                            <i class="fa fa-search "></i>
-                            
-                            搜索
-                        </a>
-                    </li>
-                
-            </ul>
-            <div>
-    <ul class="side-nav blue-grey darken-1" id="main-menu">
-        
-        <li class="side-user">
-            <div class="row">
-                <div class="col s4 no-padding">
-                    <img class="avatar-image circle responsive-img" src="http://tutuge.me/2019/07/29/2019-07-29-occupied-with-work/avatar_comic.jpg" alt="User Avatar">
-                </div>
-                <div class="info col s8 valign-wrapper no-padding">
-                    <div class="valign">
-                        <p class="name">土土哥</p>
-                        <p class="desc">iOS/Android/技术宅/RCFans</p>
-                    </div>
-                </div>
-            </div>
-        </li>
-        
-
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-home " href="/" >
-                    <i class="fa fa-home "></i>
-                    
-                    首页
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-archive " href="/archives" >
-                    <i class="fa fa-archive "></i>
-                    
-                    归档
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
-                    <i class="fa fa-bookmark "></i>
-                    
-                    分类
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-about " href="/about" >
-                    <i class="fa fa-user "></i>
-                    
-                    关于
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-search modal-trigger " href="#search" >
-                    <i class="fa fa-search "></i>
-                    
-                    搜索
-                </a>
-            </li>
-        
-    </ul>
-
-    <ul class="side-nav blue-grey darken-1" id="category-menu">
-    
-
-            
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/其它/">
-                    其它 <span class="right">5 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/iOS/">
-                    iOS <span class="right">37 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/Android/">
-                    Android <span class="right">1 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/Mac/">
-                    Mac <span class="right">1 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/服务端/">
-                    服务端 <span class="right">2 篇</span></a>
-                </a>
-            </li>
-
-        
-
-    </ul>
-</div>
-
-        </div>
-    </div>
-</nav>
-
-<div id="search" class="modal search-modal">
-    <div class="row">
-        <div class="input-field col s12">
-              <input id="search-input" type="text">
-              <label for="search-input">搜索</label>
-        </div>
-
-    </div>
-    <div id="search-result" class="search-result col s12">
-
-    </div>
-</div>
-
-
-    <main>
-        <div class="container main-container">
-    
-<nav class="page-nav hide-on-small-only">
-    <div class="nav-wrapper blue-grey">
-        <span class="breadcrumb">当前位置（分类目录）</span>
-        
-            
-    
-    
-    <a class="breadcrumb" href="/categories/iOS/">iOS</a>
-
-
-        
-
-        
-    </div>
-</nav>
-
-<article>
-    <div class="card">
-        <div class="card-content">
-            
-
-            <div class="article-title">
-                
-    
-        <h1>结合访问Out Parameters出现EXC_BAD_ACCESS的例子，反编译汇编解读__autoreleasing</h1>
-    
-
-
-            </div>
-            <time class="teal-link-context" datetime="2016-04-30T11:19:23.000Z"><a href="/2016/04/30/autoreleasing-meet-autoreleasepool/">2016-04-30</a></time>
-
-            <span id="busuanzi_container_page_pv" class="read-times-container">
-    <i class="fa fa-eye"></i>
-    <span id="busuanzi_value_page_pv"></span>
-</span>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
-        
-            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
-        
-    </div>
-
-
-            <div class="toc teal-link-context hide-on-med-and-down">
-    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#更新"><span class="section table-of-contents-text">更新</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#前言"><span class="section table-of-contents-text">前言</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#2016-05-01更新-关于本文的反编译汇编代码"><span class="section table-of-contents-text">2016-05-01更新 - 关于本文的反编译汇编代码</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Out-Parameters-指针的指针"><span class="section table-of-contents-text">Out Parameters - 指针的指针</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#出现EXC-BAD-ACCESS的代码示例"><span class="section table-of-contents-text">出现EXC_BAD_ACCESS的代码示例</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#autoreleasing-变量所有权-ownership-修饰符"><span class="section table-of-contents-text">__autoreleasing - 变量所有权(ownership)修饰符</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#方法的Out-Parameters参数会自动添加-autoreleasing属性"><span class="section table-of-contents-text">方法的Out Parameters参数会自动添加__autoreleasing属性</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#如果传给Out-Parameters参数的变量没有用-autoreleasing修饰，编译器会创建一个临时变量并以-autoreleasing修饰再传入"><span class="section table-of-contents-text">如果传给Out Parameters参数的变量没有用__autoreleasing修饰，编译器会创建一个临时变量并以__autoreleasing修饰再传入</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#开头例子出现EXC-BAD-ACCESS错误的原因"><span class="section table-of-contents-text">开头例子出现EXC_BAD_ACCESS错误的原因</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#总结"><span class="section table-of-contents-text">总结</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#参考"><span class="section table-of-contents-text">参考</span></a></li></ol>
-</div>
-
-
-            <div class="entry teal-link-context">
-                <h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><p>2016-05-01: 补充了一点本文涉及的汇编知识</p>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本文结合一段访问<code>Out Parameters</code>出现了<code>EXC_BAD_ACCESS</code>错误的代码，通过反编译等手段验证Objective-C中<code>__autoreleasing</code>的一些特点。</p>
-<a id="more"></a>
-<h2 id="2016-05-01更新-关于本文的反编译汇编代码"><a href="#2016-05-01更新-关于本文的反编译汇编代码" class="headerlink" title="2016-05-01更新 - 关于本文的反编译汇编代码"></a>2016-05-01更新 - 关于本文的反编译汇编代码</h2><p>本文的反编译基于MachO 64bits，即System V X86_64，读懂本文需要的最简单Calling convention如下：</p>
-<p>函数参数顺序：</p>
-<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">rdi, rsi, rdx, rcx等寄存器</span><br><span class="line">对应到</span><br><span class="line">id objc_msgSend ( id object, SEL cmd, arg1, arg2 ... );</span><br><span class="line">就是</span><br><span class="line">rdi = object <span class="comment"># 被调用对象</span></span><br><span class="line">rsi = cmd <span class="comment"># 方法selector</span></span><br><span class="line">rdx = arg1 <span class="comment"># 方法第一个参数</span></span><br><span class="line">rcx = arg2 <span class="comment"># 方法第二个参数</span></span><br></pre></td></tr></table></figure>
-<p>函数返回值：</p>
-<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">本文只涉及: rax寄存器</span></span><br></pre></td></tr></table></figure>
-<p>详细可参考：</p>
-<ul>
-<li><a href="https://developer.apple.com/library/ios/documentation/Xcode/Conceptual/iPhoneOSABIReference/Introduction/Introduction.html" target="_blank" rel="noopener">iOS ABI Function Call Guide</a></li>
-<li><a href="https://developer.apple.com/library/mac/documentation/DeveloperTools/Conceptual/LowLevelABI/000-Introduction/introduction.html#//apple_ref/doc/uid/TP40002437-SW1" target="_blank" rel="noopener">OS X ABI Function Call Guide</a></li>
-<li><a href="http://wiki.osdev.org/Calling_Conventions" target="_blank" rel="noopener">OS DEV Calling Conventions</a></li>
-</ul>
-<h2 id="Out-Parameters-指针的指针"><a href="#Out-Parameters-指针的指针" class="headerlink" title="Out Parameters - 指针的指针"></a>Out Parameters - 指针的指针</h2><p>所谓<code>Out Parameters</code>，其实就是<strong>指针的指针</strong>，熟悉C/C++的朋友应该不陌生，通过指针的指针可以改变指针的值，在Objective-C里面很多地方用到了这种方法，来在函数、方法内部改变参数的原始值，如：</p>
-<figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// NSFileManager的方法</span></span><br><span class="line">- (<span class="keyword">BOOL</span>)removeItemAtURL:(NSURL *)URL <span class="built_in">error</span>:(NSError **)<span class="built_in">error</span></span><br></pre></td></tr></table></figure>
-<p>第二个参数<code>(NSError **)error</code>，就是<code>Out Parameters</code>，调用时传递NSError类型指针的地址即可：</p>
-<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">NSError *<span class="built_in">error</span> = nil;</span><br><span class="line">[[NSFileManager defaultManager] removeItemAtURL:url <span class="built_in">error</span>:&amp;<span class="built_in">error</span>];</span><br><span class="line">// 处理<span class="built_in">error</span>...</span><br></pre></td></tr></table></figure>
-<h2 id="出现EXC-BAD-ACCESS的代码示例"><a href="#出现EXC-BAD-ACCESS的代码示例" class="headerlink" title="出现EXC_BAD_ACCESS的代码示例"></a>出现EXC_BAD_ACCESS的代码示例</h2><p>假设有如下遍历数组检查数值零的方法：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)checkZeroInArray:(<span class="built_in">NSArray</span> &lt;<span class="built_in">NSNumber</span> *&gt; *)array error:(<span class="built_in">NSError</span> **)error &#123;</span><br><span class="line">    <span class="comment">// 遍历</span></span><br><span class="line">    [array enumerateObjectsUsingBlock:^(<span class="built_in">NSNumber</span> * _Nonnull number, <span class="built_in">NSUInteger</span> index, <span class="built_in">BOOL</span> * _Nonnull stop) &#123;</span><br><span class="line">        <span class="keyword">if</span> (number.integerValue == <span class="number">0</span>) &#123; <span class="comment">// 检查</span></span><br><span class="line">            <span class="keyword">if</span> (error) &#123; <span class="comment">// 指针是否有效</span></span><br><span class="line">                *error = [<span class="built_in">NSError</span> errorWithDomain:<span class="string">@"me.tutuge"</span> code:<span class="number">100</span> userInfo:<span class="literal">nil</span>]; <span class="comment">// 创建NSError实例</span></span><br><span class="line">            &#125;</span><br><span class="line">            *stop = <span class="literal">TRUE</span>; <span class="comment">// 停止遍历</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>调用的时候如下：</p>
-<figure class="highlight pony"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">NSError</span> *<span class="keyword">error</span> = nil;</span><br><span class="line">[self checkZeroInArray:numbers <span class="keyword">error</span>:&amp;<span class="keyword">error</span>]; <span class="comment">// 取地址</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">error</span>) &#123;</span><br><span class="line">    <span class="type">NSLog</span>(@<span class="string">"Error: %@"</span>, <span class="keyword">error</span>); <span class="comment">// EXC_BAD_ACCESS错误</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以得出，<code>NSLog(@&quot;Error: %@&quot;, error)</code>访问<code>error</code>的时候，<code>error</code>的地址指向的内存空间已经被释放，所以才会出现<code>EXC_BAD_ACCESS</code>错误。</p>
-<p>但是为什么会被释放？什么时候被释放的？经过一番查证，发现跟<code>__autoreleasing</code>和<code>@autoreleasepool</code>有关。</p>
-<p>下面先对<code>__autoreleasing</code>做点研究=。=</p>
-<h2 id="autoreleasing-变量所有权-ownership-修饰符"><a href="#autoreleasing-变量所有权-ownership-修饰符" class="headerlink" title="__autoreleasing - 变量所有权(ownership)修饰符"></a>__autoreleasing - 变量所有权(ownership)修饰符</h2><p>先看看<code>__autoreleasing</code>的定义及一些特点。</p>
-<p><code>__autoreleasing</code>是变量所有权修饰符的一种，除了它，还有<code>__strong</code>、<code>__weak</code>和<code>__unsafe_unretained</code>，详细的说明可以参考：<a href="http://clang.llvm.org/docs/AutomaticReferenceCounting.html#ownership-qualification" target="_blank" rel="noopener">Clang文档-Objective-C Automatic Reference Counting (ARC)</a></p>
-<p>简单来说，就是被<code>__autoreleasing</code>修饰的变量会被加入到当前的autoreleasepool中，可以理解为如下两段分别在ARC和MRC中的代码等价：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ARC</span></span><br><span class="line"><span class="keyword">id</span> __autoreleasing obj = someObj;</span><br><span class="line"></span><br><span class="line"><span class="comment">// MRC</span></span><br><span class="line"><span class="keyword">id</span> obj = [[someObj <span class="keyword">retain</span>] autorelease];</span><br></pre></td></tr></table></figure>
-<p>再进一步，除开各种影响因素，假设有如下函数：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)funcWithObj:(<span class="keyword">id</span>)someObj &#123;</span><br><span class="line">    <span class="keyword">id</span> __autoreleasing obj = someObj;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>用Hopper Disassembler反编译后为如下汇编代码(MachO 64bits)：</p>
-<p><img src="/2016/04/30/autoreleasing-meet-autoreleasepool/autoreleasing-meet-autoreleasepool_1.jpg" alt="funcWithObj:反汇编"></p>
-<p><strong><code>var_18</code>就是obj变量：</strong></p>
-<p><code>lea rax, qword [ss:rbp+var_18]</code>和<code>mov rdi, rax</code>取了var_18的地址放在<code>rdi</code>寄存器中，<code>mov rsi, rdx</code>将<code>someObj</code>值放到了rsi寄存器中，然后调用<code>id objc_storeStrong(id *object, id value)</code>函数最终将<code>someObj</code>值保存在<code>var_18</code>变量中。</p>
-<p><strong><code>__autoreleasing</code>导致了<code>id objc_retainAutorelease(id value)</code>函数的调用：</strong></p>
-<p><code>call imp___stubs__objc_retainAutorelease</code>，就是对<code>obj</code>变量，也就是<code>var_18</code>，调用了<code>objc_retainAutorelease</code>函数，先retain然后autorelease了一次，其实现大致如下：</p>
-<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">id <span class="title">objc_retainAutorelease</span>(<span class="params">id <span class="keyword">value</span></span>)</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> objc_autorelease(objc_retain(<span class="keyword">value</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><code>objc_storeStrong</code>和<code>objc_retainAutorelease</code>可参考：<a href="http://clang.llvm.org/docs/AutomaticReferenceCounting.html#arc-runtime-objc-retainautorelease" target="_blank" rel="noopener">Clang文档-Objective-C Automatic Reference Counting (ARC)</a></p>
-<p>可验证，用<code>__autoreleasing</code>修饰的变量会被添加到当前的autoreleasepool中。</p>
-<h2 id="方法的Out-Parameters参数会自动添加-autoreleasing属性"><a href="#方法的Out-Parameters参数会自动添加-autoreleasing属性" class="headerlink" title="方法的Out Parameters参数会自动添加__autoreleasing属性"></a>方法的Out Parameters参数会自动添加__autoreleasing属性</h2><p>当方法参数里面有Out Parameters参数时，就是有指针的指针类型时，编译器会自动为参数加上<code>__autoreleasing</code>属性，如以下两个方法：</p>
-<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)generateError1:(NSError **)<span class="keyword">error</span> &#123;</span><br><span class="line">    *<span class="keyword">error</span> = [NSError <span class="keyword">new</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)generateError2:(NSError * __autoreleasing *)<span class="keyword">error</span> &#123;</span><br><span class="line">    *<span class="keyword">error</span> = [NSError <span class="keyword">new</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>编译时，<code>generateError1:</code>会对参数<code>error</code>自动添加<code>__autoreleasing</code>，然后就跟<code>generateError2:</code>的实现完全一致了。</p>
-<p>通过反汇编也可看出两者完全一致：</p>
-<p><img src="/2016/04/30/autoreleasing-meet-autoreleasepool/autoreleasing-meet-autoreleasepool_2.jpg" alt="Out Parameters参数会自动添加__autoreleasing属性"></p>
-<p>在<code>call imp___stubs__objc_msgSend</code>完成后，<code>rax</code>寄存器保存了<code>[NSError new]</code>的对象，然后<code>mov rdi, rax</code>，转移到<code>rdi</code>寄存器，作为<code>objc_autorelease</code>函数的参数被调用，<code>*error</code>被加到了当前的autoreleasepool中。</p>
-<h2 id="如果传给Out-Parameters参数的变量没有用-autoreleasing修饰，编译器会创建一个临时变量并以-autoreleasing修饰再传入"><a href="#如果传给Out-Parameters参数的变量没有用-autoreleasing修饰，编译器会创建一个临时变量并以-autoreleasing修饰再传入" class="headerlink" title="如果传给Out Parameters参数的变量没有用__autoreleasing修饰，编译器会创建一个临时变量并以__autoreleasing修饰再传入"></a>如果传给Out Parameters参数的变量没有用__autoreleasing修饰，编译器会创建一个临时变量并以__autoreleasing修饰再传入</h2><p>根据苹果的<a href="https://developer.apple.com/library/mac/releasenotes/ObjectiveC/RN-TransitioningToARC/Introduction/Introduction.html" target="_blank" rel="noopener">Transitioning to ARC Release Notes</a>文档可知，如果有如下调用:</p>
-<figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSError *<span class="built_in">error</span>; <span class="comment">// 默认__strong类型</span></span><br><span class="line">[self generateError1:&amp;<span class="built_in">error</span>]；</span><br></pre></td></tr></table></figure>
-<p>编译器检测到<code>generateError1:</code>方法的Out Parameters类型参数，但是调用时的<code>error</code>又不是<code>__autoreleasing</code>修饰的，就会自动创建一个<code>__autoreleasing</code>修饰的临时变量，用来代替<code>error</code>传入，编译器重写后如下：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSError</span> * error; <span class="comment">// 默认__strong类型</span></span><br><span class="line"><span class="built_in">NSError</span> * __autoreleasing tmp = error;</span><br><span class="line">[<span class="keyword">self</span> generateError1:&amp;tmp]；</span><br></pre></td></tr></table></figure>
-<p>通过汇编来验证一下：</p>
-<p>假如有如下调用：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)runTest &#123;</span><br><span class="line">    <span class="built_in">NSError</span> *error = <span class="literal">nil</span>;</span><br><span class="line">    [<span class="keyword">self</span> generateError1:&amp;error]; <span class="comment">// 就是上面的实现</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>反汇编后，如下：</p>
-<p><img src="/2016/04/30/autoreleasing-meet-autoreleasepool/autoreleasing-meet-autoreleasepool_3.jpg" alt="自动添加__autoreleasing临时变量"></p>
-<p>代码有点多=。=，从图中汇编可知：<code>var_20</code>就是自动生成的临时变量，<code>var_18</code>是我们定义的<code>error</code>变量。</p>
-<p><code>mov qword [ss:rbp+var_18], 0x0</code>对<code>var_18</code>做初始化，也就是赋<code>nil</code>值，然后<code>mov rdi, qword [ss:rbp+var_18]</code>和<code>mov qword [ss:rbp+var_20], rdi</code>就是用<code>var_18</code>初始化了<code>var_20</code>临时变量。</p>
-<p><code>lea rdx, qword [ss:rbp+var_20]</code>将<code>var_20</code>临时变量的地址存到了<code>rdx</code>寄存器中，作为<code>objc_msgSend</code>实现<code>generateError1:</code>调用时的第三个参数，也就是<code>(NSError **):error</code>参数，完成调用。</p>
-<p>调用完成后，通过如下调用，将临时变量<code>var_20</code>的值保存到<code>var_18</code>，即<code>error</code>变量中。</p>
-<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">lea</span> <span class="built_in">rdx</span>, <span class="built_in">qword</span> [<span class="built_in">ss</span>:<span class="built_in">rbp</span>+var_18] # var_18为objc_storeStrong第一个参数</span><br><span class="line"><span class="keyword">mov</span> <span class="built_in">rsi</span>, <span class="built_in">qword</span> [<span class="built_in">ss</span>:<span class="built_in">rbp</span>+var_20] # var_20为objc_storeStrong第二个参数</span><br><span class="line"><span class="keyword">mov</span> <span class="built_in">rdi</span>, <span class="built_in">rdx</span></span><br><span class="line"><span class="keyword">call</span> imp___stubs__objc_storeStrong</span><br></pre></td></tr></table></figure>
-<h2 id="开头例子出现EXC-BAD-ACCESS错误的原因"><a href="#开头例子出现EXC-BAD-ACCESS错误的原因" class="headerlink" title="开头例子出现EXC_BAD_ACCESS错误的原因"></a>开头例子出现EXC_BAD_ACCESS错误的原因</h2><p>经过上面一番对<code>__autoreleasing</code>的总结，再来看看开头例子的错误原因就比较容易懂了。</p>
-<p><strong>enumerateObjectsUsingBlock会在循环内部自动添加autoreleasepool</strong></p>
-<p>首先应该明确的就是<code>enumerateObjectsUsingBlock:</code>在用block迭代遍历NSArray的元素时，会自动添加autoreleasepool，对于例子来说，相当于：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 枚举遍历</span></span><br><span class="line">[array enumerateObjectsUsingBlock:^(<span class="built_in">NSNumber</span> * _Nonnull number, <span class="built_in">NSUInteger</span> index, <span class="built_in">BOOL</span> * _Nonnull stop) &#123;</span><br><span class="line">    <span class="keyword">if</span> (number.integerValue == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (error) &#123;</span><br><span class="line">            *error = [<span class="built_in">NSError</span> errorWithDomain:<span class="string">@"me.tutuge"</span> code:<span class="number">100</span> userInfo:<span class="literal">nil</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        *stop = <span class="literal">TRUE</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
-<p>结合<code>__autoreleasing</code>后，重写为：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSNumber</span> *number = <span class="literal">nil</span>;</span><br><span class="line"><span class="built_in">BOOL</span> stop = <span class="literal">FALSE</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="built_in">NSUInteger</span> index = <span class="number">0</span>; index &lt; array.count &amp;&amp; !stop; index++) &#123;</span><br><span class="line">    <span class="keyword">@autoreleasepool</span> &#123; <span class="comment">// 自动添加</span></span><br><span class="line">        number = array[index];</span><br><span class="line">        <span class="keyword">if</span> (error) &#123;</span><br><span class="line">            *error = [[<span class="built_in">NSError</span> errorWithDomain:<span class="string">@"me.tutuge"</span> code:<span class="number">100</span> userInfo:<span class="literal">nil</span>] autorelease]; <span class="comment">// 注意这个autorelease !</span></span><br><span class="line">        &#125;</span><br><span class="line">        stop = <span class="literal">TRUE</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>而<code>autorelease</code>对应的函数<code>id objc_autorelease(id value)</code>的官方解释：</p>
-<blockquote>
-<p>If value is null, this call has no effect. Otherwise, it adds the object to the innermost autorelease pool exactly as if the object had been sent the autorelease message.</p>
-</blockquote>
-<p>其中的<strong>innermost autorelease pool</strong>表示的就是“最内层”的autoreleasepool，对于例子来说就是<code>*error</code>被添加到了循环内的autoreleasepool中，当然，导致的结果就是本次循环结束后，<code>*error</code>也随着一起被释放了。</p>
-<p>最终导致了外部访问了已经被释放的<code>*error</code>，出现了EXC_BAD_ACCESS错误。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>很多时候不能想当然的写代码=。=，要不然出了问题找都找不到，每个细节都很重要。<br>嗯，现在读汇编快多了。。。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><a href="http://clang.llvm.org/docs/AutomaticReferenceCounting.html" target="_blank" rel="noopener">Clang document: Objective-C Automatic Reference Counting (ARC)</a></li>
-<li><a href="https://developer.apple.com/library/mac/releasenotes/ObjectiveC/RN-TransitioningToARC/Introduction/Introduction.html" target="_blank" rel="noopener">Transitioning to ARC Release Notes</a></li>
-<li><a href="http://blog.sunnyxx.com/2014/10/15/behind-autorelease/" target="_blank" rel="noopener">黑幕背后的Autorelease</a></li>
-</ul>
-
-                
-<p class="teal-link-context">
-    <a href="/2016/05/02/design-json-api-respoense/" rel="next" title="API返回结果设计经验与总结">
-    上一篇：API返回结果设计经验与总结
-  </a>
-</p>
-
-
-
-<p class="teal-link-context">
-    <a href="/2016/04/10/summary-of-code-organization/" rel="next" title="总结一些iOS项目中组织代码的方法">
-    下一篇：总结一些iOS项目中组织代码的方法
-  </a>
-</p>
-
-
-            </div>
-
-            
-			
-        </div>
-    </div>
-</article>
-
-
-
-
-    <section id="comment">
-        <div id="disqus_thread"></div>
-        <script>
-            var disqus_config = function() {
-                this.page.url = 'http://tutuge.me/2016/04/30/autoreleasing-meet-autoreleasepool/';
-                this.page.identifier = '2016/04/30/autoreleasing-meet-autoreleasepool/';
-            };
-            (function() {
-                var d = document,
-                    s = d.createElement('script');
-                s.src = '//tutuge-me.disqus.com/embed.js';
-                s.setAttribute('data-timestamp', + new Date());
-                (d.head || d.body).appendChild(s);
-            })();
-        </script>
-        <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
-        </noscript>
-    </section>
-
-
-
-</div>
-
-        <div class="fixed-action-btn float-sitemap">
-    <a class="btn-floating btn-large teal">
-      <i class="fa fa-caret-square-o-up"></i>
-    </a>
-    <ul>
-      <li><a class="btn-return-top btn-floating waves-effect teal accent-4" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
-      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
-    </ul>
-  </div>
-
-    </main>
-    <footer class="page-footer blue-grey darken-1">
-    
-    <div class="footer-container container">
-        <div class="row">
-            
-            <div class="social-group col m4 s12">
-                <h5 class="white-text">社交</h5>
-                
-                    <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
-                        <i class="fa fa-2x fa-weibo"></i>
-                    </a>
-                
-                    <a class="social-link" href="https://github.com/zekunyan" target="_blank">
-                        <i class="fa fa-2x fa-github"></i>
-                    </a>
-                
-                    <a class="social-link" href="/atom.xml" target="_blank">
-                        <i class="fa fa-2x fa-rss"></i>
-                    </a>
-                
-                
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
-    </script>
-    <div class="site-visitors-container white-text">
-        <span>
-            <i class="fa fa-user"></i>
-            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
-        </span>
-        <span>&nbsp;|&nbsp;</span>
-        <span>
-            <i class="fa fa-eye"></i>
-            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
-        </span>
-    </div>
-
-
-            </div>
-            
-
-            
-            <div class="col m8 s12">
-                <h5 class="white-text">友情链接</h5>
-                
-                    <a class="social-link" href="http://chenrudan.github.io" target="_blank">女朋友的博客😊</a>
-                
-            </div>
-            
-        </div>
-        <p>Hosted by <a href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a></p>
-    </div>
-    
-
-    <div class="footer-copyright teal-link-context">
-        <div class="container">
-            © 2020 tutuge.me, All rights reserved.
-            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
-        </div>
-    </div>
-</footer>
-
-
-    <noscript>
-    <div class="noscript">
-        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
-    </div>
-</noscript>
-<div class="noscript">
-    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
-</div>
-
-
-<script src="/js/jquery.min.js"></script>
-<script src="/js/materialize.min.js"></script>
-
-<script>
-    (function($) {
-        $(document).ready(function() {
-            // 隐藏禁用javascript（针对微信内置浏览器）的提示
-            $('.noscript').hide();
-
-            // 图片缩放效果
-            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
-
-            // 给图片加上点击放大效果（materialbox插件）
-            $imgs.addClass('materialboxed').each(function(i, el) {
-                $(this).attr('data-caption', $(this).attr('alt') || ' ');
-            }).materialbox();
-
-            // 优化表格的显示
-            $('table').each(function() {
-                var $table = $(this);
-                // 除去多行代码的情况
-                if ($table.find('pre').length == 0) {
-                    $table.addClass('responsive-table striped bordered');
-                }
-            });
-
-            // 首页幻灯片
-            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
-
-            $(".button-collapse").sideNav();
-            $(".category-menu").sideNav();
-
-            // 针对gallery post
-            $('.carousel').carousel({full_width: true});
-            $('.carousel-control.prev').click(function() {
-                $('.carousel').carousel('prev');
-            });
-            $('.carousel-control.next').click(function() {
-                $('.carousel').carousel('next');
-            });
-
-            // 文章目录
-            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
-
-            // 目录随屏幕滚动（防止目录过长越过footer）
-            var $toc = $('.toc');
-            var scrollTargetTop = 0;
-            $(window).scroll(function() {
-                var $activeLink = $toc.find('a.active.section');
-                if ($(window).scrollTop() < 100) {
-                    scrollTargetTop = 0;
-                } else {
-                    if ($activeLink[0]) {
-                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
-                    }
-                }
-                $toc.css('top', '-' + scrollTargetTop + 'px');
-            });
-
-            // 修正文章目录的left-border颜色
-            var color = $('.table-of-contents-text').css('color');
-            $('.table-of-contents-link').css('border-left-color', color);
-
-            // 针对移动端做的优化：FAB按钮点击一下收回
-            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                $('.fixed-action-btn').addClass('click-to-toggle');
-            }
-            // 回到顶部
-            $('.btn-return-top').click(function() {
-                $('body, html').animate({
-                    scrollTop: 0
-                }, 500);
-            });
-
-            // 重置读书页面的Tab标签页的颜色
-            $('li.tab a').hover(function() {
-                $(this).toggleClass('text-lighten-4');
-            });
-            $('.indicator').addClass('teal lighten-2');
-
-            
-            // 添加new标签
-            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
-            
-
-            // 搜索功能
-            $('.modal-trigger').leanModal({
-                // 打开搜索框时自动聚焦
-                ready: function() {
-                    if ($('#search').is(":visible")) {
-                        $('#search-input').focus();
-                    }
-                }
-            });
-            var searchXml = "search.xml";
-            if (searchXml.length == 0) {
-             	searchXml = "search.xml";
-            }
-            var searchPath = "/" + searchXml;
-            initSearch(searchPath, 'search-input', 'search-result');
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
         });
-
-        // 初始化搜索与匹配函数
-        var initSearch = function(path, search_id, content_id) {
-            'use strict';
-            $.ajax({
-                url: path,
-                dataType: "xml",
-                success: function(xmlResponse) {
-                    // get the contents from search data
-                    var datas = $("entry", xmlResponse).map(function() {
-                        return {
-                            title: $("title", this).text(),
-                            content: $("content", this).text(),
-                            url: $("url", this).text()
-                        };
-                    }).get();
-                    var $input = document.getElementById(search_id);
-                    var $resultContent = document.getElementById(content_id);
-                    $input.addEventListener('input', function() {
-                        var str = '<ul class=\"search-result-list\">';
-                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
-                        $resultContent.innerHTML = "";
-                        if (this.value.trim().length <= 0) {
-                            return;
-                        }
-                        // perform local searching
-                        datas.forEach(function(data) {
-                            var isMatch = true;
-                            var content_index = [];
-                            var data_title = data.title.trim().toLowerCase();
-                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
-                            var data_url = data.url;
-                            var index_title = -1;
-                            var index_content = -1;
-                            var first_occur = -1;
-                            // only match artiles with not empty titles and contents
-                            if (data_title != '' && data_content != '') {
-                                keywords.forEach(function(keyword, i) {
-                                    index_title = data_title.indexOf(keyword);
-                                    index_content = data_content.indexOf(keyword);
-                                    if (index_title < 0 && index_content < 0) {
-                                        isMatch = false;
-                                    } else {
-                                        if (index_content < 0) {
-                                            index_content = 0;
-                                        }
-                                        if (i == 0) {
-                                            first_occur = index_content;
-                                        }
-                                    }
-                                });
-                            }
-                            // show search results
-                            if (isMatch) {
-                                keywords.forEach(function(keyword) {
-                                    var regS = new RegExp(keyword, "gi");
-                                    data_title = data_title.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
-                                });
-
-                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
-                                var content = data.content.trim().replace(/<[^>]+>/g, "");
-                                if (first_occur >= 0) {
-                                    // cut out 100 characters
-                                    var start = first_occur - 20;
-                                    var end = first_occur + 80;
-                                    if (start < 0) {
-                                        start = 0;
-                                    }
-                                    if (start == 0) {
-                                        end = 100;
-                                    }
-                                    if (end > content.length) {
-                                        end = content.length;
-                                    }
-                                    var match_content = content.substring(start, end);
-                                    // highlight all keywords
-                                    keywords.forEach(function(keyword) {
-                                        var regS = new RegExp(keyword, "gi");
-                                        match_content = match_content.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
-                                    });
-
-                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
-                                }
-                                str += "</li>";
-                            }
-                        });
-                        str += "</ul>";
-                        $resultContent.innerHTML = str;
-                    });
-                }
-            });
-        }
-    })(jQuery);
-</script>
-
-
-<script src="/js/prettify.js"></script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $("pre").addClass("prettyprint");
-        prettyPrint();
-    });
-</script>
-
-
-<script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-68058110-1', 'auto');
-    ga('send', 'pageview');
-
-</script>
-
-
-
-<script type="text/javascript" src="http://tajs.qq.com/stats?sId=55079830" charset="UTF-8"></script>
-
-
-
-
-
-</body>
-</html>
+        lightbox.init();
+    }
+</script></main></div><script type=text/javascript src=/ts/main.f856840516f7c2ad1769a8f5937e3d08d6cb386e2cd2dd025ae696e0ff207958.js defer></script></body></html>

@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>笔记 on 土土哥的技术 Blog</title><link>https://tutuge.me/tags/%E7%AC%94%E8%AE%B0/</link><description>Recent content in 笔记 on 土土哥的技术 Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>tutuge</copyright><lastBuildDate>Wed, 11 Mar 2015 00:00:00 +0000</lastBuildDate><atom:link href="https://tutuge.me/tags/%E7%AC%94%E8%AE%B0/index.xml" rel="self" type="application/rss+xml"/><item><title>Effective-Objective-C-读书笔记-Item-4-如何正确定义常量</title><link>https://tutuge.me/2015/03/11/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-4-%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%AE%9A%E4%B9%89%E5%B8%B8%E9%87%8F/</link><pubDate>Tue, 10 Mar 2015 16:07:23 +0000</pubDate><guid>https://tutuge.me/2015/03/11/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-4-%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%AE%9A%E4%B9%89%E5%B8%B8%E9%87%8F/</guid><description>&lt;h2 id="前言"&gt;&lt;a href="#%e5%89%8d%e8%a8%80" class="header-anchor"&gt;&lt;/a&gt;前言
+&lt;/h2&gt;&lt;p&gt;写博客果然比光看书要花时间=。=，书都快看完了，才写到第4节。但是总结一遍，的确印象深刻啊~~&lt;/p&gt;
+&lt;p&gt;这次的主题是“&lt;strong&gt;常量&lt;/strong&gt;”，非常常用，又非常重要的东西~良好的代码规范、设计，少不了各种&lt;strong&gt;常量&lt;/strong&gt;。&lt;/p&gt;
+&lt;h2 id="item-4---prefer-typed-constants-to-preprocessor-define"&gt;&lt;a href="#item-4---prefer-typed-constants-to-preprocessor-define" class="header-anchor"&gt;&lt;/a&gt;Item 4 - Prefer Typed Constants to Preprocessor #define
+&lt;/h2&gt;&lt;p&gt;本节着重对比了常量的定义形式，类型常量和#define的区别、各自的特点。最后得出，我们应该用带有类型的常量，而不是#define。&lt;/p&gt;
+&lt;h2 id="一个简单的示例"&gt;&lt;a href="#%e4%b8%80%e4%b8%aa%e7%ae%80%e5%8d%95%e7%9a%84%e7%a4%ba%e4%be%8b" class="header-anchor"&gt;&lt;/a&gt;一个简单的示例
+&lt;/h2&gt;&lt;p&gt;应用中，少不了各种动画，也就少不了设定动画的时间长度，一般来说，我们会设定短、中、长几种时间常量，用于不同的场合，了解C语言的童鞋估计对“&lt;strong&gt;#define&lt;/strong&gt;”宏定义不陌生，于是，可能就会如下这么定义：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="cp"&gt;#define ANIMATION_DURATION_SHORT 0.3
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="cp"&gt;#define ANIMATION_DURATION_MIDDLE 0.6
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="cp"&gt;#define ANIMATION_DURATION_LONG 1.0
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;于是，所有用到动画时长的地方，直接用这几个宏定义就行了。&lt;/p&gt;
+&lt;p&gt;乍一看，似乎没什么问题。&lt;/p&gt;
+&lt;h3 id="类型不可变"&gt;&lt;a href="#%e7%b1%bb%e5%9e%8b%e4%b8%8d%e5%8f%af%e5%8f%98" class="header-anchor"&gt;&lt;/a&gt;类型+不可变
+&lt;/h3&gt;&lt;p&gt;先来看看宏定义干了什么。
+总的来说，#define就是“替换”，在编译时，将一切宏定义替换成定义后面的内容。（参考&lt;a class="link" href="http://baike.baidu.com/view/2076445.htm" target="_blank" rel="noopener"
+ &gt;百度百科&lt;/a&gt;）&lt;/p&gt;
+&lt;p&gt;关键在于：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;宏定义不会检查替换的“&lt;strong&gt;类型&lt;/strong&gt;”，只要遇到，就做替换。&lt;/li&gt;
+&lt;li&gt;宏定义不保证“&lt;strong&gt;不可变&lt;/strong&gt;”，因为可以&lt;strong&gt;重复定义&lt;/strong&gt;，不能保证值不变。(这个我觉得是最容易让人忽略的地方)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;所以，用宏定义定义常量，很“危险”。&lt;/p&gt;
+&lt;h2 id="正确的做法"&gt;&lt;a href="#%e6%ad%a3%e7%a1%ae%e7%9a%84%e5%81%9a%e6%b3%95" class="header-anchor"&gt;&lt;/a&gt;正确的做法
+&lt;/h2&gt;&lt;p&gt;恰当的常量，应该具备合适的常量名字、正确的类型，还有const、extern等关键字的修饰，当然，还要根据常量适用的“&lt;strong&gt;范围&lt;/strong&gt;”，做出恰当的处理。一下举例说明。&lt;/p&gt;
+&lt;h3 id="只在函数中用的常量"&gt;&lt;a href="#%e5%8f%aa%e5%9c%a8%e5%87%bd%e6%95%b0%e4%b8%ad%e7%94%a8%e7%9a%84%e5%b8%b8%e9%87%8f" class="header-anchor"&gt;&lt;/a&gt;只在函数中用的常量
+&lt;/h3&gt;&lt;p&gt;只在函数中用的常量：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;-&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="nf"&gt;runAnimation&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;//动画时间长度常量
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;NSTimeInterval&lt;/span&gt; &lt;span class="n"&gt;kAnimationDurationLong&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;1.0f&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;//...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;static、const定义了它是静态不可变的；&lt;strong&gt;NSTimeInterval&lt;/strong&gt;则“精确”指定了常量的类型。&lt;/p&gt;
+&lt;h3 id="只在一个m文件中使用的常量"&gt;&lt;a href="#%e5%8f%aa%e5%9c%a8%e4%b8%80%e4%b8%aam%e6%96%87%e4%bb%b6%e4%b8%ad%e4%bd%bf%e7%94%a8%e7%9a%84%e5%b8%b8%e9%87%8f" class="header-anchor"&gt;&lt;/a&gt;只在一个“&lt;strong&gt;.m&lt;/strong&gt;”文件中使用的常量
+&lt;/h3&gt;&lt;p&gt;在类的实现文件“xxx.m”文件中定义常量，也是很常见的。&lt;/p&gt;
+&lt;p&gt;你可能会觉得，既然是一个类使用的，那就放在类的头文件里面定义不就好了。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;但是这么想是错的=。=&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;因为所有要用到这个类的文件，都会无形当中包含了这些常量声明，将不必要的数据暴露在外面，这样是违反设计原则的，并且，如果常量名字取得不恰当，还有可能造成冲突。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;所以，应该如下:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//XXX.m
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//必须要static
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;NSTimeInterval&lt;/span&gt; &lt;span class="n"&gt;kAnimationDurationLong&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;1.0f&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;@implementation&lt;/span&gt; &lt;span class="nc"&gt;XXX&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;@end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;需要注意的点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;一定要放在.m文件中。&lt;/li&gt;
+&lt;li&gt;必须是&lt;strong&gt;static&lt;/strong&gt;，表示此常量作用域只在此.m文件中。如果不加static的话，常量就会在全局作用域中声明，可能会导致跟其他的常量冲突。&lt;/li&gt;
+&lt;li&gt;const，当然。&lt;/li&gt;
+&lt;li&gt;NSTimeInterval，确定的类型。&lt;/li&gt;
+&lt;li&gt;kAnimationDurationLong，“&lt;strong&gt;k&lt;/strong&gt;”开头的命名，也算是Apple的规范了吧，内部常量统一以“&lt;strong&gt;k&lt;/strong&gt;”开头。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="全局常量"&gt;&lt;a href="#%e5%85%a8%e5%b1%80%e5%b8%b8%e9%87%8f" class="header-anchor"&gt;&lt;/a&gt;全局常量
+&lt;/h3&gt;&lt;p&gt;一般来说，最常见的全局常量就是发广播Notification时用的Notification的名字，往往都是一些字符串，下面就以这个为例子：&lt;/p&gt;
+&lt;p&gt;假设我们的类叫“&lt;strong&gt;TTGClass&lt;/strong&gt;”，我们的类会向外发送Notification，所以需要定义一个Notification的名字常量供外界注册，如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//TTGClass.h
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;extern&lt;/span&gt; &lt;span class="n"&gt;NSString&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;TTGClassWorkBeginNotification&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//TTGClass.m
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;NSString&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;TTGClassWorkBeginNotification&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;@&amp;#34;TTGClassWorkBeginNotification&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;关键：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;头文件中只是做声明，不做定义。所以用extern表示常量在别处定义的，尽量隐藏细节。&lt;/li&gt;
+&lt;li&gt;同&lt;strong&gt;类名&lt;/strong&gt;做常量名字的开头，&lt;strong&gt;这个非常关键，因为Objective-C里面没有像Java那样的“包”机制，所以必须靠命名来划分不同的类，常量当然也要遵循这个规则。&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;NSString，确定的类型；const，表明常量；Notification后缀，表明用途。这些都是需要注意的。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="总结"&gt;&lt;a href="#%e6%80%bb%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;总结
+&lt;/h2&gt;&lt;p&gt;良好的代码，总是少不了定义各种常量，以避免“魔鬼数字、魔鬼字符串”。所以我们应该尽量避免少用#define定义常量，而是用带有类型的、const的常量，并且尽可能的缩小常量的作用域。&lt;/p&gt;
+&lt;p&gt;暴露的细节越少，出错的机会也就越小（忘了从哪里看到的=。=）&lt;/p&gt;</description></item><item><title>Effective-Objective-C-读书笔记-Item-3</title><link>https://tutuge.me/2015/02/14/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-3/</link><pubDate>Sat, 14 Feb 2015 08:51:51 +0000</pubDate><guid>https://tutuge.me/2015/02/14/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-3/</guid><description>&lt;h2 id="前言"&gt;&lt;a href="#%e5%89%8d%e8%a8%80" class="header-anchor"&gt;&lt;/a&gt;前言
+&lt;/h2&gt;&lt;p&gt;item 3讲的是Objective-C里面的“字面量语法”-“Literal Syntax”，个人觉得非常有用。&lt;/p&gt;
+&lt;h2 id="item-3---prefer-literal-syntax-over-the-equivalent-methods"&gt;&lt;a href="#item-3---prefer-literal-syntax-over-the-equivalent-methods" class="header-anchor"&gt;&lt;/a&gt;Item 3 - Prefer Literal Syntax over the Equivalent Methods
+&lt;/h2&gt;&lt;p&gt;本节讲了Objective-C中的“字面量语法”，并且建议我们更多的使用这种语法，而不是使用传统的等价的函数方法。&lt;/p&gt;
+&lt;h2 id="引子"&gt;&lt;a href="#%e5%bc%95%e5%ad%90" class="header-anchor"&gt;&lt;/a&gt;引子
+&lt;/h2&gt;&lt;p&gt;当我们使用Objective-C编程的时候，总会经常使用到几种Foundation框架中的基本类，如NSString、NSNumber、NSArray、NSDictionary，或者是它们的子类。例如，当我们想创建一个字符串的时候，会这么写：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-armasm" data-lang="armasm"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;NSString &lt;span class="err"&gt;*str&lt;/span&gt; &lt;span class="err"&gt;=&lt;/span&gt; &lt;span class="c1"&gt;@&amp;#34;a string&amp;#34;;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;不知道各位写这句的时候有没有觉得奇怪？为什么不用先“alloc”，再“initWithXXX”这么来创建呢。是的，这里创建字符串，就用到了Objective-C提供的“字面量语法”-“Literal Syntax”，而这种语法的“标志”就是“@”符号。
+有了字面量语法，我们就不用每次创建一些基本类型的时候，写一大堆alloc、init了。&lt;/p&gt;
+&lt;h2 id="nsnumber"&gt;&lt;a href="#nsnumber" class="header-anchor"&gt;&lt;/a&gt;NSNumber
+&lt;/h2&gt;&lt;p&gt;字符串可以用字面量语法创建，数字类NSNumber肯定也可以，如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;NSNumber&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;intNum&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;@1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;NSNumber&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;floatNum&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;@1.1f&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;NSNumber&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;doubleNum&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;@1.1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;NSNumber&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;boolNum&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;@YES&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;NSNumber&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;charNum&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sc"&gt;@&amp;#39;a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//不用字面量语法
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;NSNumber&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;intNumber&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[[&lt;/span&gt;&lt;span class="n"&gt;NSNumber&lt;/span&gt; &lt;span class="n"&gt;alloc&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="nl"&gt;initWithInt&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;看，是不是很方便~&lt;/p&gt;
+&lt;h2 id="nsarray"&gt;&lt;a href="#nsarray" class="header-anchor"&gt;&lt;/a&gt;NSArray
+&lt;/h2&gt;&lt;h3 id="创建"&gt;&lt;a href="#%e5%88%9b%e5%bb%ba" class="header-anchor"&gt;&lt;/a&gt;创建
+&lt;/h3&gt;&lt;p&gt;数组算是最常用的一种数据结构了，如果没有字面量语法，创建数组可能是这样：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-elixir" data-lang="elixir"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nc"&gt;NSArray&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;numbers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[[&lt;/span&gt;&lt;span class="nc"&gt;NSArray&lt;/span&gt; &lt;span class="n"&gt;alloc&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="n"&gt;initWithObjects&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="err"&gt;@&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="err"&gt;@&lt;/span&gt;&lt;span class="mf"&gt;1.1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="err"&gt;@&lt;/span&gt;&lt;span class="mf"&gt;2.0&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="err"&gt;@&lt;/span&gt;&lt;span class="nc"&gt;YES&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="no"&gt;nil&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;用字面量语法的话，就是这样：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-autoit" data-lang="autoit"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;NSArray&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;numbers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;@&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;@1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;@1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;@2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;@YES&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="c1"&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="存取值"&gt;&lt;a href="#%e5%ad%98%e5%8f%96%e5%80%bc" class="header-anchor"&gt;&lt;/a&gt;存取值
+&lt;/h3&gt;&lt;p&gt;创建了数组，肯定要从数组里面取值，用NSArray的方法就是这样：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;//取
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;NSNumber *aNumber = [numbers objectAtIndex:2];
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;//存
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;NSMutableArray *mutableArray = [[NSMutableArray alloc] initWithArray:@[@1, @2, @3]];
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;[mutableArray replaceObjectAtIndex:1 withObject:@4];
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;跟C语言、Java这些语法很不一样啊，人家都是通过中括号“[]”直接用下标取值就可以。有了字面量同语法，Objective-C也可以这样:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;//取
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;NSNumber *aNumber = numbers[2];
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;//存
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;NSMutableArray *mutableArray = [[NSMutableArray alloc] initWithArray:@[@1, @2, @3]];
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;mutableArray[1] = @4;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="要注意的地方"&gt;&lt;a href="#%e8%a6%81%e6%b3%a8%e6%84%8f%e7%9a%84%e5%9c%b0%e6%96%b9" class="header-anchor"&gt;&lt;/a&gt;要注意的地方
+&lt;/h3&gt;&lt;p&gt;传统的通过“initWithObjects”方法创建数组的时候，是根据最后的“nil”判断数组是否结束的，也就是说，用于初始化数组的元素中有“nil”值也不会导致异常（Exception），如下语句：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;NSNumber&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;number1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;@1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;NSNumber&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;number2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;nil&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;//空指针
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;NSNumber&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;number3&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;@3&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//创建
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;NSArray&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;numbers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[[&lt;/span&gt;&lt;span class="n"&gt;NSArray&lt;/span&gt; &lt;span class="n"&gt;alloc&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="nl"&gt;initWithObjects&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;number1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;number2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;number3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;nil&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//输出为1，因为number2，创建到number2就截止了
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;NSLog&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;@&amp;#34;numbers count: %d&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;numbers&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;count&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;但是，如果用字面量语法创建，就是出问题：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;NSNumber&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;number1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;@1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;NSNumber&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;number2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;nil&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;NSNumber&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;number3&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;@3&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//创建出现异常！！！
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;NSArray&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;numbers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="l"&gt;@[&lt;/span&gt;&lt;span class="n"&gt;number1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;number2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;number3&lt;/span&gt;&lt;span class="l"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;NSLog&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;@&amp;#34;numbers count: %d&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;numbers&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;count&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;因为字面量语法只是单纯的将中括号中的元素全部加到数组中，但是，Objective-C中的数组是不可以存放nil值的，所以程序会运行时抛出异常。&lt;/p&gt;
+&lt;h2 id="nsdictionary"&gt;&lt;a href="#nsdictionary" class="header-anchor"&gt;&lt;/a&gt;NSDictionary
+&lt;/h2&gt;&lt;h3 id="创建-1"&gt;&lt;a href="#%e5%88%9b%e5%bb%ba-1" class="header-anchor"&gt;&lt;/a&gt;创建
+&lt;/h3&gt;&lt;p&gt;如果不用字面量语法创建字典，传统的创建函数简直令人匪夷所思：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// number1-&amp;gt;@1
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// number2-&amp;gt;@2
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;NSDictionary&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;dict&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[[&lt;/span&gt;&lt;span class="n"&gt;NSDictionary&lt;/span&gt; &lt;span class="n"&gt;alloc&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="nl"&gt;initWithObjectsAndKeys&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;@1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;@&amp;#34;number1&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;@2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;@&amp;#34;number2&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;nil&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;是不是很奇怪，&lt;strong&gt;value在前面，key在后面&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;所以，还是用新的语法吧：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-gherkin" data-lang="gherkin"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nf"&gt;NSDictionary *dict = &lt;/span&gt;&lt;span class="nt"&gt;@{@&amp;#34;number1&amp;#34;&lt;/span&gt;&lt;span class="nf"&gt; : &lt;/span&gt;&lt;span class="nt"&gt;@1,&lt;/span&gt;&lt;span class="nf"&gt; &lt;/span&gt;&lt;span class="nt"&gt;@&amp;#34;number2&amp;#34;&lt;/span&gt;&lt;span class="nf"&gt; : &lt;/span&gt;&lt;span class="nt"&gt;@2};&lt;/span&gt;&lt;span class="nf"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这样才符合“常识”嘛，key在前，value在后面，跟JSON的定义一样。&lt;/p&gt;
+&lt;h3 id="存取值-1"&gt;&lt;a href="#%e5%ad%98%e5%8f%96%e5%80%bc-1" class="header-anchor"&gt;&lt;/a&gt;存取值
+&lt;/h3&gt;&lt;p&gt;取值的语法跟NSArray的语法很想，只不过是将下标数字变成了key：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-groovy" data-lang="groovy"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//传统
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;NSNumber&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;number1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;dict&lt;/span&gt; &lt;span class="nl"&gt;objectForKey:&lt;/span&gt;&lt;span class="err"&gt;@&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;number1&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;];&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;dict&lt;/span&gt; &lt;span class="nl"&gt;setValue:&lt;/span&gt;&lt;span class="err"&gt;@&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt; &lt;span class="nl"&gt;forKey:&lt;/span&gt;&lt;span class="err"&gt;@&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;number1&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;];&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//字面量语法
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;NSNumber&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;number2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;dict&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="err"&gt;@&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;number1&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;];&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;dict&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="err"&gt;@&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;number1&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="err"&gt;@&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="注意"&gt;&lt;a href="#%e6%b3%a8%e6%84%8f" class="header-anchor"&gt;&lt;/a&gt;注意
+&lt;/h3&gt;&lt;p&gt;需要注意的地方，跟创建数组一样，NSDictionary的value不能为nil值，否则会抛出异常。&lt;/p&gt;
+&lt;h2 id="总结"&gt;&lt;a href="#%e6%80%bb%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;总结
+&lt;/h2&gt;&lt;p&gt;总的来说，使用字面量语法可以让代码更加清晰、简单，毕竟，更少的代码，有时候意味着更少的错误。&lt;/p&gt;</description></item><item><title>Effective-Objective-C-读书笔记-Item-2</title><link>https://tutuge.me/2015/02/06/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-2/</link><pubDate>Fri, 06 Feb 2015 08:43:46 +0000</pubDate><guid>https://tutuge.me/2015/02/06/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-2/</guid><description>&lt;h2 id="前言"&gt;&lt;a href="#%e5%89%8d%e8%a8%80" class="header-anchor"&gt;&lt;/a&gt;前言
+&lt;/h2&gt;&lt;p&gt;第二弹来了。&lt;/p&gt;
+&lt;h2 id="item-2---minimize-importing-headers-in-headers"&gt;&lt;a href="#item-2---minimize-importing-headers-in-headers" class="header-anchor"&gt;&lt;/a&gt;Item 2 - Minimize Importing Headers in Headers
+&lt;/h2&gt;&lt;p&gt;这一节讲的是尽量在一个头文件中减少其它头文件的引入。&lt;/p&gt;
+&lt;h2 id="头文件"&gt;&lt;a href="#%e5%a4%b4%e6%96%87%e4%bb%b6" class="header-anchor"&gt;&lt;/a&gt;头文件
+&lt;/h2&gt;&lt;p&gt;Objective-C和C语言、C++很像，都将类的实现与声明分开，用.h后缀名文件表示声明文件，用.m文件实现类。当要用到这个类的时候，只需要引入头文件即可，至于编译器、运行时是如何知道头文件里面的类对应的实现在哪里，在这了不做说明。一下用例子说明，先看看下面的类：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//Wheel.h
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="cp"&gt;#import &amp;lt;Foundation/Foundation.h&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//车轮类
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;@interface&lt;/span&gt; &lt;span class="nc"&gt;Wheel&lt;/span&gt; : &lt;span class="nc"&gt;NSObject&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;@property&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;copy&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;nonatomic&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;NSString&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;manufacturer&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;@property&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;assign&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;nonatomic&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;NSUInteger&lt;/span&gt; &lt;span class="n"&gt;radius&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;@end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;第二个类&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//Engine.h
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="cp"&gt;#import &amp;lt;Foundation/Foundation.h&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//发动机类
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;@interface&lt;/span&gt; &lt;span class="nc"&gt;Engine&lt;/span&gt; : &lt;span class="nc"&gt;NSObject&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;@property&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;copy&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;nonatomic&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;NSString&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;manufacturer&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;@property&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;assign&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;nonatomic&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;NSUInteger&lt;/span&gt; &lt;span class="n"&gt;power&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;@end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;然后就是车类Car：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//Car.h
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="cp"&gt;#import &amp;lt;Foundation/Foundation.h&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//汽车类，只有一个轮子，不要奇怪=。=
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;@interface&lt;/span&gt; &lt;span class="nc"&gt;Car&lt;/span&gt; : &lt;span class="nc"&gt;NSObject&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;@property&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;strong&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;nonatomic&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;Wheel&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;wheel&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;@property&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;strong&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;nonatomic&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;Engine&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;engine&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;@end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;注意到少了什么东西没有？
+是的，写过C语言、C++的童鞋一下就能发现，Car类没有引入Engine和Wheel的头文件，肯定会编译出错的，因为编译器不知道Engine、Wheel类是啥。
+那好，我们加上下面两行：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;#import &amp;#34;Wheel.h&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;#import &amp;#34;Engine.h&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;嗯。这样就不会出错了。但是这样真的好吗？Objective-C给我们提供了@class关键字，就是来解决这个问题的。&lt;/p&gt;
+&lt;h2 id="前置声明forward-declaration"&gt;&lt;a href="#%e5%89%8d%e7%bd%ae%e5%a3%b0%e6%98%8eforward-declaration" class="header-anchor"&gt;&lt;/a&gt;前置声明（forward declaration）
+&lt;/h2&gt;&lt;p&gt;何为前置声明？看看下面的Car类的头文件例子。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//Car.h
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="cp"&gt;#import &amp;lt;Foundation/Foundation.h&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//前置声明
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;@class&lt;/span&gt; &lt;span class="nc"&gt;Wheel&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;@class&lt;/span&gt; &lt;span class="nc"&gt;Engine&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;@interface&lt;/span&gt; &lt;span class="nc"&gt;Car&lt;/span&gt; : &lt;span class="nc"&gt;NSObject&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;@property&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;strong&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;nonatomic&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;Wheel&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;wheel&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;@property&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;strong&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;nonatomic&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;Engine&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;engine&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;@end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;@class就是类的前置声明（forward declaration），就是告诉编译器“嗨，不用找了，Wheel类和Engine类是肯定存在的，用到的时候再找”。有了前置声明，我们就不用显式的引入Wheel类和Engine类了。&lt;/p&gt;
+&lt;p&gt;当然，在Car类的实现文件.m文件中，我们还是要显式的引入Wheel和Engine类的，因为在这里我们要具体用到这两个类了，当然要知道类的细节。&lt;/p&gt;
+&lt;h3 id="为何不要import"&gt;&lt;a href="#%e4%b8%ba%e4%bd%95%e4%b8%8d%e8%a6%81import" class="header-anchor"&gt;&lt;/a&gt;为何不要import？
+&lt;/h3&gt;&lt;p&gt;为什么不直接import呢？因为如果直接用import引入Wheel和Engine的声明，那么任何import引入了Car类的文件，也同时会引入Wheel、Engine类的声明，而且最终我们可能并不一定会直接跟Wheel、Engine类打交道，这样不就引入了“没有用”的类了吗？而且这样做很可能造成文件引入成“环”。&lt;/p&gt;
+&lt;p&gt;虽然import可以避免重复声明造成编译出错，传统的C语言、C++在声明的时候也可以通过如下方式避免重复声明：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="cp"&gt;#ifndef _WHEEL_H_
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="cp"&gt;#define _WHEEL_H_
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//声明内容...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="cp"&gt;#endif
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;但是既然Objective-C有@class这种前置声明的办法，为何不用呢。&lt;/p&gt;
+&lt;h2 id="必须用import的时候"&gt;&lt;a href="#%e5%bf%85%e9%a1%bb%e7%94%a8import%e7%9a%84%e6%97%b6%e5%80%99" class="header-anchor"&gt;&lt;/a&gt;必须用import的时候
+&lt;/h2&gt;&lt;p&gt;当然，@class这样的前置声明并不能解决一切头文件引入的问题，如下这样的类，就必须要用import：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="cp"&gt;#import &amp;lt;Foundation/Foundation.h&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//Car 的声明
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="cp"&gt;#import &amp;#34;Car.h&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//Driver protocol的定义
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="cp"&gt;#import &amp;#34;Driver.h&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;@interface&lt;/span&gt; &lt;span class="nc"&gt;BigCar&lt;/span&gt; : &lt;span class="nc"&gt;Car&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Driver&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;@end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;是的，当类需要被继承、定义的protocol需要实现的时候，就需要import相关的头文件了（protocol的实现如果跟类的使用者没有关联，可以定义在类的实现文件中的“扩展category”中）,当然，还有@protocol这样的protocol的前置声明，怎么用就留给读者自己查阅相关资料了。&lt;/p&gt;
+&lt;h2 id="总结"&gt;&lt;a href="#%e6%80%bb%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;总结
+&lt;/h2&gt;&lt;p&gt;大费周章的讲了这么多，其实目的就是一个：尽量少在头文件里面引入其他头文件。&lt;/p&gt;
+&lt;p&gt;最终的目的就是&lt;strong&gt;只暴露最少的细节&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;写代码有段时间了，一直都在琢磨这句话，希望读者也能好好体会~&lt;/p&gt;</description></item><item><title>Effective-Objective-C-读书笔记-Item-1</title><link>https://tutuge.me/2015/02/05/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-1/</link><pubDate>Wed, 04 Feb 2015 17:17:08 +0000</pubDate><guid>https://tutuge.me/2015/02/05/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-1/</guid><description>&lt;img src="https://tutuge.me/assets/2015/02/05/Effective-Objective-C-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-Item-1/blog_effective_objective_c_item_1_1.jpg" alt="Featured image of post Effective-Objective-C-读书笔记-Item-1" /&gt;&lt;h2 id="前言"&gt;&lt;a href="#%e5%89%8d%e8%a8%80" class="header-anchor"&gt;&lt;/a&gt;前言
+&lt;/h2&gt;&lt;p&gt;一直都在做项目，没什么时间作总结，感觉很不是滋味。现在放假了，嗯，终于有时间了~~哈哈（天生程序猿一枚好不好=。=）
+最近开始读英文版的Effective Objective-C 2.0，觉得不错，就总结些东西，分享给各位读者吧。&lt;/p&gt;
+&lt;h2 id="item-1---familiarize-yourself-with-objective-cs-roots"&gt;&lt;a href="#item-1---familiarize-yourself-with-objective-cs-roots" class="header-anchor"&gt;&lt;/a&gt;Item 1 - Familiarize Yourself with Objective-C’s Roots
+&lt;/h2&gt;&lt;p&gt;第一章的目的，就是让大家熟悉Objective-C，自然，标题的意思也就是“了解Objective-C的基本概念”，不多说，开写。&lt;/p&gt;
+&lt;h2 id="消息与运行时"&gt;&lt;a href="#%e6%b6%88%e6%81%af%e4%b8%8e%e8%bf%90%e8%a1%8c%e6%97%b6" class="header-anchor"&gt;&lt;/a&gt;消息与运行时
+&lt;/h2&gt;&lt;p&gt;总的来说，Objective-C跟C++、Java这些面向对象的语言是非常相似的，但是还是有许多不同的地方。如果你是第一次看到Objective-C的语法，一定觉得非常奇怪，因为Objective-C使用的是基于消息（Message）的框架，而不是传统的方法、函数调用。如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-haxe" data-lang="haxe"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//Objective-C&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;Person&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;person&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;Person&lt;/span&gt; &lt;span class="err"&gt;new&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;person&lt;/span&gt; &lt;span class="err"&gt;setName:@&amp;#34;tutuge&amp;#34;&lt;/span&gt; &lt;span class="err"&gt;age:24&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//Java&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;Person&lt;/span&gt; &lt;span class="n"&gt;person&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;Person&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;person&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;setNameAndAge&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;tutuge&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;24&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//C++&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;Person&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;person&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;Person&lt;/span&gt;&lt;span class="err"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt;person-&amp;gt;setNameAndAge&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;tutuge&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;24&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;很奇怪是不是，各种中括号。但是我觉得，Objective—C这么设计就是为了时刻提醒你，“我是基于消息机制的！”。消息，的确是Objective-C与Java、C++这种语言最大的不同，而且，这种不同远不止在语法上面。简单来说如下两点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;基于消息的调用：&lt;/strong&gt; 所有的函数调用都是在“运行时”决定的。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;基于方法的调用：&lt;/strong&gt; 所有的函数调用都是在“编译时”决定的，就是编译器编译时决定的。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;其实，连被调方法的对象类型，都是在运行时决定的。所以说，Objective-C的运行时系统，担负了绝大部分的工作。这么设计的优点，举个例子，就是当运行时系统升级时，原有的代码不用重新编译即可“享受”升级带来的好处。&lt;/p&gt;
+&lt;h2 id="c的超集"&gt;&lt;a href="#c%e7%9a%84%e8%b6%85%e9%9b%86" class="header-anchor"&gt;&lt;/a&gt;C的超集
+&lt;/h2&gt;&lt;p&gt;Objective-C是C语言的超集，所以C语言所具有的一切特性，Objective-C都可以兼容，充分理解C语言的内存模型，对理解Objective-C很有帮助。如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-armasm" data-lang="armasm"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;NSString &lt;span class="err"&gt;*str&lt;/span&gt; &lt;span class="err"&gt;=&lt;/span&gt; &lt;span class="c1"&gt;@&amp;#34;a string&amp;#34;;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这一行代码跟C语言没有什么不同，（忽略@符号=。=），原理跟C语言也是一致的，就是str指针是NSString类型的指针，指向了一块存着字符串“a string”的内存区域。不同的是，在Objective-C里，所有的对象只可以声明为指针类型，所以如下代码是不合理的：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-abnf" data-lang="abnf"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nc"&gt;NSString&lt;/span&gt; &lt;span class="nc"&gt;str&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;为了更充分的理解，咱们看看如下例子：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-armasm" data-lang="armasm"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;NSString &lt;span class="err"&gt;*st&lt;/span&gt;&lt;span class="nc"&gt;r1&lt;/span&gt; &lt;span class="err"&gt;=&lt;/span&gt; &lt;span class="c1"&gt;@&amp;#34;a string&amp;#34;;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;NSString &lt;span class="err"&gt;*st&lt;/span&gt;&lt;span class="nc"&gt;r2&lt;/span&gt; &lt;span class="err"&gt;=&lt;/span&gt; &lt;span class="err"&gt;st&lt;/span&gt;&lt;span class="nc"&gt;r1&lt;/span&gt;&lt;span class="c1"&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;熟悉C语言的朋友应该知道这是怎么回事，内存当中只有一块区域储存着“a string”这个字符串，str1、str2都是指向着这个区域的字符串指针。如下图：&lt;/p&gt;
+&lt;p&gt;&lt;img alt="image" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/02/05/Effective-Objective-C-读书笔记-Item-1/blog_effective_objective_c_item_1_1.jpg"&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;str1、str2都在栈内存上分配的，就是字符串（NSString）类型的指针。&lt;/li&gt;
+&lt;li&gt;“a string”字符串实际储存在堆内存上。&lt;/li&gt;
+&lt;li&gt;str1、str2均指向同一块内存区域。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;此处的栈内存、堆内存跟C语言中的概念也是一样的，不同的是，在Objective-C中，我们不用手动去malloc、free内存，Objective-C使用内存计数计数帮我们管理内存。&lt;/p&gt;
+&lt;h2 id="结构体基本类型"&gt;&lt;a href="#%e7%bb%93%e6%9e%84%e4%bd%93%e5%9f%ba%e6%9c%ac%e7%b1%bb%e5%9e%8b" class="header-anchor"&gt;&lt;/a&gt;结构体，基本类型
+&lt;/h2&gt;&lt;p&gt;在Objective-C中，并不是所有的变量都是指针类型的，像int、float、double这些依旧是传统的“栈上分配”的，当然，还有结构体struct、枚举enum、联合union等。如：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;CGPoint point = CGPointMake(10, 10);
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;CGRect frame = CGRectMake(0, 0, 10, 10);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这的CGPoint、CGRect都是结构体，但是都是直接在栈上分配内存的，以减少过度使用Objective-C类型的类（减少运行时的压力），各位读者使用的时候要注意。&lt;/p&gt;
+&lt;h2 id="总结"&gt;&lt;a href="#%e6%80%bb%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;总结
+&lt;/h2&gt;&lt;p&gt;零散的说了一些Objective-C的特点，远远不足以讲明白Objective-C，我这只是根据Effective Objective-C这本书给个引子，还是推荐Apple的官方教程、文档，要想掌握扎实，还是要一步一步来~&lt;/p&gt;</description></item></channel></rss>

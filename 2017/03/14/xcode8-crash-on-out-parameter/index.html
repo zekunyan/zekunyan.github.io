@@ -1,674 +1,100 @@
-<!DOCTYPE HTML>
-<html>
-<head><meta name="generator" content="Hexo 3.9.0">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="更新 在最新的Xcode 9 Beta版本中，此Bug已被苹果修复：Bug ID 30530580: Crash on “Release” Build Configuration scheme setting for Out Parameters code 二级指针 二级指针，也叫指针的指针，或者Out Parameters，可以用来改变一个指针的地址值，由于在Objective-C里面方法、函数不支持返回多个值，所以经常用二级指针实现这个功能，比如NSFileManager的- (BOOL)removeItemAtURL:(NSURL *)URL error:(NSError **)error方法，就可以让方法在内部创建error后传出。\n"><title>反编译分析Xcode8的Bug, release下连续两次调用有二级指针参数的空方法会Crash</title><link rel=canonical href=https://tutuge.me/2017/03/14/xcode8-crash-on-out-parameter/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=preload as=style href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href=/scss/style.min.e62e09c60ba428a627e03568fa3df938f6a8224f815b5846f00816c17d4a0be4.css><meta property='og:title' content="反编译分析Xcode8的Bug, release下连续两次调用有二级指针参数的空方法会Crash"><meta property='og:description' content="更新 在最新的Xcode 9 Beta版本中，此Bug已被苹果修复：Bug ID 30530580: Crash on “Release” Build Configuration scheme setting for Out Parameters code 二级指针 二级指针，也叫指针的指针，或者Out Parameters，可以用来改变一个指针的地址值，由于在Objective-C里面方法、函数不支持返回多个值，所以经常用二级指针实现这个功能，比如NSFileManager的- (BOOL)removeItemAtURL:(NSURL *)URL error:(NSError **)error方法，就可以让方法在内部创建error后传出。\n"><meta property='og:url' content='https://tutuge.me/2017/03/14/xcode8-crash-on-out-parameter/'><meta property='og:site_name' content='土土哥的技术 Blog'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='原创'><meta property='article:tag' content='iOS'><meta property='article:published_time' content='2017-03-14T00:00:00+00:00'><meta property='article:modified_time' content='2017-03-14T00:00:00+00:00'><meta property='og:image' content='https://tutuge.me/assets/2017/03/14/xcode8-crash-on-out-parameter/xcode8_crash_on_out_parameter_1.jpg'><meta name=twitter:title content="反编译分析Xcode8的Bug, release下连续两次调用有二级指针参数的空方法会Crash"><meta name=twitter:description content="更新 在最新的Xcode 9 Beta版本中，此Bug已被苹果修复：Bug ID 30530580: Crash on “Release” Build Configuration scheme setting for Out Parameters code 二级指针 二级指针，也叫指针的指针，或者Out Parameters，可以用来改变一个指针的地址值，由于在Objective-C里面方法、函数不支持返回多个值，所以经常用二级指针实现这个功能，比如NSFileManager的- (BOOL)removeItemAtURL:(NSURL *)URL error:(NSError **)error方法，就可以让方法在内部创建error后传出。\n"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://tutuge.me/assets/2017/03/14/xcode8-crash-on-out-parameter/xcode8_crash_on_out_parameter_1.jpg'><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar.png width height class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>土土哥的技术 Blog</a></h1><h2 class=site-description>AI / iOS / Android / Flutter / Open Source</h2></div></header><ol class=menu-social><li><a href=https://github.com/zekunyan title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>首页</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav class=toc-nav id=TableOfContents><ul><li><a href=#更新>更新</a></li><li><a href=#二级指针>二级指针</a></li><li><a href=#问题>问题</a></li><li><a href=#分析>分析</a><ul><li><a href=#源码分析>源码分析</a></li><li><a href=#clang--rewrite-objc分析>clang -rewrite-objc分析</a></li><li><a href=#hopper-disassembler反编译分析>Hopper Disassembler反编译分析</a></li><li><a href=#对比xcode7>对比Xcode7</a></li></ul></li><li><a href=#问题原因小结>问题原因小结</a></li><li><a href=#总结>总结</a></li></ul></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/2017/03/14/xcode8-crash-on-out-parameter/><img alt="Featured image of post 反编译分析Xcode8的Bug, release下连续两次调用有二级指针参数的空方法会Crash" loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2017/03/14/xcode8-crash-on-out-parameter/xcode8_crash_on_out_parameter_1.jpg></a></div><div class=article-details><header class=article-category><a href=/categories/ios/ style=background-color:#efbeed;color:#3d0f3c>IOS</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/2017/03/14/xcode8-crash-on-out-parameter/>反编译分析Xcode8的Bug, release下连续两次调用有二级指针参数的空方法会Crash</a></h2></div><footer class=article-meta><div class=inline-meta><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2017-03-14T00:00:00Z>2017-03-14</time>
+<svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 5 分钟</time></div></footer></div></header><aside class=article-toc><details><summary><div class=article-toc-title><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6-6 6"/></svg>
+<span>目录</span></div></summary><nav class=toc-nav><ul><li><a href=#更新>更新</a></li><li><a href=#二级指针>二级指针</a></li><li><a href=#问题>问题</a></li><li><a href=#分析>分析</a><ul><li><a href=#源码分析>源码分析</a></li><li><a href=#clang--rewrite-objc分析>clang -rewrite-objc分析</a></li><li><a href=#hopper-disassembler反编译分析>Hopper Disassembler反编译分析</a></li><li><a href=#对比xcode7>对比Xcode7</a></li></ul></li><li><a href=#问题原因小结>问题原因小结</a></li><li><a href=#总结>总结</a></li></ul></nav></details></aside><section class=article-content><h2 id=更新><a href=#%e6%9b%b4%e6%96%b0 class=header-anchor></a>更新</h2><ul><li>在最新的Xcode 9 Beta版本中，此Bug已被苹果修复：<strong>Bug ID 30530580: Crash on “Release” Build Configuration scheme setting for Out Parameters code</strong></li></ul><h2 id=二级指针><a href=#%e4%ba%8c%e7%ba%a7%e6%8c%87%e9%92%88 class=header-anchor></a>二级指针</h2><p>二级指针，也叫指针的指针，或者Out Parameters，可以用来改变一个指针的地址值，由于在Objective-C里面方法、函数不支持返回多个值，所以经常用二级指针实现这个功能，比如<code>NSFileManager</code>的<code>- (BOOL)removeItemAtURL:(NSURL *)URL error:(NSError **)error</code>方法，就可以让方法在内部创建error后传出。</p><h2 id=问题><a href=#%e9%97%ae%e9%a2%98 class=header-anchor></a>问题</h2><p>最近在Debug代码的时候，注释掉了一个带有二级指针参数的方法内部所有代码，然后在Release环境下安装运行，结果居然Crash了，猛然想起好像以前同事也遇到过，仔细检查了下，感觉代码是没有问题的，所以继续深究，新建了一个空的工程，重现了这个EXC_BAD_ACCESS的Crash，代码非常简单，如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=c1>// main.m
+</span></span></span><span class=line><span class=cl><span class=cp>#import &lt;Foundation/Foundation.h&gt;
+</span></span></span><span class=line><span class=cl><span class=cp>#import &lt;CoreFoundation/CoreFoundation.h&gt;
+</span></span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>@interface</span> <span class=nc>TestClass</span> : <span class=nc>NSObject</span>
+</span></span><span class=line><span class=cl><span class=k>@end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>@implementation</span> <span class=nc>TestClass</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>+</span> <span class=p>(</span><span class=kt>void</span><span class=p>)</span><span class=nf>runTest</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>NSMutableArray</span> <span class=o>*</span><span class=n>array</span> <span class=o>=</span> <span class=p>[</span><span class=n>NSMutableArray</span> <span class=n>new</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=n>TestClass</span> <span class=nl>testFunc</span><span class=p>:</span><span class=o>&amp;</span><span class=n>array</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=n>TestClass</span> <span class=nl>testFunc</span><span class=p>:</span><span class=o>&amp;</span><span class=n>array</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=n>NSLog</span><span class=p>(</span><span class=s>@&#34;array: %@&#34;</span><span class=p>,</span> <span class=n>array</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>+</span> <span class=p>(</span><span class=kt>void</span><span class=p>)</span><span class=nf>testFunc:</span><span class=p>(</span><span class=n>NSMutableArray</span> <span class=o>**</span><span class=p>)</span><span class=nv>array</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>@end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=n>main</span><span class=p>(</span><span class=kt>int</span> <span class=n>argc</span><span class=p>,</span> <span class=k>const</span> <span class=kt>char</span> <span class=o>*</span> <span class=n>argv</span><span class=p>[])</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>@autoreleasepool</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=p>[</span><span class=n>TestClass</span> <span class=n>runTest</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>经测试，在Xcode 8.0、以及最新的8.2.1稳定版下，Release环境中，都会Crash，放到iOS工程里面，模拟器、真机也会。但是，在Xcode7下就没有问题。</p><h2 id=分析><a href=#%e5%88%86%e6%9e%90 class=header-anchor></a>分析</h2><h3 id=源码分析><a href=#%e6%ba%90%e7%a0%81%e5%88%86%e6%9e%90 class=header-anchor></a>源码分析</h3><p>首先，从代码本身上来看，是没有问题的，带有二级指针的方法<code>testFunc:</code>是空的方法，虽然传进来了<code>NSMutableArray **array</code>，但是没有对其赋值。</p><p><code>runTest</code>方法也只是创建了一个<code>NSMutableArray</code>对象，然后取了指针的指针，调用了两次<code>testFunc:</code>，然后打印，按理来说是没有任何副作用的。</p><p>所以，直接从代码上看，发现不了问题的原因。</p><h3 id=clang--rewrite-objc分析><a href=#clang--rewrite-objc%e5%88%86%e6%9e%90 class=header-anchor></a>clang -rewrite-objc分析</h3><p>直接看代码没有用，那就用clang重写出C++代码分析，命令行对<code>main.m</code>执行<code>clang -rewrite-objc main.m</code>，得到C++重写后的代码，在文件的最后，就能找到<code>testFunc:</code>和<code>runTest</code>的C++代码，如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=c1>// runTest的C++代码
+</span></span></span><span class=line><span class=cl><span class=k>static</span> <span class=kt>void</span> <span class=nf>_C_TestClass_runTest</span><span class=p>(</span><span class=kt>Class</span> <span class=nb>self</span><span class=p>,</span> <span class=kt>SEL</span> <span class=n>_cmd</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>NSMutableArray</span> <span class=o>*</span><span class=n>array</span> <span class=o>=</span> <span class=p>((</span><span class=n>NSMutableArray</span> <span class=o>*</span><span class=p>(</span><span class=o>*</span><span class=p>)(</span><span class=kt>id</span><span class=p>,</span> <span class=kt>SEL</span><span class=p>))(</span><span class=kt>void</span> <span class=o>*</span><span class=p>)</span><span class=n>objc_msgSend</span><span class=p>)((</span><span class=kt>id</span><span class=p>)</span><span class=n>objc_getClass</span><span class=p>(</span><span class=s>&#34;NSMutableArray&#34;</span><span class=p>),</span> <span class=n>sel_registerName</span><span class=p>(</span><span class=s>&#34;new&#34;</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=p>((</span><span class=kt>void</span> <span class=p>(</span><span class=o>*</span><span class=p>)(</span><span class=kt>id</span><span class=p>,</span> <span class=kt>SEL</span><span class=p>,</span> <span class=n>NSMutableArray</span> <span class=o>**</span><span class=p>))(</span><span class=kt>void</span> <span class=o>*</span><span class=p>)</span><span class=n>objc_msgSend</span><span class=p>)((</span><span class=kt>id</span><span class=p>)</span><span class=n>objc_getClass</span><span class=p>(</span><span class=s>&#34;TestClass&#34;</span><span class=p>),</span> <span class=n>sel_registerName</span><span class=p>(</span><span class=s>&#34;testFunc:&#34;</span><span class=p>),</span> <span class=o>&amp;</span><span class=n>array</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>((</span><span class=kt>void</span> <span class=p>(</span><span class=o>*</span><span class=p>)(</span><span class=kt>id</span><span class=p>,</span> <span class=kt>SEL</span><span class=p>,</span> <span class=n>NSMutableArray</span> <span class=o>**</span><span class=p>))(</span><span class=kt>void</span> <span class=o>*</span><span class=p>)</span><span class=n>objc_msgSend</span><span class=p>)((</span><span class=kt>id</span><span class=p>)</span><span class=n>objc_getClass</span><span class=p>(</span><span class=s>&#34;TestClass&#34;</span><span class=p>),</span> <span class=n>sel_registerName</span><span class=p>(</span><span class=s>&#34;testFunc:&#34;</span><span class=p>),</span> <span class=o>&amp;</span><span class=n>array</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>NSLog</span><span class=p>((</span><span class=n>NSString</span> <span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>__NSConstantStringImpl__var_folders__5_6lqsnn195jj6pw61j66npcnm0000gn_T_main_5a7341_mi_0</span><span class=p>,</span> <span class=n>array</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// testFunc:的C++代码
+</span></span></span><span class=line><span class=cl><span class=k>static</span> <span class=kt>void</span> <span class=nf>_C_TestClass_testFunc_</span><span class=p>(</span><span class=kt>Class</span> <span class=nb>self</span><span class=p>,</span> <span class=kt>SEL</span> <span class=n>_cmd</span><span class=p>,</span> <span class=n>NSMutableArray</span> <span class=o>**</span><span class=n>array</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>从C++代码来看，也没有可能会导致EXC_BAD_ACCESS问题的释放、dealloc之类的代码，继续！</p><h3 id=hopper-disassembler反编译分析><a href=#hopper-disassembler%e5%8f%8d%e7%bc%96%e8%af%91%e5%88%86%e6%9e%90 class=header-anchor></a>Hopper Disassembler反编译分析</h3><p>重写出C++代码无法解决，就只能让Hopper出马了，毕竟“汇编面前，没有秘密”=。=，以x86_64架构二进制为例。</p><p>先来看<code>testFunc:</code>的：</p><p><img loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2017/03/14/xcode8-crash-on-out-parameter/xcode8_crash_on_out_parameter_1.jpg></p><p>跟预想的一致，没有任何“有效代码”。</p><p>再看<code>runTest</code>方法：</p><p><img loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2017/03/14/xcode8-crash-on-out-parameter/xcode8_crash_on_out_parameter_2.jpg></p><p>为了方便分析，把反编译出来的汇编代码分了段：</p><ol><li>调用<code>NSMutableArray new</code>创建array变量，保存在r15寄存器上</li><li>第一次调用<code>testFunc:</code></li><li>先<code>retain</code>，然后<code>release</code>，rbx保存array，r15释放</li><li>第二次调用<code>testFunc:</code></li><li><strong>先<code>release</code>，再<code>retain</code>，即释放了rbx，然后又retain，这里明显有问题</strong></li><li>调用<code>NSlog</code>打印</li><li>最后release释放array变量</li></ol><p>为了进一步验证，用Hopper的反汇编生成Objective-C代码功能进行验证，生成的代码如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=c1>// Xcode8 Release环境编译的x86_64二进制反编译后生成的代码
+</span></span></span><span class=line><span class=cl><span class=kt>void</span> <span class=o>+</span><span class=p>[</span><span class=n>TestClass</span> <span class=n>runTest</span><span class=p>](</span><span class=kt>void</span> <span class=o>*</span> <span class=nb>self</span><span class=p>,</span> <span class=kt>void</span> <span class=o>*</span> <span class=n>_cmd</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 创建
+</span></span></span><span class=line><span class=cl>    <span class=n>r15</span> <span class=o>=</span> <span class=p>[</span><span class=n>NSMutableArray</span> <span class=n>new</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 第一次testFunc:
+</span></span></span><span class=line><span class=cl>    <span class=p>[</span><span class=n>TestClass</span> <span class=nl>testFunc</span><span class=p>:</span><span class=n>r15</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// retain然后release
+</span></span></span><span class=line><span class=cl>    <span class=n>rbx</span> <span class=o>=</span> <span class=p>[</span><span class=n>r15</span> <span class=k>retain</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=n>r15</span> <span class=k>release</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 第二次testFunc:
+</span></span></span><span class=line><span class=cl>    <span class=p>[</span><span class=n>TestClass</span> <span class=nl>testFunc</span><span class=p>:</span><span class=n>rbx</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 先release !!!
+</span></span></span><span class=line><span class=cl>    <span class=p>[</span><span class=n>rbx</span> <span class=k>release</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 然后retain
+</span></span></span><span class=line><span class=cl>    <span class=n>rbx</span> <span class=o>=</span> <span class=p>[</span><span class=n>rbx</span> <span class=k>retain</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// NSLog打印
+</span></span></span><span class=line><span class=cl>    <span class=n>NSLog</span><span class=p>(</span><span class=s>@&#34;array: %@&#34;</span><span class=p>,</span> <span class=n>rbx</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 释放
+</span></span></span><span class=line><span class=cl>    <span class=p>[</span><span class=n>rbx</span> <span class=k>release</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><strong>release和retain的顺序错误</strong>
+Hopper生成的代码跟汇编分析基本一致，至此，可以看出，唯一“不正常”的代码就是第5段的**“先release，再retain”**，这会导致array变量提前释放，以至于后面再次retain无效，NSLog的时候，出现访问已被释放的变量，于是出现EXC_BAD_ACCESS崩溃。</p><h3 id=对比xcode7><a href=#%e5%af%b9%e6%af%94xcode7 class=header-anchor></a>对比Xcode7</h3><p>现在已经基本可以确定问题了，但是为什么Xcode7就不会Crash？反编译一探究竟。</p><p>相同的代码，Xcode7 Release环境编译出可执行二进制文件，反编译后，用Hopper生成Objective-C代码，然后跟Xcode8的做对比，如下：</p><p><img loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2017/03/14/xcode8-crash-on-out-parameter/xcode8_crash_on_out_parameter_3.jpg></p><p>可以看出，Xcode8编译后，release和retain的顺序错了，导致了array变量提前被释放，继而EXC_BAD_ACCESS错误。而Xcode7编译的一切正常。</p><h2 id=问题原因小结><a href=#%e9%97%ae%e9%a2%98%e5%8e%9f%e5%9b%a0%e5%b0%8f%e7%bb%93 class=header-anchor></a>问题原因小结</h2><p>现在可以大胆猜测，EXC_BAD_ACCESS的原因就是<strong>Xcode8的编译错误</strong>。
+在编译上面的代码时，Xcode8不能正确的处理array变量作为二级指针传入testFunc空函数后的<strong>release、retain顺序</strong>，导致array被<strong>提前释放</strong>，最终产生EXC_BAD_ACCESS错误。</p><p>目前已经给Xcode提了Bug report，等待苹果的回复～</p><p>所有的代码、Xcode7和8编译出的二进制可执行文件、Hopper的文件，打包放在了Github上：<a class=link href=https://github.com/zekunyan/OutParameterPointerCrashOnXcode8 target=_blank rel=noopener>https://github.com/zekunyan/OutParameterPointerCrashOnXcode8</a></p><h2 id=总结><a href=#%e6%80%bb%e7%bb%93 class=header-anchor></a>总结</h2><p>汇编面前，没有秘密！=。=</p></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/%E5%8E%9F%E5%88%9B/>原创</a>
+<a href=/tags/ios/>IOS</a></section></footer></article><aside><h2 class=section-title>相关文章</h2><div class=subsection-list><div class=article-list--tile><article class=has-image><a href=/2017/04/08/diy-methodSignatureForSelector/><div class=article-image><img alt="Featured image of post 反编译分析并模拟实现methodSignatureForSelector方法" loading=lazy src=/assets/2017/04/08/diy-methodSignatureForSelector/blog_RemakeMethodSignatureForSelector_1.jpg></div><div class=article-details><h2 class=article-title>反编译分析并模拟实现methodSignatureForSelector方法</h2></div></a></article><article class=has-image><a href=/2017/03/12/autolayout-example-with-masonry5/><div class=article-image><img alt="Featured image of post 有趣的Autolayout示例5-Masonry实现" loading=lazy src=/assets/2017/03/12/autolayout-example-with-masonry5/blog_autolayout_example_with_masonry5_1.png></div><div class=article-details><h2 class=article-title>有趣的Autolayout示例5-Masonry实现</h2></div></a></article><article class=has-image><a href=/2017/03/11/TTGDeallocTaskHelper/><div class=article-image><img alt="Featured image of post 在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper" loading=lazy src=/assets/2017/03/11/TTGDeallocTaskHelper/TTGDeallocTaskHelper_1.jpg></div><div class=article-details><h2 class=article-title>在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper</h2></div></a></article><article class=has-image><a href=/2017/03/08/quartzcode-demo-star-animation/><div class=article-image><img alt="Featured image of post 用QuartzCode快速实现一个收藏动画" loading=lazy src=/assets/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_1.gif></div><div class=article-details><h2 class=article-title>用QuartzCode快速实现一个收藏动画</h2></div></a></article><article class=has-image><a href=/2016/12/25/TTGPuzzleVerify/><div class=article-image><img alt="Featured image of post 开源项目-拼图验证控件TTGPuzzleVerify的实现" loading=lazy src=/assets/2016/12/25/TTGPuzzleVerify/blog_TTGPuzzleVerify_gif.gif></div><div class=article-details><h2 class=article-title>开源项目-拼图验证控件TTGPuzzleVerify的实现</h2></div></a></article></div></div></aside><footer class=site-footer><section class=copyright>&copy;
+2014 -
+2026 tutuge</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=4.0.3>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><script type=module>
+    import gallery from '\/ts\/gallery.js';
 
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
     
-
-    <title>反编译分析Xcode8的Bug, release下连续两次调用有二级指针参数的空方法会Crash | iOS程序猿.目前阿里,喜欢各种技术,RCFans</title>
-    <meta name="author" content="土土哥">
-    
-    <meta name="description" content="iOS程序猿.目前阿里,喜欢各种技术,RCFans">
-    
-    
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-    <meta property="og:title" content="反编译分析Xcode8的Bug, release下连续两次调用有二级指针参数的空方法会Crash">
-    <meta property="og:site_name" content="土土哥的Blog">
-
-    
-    <meta property="og:image" content="undefined">
-    
-
-    <link rel="icon" type="image/png" href="/favicon.png">
-    <link rel="alternate" href="/atom.xml" title="土土哥的Blog" type="application/atom+xml">
-    <link rel="stylesheet" href="/css/lib/materialize.min.css">
-    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
-    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-
-    
-        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
-    
-    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-</head>
-</html>
-
-<body>
-    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
-
-    <nav class="blue-grey">
-    <div class="nav-wrapper">
-        <a href="#" data-activates="main-menu" class="button-collapse">
-            <i class="fa fa-navicon"></i>
-        </a>
-        <div class="">
-            <a href="/" class="brand-logo hide-on-med-and-down">土土哥的Blog</a>
-            <ul class="right hide-on-med-and-down">
-                
-                    <li>
-                        <a class="menu-home " href="/" >
-                            <i class="fa fa-home "></i>
-                            
-                            首页
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-archive " href="/archives" >
-                            <i class="fa fa-archive "></i>
-                            
-                            归档
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
-                            <i class="fa fa-bookmark "></i>
-                            
-                            分类
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-about " href="/about" >
-                            <i class="fa fa-user "></i>
-                            
-                            关于
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-search modal-trigger " href="#search" >
-                            <i class="fa fa-search "></i>
-                            
-                            搜索
-                        </a>
-                    </li>
-                
-            </ul>
-            <div>
-    <ul class="side-nav blue-grey darken-1" id="main-menu">
-        
-        <li class="side-user">
-            <div class="row">
-                <div class="col s4 no-padding">
-                    <img class="avatar-image circle responsive-img" src="http://tutuge.me/2019/07/29/2019-07-29-occupied-with-work/avatar_comic.jpg" alt="User Avatar">
-                </div>
-                <div class="info col s8 valign-wrapper no-padding">
-                    <div class="valign">
-                        <p class="name">土土哥</p>
-                        <p class="desc">iOS/Android/技术宅/RCFans</p>
-                    </div>
-                </div>
-            </div>
-        </li>
-        
-
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-home " href="/" >
-                    <i class="fa fa-home "></i>
-                    
-                    首页
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-archive " href="/archives" >
-                    <i class="fa fa-archive "></i>
-                    
-                    归档
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
-                    <i class="fa fa-bookmark "></i>
-                    
-                    分类
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-about " href="/about" >
-                    <i class="fa fa-user "></i>
-                    
-                    关于
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-search modal-trigger " href="#search" >
-                    <i class="fa fa-search "></i>
-                    
-                    搜索
-                </a>
-            </li>
-        
-    </ul>
-
-    <ul class="side-nav blue-grey darken-1" id="category-menu">
-    
-
-            
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/其它/">
-                    其它 <span class="right">5 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/iOS/">
-                    iOS <span class="right">37 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/Android/">
-                    Android <span class="right">1 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/Mac/">
-                    Mac <span class="right">1 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/服务端/">
-                    服务端 <span class="right">2 篇</span></a>
-                </a>
-            </li>
-
-        
-
-    </ul>
-</div>
-
-        </div>
-    </div>
-</nav>
-
-<div id="search" class="modal search-modal">
-    <div class="row">
-        <div class="input-field col s12">
-              <input id="search-input" type="text">
-              <label for="search-input">搜索</label>
-        </div>
-
-    </div>
-    <div id="search-result" class="search-result col s12">
-
-    </div>
-</div>
-
-
-    <main>
-        <div class="container main-container">
-    
-<nav class="page-nav hide-on-small-only">
-    <div class="nav-wrapper blue-grey">
-        <span class="breadcrumb">当前位置（分类目录）</span>
-        
-            
-    
-    
-    <a class="breadcrumb" href="/categories/iOS/">iOS</a>
-
-
-        
-
-        
-    </div>
-</nav>
-
-<article>
-    <div class="card">
-        <div class="card-content">
-            
-
-            <div class="article-title">
-                
-    
-        <h1>反编译分析Xcode8的Bug, release下连续两次调用有二级指针参数的空方法会Crash</h1>
-    
-
-
-            </div>
-            <time class="teal-link-context" datetime="2017-03-13T16:00:00.000Z"><a href="/2017/03/14/xcode8-crash-on-out-parameter/">2017-03-14</a></time>
-
-            <span id="busuanzi_container_page_pv" class="read-times-container">
-    <i class="fa fa-eye"></i>
-    <span id="busuanzi_value_page_pv"></span>
-</span>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
-        
-            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
-        
-    </div>
-
-
-            <div class="toc teal-link-context hide-on-med-and-down">
-    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#更新"><span class="section table-of-contents-text">更新</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#二级指针"><span class="section table-of-contents-text">二级指针</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#问题"><span class="section table-of-contents-text">问题</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#分析"><span class="section table-of-contents-text">分析</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#源码分析"><span class="section table-of-contents-text">源码分析</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#clang-rewrite-objc分析"><span class="section table-of-contents-text">clang -rewrite-objc分析</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#Hopper-Disassembler反编译分析"><span class="section table-of-contents-text">Hopper Disassembler反编译分析</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#对比Xcode7"><span class="section table-of-contents-text">对比Xcode7</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#问题原因小结"><span class="section table-of-contents-text">问题原因小结</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#总结"><span class="section table-of-contents-text">总结</span></a></li></ol>
-</div>
-
-
-            <div class="entry teal-link-context">
-                <h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><ul>
-<li>在最新的Xcode 9 Beta版本中，此Bug已被苹果修复：<strong>Bug ID 30530580: Crash on “Release” Build Configuration scheme setting for Out Parameters code</strong></li>
-</ul>
-<h2 id="二级指针"><a href="#二级指针" class="headerlink" title="二级指针"></a>二级指针</h2><p>二级指针，也叫指针的指针，或者Out Parameters，可以用来改变一个指针的地址值，由于在Objective-C里面方法、函数不支持返回多个值，所以经常用二级指针实现这个功能，比如<code>NSFileManager</code>的<code>- (BOOL)removeItemAtURL:(NSURL *)URL error:(NSError **)error</code>方法，就可以让方法在内部创建error后传出。</p>
-<a id="more"></a>
-<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>最近在Debug代码的时候，注释掉了一个带有二级指针参数的方法内部所有代码，然后在Release环境下安装运行，结果居然Crash了，猛然想起好像以前同事也遇到过，仔细检查了下，感觉代码是没有问题的，所以继续深究，新建了一个空的工程，重现了这个EXC_BAD_ACCESS的Crash，代码非常简单，如下：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// main.m</span></span><br><span class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></span><br><span class="line"><span class="meta">#import <span class="meta-string">&lt;CoreFoundation/CoreFoundation.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">TestClass</span> : <span class="title">NSObject</span></span></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">TestClass</span></span></span><br><span class="line"></span><br><span class="line">+ (<span class="keyword">void</span>)runTest &#123;</span><br><span class="line">    <span class="built_in">NSMutableArray</span> *array = [<span class="built_in">NSMutableArray</span> new];</span><br><span class="line">    [TestClass testFunc:&amp;array];</span><br><span class="line">    [TestClass testFunc:&amp;array];</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"array: %@"</span>, array);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (<span class="keyword">void</span>)testFunc:(<span class="built_in">NSMutableArray</span> **)array &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[]) &#123;</span><br><span class="line">    <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">        [TestClass runTest];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>经测试，在Xcode 8.0、以及最新的8.2.1稳定版下，Release环境中，都会Crash，放到iOS工程里面，模拟器、真机也会。但是，在Xcode7下就没有问题。</p>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><h3 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h3><p>首先，从代码本身上来看，是没有问题的，带有二级指针的方法<code>testFunc:</code>是空的方法，虽然传进来了<code>NSMutableArray **array</code>，但是没有对其赋值。</p>
-<p><code>runTest</code>方法也只是创建了一个<code>NSMutableArray</code>对象，然后取了指针的指针，调用了两次<code>testFunc:</code>，然后打印，按理来说是没有任何副作用的。</p>
-<p>所以，直接从代码上看，发现不了问题的原因。</p>
-<h3 id="clang-rewrite-objc分析"><a href="#clang-rewrite-objc分析" class="headerlink" title="clang -rewrite-objc分析"></a>clang -rewrite-objc分析</h3><p>直接看代码没有用，那就用clang重写出C++代码分析，命令行对<code>main.m</code>执行<code>clang -rewrite-objc main.m</code>，得到C++重写后的代码，在文件的最后，就能找到<code>testFunc:</code>和<code>runTest</code>的C++代码，如下：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// runTest的C++代码</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> _C_TestClass_runTest(Class <span class="keyword">self</span>, SEL _cmd) &#123;</span><br><span class="line">    <span class="built_in">NSMutableArray</span> *array = ((<span class="built_in">NSMutableArray</span> *(*)(<span class="keyword">id</span>, SEL))(<span class="keyword">void</span> *)objc_msgSend)((<span class="keyword">id</span>)objc_getClass(<span class="string">"NSMutableArray"</span>), sel_registerName(<span class="string">"new"</span>));</span><br><span class="line">    ((<span class="keyword">void</span> (*)(<span class="keyword">id</span>, SEL, <span class="built_in">NSMutableArray</span> **))(<span class="keyword">void</span> *)objc_msgSend)((<span class="keyword">id</span>)objc_getClass(<span class="string">"TestClass"</span>), sel_registerName(<span class="string">"testFunc:"</span>), &amp;array);</span><br><span class="line">    ((<span class="keyword">void</span> (*)(<span class="keyword">id</span>, SEL, <span class="built_in">NSMutableArray</span> **))(<span class="keyword">void</span> *)objc_msgSend)((<span class="keyword">id</span>)objc_getClass(<span class="string">"TestClass"</span>), sel_registerName(<span class="string">"testFunc:"</span>), &amp;array);</span><br><span class="line">    <span class="built_in">NSLog</span>((<span class="built_in">NSString</span> *)&amp;__NSConstantStringImpl__var_folders__5_6lqsnn195jj6pw61j66npcnm0000gn_T_main_5a7341_mi_0, array);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// testFunc:的C++代码</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> _C_TestClass_testFunc_(Class <span class="keyword">self</span>, SEL _cmd, <span class="built_in">NSMutableArray</span> **array) &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>从C++代码来看，也没有可能会导致EXC_BAD_ACCESS问题的释放、dealloc之类的代码，继续！</p>
-<h3 id="Hopper-Disassembler反编译分析"><a href="#Hopper-Disassembler反编译分析" class="headerlink" title="Hopper Disassembler反编译分析"></a>Hopper Disassembler反编译分析</h3><p>重写出C++代码无法解决，就只能让Hopper出马了，毕竟“汇编面前，没有秘密”=。=，以x86_64架构二进制为例。</p>
-<p>先来看<code>testFunc:</code>的：</p>
-<p><img src="/2017/03/14/xcode8-crash-on-out-parameter/xcode8_crash_on_out_parameter_1.jpg" alt=""></p>
-<p>跟预想的一致，没有任何“有效代码”。</p>
-<p>再看<code>runTest</code>方法：</p>
-<p><img src="/2017/03/14/xcode8-crash-on-out-parameter/xcode8_crash_on_out_parameter_2.jpg" alt=""></p>
-<p>为了方便分析，把反编译出来的汇编代码分了段：</p>
-<ol>
-<li>调用<code>NSMutableArray new</code>创建array变量，保存在r15寄存器上</li>
-<li>第一次调用<code>testFunc:</code></li>
-<li>先<code>retain</code>，然后<code>release</code>，rbx保存array，r15释放</li>
-<li>第二次调用<code>testFunc:</code></li>
-<li><strong>先<code>release</code>，再<code>retain</code>，即释放了rbx，然后又retain，这里明显有问题</strong></li>
-<li>调用<code>NSlog</code>打印</li>
-<li>最后release释放array变量</li>
-</ol>
-<p>为了进一步验证，用Hopper的反汇编生成Objective-C代码功能进行验证，生成的代码如下：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Xcode8 Release环境编译的x86_64二进制反编译后生成的代码</span></span><br><span class="line"><span class="keyword">void</span> +[TestClass runTest](<span class="keyword">void</span> * <span class="keyword">self</span>, <span class="keyword">void</span> * _cmd) &#123;</span><br><span class="line">    <span class="comment">// 创建</span></span><br><span class="line">    r15 = [<span class="built_in">NSMutableArray</span> new];</span><br><span class="line">    <span class="comment">// 第一次testFunc:</span></span><br><span class="line">    [TestClass testFunc:r15];</span><br><span class="line">    <span class="comment">// retain然后release</span></span><br><span class="line">    rbx = [r15 <span class="keyword">retain</span>];</span><br><span class="line">    [r15 release];</span><br><span class="line">    <span class="comment">// 第二次testFunc:</span></span><br><span class="line">    [TestClass testFunc:rbx];</span><br><span class="line">    <span class="comment">// 先release !!!</span></span><br><span class="line">    [rbx release];</span><br><span class="line">    <span class="comment">// 然后retain</span></span><br><span class="line">    rbx = [rbx <span class="keyword">retain</span>];</span><br><span class="line">    <span class="comment">// NSLog打印</span></span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"array: %@"</span>, rbx);</span><br><span class="line">    <span class="comment">// 释放</span></span><br><span class="line">    [rbx release];</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>release和retain的顺序错误</strong><br>Hopper生成的代码跟汇编分析基本一致，至此，可以看出，唯一“不正常”的代码就是第5段的<strong>“先release，再retain”</strong>，这会导致array变量提前释放，以至于后面再次retain无效，NSLog的时候，出现访问已被释放的变量，于是出现EXC_BAD_ACCESS崩溃。</p>
-<h3 id="对比Xcode7"><a href="#对比Xcode7" class="headerlink" title="对比Xcode7"></a>对比Xcode7</h3><p>现在已经基本可以确定问题了，但是为什么Xcode7就不会Crash？反编译一探究竟。</p>
-<p>相同的代码，Xcode7 Release环境编译出可执行二进制文件，反编译后，用Hopper生成Objective-C代码，然后跟Xcode8的做对比，如下：</p>
-<p><img src="/2017/03/14/xcode8-crash-on-out-parameter/xcode8_crash_on_out_parameter_3.jpg" alt=""></p>
-<p>可以看出，Xcode8编译后，release和retain的顺序错了，导致了array变量提前被释放，继而EXC_BAD_ACCESS错误。而Xcode7编译的一切正常。</p>
-<h2 id="问题原因小结"><a href="#问题原因小结" class="headerlink" title="问题原因小结"></a>问题原因小结</h2><p>现在可以大胆猜测，EXC_BAD_ACCESS的原因就是<strong>Xcode8的编译错误</strong>。<br>在编译上面的代码时，Xcode8不能正确的处理array变量作为二级指针传入testFunc空函数后的<strong>release、retain顺序</strong>，导致array被<strong>提前释放</strong>，最终产生EXC_BAD_ACCESS错误。  </p>
-<p>目前已经给Xcode提了Bug report，等待苹果的回复～</p>
-<p>所有的代码、Xcode7和8编译出的二进制可执行文件、Hopper的文件，打包放在了Github上：<a href="https://github.com/zekunyan/OutParameterPointerCrashOnXcode8" target="_blank" rel="noopener">https://github.com/zekunyan/OutParameterPointerCrashOnXcode8</a></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>汇编面前，没有秘密！=。=</p>
-
-                
-<p class="teal-link-context">
-    <a href="/2017/04/08/diy-methodSignatureForSelector/" rel="next" title="反编译分析并模拟实现methodSignatureForSelector方法">
-    上一篇：反编译分析并模拟实现methodSignatureForSelector方法
-  </a>
-</p>
-
-
-
-<p class="teal-link-context">
-    <a href="/2017/03/12/autolayout-example-with-masonry5/" rel="next" title="有趣的Autolayout示例5-Masonry实现">
-    下一篇：有趣的Autolayout示例5-Masonry实现
-  </a>
-</p>
-
-
-            </div>
-
-            
-			
-        </div>
-    </div>
-</article>
-
-
-
-
-    <section id="comment">
-        <div id="disqus_thread"></div>
-        <script>
-            var disqus_config = function() {
-                this.page.url = 'http://tutuge.me/2017/03/14/xcode8-crash-on-out-parameter/';
-                this.page.identifier = '2017/03/14/xcode8-crash-on-out-parameter/';
-            };
-            (function() {
-                var d = document,
-                    s = d.createElement('script');
-                s.src = '//tutuge-me.disqus.com/embed.js';
-                s.setAttribute('data-timestamp', + new Date());
-                (d.head || d.body).appendChild(s);
-            })();
-        </script>
-        <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
-        </noscript>
-    </section>
-
-
-
-</div>
-
-        <div class="fixed-action-btn float-sitemap">
-    <a class="btn-floating btn-large teal">
-      <i class="fa fa-caret-square-o-up"></i>
-    </a>
-    <ul>
-      <li><a class="btn-return-top btn-floating waves-effect teal accent-4" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
-      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
-    </ul>
-  </div>
-
-    </main>
-    <footer class="page-footer blue-grey darken-1">
-    
-    <div class="footer-container container">
-        <div class="row">
-            
-            <div class="social-group col m4 s12">
-                <h5 class="white-text">社交</h5>
-                
-                    <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
-                        <i class="fa fa-2x fa-weibo"></i>
-                    </a>
-                
-                    <a class="social-link" href="https://github.com/zekunyan" target="_blank">
-                        <i class="fa fa-2x fa-github"></i>
-                    </a>
-                
-                    <a class="social-link" href="/atom.xml" target="_blank">
-                        <i class="fa fa-2x fa-rss"></i>
-                    </a>
-                
-                
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
-    </script>
-    <div class="site-visitors-container white-text">
-        <span>
-            <i class="fa fa-user"></i>
-            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
-        </span>
-        <span>&nbsp;|&nbsp;</span>
-        <span>
-            <i class="fa fa-eye"></i>
-            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
-        </span>
-    </div>
-
-
-            </div>
-            
-
-            
-            <div class="col m8 s12">
-                <h5 class="white-text">友情链接</h5>
-                
-                    <a class="social-link" href="http://chenrudan.github.io" target="_blank">女朋友的博客😊</a>
-                
-            </div>
-            
-        </div>
-        <p>Hosted by <a href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a></p>
-    </div>
-    
-
-    <div class="footer-copyright teal-link-context">
-        <div class="container">
-            © 2020 tutuge.me, All rights reserved.
-            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
-        </div>
-    </div>
-</footer>
-
-
-    <noscript>
-    <div class="noscript">
-        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
-    </div>
-</noscript>
-<div class="noscript">
-    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
-</div>
-
-
-<script src="/js/jquery.min.js"></script>
-<script src="/js/materialize.min.js"></script>
-
-<script>
-    (function($) {
-        $(document).ready(function() {
-            // 隐藏禁用javascript（针对微信内置浏览器）的提示
-            $('.noscript').hide();
-
-            // 图片缩放效果
-            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
-
-            // 给图片加上点击放大效果（materialbox插件）
-            $imgs.addClass('materialboxed').each(function(i, el) {
-                $(this).attr('data-caption', $(this).attr('alt') || ' ');
-            }).materialbox();
-
-            // 优化表格的显示
-            $('table').each(function() {
-                var $table = $(this);
-                // 除去多行代码的情况
-                if ($table.find('pre').length == 0) {
-                    $table.addClass('responsive-table striped bordered');
-                }
-            });
-
-            // 首页幻灯片
-            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
-
-            $(".button-collapse").sideNav();
-            $(".category-menu").sideNav();
-
-            // 针对gallery post
-            $('.carousel').carousel({full_width: true});
-            $('.carousel-control.prev').click(function() {
-                $('.carousel').carousel('prev');
-            });
-            $('.carousel-control.next').click(function() {
-                $('.carousel').carousel('next');
-            });
-
-            // 文章目录
-            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
-
-            // 目录随屏幕滚动（防止目录过长越过footer）
-            var $toc = $('.toc');
-            var scrollTargetTop = 0;
-            $(window).scroll(function() {
-                var $activeLink = $toc.find('a.active.section');
-                if ($(window).scrollTop() < 100) {
-                    scrollTargetTop = 0;
-                } else {
-                    if ($activeLink[0]) {
-                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
-                    }
-                }
-                $toc.css('top', '-' + scrollTargetTop + 'px');
-            });
-
-            // 修正文章目录的left-border颜色
-            var color = $('.table-of-contents-text').css('color');
-            $('.table-of-contents-link').css('border-left-color', color);
-
-            // 针对移动端做的优化：FAB按钮点击一下收回
-            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                $('.fixed-action-btn').addClass('click-to-toggle');
-            }
-            // 回到顶部
-            $('.btn-return-top').click(function() {
-                $('body, html').animate({
-                    scrollTop: 0
-                }, 500);
-            });
-
-            // 重置读书页面的Tab标签页的颜色
-            $('li.tab a').hover(function() {
-                $(this).toggleClass('text-lighten-4');
-            });
-            $('.indicator').addClass('teal lighten-2');
-
-            
-            // 添加new标签
-            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
-            
-
-            // 搜索功能
-            $('.modal-trigger').leanModal({
-                // 打开搜索框时自动聚焦
-                ready: function() {
-                    if ($('#search').is(":visible")) {
-                        $('#search-input').focus();
-                    }
-                }
-            });
-            var searchXml = "search.xml";
-            if (searchXml.length == 0) {
-             	searchXml = "search.xml";
-            }
-            var searchPath = "/" + searchXml;
-            initSearch(searchPath, 'search-input', 'search-result');
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
         });
-
-        // 初始化搜索与匹配函数
-        var initSearch = function(path, search_id, content_id) {
-            'use strict';
-            $.ajax({
-                url: path,
-                dataType: "xml",
-                success: function(xmlResponse) {
-                    // get the contents from search data
-                    var datas = $("entry", xmlResponse).map(function() {
-                        return {
-                            title: $("title", this).text(),
-                            content: $("content", this).text(),
-                            url: $("url", this).text()
-                        };
-                    }).get();
-                    var $input = document.getElementById(search_id);
-                    var $resultContent = document.getElementById(content_id);
-                    $input.addEventListener('input', function() {
-                        var str = '<ul class=\"search-result-list\">';
-                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
-                        $resultContent.innerHTML = "";
-                        if (this.value.trim().length <= 0) {
-                            return;
-                        }
-                        // perform local searching
-                        datas.forEach(function(data) {
-                            var isMatch = true;
-                            var content_index = [];
-                            var data_title = data.title.trim().toLowerCase();
-                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
-                            var data_url = data.url;
-                            var index_title = -1;
-                            var index_content = -1;
-                            var first_occur = -1;
-                            // only match artiles with not empty titles and contents
-                            if (data_title != '' && data_content != '') {
-                                keywords.forEach(function(keyword, i) {
-                                    index_title = data_title.indexOf(keyword);
-                                    index_content = data_content.indexOf(keyword);
-                                    if (index_title < 0 && index_content < 0) {
-                                        isMatch = false;
-                                    } else {
-                                        if (index_content < 0) {
-                                            index_content = 0;
-                                        }
-                                        if (i == 0) {
-                                            first_occur = index_content;
-                                        }
-                                    }
-                                });
-                            }
-                            // show search results
-                            if (isMatch) {
-                                keywords.forEach(function(keyword) {
-                                    var regS = new RegExp(keyword, "gi");
-                                    data_title = data_title.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
-                                });
-
-                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
-                                var content = data.content.trim().replace(/<[^>]+>/g, "");
-                                if (first_occur >= 0) {
-                                    // cut out 100 characters
-                                    var start = first_occur - 20;
-                                    var end = first_occur + 80;
-                                    if (start < 0) {
-                                        start = 0;
-                                    }
-                                    if (start == 0) {
-                                        end = 100;
-                                    }
-                                    if (end > content.length) {
-                                        end = content.length;
-                                    }
-                                    var match_content = content.substring(start, end);
-                                    // highlight all keywords
-                                    keywords.forEach(function(keyword) {
-                                        var regS = new RegExp(keyword, "gi");
-                                        match_content = match_content.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
-                                    });
-
-                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
-                                }
-                                str += "</li>";
-                            }
-                        });
-                        str += "</ul>";
-                        $resultContent.innerHTML = str;
-                    });
-                }
-            });
-        }
-    })(jQuery);
-</script>
-
-
-<script src="/js/prettify.js"></script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $("pre").addClass("prettyprint");
-        prettyPrint();
-    });
-</script>
-
-
-<script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-68058110-1', 'auto');
-    ga('send', 'pageview');
-
-</script>
-
-
-
-<script type="text/javascript" src="http://tajs.qq.com/stats?sId=55079830" charset="UTF-8"></script>
-
-
-
-
-
-</body>
-</html>
+        lightbox.init();
+    }
+</script></main></div><script type=text/javascript src=/ts/main.f856840516f7c2ad1769a8f5937e3d08d6cb386e2cd2dd025ae696e0ff207958.js defer></script></body></html>

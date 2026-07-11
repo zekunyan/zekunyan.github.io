@@ -1,737 +1,214 @@
-<!DOCTYPE HTML>
-<html>
-<head><meta name="generator" content="Hexo 3.9.0">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="更新 2016-06-02: 感谢我不是蜡笔小新但是我有小白，发现了Case 2的最后两个cell展开动画问题，原来是tableView的estimatedRowHeight会跟展开动画冲突的缘故。 2015-12-23: 感谢XVXVXXX的PR,Case 1不再需要Fake Header View，直接用contentInset就好~ 2015-12-17：Case3的等间距，用UIStackView实现最优雅，但是无奈只有iOS9以上支持。兼容方案如OAStackView也可以，但是在UITableViewCell里面用，或者需要频繁的增减内部View的数量时，性能损耗有点厉害，会卡。所以，还是要看需求=。= 前言 第三篇来了。 依然是3个小例子，主要部分用Masonry手写代码实现，其它的约束在storyboard里面直接拖拽搭建。 至于为啥不用VFL，主要是因为它的“描述性”的写法很容易出错，没有补全、不好调试，写起来没有“代码”的感觉=。=。当然，这个仁者见仁智者见智~ 三个例子分别是：Parallax Header，动态变高度的UITableViewCell，以及两种方式实现等间距。原理其实都很简单，例子也都是平时积累起来的。\n前两篇：\n第一篇：有趣的Autolayout示例-Masonry实现 第二篇：有趣的Autolayout示例2-Masonry实现 第四篇：有趣的Autolayout示例4-Masonry实现 Github地址： https://github.com/zekunyan/AutolayoutExampleWithMasonry\n"><title>有趣的Autolayout示例3-Masonry实现</title><link rel=canonical href=https://tutuge.me/2015/12/14/autolayout-example-with-masonry3/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=preload as=style href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href=/scss/style.min.e62e09c60ba428a627e03568fa3df938f6a8224f815b5846f00816c17d4a0be4.css><meta property='og:title' content="有趣的Autolayout示例3-Masonry实现"><meta property='og:description' content="更新 2016-06-02: 感谢我不是蜡笔小新但是我有小白，发现了Case 2的最后两个cell展开动画问题，原来是tableView的estimatedRowHeight会跟展开动画冲突的缘故。 2015-12-23: 感谢XVXVXXX的PR,Case 1不再需要Fake Header View，直接用contentInset就好~ 2015-12-17：Case3的等间距，用UIStackView实现最优雅，但是无奈只有iOS9以上支持。兼容方案如OAStackView也可以，但是在UITableViewCell里面用，或者需要频繁的增减内部View的数量时，性能损耗有点厉害，会卡。所以，还是要看需求=。= 前言 第三篇来了。 依然是3个小例子，主要部分用Masonry手写代码实现，其它的约束在storyboard里面直接拖拽搭建。 至于为啥不用VFL，主要是因为它的“描述性”的写法很容易出错，没有补全、不好调试，写起来没有“代码”的感觉=。=。当然，这个仁者见仁智者见智~ 三个例子分别是：Parallax Header，动态变高度的UITableViewCell，以及两种方式实现等间距。原理其实都很简单，例子也都是平时积累起来的。\n前两篇：\n第一篇：有趣的Autolayout示例-Masonry实现 第二篇：有趣的Autolayout示例2-Masonry实现 第四篇：有趣的Autolayout示例4-Masonry实现 Github地址： https://github.com/zekunyan/AutolayoutExampleWithMasonry\n"><meta property='og:url' content='https://tutuge.me/2015/12/14/autolayout-example-with-masonry3/'><meta property='og:site_name' content='土土哥的技术 Blog'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='原创'><meta property='article:tag' content='iOS'><meta property='article:tag' content='Autolayout'><meta property='article:tag' content='Masonry'><meta property='article:published_time' content='2015-12-14T00:00:00+00:00'><meta property='article:modified_time' content='2015-12-14T00:00:00+00:00'><meta property='og:image' content='https://tutuge.me/assets/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_1.gif'><meta name=twitter:title content="有趣的Autolayout示例3-Masonry实现"><meta name=twitter:description content="更新 2016-06-02: 感谢我不是蜡笔小新但是我有小白，发现了Case 2的最后两个cell展开动画问题，原来是tableView的estimatedRowHeight会跟展开动画冲突的缘故。 2015-12-23: 感谢XVXVXXX的PR,Case 1不再需要Fake Header View，直接用contentInset就好~ 2015-12-17：Case3的等间距，用UIStackView实现最优雅，但是无奈只有iOS9以上支持。兼容方案如OAStackView也可以，但是在UITableViewCell里面用，或者需要频繁的增减内部View的数量时，性能损耗有点厉害，会卡。所以，还是要看需求=。= 前言 第三篇来了。 依然是3个小例子，主要部分用Masonry手写代码实现，其它的约束在storyboard里面直接拖拽搭建。 至于为啥不用VFL，主要是因为它的“描述性”的写法很容易出错，没有补全、不好调试，写起来没有“代码”的感觉=。=。当然，这个仁者见仁智者见智~ 三个例子分别是：Parallax Header，动态变高度的UITableViewCell，以及两种方式实现等间距。原理其实都很简单，例子也都是平时积累起来的。\n前两篇：\n第一篇：有趣的Autolayout示例-Masonry实现 第二篇：有趣的Autolayout示例2-Masonry实现 第四篇：有趣的Autolayout示例4-Masonry实现 Github地址： https://github.com/zekunyan/AutolayoutExampleWithMasonry\n"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://tutuge.me/assets/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_1.gif'><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar.png width height class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>土土哥的技术 Blog</a></h1><h2 class=site-description>AI / iOS / Android / Flutter / Open Source</h2></div></header><ol class=menu-social><li><a href=https://github.com/zekunyan title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>首页</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav class=toc-nav id=TableOfContents><ul><li><a href=#更新>更新</a></li><li><a href=#前言>前言</a></li><li><a href=#case-1-parallax-header>Case 1: Parallax Header</a><ul><li><a href=#原理>原理</a></li><li><a href=#主要步骤>主要步骤</a></li><li><a href=#代码>代码</a></li><li><a href=#监听contentoffset属性的两种方法>监听<code>contentOffset</code>属性的两种方法</a></li><li><a href=#小节>小节</a></li></ul></li><li><a href=#case-2-动态变高度的uitableviewcell>Case 2: 动态变高度的UITableViewCell</a><ul><li><a href=#主要步骤-1>主要步骤</a></li><li><a href=#布局>布局</a></li><li><a href=#使用install和uninstall控制约束>使用install和uninstall控制约束</a></li><li><a href=#创建delegate使得cell的事件得以回传到viewcontroller>创建Delegate，使得Cell的事件得以回传到ViewController</a></li><li><a href=#刷新的方式>刷新的方式</a></li><li><a href=#小节-1>小节</a></li></ul></li><li><a href=#case-3-两种方式实现等间距>Case 3: 两种方式实现等间距</a><ul><li><a href=#方法1利用透明等宽的占位view填充空白处实现等间距>方法1：利用透明等宽的占位View填充空白处，实现等间距</a></li><li><a href=#方法2直接按比例设置multiplier>方法2：直接按比例设置multiplier</a></li><li><a href=#小节-2>小节</a></li></ul></li><li><a href=#总结>总结</a></li></ul></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/2015/12/14/autolayout-example-with-masonry3/><img alt="Featured image of post 有趣的Autolayout示例3-Masonry实现" loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_1.gif></a></div><div class=article-details><header class=article-category><a href=/categories/ios/ style=background-color:#efbeed;color:#3d0f3c>IOS</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/2015/12/14/autolayout-example-with-masonry3/>有趣的Autolayout示例3-Masonry实现</a></h2></div><footer class=article-meta><div class=inline-meta><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2015-12-14T00:00:00Z>2015-12-14</time>
+<svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 10 分钟</time></div></footer></div></header><aside class=article-toc><details><summary><div class=article-toc-title><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6-6 6"/></svg>
+<span>目录</span></div></summary><nav class=toc-nav><ul><li><a href=#更新>更新</a></li><li><a href=#前言>前言</a></li><li><a href=#case-1-parallax-header>Case 1: Parallax Header</a><ul><li><a href=#原理>原理</a></li><li><a href=#主要步骤>主要步骤</a></li><li><a href=#代码>代码</a></li><li><a href=#监听contentoffset属性的两种方法>监听<code>contentOffset</code>属性的两种方法</a></li><li><a href=#小节>小节</a></li></ul></li><li><a href=#case-2-动态变高度的uitableviewcell>Case 2: 动态变高度的UITableViewCell</a><ul><li><a href=#主要步骤-1>主要步骤</a></li><li><a href=#布局>布局</a></li><li><a href=#使用install和uninstall控制约束>使用install和uninstall控制约束</a></li><li><a href=#创建delegate使得cell的事件得以回传到viewcontroller>创建Delegate，使得Cell的事件得以回传到ViewController</a></li><li><a href=#刷新的方式>刷新的方式</a></li><li><a href=#小节-1>小节</a></li></ul></li><li><a href=#case-3-两种方式实现等间距>Case 3: 两种方式实现等间距</a><ul><li><a href=#方法1利用透明等宽的占位view填充空白处实现等间距>方法1：利用透明等宽的占位View填充空白处，实现等间距</a></li><li><a href=#方法2直接按比例设置multiplier>方法2：直接按比例设置multiplier</a></li><li><a href=#小节-2>小节</a></li></ul></li><li><a href=#总结>总结</a></li></ul></nav></details></aside><section class=article-content><h2 id=更新><a href=#%e6%9b%b4%e6%96%b0 class=header-anchor></a>更新</h2><ul><li>2016-06-02: 感谢<a class=link href=http://weibo.com/u/2953626141 target=_blank rel=noopener>我不是蜡笔小新但是我有小白</a>，发现了Case 2的最后两个cell展开动画问题，原来是tableView的<code>estimatedRowHeight</code>会跟展开动画冲突的缘故。</li><li>2015-12-23: 感谢<a class=link href=https://github.com/XVXVXXX target=_blank rel=noopener>XVXVXXX</a>的PR,Case 1不再需要Fake Header View，直接用contentInset就好~</li><li>2015-12-17：Case3的等间距，用UIStackView实现最优雅，但是无奈只有iOS9以上支持。兼容方案如OAStackView也可以，但是在UITableViewCell里面用，或者需要频繁的增减内部View的数量时，性能损耗有点厉害，会卡。所以，还是要看需求=。=</li></ul><h2 id=前言><a href=#%e5%89%8d%e8%a8%80 class=header-anchor></a>前言</h2><p>第三篇来了。
+依然是3个小例子，主要部分用Masonry手写代码实现，其它的约束在storyboard里面直接拖拽搭建。
+至于为啥不用VFL，主要是因为它的“描述性”的写法很容易出错，没有补全、不好调试，写起来没有“代码”的感觉=。=。当然，这个仁者见仁智者见智~
+三个例子分别是：<strong>Parallax Header</strong>，<strong>动态变高度的UITableViewCell</strong>，以及<strong>两种方式实现等间距</strong>。原理其实都很简单，例子也都是平时积累起来的。</p><p>前两篇：</p><ul><li>第一篇：<a class=link href=http://tutuge.me/2015/05/23/autolayout-example-with-masonry/ target=_blank rel=noopener>有趣的Autolayout示例-Masonry实现</a></li><li>第二篇：<a class=link href=http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/ target=_blank rel=noopener>有趣的Autolayout示例2-Masonry实现</a></li><li>第四篇：<a class=link href=http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/ target=_blank rel=noopener>有趣的Autolayout示例4-Masonry实现</a></li></ul><p>Github地址：
+<a class=link href=https://github.com/zekunyan/AutolayoutExampleWithMasonry target=_blank rel=noopener>https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p><p><img alt=Gif示例 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_1.gif></p><h2 id=case-1-parallax-header><a href=#case-1-parallax-header class=header-anchor></a>Case 1: Parallax Header</h2><p>Parallax翻译过来就是“视差”，我个人觉得就是一种“联动”的效果，在许多应用里面都能见到。当前这个例子，就是最简单的一种。</p><h3 id=原理><a href=#%e5%8e%9f%e7%90%86 class=header-anchor></a>原理</h3><p>原理其实就是根据UITableView当前下拉的位移值，同步改变Parallax Header的高度，即<code>NSLayoutConstraint</code>的<code>constant</code>属性，对应到Masonry里面就是重新让约束<code>equalTo()</code>一次。</p><h3 id=主要步骤><a href=#%e4%b8%bb%e8%a6%81%e6%ad%a5%e9%aa%a4 class=header-anchor></a>主要步骤</h3><p>主要的步骤如下：</p><ol><li>设置UITableView背景透明。</li><li>在UITableView正下方放置一个UIImageView，作为我们的Parallax Header，设置<code>contentMode</code>为<code>UIViewContentModeScaleAspectFill</code>，并加上<strong>上左右</strong>的固定约束，使其与UITableView对其，然后加上一个固定高度的约束，并在代码里面保存。</li><li>设置UITableView的<code>contentInset</code>跟Parallax Header等高，使UITableView的头部“撑开”，让后面的Parallax Header露出来。</li><li>在代码里面监听UITableView的<code>contentOffset</code>属性，当y小于0时，增加Parallax Header高度，使其产生联动效果。</li></ol><p>约束示意图如下：
+<img alt="Parallax Header" loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_6.png></p><h3 id=代码><a href=#%e4%bb%a3%e7%a0%81 class=header-anchor></a>代码</h3><p>创建Parallax Header的代码如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>_parallaxHeaderView = [UIImageView new];
+</span></span><span class=line><span class=cl>// 把Parallax Header放在UITableView的下面
+</span></span><span class=line><span class=cl>[self.view insertSubview:_parallaxHeaderView belowSubview:_tableView];
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 设置contentMode
+</span></span><span class=line><span class=cl>_parallaxHeaderView.contentMode = UIViewContentModeScaleAspectFill;
+</span></span><span class=line><span class=cl>_parallaxHeaderView.image = [UIImage imageNamed:@&#34;parallax_header_back&#34;];
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 添加约束
+</span></span><span class=line><span class=cl>[_parallaxHeaderView mas_makeConstraints:^(MASConstraintMaker *make) {
+</span></span><span class=line><span class=cl>    make.left.and.right.equalTo(self.view);
+</span></span><span class=line><span class=cl>    make.top.equalTo(self.mas_topLayoutGuideBottom);
+</span></span><span class=line><span class=cl>    // 保存高度约束
+</span></span><span class=line><span class=cl>    _parallaxHeaderHeightConstraint = make.height.equalTo(@(ParallaxHeaderHeight));
+</span></span><span class=line><span class=cl>}];
+</span></span></code></pre></div><p>设置UITableView的<code>contentInset</code></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-ini data-lang=ini><span class=line><span class=cl><span class=na>_tableView.contentInset</span> <span class=o>=</span> <span class=s>UIEdgeInsetsMake(ParallaxHeaderHeight, 0, 0, 0);</span>
+</span></span></code></pre></div><h3 id=监听contentoffset属性的两种方法><a href=#%e7%9b%91%e5%90%accontentoffset%e5%b1%9e%e6%80%a7%e7%9a%84%e4%b8%a4%e7%a7%8d%e6%96%b9%e6%b3%95 class=header-anchor></a>监听<code>contentOffset</code>属性的两种方法</h3><h4 id=方法1直接实现scrollviewdidscroll><a href=#%e6%96%b9%e6%b3%951%e7%9b%b4%e6%8e%a5%e5%ae%9e%e7%8e%b0scrollviewdidscroll class=header-anchor></a>方法1：直接实现<code>scrollViewDidScroll:</code></h4><p>这种方法应该是最直接的：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+</span></span><span class=line><span class=cl>    if (scrollView.contentOffset.y &lt; 0) {
+</span></span><span class=line><span class=cl>        // 增加Parallax Header对应的高度，y是负数，所以减去
+</span></span><span class=line><span class=cl>        _parallaxHeaderHeightConstraint.equalTo(@(ParallaxHeaderHeight - scrollView.contentOffset.y));
+</span></span><span class=line><span class=cl>    } else {
+</span></span><span class=line><span class=cl>        _parallaxHeaderHeightConstraint.equalTo(@(ParallaxHeaderHeight));
+</span></span><span class=line><span class=cl>    }
+</span></span><span class=line><span class=cl>}
+</span></span></code></pre></div><h4 id=方法2kvo监听contentoffset变化><a href=#%e6%96%b9%e6%b3%952kvo%e7%9b%91%e5%90%accontentoffset%e5%8f%98%e5%8c%96 class=header-anchor></a>方法2：KVO监听<code>contentOffset</code>变化</h4><p>用KVO的好处就是不用要求当前类实现UITableView的delegate，对于代码的拆分有好处。</p><p>增加KVO：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-groovy data-lang=groovy><span class=line><span class=cl><span class=o>[</span><span class=n>_tableView</span> <span class=nl>addObserver:</span><span class=n>self</span> <span class=nl>forKeyPath:</span><span class=err>@</span><span class=s2>&#34;contentOffset&#34;</span> <span class=nl>options:</span><span class=n>NSKeyValueObservingOptionNew</span> <span class=nl>context:</span><span class=n>nil</span><span class=o>];</span>
+</span></span></code></pre></div><p>实现监听:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=p>-</span> <span class=p>(</span><span class=kt>void</span><span class=p>)</span><span class=nf>observeValueForKeyPath:</span><span class=p>(</span><span class=n>NSString</span> <span class=o>*</span><span class=p>)</span><span class=nv>keyPath</span> <span class=nf>ofObject:</span><span class=p>(</span><span class=kt>id</span><span class=p>)</span><span class=nv>object</span> <span class=nf>change:</span><span class=p>(</span><span class=n>NSDictionary</span><span class=o>&lt;</span><span class=n>NSString</span> <span class=o>*</span><span class=p>,</span><span class=kt>id</span><span class=o>&gt;</span> <span class=o>*</span><span class=p>)</span><span class=nv>change</span> <span class=nf>context:</span><span class=p>(</span><span class=kt>void</span> <span class=o>*</span><span class=p>)</span><span class=nv>context</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>([</span><span class=n>keyPath</span> <span class=nl>isEqualToString</span><span class=p>:</span><span class=s>@&#34;contentOffset&#34;</span><span class=p>])</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 取出contentOffset值
+</span></span></span><span class=line><span class=cl>        <span class=n>CGPoint</span> <span class=n>contentOffset</span> <span class=o>=</span> <span class=p>((</span><span class=n>NSValue</span> <span class=o>*</span><span class=p>)</span><span class=n>change</span><span class=p>[</span><span class=n>NSKeyValueChangeNewKey</span><span class=p>]).</span><span class=n>CGPointValue</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 改变高度
+</span></span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>contentOffset</span><span class=p>.</span><span class=n>y</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>_parallaxHeaderHeightConstraint</span><span class=p>.</span><span class=n>equalTo</span><span class=p>(</span><span class=l>@(</span><span class=n>ParallaxHeaderHeight</span> <span class=o>-</span> <span class=n>contentOffset</span><span class=p>.</span><span class=n>y</span><span class=l>)</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>_parallaxHeaderHeightConstraint</span><span class=p>.</span><span class=n>equalTo</span><span class=p>(</span><span class=l>@(</span><span class=n>ParallaxHeaderHeight</span><span class=l>)</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>最后别忘了取消KVO:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-groovy data-lang=groovy><span class=line><span class=cl><span class=o>-</span> <span class=o>(</span><span class=kt>void</span><span class=o>)</span><span class=n>dealloc</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=o>[</span><span class=n>_tableView</span> <span class=nl>removeObserver:</span><span class=n>self</span> <span class=nl>forKeyPath:</span><span class=err>@</span><span class=s2>&#34;contentOffset&#34;</span><span class=o>];</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span></code></pre></div><h3 id=小节><a href=#%e5%b0%8f%e8%8a%82 class=header-anchor></a>小节</h3><p><code>NSLayoutConstraint</code>的<code>constant</code>属性非常有用，既可以做动画，也可以方便的调整现有布局，大家多多挖掘哈~</p><h2 id=case-2-动态变高度的uitableviewcell><a href=#case-2-%e5%8a%a8%e6%80%81%e5%8f%98%e9%ab%98%e5%ba%a6%e7%9a%84uitableviewcell class=header-anchor></a>Case 2: 动态变高度的UITableViewCell</h2><p>嗯，又是UITableViewCell=。=
+只不过这次的是“动态改变高度”，就是类似于微信朋友圈里面的“全文”那种效果。</p><p>单纯的不定高UITableViewCell不是本例子的重点，详细请看<a class=link href=http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/ target=_blank rel=noopener>有趣的Autolayout示例2-Masonry实现</a>里面的Case1。</p><p>先说一点我觉得在代码设计上比较重要的地方：<strong>Cell只负责显示内容，不应该保存具体的状态信息</strong>。</p><p>我们都知道，UITableViewCell是会被重用的，也就是说，不能保证UITableView里面的哪一行一定由哪一个UITableViewCell实例展示。
+动态展开、收回Cell的时候，我们需要一个BOOL变量，用于保存当前Cell的展开、收回的状态。这个BOOL变量就是所谓的“<strong>状态</strong>”，这个状态应该保存在当前Cell的数据里面，如Entity、ViewModel里面。对Cell填充数据的时候，再根据这个“状态”，修改对应的约束。</p><h3 id=主要步骤-1><a href=#%e4%b8%bb%e8%a6%81%e6%ad%a5%e9%aa%a4-1 class=header-anchor></a>主要步骤</h3><p>先看看大致的步骤：</p><ol><li>通过点击的Cell找到对应的数据Entity。</li><li>改变这一行数据Entity用于保存状态的BOOL变量的值。</li><li>让UITableView刷新这一行。</li><li>刷新的时候，Cell根据这个BOOL变量重新调整约束、填充数据，得到新的高度。</li><li>最后就是Cell的高度变化。（此时的这一行的Cell实例并不一定是之前的那个实例）</li></ol><h3 id=布局><a href=#%e5%b8%83%e5%b1%80 class=header-anchor></a>布局</h3><p>为了尽量简单，例子里面的Cell只有三个子控件，第一个UILabel是标题等调试信息，第二个UILabel用来显示多行文本，最后一个UIButton用来切换展开、收回的状态。大致的布局如下：</p><p><img alt="Case2 UITableViewCell布局示意" loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_3.png></p><h4 id=布局的代码><a href=#%e5%b8%83%e5%b1%80%e7%9a%84%e4%bb%a3%e7%a0%81 class=header-anchor></a>布局的代码</h4><p><strong>标题UIlabel</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-ini data-lang=ini><span class=line><span class=cl><span class=na>_titleLabel</span> <span class=o>=</span> <span class=s>[UILabel new];</span>
+</span></span><span class=line><span class=cl><span class=na>[self.contentView addSubview:_titleLabel];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=na>[_titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {</span>
+</span></span><span class=line><span class=cl>    <span class=na>make.height.equalTo(@21);</span>
+</span></span><span class=line><span class=cl>    <span class=na>make.left.and.right.and.top.equalTo(self.contentView).with.insets(UIEdgeInsetsMake(4, 8, 4, 8));</span>
+</span></span><span class=line><span class=cl><span class=na>}];</span>
+</span></span></code></pre></div><p><strong>底部“More”按钮</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-groovy data-lang=groovy><span class=line><span class=cl><span class=n>_moreButton</span> <span class=o>=</span> <span class=o>[</span><span class=n>UIButton</span> <span class=nl>buttonWithType:</span><span class=n>UIButtonTypeSystem</span><span class=o>];</span>
+</span></span><span class=line><span class=cl><span class=o>[</span><span class=n>_moreButton</span> <span class=nl>setTitle:</span><span class=err>@</span><span class=s2>&#34;More&#34;</span> <span class=nl>forState:</span><span class=n>UIControlStateNormal</span><span class=o>];</span>
+</span></span><span class=line><span class=cl><span class=o>[</span><span class=n>_moreButton</span> <span class=nl>addTarget:</span><span class=n>self</span> <span class=nl>action:</span><span class=nd>@selector</span><span class=o>(</span><span class=nl>switchExpandedState:</span><span class=o>)</span> <span class=nl>forControlEvents:</span><span class=n>UIControlEventTouchUpInside</span><span class=o>];</span>
+</span></span><span class=line><span class=cl><span class=o>[</span><span class=n>self</span><span class=o>.</span><span class=na>contentView</span> <span class=nl>addSubview:</span><span class=n>_moreButton</span><span class=o>];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>[</span><span class=n>_moreButton</span> <span class=nl>mas_makeConstraints:</span><span class=o>^(</span><span class=n>MASConstraintMaker</span> <span class=o>*</span><span class=n>make</span><span class=o>)</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>make</span><span class=o>.</span><span class=na>height</span><span class=o>.</span><span class=na>equalTo</span><span class=o>(</span><span class=err>@</span><span class=mi>32</span><span class=o>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>make</span><span class=o>.</span><span class=na>left</span><span class=o>.</span><span class=na>and</span><span class=o>.</span><span class=na>right</span><span class=o>.</span><span class=na>and</span><span class=o>.</span><span class=na>bottom</span><span class=o>.</span><span class=na>equalTo</span><span class=o>(</span><span class=n>self</span><span class=o>.</span><span class=na>contentView</span><span class=o>);</span>
+</span></span><span class=line><span class=cl><span class=o>}];</span>
+</span></span></code></pre></div><p><strong>正文UIlabel</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>CGFloat preferredMaxWidth = [UIScreen mainScreen].bounds.size.width - 16;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// Content - 多行
+</span></span><span class=line><span class=cl>_contentLabel = [UILabel new];
+</span></span><span class=line><span class=cl>_contentLabel.numberOfLines = 0;
+</span></span><span class=line><span class=cl>_contentLabel.lineBreakMode = NSLineBreakByCharWrapping;
+</span></span><span class=line><span class=cl>_contentLabel.clipsToBounds = YES;
+</span></span><span class=line><span class=cl>_contentLabel.preferredMaxLayoutWidth = preferredMaxWidth; // 多行时必须设置
+</span></span><span class=line><span class=cl>[self.contentView addSubview:_contentLabel];
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>[_contentLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+</span></span><span class=line><span class=cl>    make.left.and.right.equalTo(self.contentView).with.insets(UIEdgeInsetsMake(4, 8, 4, 8));
+</span></span><span class=line><span class=cl>    make.top.equalTo(_titleLabel.mas_bottom).with.offset(4);
+</span></span><span class=line><span class=cl>    make.bottom.equalTo(_moreButton.mas_top).with.offset(-4);
+</span></span><span class=line><span class=cl>    // 先加上高度的限制
+</span></span><span class=line><span class=cl>    _contentHeightConstraint = make.height.equalTo(@64).with.priorityHigh(); // 优先级只设置成High,比正常的高度约束低一些,防止冲突
+</span></span><span class=line><span class=cl>}];
+</span></span></code></pre></div><h4 id=为什么要加正文uilabel高度约束><a href=#%e4%b8%ba%e4%bb%80%e4%b9%88%e8%a6%81%e5%8a%a0%e6%ad%a3%e6%96%87uilabel%e9%ab%98%e5%ba%a6%e7%ba%a6%e6%9d%9f class=header-anchor></a>为什么要加正文UIlabel高度约束</h4><p><a class=link href=http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/ target=_blank rel=noopener>有趣的Autolayout示例2-Masonry实现</a>里面的Case1也讲过，获取Cell的高度的方法是<code>systemLayoutSizeFittingSize:</code>，如果不对正文UILabel加上高度约束，获取的高度就是根据正文的内容计算出来的，这与之前的例子里面一致。</p><p>为了使高度固定，就需要加上一个高度约束，使得<code>systemLayoutSizeFittingSize:</code>计算时按照这个约束去计算。</p><h4 id=为什么正文uilabel的高度约束的优先级要调整为high><a href=#%e4%b8%ba%e4%bb%80%e4%b9%88%e6%ad%a3%e6%96%87uilabel%e7%9a%84%e9%ab%98%e5%ba%a6%e7%ba%a6%e6%9d%9f%e7%9a%84%e4%bc%98%e5%85%88%e7%ba%a7%e8%a6%81%e8%b0%83%e6%95%b4%e4%b8%bahigh class=header-anchor></a>为什么正文UILabel的高度约束的优先级要调整为<code>High</code></h4><p>在UITableView刷新时，会先计算高度，即先调用<code>tableView: heightForRowAtIndexPath:</code>方法，如果高度约束为默认的1000最高的话，会产生冲突。</p><p>因为在计算的时候，我们的高度是由一个“template cell”填充内容后计算得来，这个时候的高度已经是展开以后的高度，当前的Cell还来不及调整约束（甚至不会调整，如果只用<code>beginUpdates和endUpdates</code>更新的话，Cell不会reload），所以降低这个高度约束的优先级，去掉冲突。</p><h3 id=使用install和uninstall控制约束><a href=#%e4%bd%bf%e7%94%a8install%e5%92%8cuninstall%e6%8e%a7%e5%88%b6%e7%ba%a6%e6%9d%9f class=header-anchor></a>使用install和uninstall控制约束</h3><p>为了能得正确高度，Cell需要根据具体的数据、状态更新约束。
+这里可以使用<code>install</code>和<code>uninstall</code>来控制正文UILabel高度约束是否生效。在填充Cell的数据时，就可以根据状态BOOL值来选择调用：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>- (void)setEntity:(Case8DataEntity *)entity indexPath:(NSIndexPath *)indexPath {
+</span></span><span class=line><span class=cl>    // 设置数据...
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    // 改变约束
+</span></span><span class=line><span class=cl>    if (_entity.expanded) {
+</span></span><span class=line><span class=cl>        [_contentHeightConstraint uninstall];
+</span></span><span class=line><span class=cl>    } else {
+</span></span><span class=line><span class=cl>        [_contentHeightConstraint install];
+</span></span><span class=line><span class=cl>    }
+</span></span><span class=line><span class=cl>}
+</span></span></code></pre></div><h3 id=创建delegate使得cell的事件得以回传到viewcontroller><a href=#%e5%88%9b%e5%bb%badelegate%e4%bd%bf%e5%be%97cell%e7%9a%84%e4%ba%8b%e4%bb%b6%e5%be%97%e4%bb%a5%e5%9b%9e%e4%bc%a0%e5%88%b0viewcontroller class=header-anchor></a>创建Delegate，使得Cell的事件得以回传到ViewController</h3><p>在点击Cell的“More”按钮时，需要改变当前的展开收回状态BOOL值，还需要让UITableView刷新。
+直接在Cell里面修改Entity数据，或者持有UITableView实例都是不恰当的，这个时候可以用Delegate模式实现。</p><p>Delegate如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-groovy data-lang=groovy><span class=line><span class=cl><span class=nd>@protocol</span> <span class=n>Case8CellDelegate</span> <span class=o>&lt;</span><span class=n>NSObject</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=o>-</span> <span class=o>(</span><span class=kt>void</span><span class=o>)</span><span class=nl>case8Cell:</span><span class=o>(</span><span class=n>Case8Cell</span> <span class=o>*)</span><span class=n>cell</span> <span class=nl>switchExpandedStateWithIndexPath:</span><span class=o>(</span><span class=n>NSIndexPath</span> <span class=o>*)</span><span class=n>index</span><span class=o>;</span>
+</span></span><span class=line><span class=cl><span class=nd>@end</span>
+</span></span></code></pre></div><p>然后ViewController实现这个Protocol</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-ceylon data-lang=ceylon><span class=line><span class=cl><span class=o>-</span> <span class=o>(</span><span class=kt>void</span><span class=o>)</span><span class=nl>case8Cell:</span><span class=o>(</span><span class=n>Case8Cell</span> <span class=o>*)</span><span class=n>cell</span> <span class=nl>switchExpandedStateWithIndexPath:</span><span class=o>(</span><span class=n>NSIndexPath</span> <span class=o>*)</span><span class=n>index</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 取出对应数据
+</span></span></span><span class=line><span class=cl>    <span class=n>Case8DataEntity</span> <span class=o>*</span><span class=n>case8DataEntity</span> <span class=o>=</span> <span class=n>_data</span><span class=o>[(</span><span class=n>NSUInteger</span><span class=o>)</span> <span class=n>index</span><span class=o>.</span><span class=na>row</span><span class=o>];</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 修改状态
+</span></span></span><span class=line><span class=cl>    <span class=n>case8DataEntity</span><span class=o>.</span><span class=na>expanded</span> <span class=o>=</span> <span class=o>!</span><span class=n>case8DataEntity</span><span class=o>.</span><span class=na>expanded</span><span class=o>;</span> <span class=c1>// 切换展开还是收回
+</span></span></span><span class=line><span class=cl>    <span class=n>case8DataEntity</span><span class=o>.</span><span class=na>cellHeight</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=c1>// 重置高度缓存
+</span></span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 刷新UITableView
+</span></span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span></code></pre></div><p>Cell保存ViewController这个delegate，然后在按钮点击时回调</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=c1>// Cellb保存delegate，注意weak
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>weak</span><span class=p>,</span> <span class=k>nonatomic</span><span class=p>)</span> <span class=kt>id</span> <span class=o>&lt;</span><span class=n>Case8CellDelegate</span><span class=o>&gt;</span> <span class=n>delegate</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// Cell的“More”按钮点击
+</span></span></span><span class=line><span class=cl><span class=p>-</span> <span class=p>(</span><span class=kt>void</span><span class=p>)</span><span class=nf>switchExpandedState:</span><span class=p>(</span><span class=n>UIButton</span> <span class=o>*</span><span class=p>)</span><span class=nv>button</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=n>_delegate</span> <span class=nl>case8Cell</span><span class=p>:</span><span class=nb>self</span> <span class=nl>switchExpandedStateWithIndexPath</span><span class=p>:</span><span class=n>_indexPath</span><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><h3 id=刷新的方式><a href=#%e5%88%b7%e6%96%b0%e7%9a%84%e6%96%b9%e5%bc%8f class=header-anchor></a>刷新的方式</h3><p>UITableView的刷新可以用以下几种方法：</p><h4 id=1-reloaddata><a href=#1-reloaddata class=header-anchor></a>1. reloadData</h4><p>用<code>reloadData</code>刷新，其实就是把所有Cell都刷新了一次，代价有点大，不推荐。</p><h4 id=2-reloadrowsatindexpathswithrowanimation><a href=#2-reloadrowsatindexpathswithrowanimation class=header-anchor></a>2. reloadRowsAtIndexPaths:withRowAnimation:</h4><p>这个方法的好处就是可以指定要刷新的哪几行，而且可以指定刷新时的动画形式，一般来说用<code>UITableViewRowAnimationFade</code>就不错。
+刷新的时候，<code>tableView:cellForRowAtIndexPath:</code>会被调用，原来的Cell实例会被替换。</p><h4 id=3-beginupdates和endupdates><a href=#3-beginupdates%e5%92%8cendupdates class=header-anchor></a>3. beginUpdates和endUpdates</h4><p>这两个方法一般都是成对使用的，在中间可以执行插入、删除等调整Cell的操作，改变Cell的高度也可以用它。
+不过要注意的是，这两个方法并不会重新加载Cell，只是单纯的改变了高度，所以如果Cell原来的约束里面有高度约束这种，而又保持默认的优先级，就会产生约束冲突。</p><p>从效果上来讲，我个人觉得用<code>reloadRowsAtIndexPaths:withRowAnimation:</code>会更好一些~</p><h3 id=小节-1><a href=#%e5%b0%8f%e8%8a%82-1 class=header-anchor></a>小节</h3><p>想用好Autolayout不容易啊，要仔细研究UITableView的机制=。=</p><h2 id=case-3-两种方式实现等间距><a href=#case-3-%e4%b8%a4%e7%a7%8d%e6%96%b9%e5%bc%8f%e5%ae%9e%e7%8e%b0%e7%ad%89%e9%97%b4%e8%b7%9d class=header-anchor></a>Case 3: 两种方式实现等间距</h2><p>等间距，也就是View之间的X或Y轴上的坐标等差，在这里我只举出水平方向上的等间距，垂直方向上一个道理。</p><h3 id=方法1利用透明等宽的占位view填充空白处实现等间距><a href=#%e6%96%b9%e6%b3%951%e5%88%a9%e7%94%a8%e9%80%8f%e6%98%8e%e7%ad%89%e5%ae%bd%e7%9a%84%e5%8d%a0%e4%bd%8dview%e5%a1%ab%e5%85%85%e7%a9%ba%e7%99%bd%e5%a4%84%e5%ae%9e%e7%8e%b0%e7%ad%89%e9%97%b4%e8%b7%9d class=header-anchor></a>方法1：利用透明等宽的占位View填充空白处，实现等间距</h3><p>步骤很简单，就是循环创建真正要展示的View和占位View，布局如下：</p><p><img alt=利用占位View实现等间距 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_4.png></p><p>说明一下：</p><ul><li>占位View的宽度不能定死，这样外部的父级View宽度变化时，内部的View仍然可以保持等间距。</li><li>既然占位View宽度不定，总得有个宽度的参照，这个参照就是其它的占位View，也就是说，要给占位View加上两两宽度相等的约束。</li></ul><p>代码如下:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// 先创建第一个占位View</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nx>UIView</span><span class=w> </span><span class=o>*</span><span class=nx>lastSpaceView</span><span class=w> </span><span class=p>=</span><span class=w> </span><span class=p>[</span><span class=nx>UIView</span><span class=w> </span><span class=nx>new</span><span class=p>];</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nx>lastSpaceView</span><span class=p>.</span><span class=nx>backgroundColor</span><span class=w> </span><span class=p>=</span><span class=w> </span><span class=p>[</span><span class=nx>UIColor</span><span class=w> </span><span class=nx>greenColor</span><span class=p>];</span><span class=w> </span><span class=c1>// 用绿色标出</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>[</span><span class=nx>_containerView1</span><span class=w> </span><span class=nx>addSubview</span><span class=p>:</span><span class=nx>lastSpaceView</span><span class=p>];</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>// 添加上左下三个约束</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>[</span><span class=nx>lastSpaceView</span><span class=w> </span><span class=nx>mas_makeConstraints</span><span class=p>:^(</span><span class=nx>MASConstraintMaker</span><span class=w> </span><span class=o>*</span><span class=nx>make</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nx>make</span><span class=p>.</span><span class=nx>left</span><span class=p>.</span><span class=nx>and</span><span class=p>.</span><span class=nx>top</span><span class=p>.</span><span class=nx>and</span><span class=p>.</span><span class=nx>bottom</span><span class=p>.</span><span class=nf>equalTo</span><span class=p>(</span><span class=nx>_containerView1</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}];</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>// 循环创建</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>for</span><span class=w> </span><span class=p>(</span><span class=nx>NSUInteger</span><span class=w> </span><span class=nx>i</span><span class=w> </span><span class=p>=</span><span class=w> </span><span class=mi>0</span><span class=p>;</span><span class=w> </span><span class=nx>i</span><span class=w> </span><span class=p>&lt;</span><span class=w> </span><span class=nx>ITEM_COUNT</span><span class=p>;</span><span class=w> </span><span class=nx>i</span><span class=o>++</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// 创建ItemView，即真正显示内容的View</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nx>UIView</span><span class=w> </span><span class=o>*</span><span class=nx>itemView</span><span class=w> </span><span class=p>=</span><span class=w> </span><span class=p>[</span><span class=nx>self</span><span class=w> </span><span class=nx>getItemViewWithIndex</span><span class=p>:</span><span class=nx>i</span><span class=p>];</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>[</span><span class=nx>_containerView1</span><span class=w> </span><span class=nx>addSubview</span><span class=p>:</span><span class=nx>itemView</span><span class=p>];</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// 固定宽高，左边、垂直方向中心与上一个占位View对齐。</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>[</span><span class=nx>itemView</span><span class=w> </span><span class=nx>mas_makeConstraints</span><span class=p>:^(</span><span class=nx>MASConstraintMaker</span><span class=w> </span><span class=o>*</span><span class=nx>make</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nx>make</span><span class=p>.</span><span class=nx>height</span><span class=p>.</span><span class=nx>and</span><span class=p>.</span><span class=nx>width</span><span class=p>.</span><span class=nf>equalTo</span><span class=p>(</span><span class=err>@</span><span class=p>(</span><span class=nx>ITEM_SIZE</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nx>make</span><span class=p>.</span><span class=nx>left</span><span class=p>.</span><span class=nf>equalTo</span><span class=p>(</span><span class=nx>lastSpaceView</span><span class=p>.</span><span class=nx>mas_right</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nx>make</span><span class=p>.</span><span class=nx>centerY</span><span class=p>.</span><span class=nf>equalTo</span><span class=p>(</span><span class=nx>_containerView1</span><span class=p>.</span><span class=nx>mas_centerY</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}];</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// 创建下一个占位View</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nx>UIView</span><span class=w> </span><span class=o>*</span><span class=nx>spaceView</span><span class=w> </span><span class=p>=</span><span class=w> </span><span class=p>[</span><span class=nx>UIView</span><span class=w> </span><span class=nx>new</span><span class=p>];</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nx>spaceView</span><span class=p>.</span><span class=nx>backgroundColor</span><span class=w> </span><span class=p>=</span><span class=w> </span><span class=p>[</span><span class=nx>UIColor</span><span class=w> </span><span class=nx>greenColor</span><span class=p>];</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>[</span><span class=nx>_containerView1</span><span class=w> </span><span class=nx>addSubview</span><span class=p>:</span><span class=nx>spaceView</span><span class=p>];</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// 左边与当前ItemView对齐，上下与边界对齐，宽度与上一个占位View相等！</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// 但是右边的约束不能加，因为要留给下一次循环与下一个ItemView的左边界添加</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>[</span><span class=nx>spaceView</span><span class=w> </span><span class=nx>mas_makeConstraints</span><span class=p>:^(</span><span class=nx>MASConstraintMaker</span><span class=w> </span><span class=o>*</span><span class=nx>make</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nx>make</span><span class=p>.</span><span class=nx>left</span><span class=p>.</span><span class=nf>equalTo</span><span class=p>(</span><span class=nx>itemView</span><span class=p>.</span><span class=nx>mas_right</span><span class=p>).</span><span class=nx>with</span><span class=p>.</span><span class=nf>priorityHigh</span><span class=p>();</span><span class=w> </span><span class=c1>// 降低优先级，防止宽度不够出现约束冲突</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nx>make</span><span class=p>.</span><span class=nx>top</span><span class=p>.</span><span class=nx>and</span><span class=p>.</span><span class=nx>bottom</span><span class=p>.</span><span class=nf>equalTo</span><span class=p>(</span><span class=nx>_containerView1</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nx>make</span><span class=p>.</span><span class=nx>width</span><span class=p>.</span><span class=nf>equalTo</span><span class=p>(</span><span class=nx>lastSpaceView</span><span class=p>.</span><span class=nx>mas_width</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}];</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// 更新</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nx>lastSpaceView</span><span class=w> </span><span class=p>=</span><span class=w> </span><span class=nx>spaceView</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>// 为最后一个占位View添加右边约束</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>[</span><span class=nx>lastSpaceView</span><span class=w> </span><span class=nx>mas_makeConstraints</span><span class=p>:^(</span><span class=nx>MASConstraintMaker</span><span class=w> </span><span class=o>*</span><span class=nx>make</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nx>make</span><span class=p>.</span><span class=nx>right</span><span class=p>.</span><span class=nf>equalTo</span><span class=p>(</span><span class=nx>_containerView1</span><span class=p>.</span><span class=nx>mas_right</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}];</span><span class=w>
+</span></span></span></code></pre></div><p>像这种重复添加View和约束，合理使用变量保存“上一次循环”创建的占位View，就可以大大简化代码，而且可以任意调整数量~</p><h3 id=方法2直接按比例设置multiplier><a href=#%e6%96%b9%e6%b3%952%e7%9b%b4%e6%8e%a5%e6%8c%89%e6%af%94%e4%be%8b%e8%ae%be%e7%bd%aemultiplier class=header-anchor></a>方法2：直接按比例设置multiplier</h3><p>等间距，其实就是按比例，再进一步就是x坐标是按比例的。
+延伸到View上，可以理解为centerX的值与父级View的宽度按比例增减。</p><p>但是，读者可以尝试一下，直接设置一个View的边界、位置属性，如centerX，等于其父级View的宽度是会报错的。</p><p>难道就没有办法了？当然不是。</p><p><strong>始终在坐标系上考虑约束</strong></p><p>在上一篇<a class=link href=http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/ target=_blank rel=noopener>有趣的Autolayout示例2-Masonry实现</a>的开头我也提到过，Autolayout最终都是体现在坐标系上，一切都会按照<code>viewA-attribute = viewB-attribute * multiplier + constant</code>这种公式去计算，既然centerX不能跟父级的Width宽度一起加约束，那就换一个，如父级的<strong>右边界</strong>，父级View的<strong>右边界</strong>在父级本身的参照系下的Y坐标值不就等于其宽度吗~</p><p>所以，可以按照如下方式加约束：</p><p><img alt=按比例设置multiplier实现等间距 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_5.png></p><p>对应的代码也会异常简单：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=c1>// 循环创建
+</span></span></span><span class=line><span class=cl><span class=k>for</span> <span class=p>(</span><span class=n>NSUInteger</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>ITEM_COUNT</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>UIView</span> <span class=o>*</span><span class=n>itemView</span> <span class=o>=</span> <span class=p>[</span><span class=nb>self</span> <span class=nl>getItemViewWithIndex</span><span class=p>:</span><span class=n>i</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=n>_containerView2</span> <span class=nl>addSubview</span><span class=p>:</span><span class=n>itemView</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=n>itemView</span> <span class=nl>mas_makeConstraints</span><span class=p>:</span><span class=o>^</span><span class=p>(</span><span class=n>MASConstraintMaker</span> <span class=o>*</span><span class=n>make</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 宽高一定
+</span></span></span><span class=line><span class=cl>        <span class=n>make</span><span class=p>.</span><span class=n>width</span><span class=p>.</span><span class=n>and</span><span class=p>.</span><span class=n>height</span><span class=p>.</span><span class=n>equalTo</span><span class=p>(</span><span class=l>@(</span><span class=n>ITEM_SIZE</span><span class=l>)</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 确定Y坐标
+</span></span></span><span class=line><span class=cl>        <span class=n>make</span><span class=p>.</span><span class=n>centerY</span><span class=p>.</span><span class=n>equalTo</span><span class=p>(</span><span class=n>_containerView2</span><span class=p>.</span><span class=n>mas_centerY</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 确定X坐标，注意分子分母都要加1
+</span></span></span><span class=line><span class=cl>        <span class=n>make</span><span class=p>.</span><span class=n>centerX</span><span class=p>.</span><span class=n>equalTo</span><span class=p>(</span><span class=n>_containerView2</span><span class=p>.</span><span class=n>mas_right</span><span class=p>).</span><span class=n>multipliedBy</span><span class=p>(((</span><span class=n>CGFloat</span><span class=p>)</span><span class=n>i</span> <span class=o>+</span> <span class=mi>1</span><span class=p>)</span> <span class=o>/</span> <span class=p>((</span><span class=n>CGFloat</span><span class=p>)</span><span class=n>ITEM_COUNT</span> <span class=o>+</span> <span class=mi>1</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=p>}];</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><h3 id=小节-2><a href=#%e5%b0%8f%e8%8a%82-2 class=header-anchor></a>小节</h3><p>很多时候，灵活的使用multiplier能大大简化开发~</p><h2 id=总结><a href=#%e6%80%bb%e7%bb%93 class=header-anchor></a>总结</h2><p>三个例子说完了，你有啥收获呢~？:-D</p></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/%E5%8E%9F%E5%88%9B/>原创</a>
+<a href=/tags/ios/>IOS</a>
+<a href=/tags/autolayout/>Autolayout</a>
+<a href=/tags/masonry/>Masonry</a></section></footer></article><aside><h2 class=section-title>相关文章</h2><div class=subsection-list><div class=article-list--tile><article class=has-image><a href=/2017/03/12/autolayout-example-with-masonry5/><div class=article-image><img alt="Featured image of post 有趣的Autolayout示例5-Masonry实现" loading=lazy src=/assets/2017/03/12/autolayout-example-with-masonry5/blog_autolayout_example_with_masonry5_1.png></div><div class=article-details><h2 class=article-title>有趣的Autolayout示例5-Masonry实现</h2></div></a></article><article class=has-image><a href=/2016/08/06/autolayout-example-with-masonry4/><div class=article-image><img alt="Featured image of post 有趣的Autolayout示例4-Masonry实现" loading=lazy src=/assets/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_1.gif></div><div class=article-details><h2 class=article-title>有趣的Autolayout示例4-Masonry实现</h2></div></a></article><article class=has-image><a href=/2015/08/08/autolayout-example-with-masonry2/><div class=article-image><img alt="Featured image of post 有趣的Autolayout示例2-Masonry实现" loading=lazy src=/assets/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_1.gif></div><div class=article-details><h2 class=article-title>有趣的Autolayout示例2-Masonry实现</h2></div></a></article><article class=has-image><a href=/2015/05/23/autolayout-example-with-masonry/><div class=article-image><img alt="Featured image of post 有趣的Autolayout示例-Masonry实现" loading=lazy src=/assets/2015/05/23/autolayout-example-with-masonry/blog_autolayout_example_with_masonry_1.gif></div><div class=article-details><h2 class=article-title>有趣的Autolayout示例-Masonry实现</h2></div></a></article><article class=has-image><a href=/2017/04/08/diy-methodSignatureForSelector/><div class=article-image><img alt="Featured image of post 反编译分析并模拟实现methodSignatureForSelector方法" loading=lazy src=/assets/2017/04/08/diy-methodSignatureForSelector/blog_RemakeMethodSignatureForSelector_1.jpg></div><div class=article-details><h2 class=article-title>反编译分析并模拟实现methodSignatureForSelector方法</h2></div></a></article></div></div></aside><footer class=site-footer><section class=copyright>&copy;
+2014 -
+2026 tutuge</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=4.0.3>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><script type=module>
+    import gallery from '\/ts\/gallery.js';
 
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
     
-
-    <title>有趣的Autolayout示例3-Masonry实现 | iOS程序猿.目前阿里,喜欢各种技术,RCFans</title>
-    <meta name="author" content="土土哥">
-    
-    <meta name="description" content="iOS程序猿.目前阿里,喜欢各种技术,RCFans">
-    
-    
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-    <meta property="og:title" content="有趣的Autolayout示例3-Masonry实现">
-    <meta property="og:site_name" content="土土哥的Blog">
-
-    
-    <meta property="og:image" content="undefined">
-    
-
-    <link rel="icon" type="image/png" href="/favicon.png">
-    <link rel="alternate" href="/atom.xml" title="土土哥的Blog" type="application/atom+xml">
-    <link rel="stylesheet" href="/css/lib/materialize.min.css">
-    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
-    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-
-    
-        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
-    
-    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-</head>
-</html>
-
-<body>
-    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
-
-    <nav class="blue-grey">
-    <div class="nav-wrapper">
-        <a href="#" data-activates="main-menu" class="button-collapse">
-            <i class="fa fa-navicon"></i>
-        </a>
-        <div class="">
-            <a href="/" class="brand-logo hide-on-med-and-down">土土哥的Blog</a>
-            <ul class="right hide-on-med-and-down">
-                
-                    <li>
-                        <a class="menu-home " href="/" >
-                            <i class="fa fa-home "></i>
-                            
-                            首页
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-archive " href="/archives" >
-                            <i class="fa fa-archive "></i>
-                            
-                            归档
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
-                            <i class="fa fa-bookmark "></i>
-                            
-                            分类
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-about " href="/about" >
-                            <i class="fa fa-user "></i>
-                            
-                            关于
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-search modal-trigger " href="#search" >
-                            <i class="fa fa-search "></i>
-                            
-                            搜索
-                        </a>
-                    </li>
-                
-            </ul>
-            <div>
-    <ul class="side-nav blue-grey darken-1" id="main-menu">
-        
-        <li class="side-user">
-            <div class="row">
-                <div class="col s4 no-padding">
-                    <img class="avatar-image circle responsive-img" src="http://tutuge.me/2019/07/29/2019-07-29-occupied-with-work/avatar_comic.jpg" alt="User Avatar">
-                </div>
-                <div class="info col s8 valign-wrapper no-padding">
-                    <div class="valign">
-                        <p class="name">土土哥</p>
-                        <p class="desc">iOS/Android/技术宅/RCFans</p>
-                    </div>
-                </div>
-            </div>
-        </li>
-        
-
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-home " href="/" >
-                    <i class="fa fa-home "></i>
-                    
-                    首页
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-archive " href="/archives" >
-                    <i class="fa fa-archive "></i>
-                    
-                    归档
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
-                    <i class="fa fa-bookmark "></i>
-                    
-                    分类
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-about " href="/about" >
-                    <i class="fa fa-user "></i>
-                    
-                    关于
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-search modal-trigger " href="#search" >
-                    <i class="fa fa-search "></i>
-                    
-                    搜索
-                </a>
-            </li>
-        
-    </ul>
-
-    <ul class="side-nav blue-grey darken-1" id="category-menu">
-    
-
-            
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/其它/">
-                    其它 <span class="right">5 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/iOS/">
-                    iOS <span class="right">37 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/Android/">
-                    Android <span class="right">1 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/Mac/">
-                    Mac <span class="right">1 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/服务端/">
-                    服务端 <span class="right">2 篇</span></a>
-                </a>
-            </li>
-
-        
-
-    </ul>
-</div>
-
-        </div>
-    </div>
-</nav>
-
-<div id="search" class="modal search-modal">
-    <div class="row">
-        <div class="input-field col s12">
-              <input id="search-input" type="text">
-              <label for="search-input">搜索</label>
-        </div>
-
-    </div>
-    <div id="search-result" class="search-result col s12">
-
-    </div>
-</div>
-
-
-    <main>
-        <div class="container main-container">
-    
-<nav class="page-nav hide-on-small-only">
-    <div class="nav-wrapper blue-grey">
-        <span class="breadcrumb">当前位置（分类目录）</span>
-        
-            
-    
-    
-    <a class="breadcrumb" href="/categories/iOS/">iOS</a>
-
-
-        
-
-        
-    </div>
-</nav>
-
-<article>
-    <div class="card">
-        <div class="card-content">
-            
-
-            <div class="article-title">
-                
-    
-        <h1>有趣的Autolayout示例3-Masonry实现</h1>
-    
-
-
-            </div>
-            <time class="teal-link-context" datetime="2015-12-14T13:36:08.000Z"><a href="/2015/12/14/autolayout-example-with-masonry3/">2015-12-14</a></time>
-
-            <span id="busuanzi_container_page_pv" class="read-times-container">
-    <i class="fa fa-eye"></i>
-    <span id="busuanzi_value_page_pv"></span>
-</span>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
-        
-            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
-        
-            <a href="/tags/Autolayout/" class="chip teal accent-4">Autolayout</a>
-        
-            <a href="/tags/Masonry/" class="chip teal accent-4">Masonry</a>
-        
-    </div>
-
-
-            <div class="toc teal-link-context hide-on-med-and-down">
-    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#更新"><span class="section table-of-contents-text">更新</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#前言"><span class="section table-of-contents-text">前言</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Case-1-Parallax-Header"><span class="section table-of-contents-text">Case 1: Parallax Header</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#原理"><span class="section table-of-contents-text">原理</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#主要步骤"><span class="section table-of-contents-text">主要步骤</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#代码"><span class="section table-of-contents-text">代码</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#监听contentOffset属性的两种方法"><span class="section table-of-contents-text">监听contentOffset属性的两种方法</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#方法1：直接实现scrollViewDidScroll"><span class="section table-of-contents-text">方法1：直接实现scrollViewDidScroll:</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#方法2：KVO监听contentOffset变化"><span class="section table-of-contents-text">方法2：KVO监听contentOffset变化</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#小节"><span class="section table-of-contents-text">小节</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Case-2-动态变高度的UITableViewCell"><span class="section table-of-contents-text">Case 2: 动态变高度的UITableViewCell</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#主要步骤-1"><span class="section table-of-contents-text">主要步骤</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#布局"><span class="section table-of-contents-text">布局</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#布局的代码"><span class="section table-of-contents-text">布局的代码</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#为什么要加正文UIlabel高度约束"><span class="section table-of-contents-text">为什么要加正文UIlabel高度约束</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#为什么正文UILabel的高度约束的优先级要调整为High"><span class="section table-of-contents-text">为什么正文UILabel的高度约束的优先级要调整为High</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#使用install和uninstall控制约束"><span class="section table-of-contents-text">使用install和uninstall控制约束</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#创建Delegate，使得Cell的事件得以回传到ViewController"><span class="section table-of-contents-text">创建Delegate，使得Cell的事件得以回传到ViewController</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#刷新的方式"><span class="section table-of-contents-text">刷新的方式</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#1-reloadData"><span class="section table-of-contents-text">1. reloadData</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#2-reloadRowsAtIndexPaths-withRowAnimation"><span class="section table-of-contents-text">2. reloadRowsAtIndexPaths:withRowAnimation:</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#3-beginUpdates和endUpdates"><span class="section table-of-contents-text">3. beginUpdates和endUpdates</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#小节-1"><span class="section table-of-contents-text">小节</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Case-3-两种方式实现等间距"><span class="section table-of-contents-text">Case 3: 两种方式实现等间距</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#方法1：利用透明等宽的占位View填充空白处，实现等间距"><span class="section table-of-contents-text">方法1：利用透明等宽的占位View填充空白处，实现等间距</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#方法2：直接按比例设置multiplier"><span class="section table-of-contents-text">方法2：直接按比例设置multiplier</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#小节-2"><span class="section table-of-contents-text">小节</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#总结"><span class="section table-of-contents-text">总结</span></a></li></ol>
-</div>
-
-
-            <div class="entry teal-link-context">
-                <h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><ul>
-<li>2016-06-02: 感谢<a href="http://weibo.com/u/2953626141" target="_blank" rel="noopener">我不是蜡笔小新但是我有小白</a>，发现了Case 2的最后两个cell展开动画问题，原来是tableView的<code>estimatedRowHeight</code>会跟展开动画冲突的缘故。  </li>
-<li>2015-12-23: 感谢<a href="https://github.com/XVXVXXX" target="_blank" rel="noopener">XVXVXXX</a>的PR,Case 1不再需要Fake Header View，直接用contentInset就好~  </li>
-<li>2015-12-17：Case3的等间距，用UIStackView实现最优雅，但是无奈只有iOS9以上支持。兼容方案如OAStackView也可以，但是在UITableViewCell里面用，或者需要频繁的增减内部View的数量时，性能损耗有点厉害，会卡。所以，还是要看需求=。=</li>
-</ul>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>第三篇来了。<br>依然是3个小例子，主要部分用Masonry手写代码实现，其它的约束在storyboard里面直接拖拽搭建。<br>至于为啥不用VFL，主要是因为它的“描述性”的写法很容易出错，没有补全、不好调试，写起来没有“代码”的感觉=。=。当然，这个仁者见仁智者见智~<br>三个例子分别是：<strong>Parallax Header</strong>，<strong>动态变高度的UITableViewCell</strong>，以及<strong>两种方式实现等间距</strong>。原理其实都很简单，例子也都是平时积累起来的。</p>
-<p>前两篇：</p>
-<ul>
-<li>第一篇：<a href="http://tutuge.me/2015/05/23/autolayout-example-with-masonry/">有趣的Autolayout示例-Masonry实现</a></li>
-<li>第二篇：<a href="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/">有趣的Autolayout示例2-Masonry实现</a></li>
-<li>第四篇：<a href="http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/">有趣的Autolayout示例4-Masonry实现</a></li>
-</ul>
-<p>Github地址：<br><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="noopener">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
-<p><img src="/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_1.gif" alt="Gif示例"></p>
-<a id="more"></a>
-<h2 id="Case-1-Parallax-Header"><a href="#Case-1-Parallax-Header" class="headerlink" title="Case 1: Parallax Header"></a>Case 1: Parallax Header</h2><p>Parallax翻译过来就是“视差”，我个人觉得就是一种“联动”的效果，在许多应用里面都能见到。当前这个例子，就是最简单的一种。</p>
-<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>原理其实就是根据UITableView当前下拉的位移值，同步改变Parallax Header的高度，即<code>NSLayoutConstraint</code>的<code>constant</code>属性，对应到Masonry里面就是重新让约束<code>equalTo()</code>一次。</p>
-<h3 id="主要步骤"><a href="#主要步骤" class="headerlink" title="主要步骤"></a>主要步骤</h3><p>主要的步骤如下：</p>
-<ol>
-<li>设置UITableView背景透明。</li>
-<li>在UITableView正下方放置一个UIImageView，作为我们的Parallax Header，设置<code>contentMode</code>为<code>UIViewContentModeScaleAspectFill</code>，并加上<strong>上左右</strong>的固定约束，使其与UITableView对其，然后加上一个固定高度的约束，并在代码里面保存。</li>
-<li>设置UITableView的<code>contentInset</code>跟Parallax Header等高，使UITableView的头部“撑开”，让后面的Parallax Header露出来。</li>
-<li>在代码里面监听UITableView的<code>contentOffset</code>属性，当y小于0时，增加Parallax Header高度，使其产生联动效果。</li>
-</ol>
-<p>约束示意图如下：<br><img src="/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_6.png" alt="Parallax Header"></p>
-<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><p>创建Parallax Header的代码如下：</p>
-<figure class="highlight sqf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">_parallaxHeaderView</span> = [UIImageView new];</span><br><span class="line"><span class="comment">// 把Parallax Header放在UITableView的下面</span></span><br><span class="line">[self.view insertSubview:<span class="variable">_parallaxHeaderView</span> belowSubview:<span class="variable">_tableView</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置contentMode</span></span><br><span class="line"><span class="variable">_parallaxHeaderView</span>.contentMode = UIViewContentModeScaleAspectFill;</span><br><span class="line"><span class="variable">_parallaxHeaderView</span>.<span class="built_in">image</span> = [UIImage imageNamed:@<span class="string">"parallax_header_back"</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 添加约束</span></span><br><span class="line">[<span class="variable">_parallaxHeaderView</span> mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">    make.left.<span class="built_in">and</span>.right.equalTo(self.view);</span><br><span class="line">    make.top.equalTo(self.mas_topLayoutGuideBottom);</span><br><span class="line">    <span class="comment">// 保存高度约束</span></span><br><span class="line">    <span class="variable">_parallaxHeaderHeightConstraint</span> = make.height.equalTo(@(ParallaxHeaderHeight));</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
-<p>设置UITableView的<code>contentInset</code></p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">_tableView.contentInset</span> = UIEdgeInsetsMake(ParallaxHeaderHeight, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
-<h3 id="监听contentOffset属性的两种方法"><a href="#监听contentOffset属性的两种方法" class="headerlink" title="监听contentOffset属性的两种方法"></a>监听<code>contentOffset</code>属性的两种方法</h3><h4 id="方法1：直接实现scrollViewDidScroll"><a href="#方法1：直接实现scrollViewDidScroll" class="headerlink" title="方法1：直接实现scrollViewDidScroll:"></a>方法1：直接实现<code>scrollViewDidScroll:</code></h4><p>这种方法应该是最直接的：</p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">-</span> (void)<span class="selector-tag">scrollViewDidScroll</span><span class="selector-pseudo">:(UIScrollView</span> *)<span class="selector-tag">scrollView</span> &#123;</span><br><span class="line">    <span class="selector-tag">if</span> (scrollView.contentOffset.y &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// 增加Parallax Header对应的高度，y是负数，所以减去</span></span><br><span class="line">        <span class="selector-tag">_parallaxHeaderHeightConstraint</span><span class="selector-class">.equalTo</span>(@(ParallaxHeaderHeight - scrollView.contentOffset.y));</span><br><span class="line">    &#125; <span class="selector-tag">else</span> &#123;</span><br><span class="line">        <span class="selector-tag">_parallaxHeaderHeightConstraint</span><span class="selector-class">.equalTo</span>(@(ParallaxHeaderHeight));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="方法2：KVO监听contentOffset变化"><a href="#方法2：KVO监听contentOffset变化" class="headerlink" title="方法2：KVO监听contentOffset变化"></a>方法2：KVO监听<code>contentOffset</code>变化</h4><p>用KVO的好处就是不用要求当前类实现UITableView的delegate，对于代码的拆分有好处。</p>
-<p>增加KVO：</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[_tableView <span class="string">addObserver:</span>self <span class="string">forKeyPath:</span>@<span class="string">"contentOffset"</span> <span class="string">options:</span>NSKeyValueObservingOptionNew <span class="string">context:</span>nil];</span><br></pre></td></tr></table></figure>
-<p>实现监听:</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)observeValueForKeyPath:(<span class="built_in">NSString</span> *)keyPath ofObject:(<span class="keyword">id</span>)object change:(<span class="built_in">NSDictionary</span>&lt;<span class="built_in">NSString</span> *,<span class="keyword">id</span>&gt; *)change context:(<span class="keyword">void</span> *)context &#123;</span><br><span class="line">    <span class="keyword">if</span> ([keyPath isEqualToString:<span class="string">@"contentOffset"</span>]) &#123;</span><br><span class="line">        <span class="comment">// 取出contentOffset值</span></span><br><span class="line">        <span class="built_in">CGPoint</span> contentOffset = ((<span class="built_in">NSValue</span> *)change[<span class="built_in">NSKeyValueChangeNewKey</span>]).CGPointValue;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 改变高度</span></span><br><span class="line">        <span class="keyword">if</span> (contentOffset.y &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            _parallaxHeaderHeightConstraint.equalTo(@(ParallaxHeaderHeight - contentOffset.y));</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            _parallaxHeaderHeightConstraint.equalTo(@(ParallaxHeaderHeight));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>最后别忘了取消KVO:</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)dealloc &#123;</span><br><span class="line">    [_tableView <span class="string">removeObserver:</span>self <span class="string">forKeyPath:</span>@<span class="string">"contentOffset"</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="小节"><a href="#小节" class="headerlink" title="小节"></a>小节</h3><p><code>NSLayoutConstraint</code>的<code>constant</code>属性非常有用，既可以做动画，也可以方便的调整现有布局，大家多多挖掘哈~</p>
-<h2 id="Case-2-动态变高度的UITableViewCell"><a href="#Case-2-动态变高度的UITableViewCell" class="headerlink" title="Case 2: 动态变高度的UITableViewCell"></a>Case 2: 动态变高度的UITableViewCell</h2><p>嗯，又是UITableViewCell=。=<br>只不过这次的是“动态改变高度”，就是类似于微信朋友圈里面的“全文”那种效果。</p>
-<p>单纯的不定高UITableViewCell不是本例子的重点，详细请看<a href="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/">有趣的Autolayout示例2-Masonry实现</a>里面的Case1。</p>
-<p>先说一点我觉得在代码设计上比较重要的地方：<strong>Cell只负责显示内容，不应该保存具体的状态信息</strong>。  </p>
-<p>我们都知道，UITableViewCell是会被重用的，也就是说，不能保证UITableView里面的哪一行一定由哪一个UITableViewCell实例展示。<br>动态展开、收回Cell的时候，我们需要一个BOOL变量，用于保存当前Cell的展开、收回的状态。这个BOOL变量就是所谓的“<strong>状态</strong>”，这个状态应该保存在当前Cell的数据里面，如Entity、ViewModel里面。对Cell填充数据的时候，再根据这个“状态”，修改对应的约束。</p>
-<h3 id="主要步骤-1"><a href="#主要步骤-1" class="headerlink" title="主要步骤"></a>主要步骤</h3><p>先看看大致的步骤：</p>
-<ol>
-<li>通过点击的Cell找到对应的数据Entity。</li>
-<li>改变这一行数据Entity用于保存状态的BOOL变量的值。</li>
-<li>让UITableView刷新这一行。</li>
-<li>刷新的时候，Cell根据这个BOOL变量重新调整约束、填充数据，得到新的高度。</li>
-<li>最后就是Cell的高度变化。（此时的这一行的Cell实例并不一定是之前的那个实例）</li>
-</ol>
-<h3 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h3><p>为了尽量简单，例子里面的Cell只有三个子控件，第一个UILabel是标题等调试信息，第二个UILabel用来显示多行文本，最后一个UIButton用来切换展开、收回的状态。大致的布局如下：</p>
-<p><img src="/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_3.png" alt="Case2 UITableViewCell布局示意"></p>
-<h4 id="布局的代码"><a href="#布局的代码" class="headerlink" title="布局的代码"></a>布局的代码</h4><p><strong>标题UIlabel</strong></p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">_titleLabel</span> = [UILabel new]<span class="comment">;</span></span><br><span class="line"><span class="section">[self.contentView addSubview:_titleLabel]</span><span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="section">[_titleLabel mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span></span><br><span class="line"><span class="section">    make.height.equalTo(@21);</span></span><br><span class="line"><span class="section">    make.left.and.right.and.top.equalTo(self.contentView).with.insets(UIEdgeInsetsMake(4, 8, 4, 8));</span></span><br><span class="line"><span class="section">&#125;]</span><span class="comment">;</span></span><br></pre></td></tr></table></figure>
-<p><strong>底部“More”按钮</strong></p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">_moreButton = [UIButton <span class="string">buttonWithType:</span>UIButtonTypeSystem];</span><br><span class="line">[_moreButton <span class="string">setTitle:</span>@<span class="string">"More"</span> <span class="string">forState:</span>UIControlStateNormal];</span><br><span class="line">[_moreButton <span class="string">addTarget:</span>self <span class="string">action:</span><span class="meta">@selector</span>(<span class="string">switchExpandedState:</span>) <span class="string">forControlEvents:</span>UIControlEventTouchUpInside];</span><br><span class="line">[self.contentView <span class="string">addSubview:</span>_moreButton];</span><br><span class="line"></span><br><span class="line">[_moreButton <span class="string">mas_makeConstraints:</span>^(MASConstraintMaker *make) &#123;</span><br><span class="line">    make.height.equalTo(@<span class="number">32</span>);</span><br><span class="line">    make.left.and.right.and.bottom.equalTo(self.contentView);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
-<p><strong>正文UIlabel</strong></p>
-<figure class="highlight sqf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">CGFloat preferredMaxWidth = [UIScreen mainScreen].bounds.<span class="built_in">size</span>.width - <span class="number">16</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Content - 多行</span></span><br><span class="line"><span class="variable">_contentLabel</span> = [UILabel new];</span><br><span class="line"><span class="variable">_contentLabel</span>.numberOfLines = <span class="number">0</span>;</span><br><span class="line"><span class="variable">_contentLabel</span>.lineBreakMode = NSLineBreakByCharWrapping;</span><br><span class="line"><span class="variable">_contentLabel</span>.clipsToBounds = YES;</span><br><span class="line"><span class="variable">_contentLabel</span>.preferredMaxLayoutWidth = preferredMaxWidth; <span class="comment">// 多行时必须设置</span></span><br><span class="line">[self.contentView addSubview:<span class="variable">_contentLabel</span>];</span><br><span class="line"></span><br><span class="line">[<span class="variable">_contentLabel</span> mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">    make.left.<span class="built_in">and</span>.right.equalTo(self.contentView).<span class="keyword">with</span>.insets(UIEdgeInsetsMake(<span class="number">4</span>, <span class="number">8</span>, <span class="number">4</span>, <span class="number">8</span>));</span><br><span class="line">    make.top.equalTo(<span class="variable">_titleLabel</span>.mas_bottom).<span class="keyword">with</span>.offset(<span class="number">4</span>);</span><br><span class="line">    make.bottom.equalTo(<span class="variable">_moreButton</span>.mas_top).<span class="keyword">with</span>.offset(-<span class="number">4</span>);</span><br><span class="line">    <span class="comment">// 先加上高度的限制</span></span><br><span class="line">    <span class="variable">_contentHeightConstraint</span> = make.height.equalTo(@<span class="number">64</span>).<span class="keyword">with</span>.priorityHigh(); <span class="comment">// 优先级只设置成High,比正常的高度约束低一些,防止冲突</span></span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
-<h4 id="为什么要加正文UIlabel高度约束"><a href="#为什么要加正文UIlabel高度约束" class="headerlink" title="为什么要加正文UIlabel高度约束"></a>为什么要加正文UIlabel高度约束</h4><p><a href="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/">有趣的Autolayout示例2-Masonry实现</a>里面的Case1也讲过，获取Cell的高度的方法是<code>systemLayoutSizeFittingSize:</code>，如果不对正文UILabel加上高度约束，获取的高度就是根据正文的内容计算出来的，这与之前的例子里面一致。</p>
-<p>为了使高度固定，就需要加上一个高度约束，使得<code>systemLayoutSizeFittingSize:</code>计算时按照这个约束去计算。</p>
-<h4 id="为什么正文UILabel的高度约束的优先级要调整为High"><a href="#为什么正文UILabel的高度约束的优先级要调整为High" class="headerlink" title="为什么正文UILabel的高度约束的优先级要调整为High"></a>为什么正文UILabel的高度约束的优先级要调整为<code>High</code></h4><p>在UITableView刷新时，会先计算高度，即先调用<code>tableView: heightForRowAtIndexPath:</code>方法，如果高度约束为默认的1000最高的话，会产生冲突。</p>
-<p>因为在计算的时候，我们的高度是由一个“template cell”填充内容后计算得来，这个时候的高度已经是展开以后的高度，当前的Cell还来不及调整约束（甚至不会调整，如果只用<code>beginUpdates和endUpdates</code>更新的话，Cell不会reload），所以降低这个高度约束的优先级，去掉冲突。</p>
-<h3 id="使用install和uninstall控制约束"><a href="#使用install和uninstall控制约束" class="headerlink" title="使用install和uninstall控制约束"></a>使用install和uninstall控制约束</h3><p>为了能得正确高度，Cell需要根据具体的数据、状态更新约束。<br>这里可以使用<code>install</code>和<code>uninstall</code>来控制正文UILabel高度约束是否生效。在填充Cell的数据时，就可以根据状态BOOL值来选择调用：</p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">-</span> (void)<span class="selector-tag">setEntity</span><span class="selector-pseudo">:(Case8DataEntity</span> *)<span class="selector-tag">entity</span> <span class="selector-tag">indexPath</span><span class="selector-pseudo">:(NSIndexPath</span> *)<span class="selector-tag">indexPath</span> &#123;</span><br><span class="line">    <span class="comment">// 设置数据...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 改变约束</span></span><br><span class="line">    <span class="selector-tag">if</span> (_entity.expanded) &#123;</span><br><span class="line">        <span class="selector-attr">[_contentHeightConstraint uninstall]</span>;</span><br><span class="line">    &#125; <span class="selector-tag">else</span> &#123;</span><br><span class="line">        <span class="selector-attr">[_contentHeightConstraint install]</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="创建Delegate，使得Cell的事件得以回传到ViewController"><a href="#创建Delegate，使得Cell的事件得以回传到ViewController" class="headerlink" title="创建Delegate，使得Cell的事件得以回传到ViewController"></a>创建Delegate，使得Cell的事件得以回传到ViewController</h3><p>在点击Cell的“More”按钮时，需要改变当前的展开收回状态BOOL值，还需要让UITableView刷新。<br>直接在Cell里面修改Entity数据，或者持有UITableView实例都是不恰当的，这个时候可以用Delegate模式实现。</p>
-<p>Delegate如下：</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@protocol</span> Case8CellDelegate &lt;NSObject&gt;</span><br><span class="line">- (<span class="keyword">void</span>)<span class="string">case8Cell:</span>(Case8Cell *)cell <span class="string">switchExpandedStateWithIndexPath:</span>(NSIndexPath *)index;</span><br><span class="line"><span class="meta">@end</span></span><br></pre></td></tr></table></figure>
-<p>然后ViewController实现这个Protocol</p>
-<figure class="highlight ceylon"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)<span class="keyword">case</span><span class="number">8</span>Cell:(Case<span class="number">8</span>Cell *)cell switchExpandedStateWithIndexPath:(NSIndexPath *)index &#123;</span><br><span class="line">    <span class="comment">// 取出对应数据</span></span><br><span class="line">    Case<span class="number">8</span>DataEntity *<span class="keyword">case</span><span class="number">8</span>DataEntity = <span class="number">_</span>data[(NSUInteger) index.row];</span><br><span class="line">    <span class="comment">// 修改状态</span></span><br><span class="line">    <span class="keyword">case</span><span class="number">8</span>DataEntity.expanded = !<span class="keyword">case</span><span class="number">8</span>DataEntity.expanded; <span class="comment">// 切换展开还是收回</span></span><br><span class="line">    <span class="keyword">case</span><span class="number">8</span>DataEntity.cellHeight = <span class="number">0</span>; <span class="comment">// 重置高度缓存</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 刷新UITableView</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>Cell保存ViewController这个delegate，然后在按钮点击时回调</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Cellb保存delegate，注意weak</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">weak</span>, <span class="keyword">nonatomic</span>) <span class="keyword">id</span> &lt;Case8CellDelegate&gt; delegate;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Cell的“More”按钮点击</span></span><br><span class="line">- (<span class="keyword">void</span>)switchExpandedState:(<span class="built_in">UIButton</span> *)button &#123;</span><br><span class="line">    [_delegate case8Cell:<span class="keyword">self</span> switchExpandedStateWithIndexPath:_indexPath];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="刷新的方式"><a href="#刷新的方式" class="headerlink" title="刷新的方式"></a>刷新的方式</h3><p>UITableView的刷新可以用以下几种方法：</p>
-<h4 id="1-reloadData"><a href="#1-reloadData" class="headerlink" title="1. reloadData"></a>1. reloadData</h4><p>用<code>reloadData</code>刷新，其实就是把所有Cell都刷新了一次，代价有点大，不推荐。</p>
-<h4 id="2-reloadRowsAtIndexPaths-withRowAnimation"><a href="#2-reloadRowsAtIndexPaths-withRowAnimation" class="headerlink" title="2. reloadRowsAtIndexPaths:withRowAnimation:"></a>2. reloadRowsAtIndexPaths:withRowAnimation:</h4><p>这个方法的好处就是可以指定要刷新的哪几行，而且可以指定刷新时的动画形式，一般来说用<code>UITableViewRowAnimationFade</code>就不错。<br>刷新的时候，<code>tableView:cellForRowAtIndexPath:</code>会被调用，原来的Cell实例会被替换。</p>
-<h4 id="3-beginUpdates和endUpdates"><a href="#3-beginUpdates和endUpdates" class="headerlink" title="3. beginUpdates和endUpdates"></a>3. beginUpdates和endUpdates</h4><p>这两个方法一般都是成对使用的，在中间可以执行插入、删除等调整Cell的操作，改变Cell的高度也可以用它。<br>不过要注意的是，这两个方法并不会重新加载Cell，只是单纯的改变了高度，所以如果Cell原来的约束里面有高度约束这种，而又保持默认的优先级，就会产生约束冲突。</p>
-<p>从效果上来讲，我个人觉得用<code>reloadRowsAtIndexPaths:withRowAnimation:</code>会更好一些~</p>
-<h3 id="小节-1"><a href="#小节-1" class="headerlink" title="小节"></a>小节</h3><p>想用好Autolayout不容易啊，要仔细研究UITableView的机制=。=</p>
-<h2 id="Case-3-两种方式实现等间距"><a href="#Case-3-两种方式实现等间距" class="headerlink" title="Case 3: 两种方式实现等间距"></a>Case 3: 两种方式实现等间距</h2><p>等间距，也就是View之间的X或Y轴上的坐标等差，在这里我只举出水平方向上的等间距，垂直方向上一个道理。</p>
-<h3 id="方法1：利用透明等宽的占位View填充空白处，实现等间距"><a href="#方法1：利用透明等宽的占位View填充空白处，实现等间距" class="headerlink" title="方法1：利用透明等宽的占位View填充空白处，实现等间距"></a>方法1：利用透明等宽的占位View填充空白处，实现等间距</h3><p>步骤很简单，就是循环创建真正要展示的View和占位View，布局如下：</p>
-<p><img src="/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_4.png" alt="利用占位View实现等间距"></p>
-<p>说明一下：</p>
-<ul>
-<li>占位View的宽度不能定死，这样外部的父级View宽度变化时，内部的View仍然可以保持等间距。</li>
-<li>既然占位View宽度不定，总得有个宽度的参照，这个参照就是其它的占位View，也就是说，要给占位View加上两两宽度相等的约束。</li>
-</ul>
-<p>代码如下:</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 先创建第一个占位View</span></span><br><span class="line">UIView *lastSpaceView = [UIView <span class="built_in">new</span>];</span><br><span class="line">lastSpaceView.backgroundColor = [UIColor greenColor]; <span class="comment">// 用绿色标出</span></span><br><span class="line">[_containerView1 addSubview:lastSpaceView];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 添加上左下三个约束</span></span><br><span class="line">[lastSpaceView mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) &#123;</span><br><span class="line">    <span class="built_in">make</span>.left.and.top.and.bottom.equalTo(_containerView1);</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 循环创建</span></span><br><span class="line"><span class="keyword">for</span> (NSUInteger i = <span class="number">0</span>; i &lt; ITEM_COUNT; i++) &#123;</span><br><span class="line">    <span class="comment">// 创建ItemView，即真正显示内容的View</span></span><br><span class="line">    UIView *itemView = [self getItemViewWithIndex:i];</span><br><span class="line">    [_containerView1 addSubview:itemView];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 固定宽高，左边、垂直方向中心与上一个占位View对齐。</span></span><br><span class="line">    [itemView mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) &#123;</span><br><span class="line">        <span class="built_in">make</span>.height.and.width.equalTo(@(ITEM_SIZE));</span><br><span class="line">        <span class="built_in">make</span>.left.equalTo(lastSpaceView.mas_right);</span><br><span class="line">        <span class="built_in">make</span>.centerY.equalTo(_containerView1.mas_centerY);</span><br><span class="line">    &#125;];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建下一个占位View</span></span><br><span class="line">    UIView *spaceView = [UIView <span class="built_in">new</span>];</span><br><span class="line">    spaceView.backgroundColor = [UIColor greenColor];</span><br><span class="line">    [_containerView1 addSubview:spaceView];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 左边与当前ItemView对齐，上下与边界对齐，宽度与上一个占位View相等！</span></span><br><span class="line">    <span class="comment">// 但是右边的约束不能加，因为要留给下一次循环与下一个ItemView的左边界添加</span></span><br><span class="line">    [spaceView mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) &#123;</span><br><span class="line">        <span class="built_in">make</span>.left.equalTo(itemView.mas_right).with.priorityHigh(); <span class="comment">// 降低优先级，防止宽度不够出现约束冲突</span></span><br><span class="line">        <span class="built_in">make</span>.top.and.bottom.equalTo(_containerView1);</span><br><span class="line">        <span class="built_in">make</span>.width.equalTo(lastSpaceView.mas_width);</span><br><span class="line">    &#125;];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 更新</span></span><br><span class="line">    lastSpaceView = spaceView;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 为最后一个占位View添加右边约束</span></span><br><span class="line">[lastSpaceView mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) &#123;</span><br><span class="line">    <span class="built_in">make</span>.right.equalTo(_containerView1.mas_right);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
-<p>像这种重复添加View和约束，合理使用变量保存“上一次循环”创建的占位View，就可以大大简化代码，而且可以任意调整数量~</p>
-<h3 id="方法2：直接按比例设置multiplier"><a href="#方法2：直接按比例设置multiplier" class="headerlink" title="方法2：直接按比例设置multiplier"></a>方法2：直接按比例设置multiplier</h3><p>等间距，其实就是按比例，再进一步就是x坐标是按比例的。<br>延伸到View上，可以理解为centerX的值与父级View的宽度按比例增减。  </p>
-<p>但是，读者可以尝试一下，直接设置一个View的边界、位置属性，如centerX，等于其父级View的宽度是会报错的。</p>
-<p>难道就没有办法了？当然不是。</p>
-<p><strong>始终在坐标系上考虑约束</strong></p>
-<p>在上一篇<a href="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/">有趣的Autolayout示例2-Masonry实现</a>的开头我也提到过，Autolayout最终都是体现在坐标系上，一切都会按照<code>viewA-attribute = viewB-attribute * multiplier + constant</code>这种公式去计算，既然centerX不能跟父级的Width宽度一起加约束，那就换一个，如父级的<strong>右边界</strong>，父级View的<strong>右边界</strong>在父级本身的参照系下的Y坐标值不就等于其宽度吗~</p>
-<p>所以，可以按照如下方式加约束：</p>
-<p><img src="/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_5.png" alt="按比例设置multiplier实现等间距"></p>
-<p>对应的代码也会异常简单：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 循环创建</span></span><br><span class="line"><span class="keyword">for</span> (<span class="built_in">NSUInteger</span> i = <span class="number">0</span>; i &lt; ITEM_COUNT; i++) &#123;</span><br><span class="line">    <span class="built_in">UIView</span> *itemView = [<span class="keyword">self</span> getItemViewWithIndex:i];</span><br><span class="line">    [_containerView2 addSubview:itemView];</span><br><span class="line"></span><br><span class="line">    [itemView mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">        <span class="comment">// 宽高一定</span></span><br><span class="line">        make.width.and.height.equalTo(@(ITEM_SIZE));</span><br><span class="line">        <span class="comment">// 确定Y坐标</span></span><br><span class="line">        make.centerY.equalTo(_containerView2.mas_centerY);</span><br><span class="line">        <span class="comment">// 确定X坐标，注意分子分母都要加1</span></span><br><span class="line">        make.centerX.equalTo(_containerView2.mas_right).multipliedBy(((<span class="built_in">CGFloat</span>)i + <span class="number">1</span>) / ((<span class="built_in">CGFloat</span>)ITEM_COUNT + <span class="number">1</span>));</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="小节-2"><a href="#小节-2" class="headerlink" title="小节"></a>小节</h3><p>很多时候，灵活的使用multiplier能大大简化开发~</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>三个例子说完了，你有啥收获呢~？:-D</p>
-
-                
-<p class="teal-link-context">
-    <a href="/2015/12/31/TTGTagCollectionView/" rel="next" title="开源项目-TTGTagCollectionView">
-    上一篇：开源项目-TTGTagCollectionView
-  </a>
-</p>
-
-
-
-<p class="teal-link-context">
-    <a href="/2015/10/25/ttgemojirate-lib/" rel="next" title="Swift开源项目: TTGEmojiRate的实现">
-    下一篇：Swift开源项目: TTGEmojiRate的实现
-  </a>
-</p>
-
-
-            </div>
-
-            
-			
-        </div>
-    </div>
-</article>
-
-
-
-
-    <section id="comment">
-        <div id="disqus_thread"></div>
-        <script>
-            var disqus_config = function() {
-                this.page.url = 'http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/';
-                this.page.identifier = '2015/12/14/autolayout-example-with-masonry3/';
-            };
-            (function() {
-                var d = document,
-                    s = d.createElement('script');
-                s.src = '//tutuge-me.disqus.com/embed.js';
-                s.setAttribute('data-timestamp', + new Date());
-                (d.head || d.body).appendChild(s);
-            })();
-        </script>
-        <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
-        </noscript>
-    </section>
-
-
-
-</div>
-
-        <div class="fixed-action-btn float-sitemap">
-    <a class="btn-floating btn-large teal">
-      <i class="fa fa-caret-square-o-up"></i>
-    </a>
-    <ul>
-      <li><a class="btn-return-top btn-floating waves-effect teal accent-4" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
-      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
-    </ul>
-  </div>
-
-    </main>
-    <footer class="page-footer blue-grey darken-1">
-    
-    <div class="footer-container container">
-        <div class="row">
-            
-            <div class="social-group col m4 s12">
-                <h5 class="white-text">社交</h5>
-                
-                    <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
-                        <i class="fa fa-2x fa-weibo"></i>
-                    </a>
-                
-                    <a class="social-link" href="https://github.com/zekunyan" target="_blank">
-                        <i class="fa fa-2x fa-github"></i>
-                    </a>
-                
-                    <a class="social-link" href="/atom.xml" target="_blank">
-                        <i class="fa fa-2x fa-rss"></i>
-                    </a>
-                
-                
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
-    </script>
-    <div class="site-visitors-container white-text">
-        <span>
-            <i class="fa fa-user"></i>
-            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
-        </span>
-        <span>&nbsp;|&nbsp;</span>
-        <span>
-            <i class="fa fa-eye"></i>
-            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
-        </span>
-    </div>
-
-
-            </div>
-            
-
-            
-            <div class="col m8 s12">
-                <h5 class="white-text">友情链接</h5>
-                
-                    <a class="social-link" href="http://chenrudan.github.io" target="_blank">女朋友的博客😊</a>
-                
-            </div>
-            
-        </div>
-        <p>Hosted by <a href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a></p>
-    </div>
-    
-
-    <div class="footer-copyright teal-link-context">
-        <div class="container">
-            © 2020 tutuge.me, All rights reserved.
-            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
-        </div>
-    </div>
-</footer>
-
-
-    <noscript>
-    <div class="noscript">
-        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
-    </div>
-</noscript>
-<div class="noscript">
-    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
-</div>
-
-
-<script src="/js/jquery.min.js"></script>
-<script src="/js/materialize.min.js"></script>
-
-<script>
-    (function($) {
-        $(document).ready(function() {
-            // 隐藏禁用javascript（针对微信内置浏览器）的提示
-            $('.noscript').hide();
-
-            // 图片缩放效果
-            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
-
-            // 给图片加上点击放大效果（materialbox插件）
-            $imgs.addClass('materialboxed').each(function(i, el) {
-                $(this).attr('data-caption', $(this).attr('alt') || ' ');
-            }).materialbox();
-
-            // 优化表格的显示
-            $('table').each(function() {
-                var $table = $(this);
-                // 除去多行代码的情况
-                if ($table.find('pre').length == 0) {
-                    $table.addClass('responsive-table striped bordered');
-                }
-            });
-
-            // 首页幻灯片
-            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
-
-            $(".button-collapse").sideNav();
-            $(".category-menu").sideNav();
-
-            // 针对gallery post
-            $('.carousel').carousel({full_width: true});
-            $('.carousel-control.prev').click(function() {
-                $('.carousel').carousel('prev');
-            });
-            $('.carousel-control.next').click(function() {
-                $('.carousel').carousel('next');
-            });
-
-            // 文章目录
-            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
-
-            // 目录随屏幕滚动（防止目录过长越过footer）
-            var $toc = $('.toc');
-            var scrollTargetTop = 0;
-            $(window).scroll(function() {
-                var $activeLink = $toc.find('a.active.section');
-                if ($(window).scrollTop() < 100) {
-                    scrollTargetTop = 0;
-                } else {
-                    if ($activeLink[0]) {
-                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
-                    }
-                }
-                $toc.css('top', '-' + scrollTargetTop + 'px');
-            });
-
-            // 修正文章目录的left-border颜色
-            var color = $('.table-of-contents-text').css('color');
-            $('.table-of-contents-link').css('border-left-color', color);
-
-            // 针对移动端做的优化：FAB按钮点击一下收回
-            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                $('.fixed-action-btn').addClass('click-to-toggle');
-            }
-            // 回到顶部
-            $('.btn-return-top').click(function() {
-                $('body, html').animate({
-                    scrollTop: 0
-                }, 500);
-            });
-
-            // 重置读书页面的Tab标签页的颜色
-            $('li.tab a').hover(function() {
-                $(this).toggleClass('text-lighten-4');
-            });
-            $('.indicator').addClass('teal lighten-2');
-
-            
-            // 添加new标签
-            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
-            
-
-            // 搜索功能
-            $('.modal-trigger').leanModal({
-                // 打开搜索框时自动聚焦
-                ready: function() {
-                    if ($('#search').is(":visible")) {
-                        $('#search-input').focus();
-                    }
-                }
-            });
-            var searchXml = "search.xml";
-            if (searchXml.length == 0) {
-             	searchXml = "search.xml";
-            }
-            var searchPath = "/" + searchXml;
-            initSearch(searchPath, 'search-input', 'search-result');
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
         });
-
-        // 初始化搜索与匹配函数
-        var initSearch = function(path, search_id, content_id) {
-            'use strict';
-            $.ajax({
-                url: path,
-                dataType: "xml",
-                success: function(xmlResponse) {
-                    // get the contents from search data
-                    var datas = $("entry", xmlResponse).map(function() {
-                        return {
-                            title: $("title", this).text(),
-                            content: $("content", this).text(),
-                            url: $("url", this).text()
-                        };
-                    }).get();
-                    var $input = document.getElementById(search_id);
-                    var $resultContent = document.getElementById(content_id);
-                    $input.addEventListener('input', function() {
-                        var str = '<ul class=\"search-result-list\">';
-                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
-                        $resultContent.innerHTML = "";
-                        if (this.value.trim().length <= 0) {
-                            return;
-                        }
-                        // perform local searching
-                        datas.forEach(function(data) {
-                            var isMatch = true;
-                            var content_index = [];
-                            var data_title = data.title.trim().toLowerCase();
-                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
-                            var data_url = data.url;
-                            var index_title = -1;
-                            var index_content = -1;
-                            var first_occur = -1;
-                            // only match artiles with not empty titles and contents
-                            if (data_title != '' && data_content != '') {
-                                keywords.forEach(function(keyword, i) {
-                                    index_title = data_title.indexOf(keyword);
-                                    index_content = data_content.indexOf(keyword);
-                                    if (index_title < 0 && index_content < 0) {
-                                        isMatch = false;
-                                    } else {
-                                        if (index_content < 0) {
-                                            index_content = 0;
-                                        }
-                                        if (i == 0) {
-                                            first_occur = index_content;
-                                        }
-                                    }
-                                });
-                            }
-                            // show search results
-                            if (isMatch) {
-                                keywords.forEach(function(keyword) {
-                                    var regS = new RegExp(keyword, "gi");
-                                    data_title = data_title.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
-                                });
-
-                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
-                                var content = data.content.trim().replace(/<[^>]+>/g, "");
-                                if (first_occur >= 0) {
-                                    // cut out 100 characters
-                                    var start = first_occur - 20;
-                                    var end = first_occur + 80;
-                                    if (start < 0) {
-                                        start = 0;
-                                    }
-                                    if (start == 0) {
-                                        end = 100;
-                                    }
-                                    if (end > content.length) {
-                                        end = content.length;
-                                    }
-                                    var match_content = content.substring(start, end);
-                                    // highlight all keywords
-                                    keywords.forEach(function(keyword) {
-                                        var regS = new RegExp(keyword, "gi");
-                                        match_content = match_content.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
-                                    });
-
-                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
-                                }
-                                str += "</li>";
-                            }
-                        });
-                        str += "</ul>";
-                        $resultContent.innerHTML = str;
-                    });
-                }
-            });
-        }
-    })(jQuery);
-</script>
-
-
-<script src="/js/prettify.js"></script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $("pre").addClass("prettyprint");
-        prettyPrint();
-    });
-</script>
-
-
-<script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-68058110-1', 'auto');
-    ga('send', 'pageview');
-
-</script>
-
-
-
-<script type="text/javascript" src="http://tajs.qq.com/stats?sId=55079830" charset="UTF-8"></script>
-
-
-
-
-
-</body>
-</html>
+        lightbox.init();
+    }
+</script></main></div><script type=text/javascript src=/ts/main.f856840516f7c2ad1769a8f5937e3d08d6cb386e2cd2dd025ae696e0ff207958.js defer></script></body></html>

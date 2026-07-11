@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pages on 土土哥的技术 Blog</title><link>https://tutuge.me/page/</link><description>Recent content in Pages on 土土哥的技术 Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>tutuge</copyright><lastBuildDate>Sat, 01 Nov 2014 00:00:00 +0000</lastBuildDate><atom:link href="https://tutuge.me/page/index.xml" rel="self" type="application/rss+xml"/><item><title>关于</title><link>https://tutuge.me/about/</link><pubDate>Sat, 01 Nov 2014 00:00:00 +0000</pubDate><guid>https://tutuge.me/about/</guid><description>&lt;p&gt;这里是土土哥的技术 Blog，主要记录 iOS、macOS、开源库和工程实践相关内容。&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;姓名: 燕泽堃&lt;br&gt;
+Email: &lt;a class="link" href="mailto:zekunyan@163.com" &gt;zekunyan@163.com&lt;/a&gt;&lt;br&gt;
+Github: &lt;a class="link" href="https://github.com/zekunyan" target="_blank" rel="noopener"
+ &gt;https://github.com/zekunyan&lt;/a&gt;&lt;br&gt;
+Linkedin: &lt;a class="link" href="https://www.linkedin.com/in/zekunyan" target="_blank" rel="noopener"
+ &gt;https://www.linkedin.com/in/zekunyan&lt;/a&gt;&lt;br&gt;
+博客: 土土哥的技术博客: &lt;a class="link" href="http://tutuge.me" target="_blank" rel="noopener"
+ &gt;http://tutuge.me&lt;/a&gt;&lt;br&gt;
+开发经验: iOS、Android、Java、Flutter、PHP、Python 等&lt;br&gt;
+微博: &lt;a class="link" href="http://weibo.com/zekunyan" target="_blank" rel="noopener"
+ &gt;http://weibo.com/zekunyan&lt;/a&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;h2 id="工作经历"&gt;&lt;a href="#%e5%b7%a5%e4%bd%9c%e7%bb%8f%e5%8e%86" class="header-anchor"&gt;&lt;/a&gt;工作经历
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;阿里巴巴 - 无线开发专家(P7) - (2019-07至今)&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;阿里巴巴 - 高级无线开发工程师(P6) - (2017-07至2019-07)&lt;/li&gt;
+&lt;li&gt;阿里巴巴 - 无线开发工程师(P5) - (2016-07至2017-07)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="实习经历"&gt;&lt;a href="#%e5%ae%9e%e4%b9%a0%e7%bb%8f%e5%8e%86" class="header-anchor"&gt;&lt;/a&gt;实习经历
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;阿里巴巴 - iOS开发工程师 - (2015-6至2015-9)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="教育经历"&gt;&lt;a href="#%e6%95%99%e8%82%b2%e7%bb%8f%e5%8e%86" class="header-anchor"&gt;&lt;/a&gt;教育经历
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;华中科技大学&lt;/strong&gt; - 工程硕士 - 电子与通信工程 - (2014-2016)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;华中科技大学&lt;/strong&gt; - 本科 - 电子信息工程 - (2010-2014)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="技能"&gt;&lt;a href="#%e6%8a%80%e8%83%bd" class="header-anchor"&gt;&lt;/a&gt;技能
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;熟悉：iOS 开发，C, C++, Java, Objective-C, Swift, Dart, Flutter&lt;/li&gt;
+&lt;li&gt;了解：PHP, Python, HTML, JavaScript, CSS, Node.js, Linux Shell 脚本&lt;/li&gt;
+&lt;li&gt;数据库：MySQL, SQLite, MongoDB&lt;/li&gt;
+&lt;li&gt;在校期间：华科蝴蝶 Hudbt 网站（PHP + nginx + memcache）服务器管理员&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="专利"&gt;&lt;a href="#%e4%b8%93%e5%88%a9" class="header-anchor"&gt;&lt;/a&gt;专利
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;《基于 IM 聊天场景下的实时翻译前置功能方案》&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="工作内容---20167至今"&gt;&lt;a href="#%e5%b7%a5%e4%bd%9c%e5%86%85%e5%ae%b9---20167%e8%87%b3%e4%bb%8a" class="header-anchor"&gt;&lt;/a&gt;工作内容 - 2016.7至今
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Alibaba.com 买家 App 的重点项目&lt;strong&gt;技术支持 &amp;amp; 业务开发 &amp;amp; iOS 小组长&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Alibaba.com 买家 App 的 &lt;strong&gt;Crash 治理 &amp;amp; 防御&lt;/strong&gt; - 底层 Crash 拦截库、疑难问题逆向追踪、Crash 防护意识布局（2018 至今）&lt;/li&gt;
+&lt;li&gt;Alibaba.com 买家 App 的 &lt;strong&gt;Native 动态化领域端侧核心骨干 + iOS 端负责人&lt;/strong&gt; - 区块级、页面级动态化 FreeX 技术方案制定、落地（2018 至今）&lt;/li&gt;
+&lt;li&gt;Alibaba.com 买家 App 的&lt;strong&gt;三期技术自驱体验优化项目落地&lt;/strong&gt; - 沉淀 10+ 高性能、通用、跨 App 友好 UI 组件，底层统一代码架构（2016-10 至 2017-07）&lt;/li&gt;
+&lt;li&gt;阿里巴巴 ICBU 国际站三个 App 的日常开发与基础建设（2016-2017）&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://itunes.apple.com/us/app/alibaba-com-app-buy-sell-goods-across-the-world/id503451073?mt=8" target="_blank" rel="noopener"
+ &gt;Alibaba.com App - Buy &amp;amp; sell goods across the world&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://itunes.apple.com/cn/app/%e9%98%bf%e9%87%8c%e5%8d%96%e5%ae%b6-%e9%98%bf%e9%87%8c%e5%b7%b4%e5%b7%b4%e5%9b%bd%e9%99%85%e7%ab%99b2b%e5%a4%96%e8%b4%b8%e5%87%ba%e5%8f%a3%e5%ae%98%e6%96%b9app/id708064914?mt=8" target="_blank" rel="noopener"
+ &gt;阿里卖家 - 阿里巴巴国际站 B2B 外贸出口官方 App&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://itunes.apple.com/us/app/%e9%98%bf%e9%87%8c%e5%8f%8b%e5%8a%9e-%e5%a4%96%e8%b4%b8%e7%a7%bb%e5%8a%a8%e5%8d%8f%e5%90%8c%e5%b9%b3%e5%8f%b0/id1101588739?mt=8" target="_blank" rel="noopener"
+ &gt;阿里友办 - 外贸移动协同平台&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="github---3000-star"&gt;&lt;a href="#github---3000-star" class="header-anchor"&gt;&lt;/a&gt;Github - 3000 Star+
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;iOS - &lt;a class="link" href="https://github.com/zekunyan/TTGTagCollectionView" target="_blank" rel="noopener"
+ &gt;TTGTagCollectionView - 1300 Stars&lt;/a&gt;: 标签集合组件。同时支持文字标签和自定义 View 标签，高度可定制&lt;/li&gt;
+&lt;li&gt;iOS - &lt;a class="link" href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="noopener"
+ &gt;AutolayoutExampleWithMasonry - 690 Stars&lt;/a&gt;: Autolayout 示例，Masonry 实现&lt;/li&gt;
+&lt;li&gt;iOS - &lt;a class="link" href="https://github.com/zekunyan/TTGSnackbar" target="_blank" rel="noopener"
+ &gt;TTGSnackbar - Swift - 500 Stars&lt;/a&gt;: 模仿 Android 的 Snackbar 的一个高可定制 HUD 组件&lt;/li&gt;
+&lt;li&gt;iOS - &lt;a class="link" href="https://github.com/zekunyan/TTGPuzzleVerify" target="_blank" rel="noopener"
+ &gt;TTGPuzzleVerify - 344 Stars&lt;/a&gt;: 体验更友好的拼图验证控件&lt;/li&gt;
+&lt;li&gt;iOS - &lt;a class="link" href="https://github.com/zekunyan/TTGEmojiRate" target="_blank" rel="noopener"
+ &gt;TTGEmojiRate - Swift - 283 Stars&lt;/a&gt;: Rating 组件，以 Emoji 表情为基础，上下拖动改变 Emoji 表情，增强交互性&lt;/li&gt;
+&lt;li&gt;Mac - &lt;a class="link" href="https://github.com/zekunyan/TTGBingWallPaper" target="_blank" rel="noopener"
+ &gt;TTGBingWallPaper - Swift - 177 Stars&lt;/a&gt;: Mac 上自动更新设置 Bing 主题壁纸 Menu App&lt;/li&gt;
+&lt;li&gt;iOS - &lt;a class="link" href="https://github.com/zekunyan/TTGRemakeMethodSignatureForSelector" target="_blank" rel="noopener"
+ &gt;TTGRemakeMethodSignatureForSelector&lt;/a&gt;: 简单重写 methodSignatureForSelector&lt;/li&gt;
+&lt;li&gt;Android - &lt;a class="link" href="https://github.com/zekunyan/LinkTextView" target="_blank" rel="noopener"
+ &gt;LinkTextView&lt;/a&gt;: 增强型 TextView，增加高度可定制的文字链接&lt;/li&gt;
+&lt;li&gt;iOS - &lt;a class="link" href="https://github.com/zekunyan/UITextViewDIYEmojiExample" target="_blank" rel="noopener"
+ &gt;UITextViewDIYEmojiExample&lt;/a&gt;: 在 UITextView 中插入自定义表情示例&lt;/li&gt;
+&lt;li&gt;iOS - &lt;a class="link" href="https://github.com/zekunyan/HttpProxyExample" target="_blank" rel="noopener"
+ &gt;HttpProxyExample&lt;/a&gt;: NSProxy 示例&lt;/li&gt;
+&lt;li&gt;iOS - &lt;a class="link" href="https://github.com/zekunyan/AutoReleasePoolTestExample" target="_blank" rel="noopener"
+ &gt;AutoReleasePoolTestExample&lt;/a&gt;: @autoreleasepool 的优化循环内存占用的示例&lt;/li&gt;
+&lt;li&gt;iOS - &lt;a class="link" href="https://github.com/zekunyan/iOS-Tasks" target="_blank" rel="noopener"
+ &gt;iOS-Tasks&lt;/a&gt;: ITEC 学习 iOS 同学的 Github 聚集地&lt;/li&gt;
+&lt;li&gt;后端 - &lt;a class="link" href="https://github.com/zekunyan/ThriftDemo_PHP_CPP" target="_blank" rel="noopener"
+ &gt;ThriftDemo_PHP_CPP&lt;/a&gt;: RPC 框架 Thrift 的示例&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="博客"&gt;&lt;a href="#%e5%8d%9a%e5%ae%a2" class="header-anchor"&gt;&lt;/a&gt;博客
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;日均 PV 300 左右，被收入 &lt;a class="link" href="https://github.com/tangqiaoboy/iOSBlogCN" target="_blank" rel="noopener"
+ &gt;中文 iOS/Mac 开发博客列表&lt;/a&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="在校期间主要项目经历---20167以前"&gt;&lt;a href="#%e5%9c%a8%e6%a0%a1%e6%9c%9f%e9%97%b4%e4%b8%bb%e8%a6%81%e9%a1%b9%e7%9b%ae%e7%bb%8f%e5%8e%86---20167%e4%bb%a5%e5%89%8d" class="header-anchor"&gt;&lt;/a&gt;在校期间主要项目经历 - 2016.7以前
+&lt;/h2&gt;&lt;h3 id="妈妈搜索-ios-客户端"&gt;&lt;a href="#%e5%a6%88%e5%a6%88%e6%90%9c%e7%b4%a2-ios-%e5%ae%a2%e6%88%b7%e7%ab%af" class="header-anchor"&gt;&lt;/a&gt;&lt;a class="link" href="https://itunes.apple.com/cn/app/ma-ma-sou-suo/id1068092349?ls=1&amp;amp;mt=8" target="_blank" rel="noopener"
+ &gt;妈妈搜索 iOS 客户端&lt;/a&gt;
+&lt;/h3&gt;&lt;p&gt;简介：&lt;strong&gt;妈妈搜索&lt;/strong&gt;：最贴心的育儿知识服务！按照【健康】【养育】【教育】3 个板块提供最权威、最贴心的育儿知识搜索服务。&lt;strong&gt;独立完成 1.0、1.1 版本开发&lt;/strong&gt;。&lt;br&gt;
+（学校实验室试水项目，内测阶段）&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;为应用内的标签显示开发出独立组件库：&lt;a class="link" href="https://github.com/zekunyan/TTGTagCollectionView" target="_blank" rel="noopener"
+ &gt;TTGTagCollectionView&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;富文本样式内容排版、渲染&lt;/li&gt;
+&lt;li&gt;对 UITableView 做大幅度封装，集成下拉刷新、加载更多、无内容时的 PlaceHolder 显示、Loading 动画显示、变高 Cell 计算等常用功能，并可以独立配置 &lt;strong&gt;TTGTableManager&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="妈妈搜索" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2019/07/29/2019-07-29-occupied-with-work/resume_momsearch.jpg"&gt;&lt;/p&gt;
+&lt;h3 id="青桔音乐-ios-客户端"&gt;&lt;a href="#%e9%9d%92%e6%a1%94%e9%9f%b3%e4%b9%90-ios-%e5%ae%a2%e6%88%b7%e7%ab%af" class="header-anchor"&gt;&lt;/a&gt;&lt;a class="link" href="https://itunes.apple.com/us/app/qing-ju-yin-le-quan-guo-zui/id913235479?l=zh&amp;amp;ls=1&amp;amp;mt=8" target="_blank" rel="noopener"
+ &gt;青桔音乐 iOS 客户端&lt;/a&gt;
+&lt;/h3&gt;&lt;p&gt;简介：&lt;a class="link" href="http://www.qingvoice.com" target="_blank" rel="noopener"
+ &gt;青桔音乐&lt;/a&gt;，定位校园音乐主题社交平台，为全国高校校园音乐用户提供属于自己的高品质音乐社交服务。全国高校“校园好声音”网络大赛合作平台。&lt;strong&gt;独立完成 2.0 之前版本开发，期间持续重构、优化&lt;/strong&gt;。&lt;br&gt;
+（&lt;a class="link" href="http://voice.yiban.cn/" target="_blank" rel="noopener"
+ &gt;上海易班、教育部全国校园好声音&lt;/a&gt;合作项目）&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;实现类微信朋友圈的“消息流”页面，并通过优化，保证其性能与流畅度。&lt;/li&gt;
+&lt;li&gt;通过 NSProxy、Objective-C Runtime 等技术设计并实现模块化的网络接口层。&lt;/li&gt;
+&lt;li&gt;实现与服务器的类 OAuth 标准通信，如 AccessToken 的更新、Http 请求的自动缓存等。&lt;/li&gt;
+&lt;li&gt;实现在文本中嵌入自定义表情，并自动维护表情图片的更新、缓存。&lt;/li&gt;
+&lt;li&gt;实现评论列表、输入框等复杂 UI 控件的重用。&lt;/li&gt;
+&lt;li&gt;运用委托者、模板方法、代理、MVC、MVVM 等设计模式，优化代码结构。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="青桔音乐" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2019/07/29/2019-07-29-occupied-with-work/resume_qingvoice.jpg"&gt;&lt;/p&gt;
+&lt;h3 id="波波攒---实时在线对战游戏"&gt;&lt;a href="#%e6%b3%a2%e6%b3%a2%e6%94%92---%e5%ae%9e%e6%97%b6%e5%9c%a8%e7%ba%bf%e5%af%b9%e6%88%98%e6%b8%b8%e6%88%8f" class="header-anchor"&gt;&lt;/a&gt;波波攒 - 实时在线对战游戏
+&lt;/h3&gt;&lt;p&gt;&lt;a class="link" href="https://segmentfault.com/e/1160000002680118" target="_blank" rel="noopener"
+ &gt;2015 华中科技大学联创团队 HackDay&lt;/a&gt; 参赛作品。&lt;br&gt;
+iOS 客户端 + PHP、Node.js、SocketIO、MySQL 后台。&lt;br&gt;
+&lt;strong&gt;独立完成前后台开发&lt;/strong&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;采用 SpriteKit 编写 iOS 端游戏部分。&lt;/li&gt;
+&lt;li&gt;SocketIO 实现客户端与服务器间游戏对战实时通信。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="波波攒" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2019/07/29/2019-07-29-occupied-with-work/resume_bobozan.jpg"&gt;&lt;/p&gt;
+&lt;h3 id="android-应用---vnote-笔记"&gt;&lt;a href="#android-%e5%ba%94%e7%94%a8---vnote-%e7%ac%94%e8%ae%b0" class="header-anchor"&gt;&lt;/a&gt;Android 应用 - &lt;a class="link" href="http://app.mi.com/detail/49044" target="_blank" rel="noopener"
+ &gt;VNote 笔记&lt;/a&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;Google 2013 年第四届 Android 应用开发中国大学生挑战赛 - 华中赛区 - &lt;a class="link" href="http://www.google.cn/university/androidchallenge/2013/regional.html#tab=group5" target="_blank" rel="noopener"
+ &gt;三等奖&lt;/a&gt;&lt;/strong&gt;&lt;br&gt;
+多功能笔记应用，可记录文字、待办事项、图片、录音、涂鸦，同时支持悬浮笔记。&lt;strong&gt;独立完成设计、美工、开发&lt;/strong&gt;。那个时候只会用 PS=。=&lt;/p&gt;
+&lt;p&gt;&lt;img alt="VNote 笔记" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2019/07/29/2019-07-29-occupied-with-work/resume_vnote.jpg"&gt;&lt;/p&gt;
+&lt;h3 id="其它项目"&gt;&lt;a href="#%e5%85%b6%e5%ae%83%e9%a1%b9%e7%9b%ae" class="header-anchor"&gt;&lt;/a&gt;其它项目
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Android: &lt;a class="link" href="http://www.appchina.com/app/com.example.android_broadcast_wifi" target="_blank" rel="noopener"
+ &gt;WIFI 助手&lt;/a&gt; (2012.12), &lt;a class="link" href="http://www.appchina.com/app/com.zorro.android_bluetoothsharefile" target="_blank" rel="noopener"
+ &gt;蓝牙共享文件&lt;/a&gt; (2012.10), &lt;a class="link" href="http://www.appchina.com/app/com.zorro.shareapp" target="_blank" rel="noopener"
+ &gt;蓝牙分享应用&lt;/a&gt; (2012.9), &lt;a class="link" href="http://www.appchina.com/app/zx.android.cfunctions" target="_blank" rel="noopener"
+ &gt;C 语言函数查询&lt;/a&gt; (2011.10) &lt;strong&gt;UI 都非常丑-_-|||&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;IBM VRAID vSphere Web Client Plugin，与 IBM 合作项目，VMWare vSphere 平台上管理硬件的 Web 插件。&lt;/li&gt;
+&lt;li&gt;基于 Facebook 的 RPC 框架 Thrift，编写 C++ 后端、PHP 前端的 Web 服务程序。&lt;/li&gt;
+&lt;li&gt;维护开发基于 Java、Python、RMI、MySQL、MongoDB、Lucene 的简单分布式数据挖掘处理系统。&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>归档</title><link>https://tutuge.me/archives/</link><pubDate>Sat, 01 Nov 2014 00:00:00 +0000</pubDate><guid>https://tutuge.me/archives/</guid><description/></item><item><title>搜索</title><link>https://tutuge.me/search/</link><pubDate>Sat, 01 Nov 2014 00:00:00 +0000</pubDate><guid>https://tutuge.me/search/</guid><description/></item></channel></rss>

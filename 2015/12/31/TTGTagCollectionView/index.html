@@ -1,668 +1,178 @@
-<!DOCTYPE HTML>
-<html>
-<head><meta name="generator" content="Hexo 3.9.0">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content='更新 2017-02-27: 增加两种Alignment布局类型；增加点击前的回调判断；增加选中Tag上限 2016-12-25: 不再依赖UICollectionView，减少了位置刷新次数，提高性能；增加了alignment属性，可以靠左中右排列 2016-10-29: 增加Tag的阴影和ContentInset的设置，更新了Demo 2016-10-17: 增加了水平滑动；Autolayout适配；UITableViewCell例子等 2016-02-18: 修复了超长标签导致排版错误的Bug 前言 这段时间做项目的时候，总是需要显示一些“标签”样式的内容，但是又找不到用的顺手的库，所以琢磨了几天，自己实现了出来，就有了这个库：TTGTagCollectionView。如果只需要显示文字标签的话，直接使用TTGTextTagCollectionView，需要自己定义标签的话，就用TTGTagCollectionView，效果如下:\n支持五种布局排版：\nCocoaPods: pod "TTGTagCollectionView" Carthage: github "zekunyan/TTGTagCollectionView"\nGithub地址: https://github.com/zekunyan/TTGTagCollectionView\n'><title>开源项目-TTGTagCollectionView</title><link rel=canonical href=https://tutuge.me/2015/12/31/TTGTagCollectionView/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=preload as=style href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href=/scss/style.min.e62e09c60ba428a627e03568fa3df938f6a8224f815b5846f00816c17d4a0be4.css><meta property='og:title' content="开源项目-TTGTagCollectionView"><meta property='og:description' content='更新 2017-02-27: 增加两种Alignment布局类型；增加点击前的回调判断；增加选中Tag上限 2016-12-25: 不再依赖UICollectionView，减少了位置刷新次数，提高性能；增加了alignment属性，可以靠左中右排列 2016-10-29: 增加Tag的阴影和ContentInset的设置，更新了Demo 2016-10-17: 增加了水平滑动；Autolayout适配；UITableViewCell例子等 2016-02-18: 修复了超长标签导致排版错误的Bug 前言 这段时间做项目的时候，总是需要显示一些“标签”样式的内容，但是又找不到用的顺手的库，所以琢磨了几天，自己实现了出来，就有了这个库：TTGTagCollectionView。如果只需要显示文字标签的话，直接使用TTGTextTagCollectionView，需要自己定义标签的话，就用TTGTagCollectionView，效果如下:\n支持五种布局排版：\nCocoaPods: pod "TTGTagCollectionView" Carthage: github "zekunyan/TTGTagCollectionView"\nGithub地址: https://github.com/zekunyan/TTGTagCollectionView\n'><meta property='og:url' content='https://tutuge.me/2015/12/31/TTGTagCollectionView/'><meta property='og:site_name' content='土土哥的技术 Blog'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='原创'><meta property='article:tag' content='iOS'><meta property='article:tag' content='开源'><meta property='article:published_time' content='2015-12-31T00:00:00+00:00'><meta property='article:modified_time' content='2015-12-31T00:00:00+00:00'><meta property='og:image' content='https://tutuge.me/assets/2015/12/31/TTGTagCollectionView/TTGTagCollectionView_screenshot.png'><meta name=twitter:title content="开源项目-TTGTagCollectionView"><meta name=twitter:description content='更新 2017-02-27: 增加两种Alignment布局类型；增加点击前的回调判断；增加选中Tag上限 2016-12-25: 不再依赖UICollectionView，减少了位置刷新次数，提高性能；增加了alignment属性，可以靠左中右排列 2016-10-29: 增加Tag的阴影和ContentInset的设置，更新了Demo 2016-10-17: 增加了水平滑动；Autolayout适配；UITableViewCell例子等 2016-02-18: 修复了超长标签导致排版错误的Bug 前言 这段时间做项目的时候，总是需要显示一些“标签”样式的内容，但是又找不到用的顺手的库，所以琢磨了几天，自己实现了出来，就有了这个库：TTGTagCollectionView。如果只需要显示文字标签的话，直接使用TTGTextTagCollectionView，需要自己定义标签的话，就用TTGTagCollectionView，效果如下:\n支持五种布局排版：\nCocoaPods: pod "TTGTagCollectionView" Carthage: github "zekunyan/TTGTagCollectionView"\nGithub地址: https://github.com/zekunyan/TTGTagCollectionView\n'><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://tutuge.me/assets/2015/12/31/TTGTagCollectionView/TTGTagCollectionView_screenshot.png'><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar.png width height class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>土土哥的技术 Blog</a></h1><h2 class=site-description>AI / iOS / Android / Flutter / Open Source</h2></div></header><ol class=menu-social><li><a href=https://github.com/zekunyan title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>首页</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav class=toc-nav id=TableOfContents><ul><li><a href=#更新>更新</a></li><li><a href=#前言>前言</a></li><li><a href=#只显示文字标签---ttgtexttagcollectionview>只显示文字标签 - TTGTextTagCollectionView</a><ul><li><a href=#基本使用>基本使用</a></li><li><a href=#接收点击事件---实现delegate>接收点击事件 - 实现Delegate</a></li><li><a href=#自定义文字标签样式>自定义文字标签样式</a></li><li><a href=#增加删除标签>增加、删除标签</a></li><li><a href=#在代码里控制标签的选中状态>在代码里控制标签的选中状态</a></li><li><a href=#获取所有选中未选中标签>获取所有、选中、未选中标签</a></li><li><a href=#重新加载---reload>重新加载 - Reload</a></li></ul></li><li><a href=#显示自定义的标签控件view---ttgtagcollectionview>显示自定义的标签控件View - TTGTagCollectionView</a><ul><li><a href=#基本要求---实现datasource和delegate>基本要求 - 实现DataSource和Delegate</a></li><li><a href=#设置标签的行距间隔>设置标签的行距、间隔</a></li><li><a href=#重新加载---reload-1>重新加载 - Reload</a></li></ul></li><li><a href=#end>End</a></li></ul></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/2015/12/31/TTGTagCollectionView/><img alt="Featured image of post 开源项目-TTGTagCollectionView" loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2015/12/31/TTGTagCollectionView/TTGTagCollectionView_screenshot.png></a></div><div class=article-details><header class=article-category><a href=/categories/ios/ style=background-color:#efbeed;color:#3d0f3c>IOS</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/2015/12/31/TTGTagCollectionView/>开源项目-TTGTagCollectionView</a></h2></div><footer class=article-meta><div class=inline-meta><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2015-12-31T00:00:00Z>2015-12-31</time>
+<svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 3 分钟</time></div></footer></div></header><aside class=article-toc><details><summary><div class=article-toc-title><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6-6 6"/></svg>
+<span>目录</span></div></summary><nav class=toc-nav><ul><li><a href=#更新>更新</a></li><li><a href=#前言>前言</a></li><li><a href=#只显示文字标签---ttgtexttagcollectionview>只显示文字标签 - TTGTextTagCollectionView</a><ul><li><a href=#基本使用>基本使用</a></li><li><a href=#接收点击事件---实现delegate>接收点击事件 - 实现Delegate</a></li><li><a href=#自定义文字标签样式>自定义文字标签样式</a></li><li><a href=#增加删除标签>增加、删除标签</a></li><li><a href=#在代码里控制标签的选中状态>在代码里控制标签的选中状态</a></li><li><a href=#获取所有选中未选中标签>获取所有、选中、未选中标签</a></li><li><a href=#重新加载---reload>重新加载 - Reload</a></li></ul></li><li><a href=#显示自定义的标签控件view---ttgtagcollectionview>显示自定义的标签控件View - TTGTagCollectionView</a><ul><li><a href=#基本要求---实现datasource和delegate>基本要求 - 实现DataSource和Delegate</a></li><li><a href=#设置标签的行距间隔>设置标签的行距、间隔</a></li><li><a href=#重新加载---reload-1>重新加载 - Reload</a></li></ul></li><li><a href=#end>End</a></li></ul></nav></details></aside><section class=article-content><h2 id=更新><a href=#%e6%9b%b4%e6%96%b0 class=header-anchor></a>更新</h2><ul><li>2017-02-27: 增加两种Alignment布局类型；增加点击前的回调判断；增加选中Tag上限</li><li>2016-12-25: 不再依赖UICollectionView，减少了位置刷新次数，提高性能；增加了alignment属性，可以靠左中右排列</li><li>2016-10-29: 增加Tag的阴影和ContentInset的设置，更新了Demo</li><li>2016-10-17: 增加了水平滑动；Autolayout适配；UITableViewCell例子等</li><li>2016-02-18: 修复了超长标签导致排版错误的Bug</li></ul><h2 id=前言><a href=#%e5%89%8d%e8%a8%80 class=header-anchor></a>前言</h2><p>这段时间做项目的时候，总是需要显示一些“标签”样式的内容，但是又找不到用的顺手的库，所以琢磨了几天，自己实现了出来，就有了这个库：TTGTagCollectionView。如果只需要显示文字标签的话，直接使用<code>TTGTextTagCollectionView</code>，需要自己定义标签的话，就用<code>TTGTagCollectionView</code>，效果如下:</p><p><img alt=ScreenShot loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2015/12/31/TTGTagCollectionView/TTGTagCollectionView_screenshot.png></p><p>支持五种布局排版：</p><p><img alt=Alignment loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2015/12/31/TTGTagCollectionView/TTGTagCollectionView_alignment_type_1.png></p><p>CocoaPods: <code>pod "TTGTagCollectionView"</code>
+Carthage: <code>github "zekunyan/TTGTagCollectionView"</code></p><p>Github地址: <a class=link href=https://github.com/zekunyan/TTGTagCollectionView target=_blank rel=noopener>https://github.com/zekunyan/TTGTagCollectionView</a></p><h2 id=只显示文字标签---ttgtexttagcollectionview><a href=#%e5%8f%aa%e6%98%be%e7%a4%ba%e6%96%87%e5%ad%97%e6%a0%87%e7%ad%be---ttgtexttagcollectionview class=header-anchor></a>只显示文字标签 - TTGTextTagCollectionView</h2><h3 id=基本使用><a href=#%e5%9f%ba%e6%9c%ac%e4%bd%bf%e7%94%a8 class=header-anchor></a>基本使用</h3><p>只显示文字标签的话，直接用<code>TTGTextTagCollectionView</code>类就可以了：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-prolog data-lang=prolog><span class=line><span class=cl><span class=nv>TTGTextTagCollectionView</span> <span class=o>*</span><span class=s>tagCollectionView</span> <span class=o>=</span> <span class=p>[[</span><span class=nv>TTGTextTagCollectionView</span> <span class=s>alloc</span><span class=p>]</span> <span class=s>initWithFrame:</span><span class=nv>CGRectMake</span><span class=p>(</span><span class=mi>20</span><span class=p>,</span> <span class=mi>20</span><span class=p>,</span> <span class=mi>200</span><span class=p>,</span> <span class=mi>200</span><span class=p>)];</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=s>self</span><span class=p>.</span><span class=s>view</span> <span class=s>addSubview:tagCollectionView</span><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=s>tagCollectionView</span> <span class=s>addTags:@</span><span class=p>[</span><span class=s>@</span><span class=s2>&#34;TTG&#34;</span><span class=p>,</span> <span class=s>@</span><span class=s2>&#34;Tag&#34;</span><span class=p>,</span> <span class=s>@</span><span class=s2>&#34;collection&#34;</span><span class=p>,</span> <span class=s>@</span><span class=s2>&#34;view&#34;</span><span class=p>]];</span>
+</span></span></code></pre></div><h3 id=接收点击事件---实现delegate><a href=#%e6%8e%a5%e6%94%b6%e7%82%b9%e5%87%bb%e4%ba%8b%e4%bb%b6---%e5%ae%9e%e7%8e%b0delegate class=header-anchor></a>接收点击事件 - 实现Delegate</h3><p>如果想在标签被点击时得到通知，实现对应的Protocol即可，定义如下:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>@protocol TTGTextTagCollectionViewDelegate &lt;NSObject&gt;
+</span></span><span class=line><span class=cl>@optional
+</span></span><span class=line><span class=cl>// 是否可以点击某个Tag
+</span></span><span class=line><span class=cl>- (BOOL)textTagCollectionView:(TTGTextTagCollectionView *)textTagCollectionView canTapTag:(NSString *)tagText atIndex:(NSUInteger)index currentSelected:(BOOL)currentSelected;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 点击了某个Tag
+</span></span><span class=line><span class=cl>- (void)textTagCollectionView:(TTGTextTagCollectionView *)textTagCollectionView didTapTag:(NSString *)tagText atIndex:(NSUInteger)index selected:(BOOL)selected;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 内容大小更新
+</span></span><span class=line><span class=cl>- (void)textTagCollectionView:(TTGTextTagCollectionView *)textTagCollectionView updateContentSize:(CGSize)contentSize;
+</span></span><span class=line><span class=cl>@end
+</span></span></code></pre></div><h3 id=自定义文字标签样式><a href=#%e8%87%aa%e5%ae%9a%e4%b9%89%e6%96%87%e5%ad%97%e6%a0%87%e7%ad%be%e6%a0%b7%e5%bc%8f class=header-anchor></a>自定义文字标签样式</h3><p>如果想对标签的样式做定制，可以设置以下属性：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=c1>// 标签是否可以被选中
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>assign</span><span class=p>,</span> <span class=k>nonatomic</span><span class=p>)</span> <span class=kt>BOOL</span> <span class=n>enableTagSelection</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 字体
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>strong</span><span class=p>,</span> <span class=k>nonatomic</span><span class=p>)</span> <span class=n>UIFont</span> <span class=o>*</span><span class=n>tagTextFont</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 文字颜色
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>strong</span><span class=p>,</span> <span class=k>nonatomic</span><span class=p>)</span> <span class=n>UIColor</span> <span class=o>*</span><span class=n>tagTextColor</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>strong</span><span class=p>,</span> <span class=k>nonatomic</span><span class=p>)</span> <span class=n>UIColor</span> <span class=o>*</span><span class=n>tagSelectedTextColor</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 标签背景颜色
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>strong</span><span class=p>,</span> <span class=k>nonatomic</span><span class=p>)</span> <span class=n>UIColor</span> <span class=o>*</span><span class=n>tagBackgroundColor</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>strong</span><span class=p>,</span> <span class=k>nonatomic</span><span class=p>)</span> <span class=n>UIColor</span> <span class=o>*</span><span class=n>tagSelectedBackgroundColor</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 圆角值
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>assign</span><span class=p>,</span> <span class=k>nonatomic</span><span class=p>)</span> <span class=n>CGFloat</span> <span class=n>tagCornerRadius</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>assign</span><span class=p>,</span> <span class=k>nonatomic</span><span class=p>)</span> <span class=n>CGFloat</span> <span class=n>tagSelectedCornerRadius</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 边框
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>assign</span><span class=p>,</span> <span class=k>nonatomic</span><span class=p>)</span> <span class=n>CGFloat</span> <span class=n>tagBorderWidth</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>assign</span><span class=p>,</span> <span class=k>nonatomic</span><span class=p>)</span> <span class=n>CGFloat</span> <span class=n>tagSelectedBorderWidth</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>strong</span><span class=p>,</span> <span class=k>nonatomic</span><span class=p>)</span> <span class=n>UIColor</span> <span class=o>*</span><span class=n>tagBorderColor</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>strong</span><span class=p>,</span> <span class=k>nonatomic</span><span class=p>)</span> <span class=n>UIColor</span> <span class=o>*</span><span class=n>tagSelectedBorderColor</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 阴影
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>nonatomic</span><span class=p>,</span> <span class=k>copy</span><span class=p>)</span> <span class=n>UIColor</span> <span class=o>*</span><span class=n>tagShadowColor</span><span class=p>;</span>    <span class=c1>// Default is [UIColor black]
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>nonatomic</span><span class=p>,</span> <span class=k>assign</span><span class=p>)</span> <span class=n>CGSize</span> <span class=n>tagShadowOffset</span><span class=p>;</span>   <span class=c1>// Default is (2, 2)
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>nonatomic</span><span class=p>,</span> <span class=k>assign</span><span class=p>)</span> <span class=n>CGFloat</span> <span class=n>tagShadowRadius</span><span class=p>;</span>  <span class=c1>// Default is 2f
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>nonatomic</span><span class=p>,</span> <span class=k>assign</span><span class=p>)</span> <span class=n>CGFloat</span> <span class=n>tagShadowOpacity</span><span class=p>;</span> <span class=c1>// Default is 0.3f
+</span></span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 滚动方向，默认垂直方向
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>nonatomic</span><span class=p>,</span> <span class=k>assign</span><span class=p>)</span> <span class=n>TTGTagCollectionScrollDirection</span> <span class=n>scrollDirection</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 布局类型，默认靠左
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>nonatomic</span><span class=p>,</span> <span class=k>assign</span><span class=p>)</span> <span class=n>TTGTagCollectionAlignment</span> <span class=n>alignment</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 行数，默认0，不限制
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>nonatomic</span><span class=p>,</span> <span class=k>assign</span><span class=p>)</span> <span class=n>NSUInteger</span> <span class=n>numberOfLines</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 选中的数量限制
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>nonatomic</span><span class=p>,</span> <span class=k>assign</span><span class=p>)</span> <span class=n>NSUInteger</span> <span class=n>selectionLimit</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 标签宽高的扩展值，可以理解为padding
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>assign</span><span class=p>,</span> <span class=k>nonatomic</span><span class=p>)</span> <span class=n>CGSize</span> <span class=n>extraSpace</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 水平间隔
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>assign</span><span class=p>,</span> <span class=k>nonatomic</span><span class=p>)</span> <span class=n>CGFloat</span> <span class=n>horizontalSpacing</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=c1>// 行距
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>assign</span><span class=p>,</span> <span class=k>nonatomic</span><span class=p>)</span> <span class=n>CGFloat</span> <span class=n>verticalSpacing</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 整体的Inset
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>nonatomic</span><span class=p>,</span> <span class=k>assign</span><span class=p>)</span> <span class=n>UIEdgeInsets</span> <span class=n>contentInset</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 所有标签大小
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>nonatomic</span><span class=p>,</span> <span class=k>assign</span><span class=p>,</span> <span class=k>readonly</span><span class=p>)</span> <span class=n>CGSize</span> <span class=n>contentSize</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 是否显示滚动条
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>nonatomic</span><span class=p>,</span> <span class=k>assign</span><span class=p>)</span> <span class=kt>BOOL</span> <span class=n>showsHorizontalScrollIndicator</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>nonatomic</span><span class=p>,</span> <span class=k>assign</span><span class=p>)</span> <span class=kt>BOOL</span> <span class=n>showsVerticalScrollIndicator</span><span class=p>;</span>
+</span></span></code></pre></div><h3 id=增加删除标签><a href=#%e5%a2%9e%e5%8a%a0%e5%88%a0%e9%99%a4%e6%a0%87%e7%ad%be class=header-anchor></a>增加、删除标签</h3><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=c1>// 增加一个标签
+</span></span></span><span class=line><span class=cl><span class=p>-</span> <span class=p>(</span><span class=kt>void</span><span class=p>)</span><span class=nf>addTag:</span><span class=p>(</span><span class=n>NSString</span> <span class=o>*</span><span class=p>)</span><span class=nv>tag</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>-</span> <span class=p>(</span><span class=kt>void</span><span class=p>)</span><span class=nf>addTags:</span><span class=p>(</span><span class=n>NSArray</span> <span class=o>&lt;</span><span class=n>NSString</span> <span class=o>*&gt;</span> <span class=o>*</span><span class=p>)</span><span class=nv>tags</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>/// 删除标签
+</span></span></span><span class=line><span class=cl><span class=p>-</span> <span class=p>(</span><span class=kt>void</span><span class=p>)</span><span class=nf>removeTag:</span><span class=p>(</span><span class=n>NSString</span> <span class=o>*</span><span class=p>)</span><span class=nv>tag</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>-</span> <span class=p>(</span><span class=kt>void</span><span class=p>)</span><span class=nf>removeTagAtIndex:</span><span class=p>(</span><span class=n>NSUInteger</span><span class=p>)</span><span class=nv>index</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>-</span> <span class=p>(</span><span class=kt>void</span><span class=p>)</span><span class=nf>removeAllTags</span><span class=p>;</span>
+</span></span></code></pre></div><h3 id=在代码里控制标签的选中状态><a href=#%e5%9c%a8%e4%bb%a3%e7%a0%81%e9%87%8c%e6%8e%a7%e5%88%b6%e6%a0%87%e7%ad%be%e7%9a%84%e9%80%89%e4%b8%ad%e7%8a%b6%e6%80%81 class=header-anchor></a>在代码里控制标签的选中状态</h3><div class=highlight><pre tabindex=0 class=chroma><code class=language-erlang data-lang=erlang><span class=line><span class=cl><span class=p>-</span><span class=err> (</span><span class=ni>void</span><span class=p>)</span><span class=nn>setTagAtIndex</span><span class=p>:(</span><span class=nv>NSUInteger</span><span class=p>)</span><span class=n>index</span> <span class=nn>selected</span><span class=p>:(</span><span class=nv>BOOL</span><span class=p>)</span><span class=n>selected</span><span class=p>;</span>
+</span></span></code></pre></div><h3 id=获取所有选中未选中标签><a href=#%e8%8e%b7%e5%8f%96%e6%89%80%e6%9c%89%e9%80%89%e4%b8%ad%e6%9c%aa%e9%80%89%e4%b8%ad%e6%a0%87%e7%ad%be class=header-anchor></a>获取所有、选中、未选中标签</h3><div class=highlight><pre tabindex=0 class=chroma><code class=language-lisp data-lang=lisp><span class=line><span class=cl><span class=nf>-</span> <span class=p>(</span><span class=nv>NSArray</span> <span class=nv>&lt;NSString</span> <span class=nv>*&gt;</span> <span class=nf>*</span><span class=p>)</span><span class=nv>allTags</span><span class=c1>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>-</span> <span class=p>(</span><span class=nv>NSArray</span> <span class=nv>&lt;NSString</span> <span class=nv>*&gt;</span> <span class=nf>*</span><span class=p>)</span><span class=nv>allSelectedTags</span><span class=c1>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>-</span> <span class=p>(</span><span class=nv>NSArray</span> <span class=nv>&lt;NSString</span> <span class=nv>*&gt;</span> <span class=nf>*</span><span class=p>)</span><span class=nv>allNotSelectedTags</span><span class=c1>;</span>
+</span></span></code></pre></div><h3 id=重新加载---reload><a href=#%e9%87%8d%e6%96%b0%e5%8a%a0%e8%bd%bd---reload class=header-anchor></a>重新加载 - Reload</h3><p>用<code>- (void)reload</code>方法重新加载所有标签。</p><h2 id=显示自定义的标签控件view---ttgtagcollectionview><a href=#%e6%98%be%e7%a4%ba%e8%87%aa%e5%ae%9a%e4%b9%89%e7%9a%84%e6%a0%87%e7%ad%be%e6%8e%a7%e4%bb%b6view---ttgtagcollectionview class=header-anchor></a>显示自定义的标签控件View - TTGTagCollectionView</h2><p>如果想自己定义标签View，如同时显示图像、文字、按钮，可以用<code>TTGTagCollectionView</code>类实现。</p><h3 id=基本要求---实现datasource和delegate><a href=#%e5%9f%ba%e6%9c%ac%e8%a6%81%e6%b1%82---%e5%ae%9e%e7%8e%b0datasource%e5%92%8cdelegate class=header-anchor></a>基本要求 - 实现DataSource和Delegate</h3><p>DataSource的定义如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>@protocol TTGTagCollectionViewDataSource &lt;NSObject&gt;
+</span></span><span class=line><span class=cl>@required
+</span></span><span class=line><span class=cl>// 返回标签数量
+</span></span><span class=line><span class=cl>- (NSUInteger)numberOfTagsInTagCollectionView:(TTGTagCollectionView *)tagCollectionView;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 返回对应标签View
+</span></span><span class=line><span class=cl>- (UIView *)tagCollectionView:(TTGTagCollectionView *)tagCollectionView tagViewForIndex:(NSUInteger)index;
+</span></span><span class=line><span class=cl>@end
+</span></span></code></pre></div><p>Delegate的定义如下:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>@protocol TTGTagCollectionViewDelegate &lt;NSObject&gt;
+</span></span><span class=line><span class=cl>@required
+</span></span><span class=line><span class=cl>// 必须实现：返回对应的标签Size
+</span></span><span class=line><span class=cl>- (CGSize)tagCollectionView:(TTGTagCollectionView *)tagCollectionView sizeForTagAtIndex:(NSUInteger)index;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>@optional
+</span></span><span class=line><span class=cl>// 是否可以点击Tag
+</span></span><span class=line><span class=cl>- (BOOL)tagCollectionView:(TTGTagCollectionView *)tagCollectionView shouldSelectTag:(UIView *)tagView atIndex:(NSUInteger)index;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 点击标签时回调
+</span></span><span class=line><span class=cl>- (void)tagCollectionView:(TTGTagCollectionView *)tagCollectionView didSelectTag:(UIView *)tagView atIndex:(NSUInteger)index;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 所有标签总体Size更新
+</span></span><span class=line><span class=cl>- (void)tagCollectionView:(TTGTagCollectionView *)tagCollectionView updateContentSize:(CGSize)contentSize;
+</span></span><span class=line><span class=cl>@end
+</span></span></code></pre></div><p>跟UITableView的思路一致~</p><h3 id=设置标签的行距间隔><a href=#%e8%ae%be%e7%bd%ae%e6%a0%87%e7%ad%be%e7%9a%84%e8%a1%8c%e8%b7%9d%e9%97%b4%e9%9a%94 class=header-anchor></a>设置标签的行距、间隔</h3><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=c1>// 滚动方向
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>nonatomic</span><span class=p>,</span> <span class=k>assign</span><span class=p>)</span> <span class=n>TTGTagCollectionScrollDirection</span> <span class=n>scrollDirection</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 布局方式，默认靠左
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>nonatomic</span><span class=p>,</span> <span class=k>assign</span><span class=p>)</span> <span class=n>TTGTagCollectionAlignment</span> <span class=n>alignment</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 行数，默认0，不限制
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>nonatomic</span><span class=p>,</span> <span class=k>assign</span><span class=p>)</span> <span class=n>NSUInteger</span> <span class=n>numberOfLines</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 水平间隔
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>assign</span><span class=p>,</span> <span class=k>nonatomic</span><span class=p>)</span> <span class=n>CGFloat</span> <span class=n>horizontalSpacing</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=c1>// 行距
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>assign</span><span class=p>,</span> <span class=k>nonatomic</span><span class=p>)</span> <span class=n>CGFloat</span> <span class=n>verticalSpacing</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 整体Inset
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>nonatomic</span><span class=p>,</span> <span class=k>assign</span><span class=p>)</span> <span class=n>UIEdgeInsets</span> <span class=n>contentInset</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 所有标签总体Size
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>nonatomic</span><span class=p>,</span> <span class=k>assign</span><span class=p>,</span> <span class=k>readonly</span><span class=p>)</span> <span class=n>CGSize</span> <span class=n>contentSize</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 是否显示滚动条
+</span></span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>nonatomic</span><span class=p>,</span> <span class=k>assign</span><span class=p>)</span> <span class=kt>BOOL</span> <span class=n>showsHorizontalScrollIndicator</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>nonatomic</span><span class=p>,</span> <span class=k>assign</span><span class=p>)</span> <span class=kt>BOOL</span> <span class=n>showsVerticalScrollIndicator</span><span class=p>;</span>
+</span></span></code></pre></div><h3 id=重新加载---reload-1><a href=#%e9%87%8d%e6%96%b0%e5%8a%a0%e8%bd%bd---reload-1 class=header-anchor></a>重新加载 - Reload</h3><p>用<code>- (void)reload</code>方法重新加载所有标签。</p><h2 id=end><a href=#end class=header-anchor></a>End</h2><p>2015最后一天~
+新年快乐~</p></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/%E5%8E%9F%E5%88%9B/>原创</a>
+<a href=/tags/ios/>IOS</a>
+<a href=/tags/%E5%BC%80%E6%BA%90/>开源</a></section></footer></article><aside><h2 class=section-title>相关文章</h2><div class=subsection-list><div class=article-list--tile><article class=has-image><a href=/2017/03/11/TTGDeallocTaskHelper/><div class=article-image><img alt="Featured image of post 在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper" loading=lazy src=/assets/2017/03/11/TTGDeallocTaskHelper/TTGDeallocTaskHelper_1.jpg></div><div class=article-details><h2 class=article-title>在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper</h2></div></a></article><article class=has-image><a href=/2017/03/08/quartzcode-demo-star-animation/><div class=article-image><img alt="Featured image of post 用QuartzCode快速实现一个收藏动画" loading=lazy src=/assets/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_1.gif></div><div class=article-details><h2 class=article-title>用QuartzCode快速实现一个收藏动画</h2></div></a></article><article class=has-image><a href=/2016/12/25/TTGPuzzleVerify/><div class=article-image><img alt="Featured image of post 开源项目-拼图验证控件TTGPuzzleVerify的实现" loading=lazy src=/assets/2016/12/25/TTGPuzzleVerify/blog_TTGPuzzleVerify_gif.gif></div><div class=article-details><h2 class=article-title>开源项目-拼图验证控件TTGPuzzleVerify的实现</h2></div></a></article><article class=has-image><a href=/2015/10/25/ttgemojirate-lib/><div class=article-image><img alt="Featured image of post Swift开源项目: TTGEmojiRate的实现" loading=lazy src=/assets/2015/10/25/ttgemojirate-lib/TTGEmojiRate_screenshot2.gif></div><div class=article-details><h2 class=article-title>Swift开源项目: TTGEmojiRate的实现</h2></div></a></article><article class=has-image><a href=/2015/10/09/ttgsnackbar-lib/><div class=article-image><img alt="Featured image of post Swift写的库-TTGSnackbar" loading=lazy src=/assets/2015/10/09/ttgsnackbar-lib/TTGSnackbar_screen_shot.png></div><div class=article-details><h2 class=article-title>Swift写的库-TTGSnackbar</h2></div></a></article></div></div></aside><footer class=site-footer><section class=copyright>&copy;
+2014 -
+2026 tutuge</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=4.0.3>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><script type=module>
+    import gallery from '\/ts\/gallery.js';
 
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
     
-
-    <title>开源项目-TTGTagCollectionView | iOS程序猿.目前阿里,喜欢各种技术,RCFans</title>
-    <meta name="author" content="土土哥">
-    
-    <meta name="description" content="iOS程序猿.目前阿里,喜欢各种技术,RCFans">
-    
-    
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-    <meta property="og:title" content="开源项目-TTGTagCollectionView">
-    <meta property="og:site_name" content="土土哥的Blog">
-
-    
-    <meta property="og:image" content="undefined">
-    
-
-    <link rel="icon" type="image/png" href="/favicon.png">
-    <link rel="alternate" href="/atom.xml" title="土土哥的Blog" type="application/atom+xml">
-    <link rel="stylesheet" href="/css/lib/materialize.min.css">
-    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
-    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-
-    
-        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
-    
-    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-</head>
-</html>
-
-<body>
-    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
-
-    <nav class="blue-grey">
-    <div class="nav-wrapper">
-        <a href="#" data-activates="main-menu" class="button-collapse">
-            <i class="fa fa-navicon"></i>
-        </a>
-        <div class="">
-            <a href="/" class="brand-logo hide-on-med-and-down">土土哥的Blog</a>
-            <ul class="right hide-on-med-and-down">
-                
-                    <li>
-                        <a class="menu-home " href="/" >
-                            <i class="fa fa-home "></i>
-                            
-                            首页
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-archive " href="/archives" >
-                            <i class="fa fa-archive "></i>
-                            
-                            归档
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
-                            <i class="fa fa-bookmark "></i>
-                            
-                            分类
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-about " href="/about" >
-                            <i class="fa fa-user "></i>
-                            
-                            关于
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-search modal-trigger " href="#search" >
-                            <i class="fa fa-search "></i>
-                            
-                            搜索
-                        </a>
-                    </li>
-                
-            </ul>
-            <div>
-    <ul class="side-nav blue-grey darken-1" id="main-menu">
-        
-        <li class="side-user">
-            <div class="row">
-                <div class="col s4 no-padding">
-                    <img class="avatar-image circle responsive-img" src="http://tutuge.me/2019/07/29/2019-07-29-occupied-with-work/avatar_comic.jpg" alt="User Avatar">
-                </div>
-                <div class="info col s8 valign-wrapper no-padding">
-                    <div class="valign">
-                        <p class="name">土土哥</p>
-                        <p class="desc">iOS/Android/技术宅/RCFans</p>
-                    </div>
-                </div>
-            </div>
-        </li>
-        
-
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-home " href="/" >
-                    <i class="fa fa-home "></i>
-                    
-                    首页
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-archive " href="/archives" >
-                    <i class="fa fa-archive "></i>
-                    
-                    归档
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
-                    <i class="fa fa-bookmark "></i>
-                    
-                    分类
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-about " href="/about" >
-                    <i class="fa fa-user "></i>
-                    
-                    关于
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-search modal-trigger " href="#search" >
-                    <i class="fa fa-search "></i>
-                    
-                    搜索
-                </a>
-            </li>
-        
-    </ul>
-
-    <ul class="side-nav blue-grey darken-1" id="category-menu">
-    
-
-            
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/其它/">
-                    其它 <span class="right">5 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/iOS/">
-                    iOS <span class="right">37 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/Android/">
-                    Android <span class="right">1 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/Mac/">
-                    Mac <span class="right">1 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/服务端/">
-                    服务端 <span class="right">2 篇</span></a>
-                </a>
-            </li>
-
-        
-
-    </ul>
-</div>
-
-        </div>
-    </div>
-</nav>
-
-<div id="search" class="modal search-modal">
-    <div class="row">
-        <div class="input-field col s12">
-              <input id="search-input" type="text">
-              <label for="search-input">搜索</label>
-        </div>
-
-    </div>
-    <div id="search-result" class="search-result col s12">
-
-    </div>
-</div>
-
-
-    <main>
-        <div class="container main-container">
-    
-<nav class="page-nav hide-on-small-only">
-    <div class="nav-wrapper blue-grey">
-        <span class="breadcrumb">当前位置（分类目录）</span>
-        
-            
-    
-    
-    <a class="breadcrumb" href="/categories/iOS/">iOS</a>
-
-
-        
-
-        
-    </div>
-</nav>
-
-<article>
-    <div class="card">
-        <div class="card-content">
-            
-
-            <div class="article-title">
-                
-    
-        <h1>开源项目-TTGTagCollectionView</h1>
-    
-
-
-            </div>
-            <time class="teal-link-context" datetime="2015-12-31T13:56:04.000Z"><a href="/2015/12/31/TTGTagCollectionView/">2015-12-31</a></time>
-
-            <span id="busuanzi_container_page_pv" class="read-times-container">
-    <i class="fa fa-eye"></i>
-    <span id="busuanzi_value_page_pv"></span>
-</span>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
-        
-            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
-        
-            <a href="/tags/开源/" class="chip teal accent-4">开源</a>
-        
-    </div>
-
-
-            <div class="toc teal-link-context hide-on-med-and-down">
-    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#更新"><span class="section table-of-contents-text">更新</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#前言"><span class="section table-of-contents-text">前言</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#只显示文字标签-TTGTextTagCollectionView"><span class="section table-of-contents-text">只显示文字标签 - TTGTextTagCollectionView</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#基本使用"><span class="section table-of-contents-text">基本使用</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#接收点击事件-实现Delegate"><span class="section table-of-contents-text">接收点击事件 - 实现Delegate</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#自定义文字标签样式"><span class="section table-of-contents-text">自定义文字标签样式</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#增加、删除标签"><span class="section table-of-contents-text">增加、删除标签</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#在代码里控制标签的选中状态"><span class="section table-of-contents-text">在代码里控制标签的选中状态</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#获取所有、选中、未选中标签"><span class="section table-of-contents-text">获取所有、选中、未选中标签</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#重新加载-Reload"><span class="section table-of-contents-text">重新加载 - Reload</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#显示自定义的标签控件View-TTGTagCollectionView"><span class="section table-of-contents-text">显示自定义的标签控件View - TTGTagCollectionView</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#基本要求-实现DataSource和Delegate"><span class="section table-of-contents-text">基本要求 - 实现DataSource和Delegate</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#设置标签的行距、间隔"><span class="section table-of-contents-text">设置标签的行距、间隔</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#重新加载-Reload-1"><span class="section table-of-contents-text">重新加载 - Reload</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#End"><span class="section table-of-contents-text">End</span></a></li></ol>
-</div>
-
-
-            <div class="entry teal-link-context">
-                <h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><ul>
-<li>2017-02-27: 增加两种Alignment布局类型；增加点击前的回调判断；增加选中Tag上限</li>
-<li>2016-12-25: 不再依赖UICollectionView，减少了位置刷新次数，提高性能；增加了alignment属性，可以靠左中右排列</li>
-<li>2016-10-29: 增加Tag的阴影和ContentInset的设置，更新了Demo</li>
-<li>2016-10-17: 增加了水平滑动；Autolayout适配；UITableViewCell例子等</li>
-<li>2016-02-18: 修复了超长标签导致排版错误的Bug</li>
-</ul>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这段时间做项目的时候，总是需要显示一些“标签”样式的内容，但是又找不到用的顺手的库，所以琢磨了几天，自己实现了出来，就有了这个库：TTGTagCollectionView。如果只需要显示文字标签的话，直接使用<code>TTGTextTagCollectionView</code>，需要自己定义标签的话，就用<code>TTGTagCollectionView</code>，效果如下:</p>
-<p><img src="/2015/12/31/TTGTagCollectionView/TTGTagCollectionView_screenshot.png" alt="ScreenShot"></p>
-<p>支持五种布局排版：</p>
-<p><img src="/2015/12/31/TTGTagCollectionView/TTGTagCollectionView_alignment_type_1.png" alt="Alignment"></p>
-<p>CocoaPods: <code>pod &quot;TTGTagCollectionView&quot;</code><br>Carthage: <code>github &quot;zekunyan/TTGTagCollectionView&quot;</code></p>
-<p>Github地址: <a href="https://github.com/zekunyan/TTGTagCollectionView" target="_blank" rel="noopener">https://github.com/zekunyan/TTGTagCollectionView</a></p>
-<a id="more"></a>
-<h2 id="只显示文字标签-TTGTextTagCollectionView"><a href="#只显示文字标签-TTGTextTagCollectionView" class="headerlink" title="只显示文字标签 - TTGTextTagCollectionView"></a>只显示文字标签 - TTGTextTagCollectionView</h2><h3 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h3><p>只显示文字标签的话，直接用<code>TTGTextTagCollectionView</code>类就可以了：</p>
-<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">TTGTextTagCollectionView</span> *tagCollectionView = [[<span class="symbol">TTGTextTagCollectionView</span> alloc] initWithFrame:<span class="symbol">CGRectMake</span>(<span class="number">20</span>, <span class="number">20</span>, <span class="number">200</span>, <span class="number">200</span>)];</span><br><span class="line">[self.view addSubview:tagCollectionView];</span><br><span class="line">[tagCollectionView addTags:@[@<span class="string">"TTG"</span>, @<span class="string">"Tag"</span>, @<span class="string">"collection"</span>, @<span class="string">"view"</span>]];</span><br></pre></td></tr></table></figure>
-<h3 id="接收点击事件-实现Delegate"><a href="#接收点击事件-实现Delegate" class="headerlink" title="接收点击事件 - 实现Delegate"></a>接收点击事件 - 实现Delegate</h3><p>如果想在标签被点击时得到通知，实现对应的Protocol即可，定义如下:</p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">@protocol</span> TTGTextTagCollectionViewDelegate &lt;NSObject&gt;</span><br><span class="line"><span class="variable">@optional</span></span><br><span class="line"><span class="comment">// 是否可以点击某个Tag</span></span><br><span class="line">- (BOOL)<span class="attribute">textTagCollectionView</span>:(TTGTextTagCollectionView *)textTagCollectionView <span class="attribute">canTapTag</span>:(NSString *)tagText <span class="attribute">atIndex</span>:(NSUInteger)index <span class="attribute">currentSelected</span>:(BOOL)currentSelected;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 点击了某个Tag</span></span><br><span class="line"><span class="selector-tag">-</span> (void)<span class="selector-tag">textTagCollectionView</span><span class="selector-pseudo">:(TTGTextTagCollectionView</span> *)<span class="selector-tag">textTagCollectionView</span> <span class="selector-tag">didTapTag</span><span class="selector-pseudo">:(NSString</span> *)<span class="selector-tag">tagText</span> <span class="selector-tag">atIndex</span><span class="selector-pseudo">:(NSUInteger)index</span> <span class="selector-tag">selected</span><span class="selector-pseudo">:(BOOL)selected</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 内容大小更新</span></span><br><span class="line"><span class="selector-tag">-</span> (void)<span class="selector-tag">textTagCollectionView</span><span class="selector-pseudo">:(TTGTextTagCollectionView</span> *)<span class="selector-tag">textTagCollectionView</span> <span class="selector-tag">updateContentSize</span><span class="selector-pseudo">:(CGSize)contentSize</span>;</span><br><span class="line">@<span class="selector-tag">end</span></span><br></pre></td></tr></table></figure>
-<h3 id="自定义文字标签样式"><a href="#自定义文字标签样式" class="headerlink" title="自定义文字标签样式"></a>自定义文字标签样式</h3><p>如果想对标签的样式做定制，可以设置以下属性：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 标签是否可以被选中</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">BOOL</span> enableTagSelection;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 字体</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">UIFont</span> *tagTextFont;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 文字颜色</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">UIColor</span> *tagTextColor;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">UIColor</span> *tagSelectedTextColor;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 标签背景颜色</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">UIColor</span> *tagBackgroundColor;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">UIColor</span> *tagSelectedBackgroundColor;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 圆角值</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> tagCornerRadius;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> tagSelectedCornerRadius;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 边框</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> tagBorderWidth;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> tagSelectedBorderWidth;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">UIColor</span> *tagBorderColor;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">UIColor</span> *tagSelectedBorderColor;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 阴影</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">copy</span>) <span class="built_in">UIColor</span> *tagShadowColor;    <span class="comment">// Default is [UIColor black]</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">CGSize</span> tagShadowOffset;   <span class="comment">// Default is (2, 2)</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">CGFloat</span> tagShadowRadius;  <span class="comment">// Default is 2f</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">CGFloat</span> tagShadowOpacity; <span class="comment">// Default is 0.3f</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 滚动方向，默认垂直方向</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) TTGTagCollectionScrollDirection scrollDirection;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 布局类型，默认靠左</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) TTGTagCollectionAlignment alignment;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 行数，默认0，不限制</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">NSUInteger</span> numberOfLines;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 选中的数量限制</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">NSUInteger</span> selectionLimit;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 标签宽高的扩展值，可以理解为padding</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGSize</span> extraSpace;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 水平间隔</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> horizontalSpacing;</span><br><span class="line"><span class="comment">// 行距</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> verticalSpacing;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 整体的Inset</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">UIEdgeInsets</span> contentInset;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 所有标签大小</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>, <span class="keyword">readonly</span>) <span class="built_in">CGSize</span> contentSize;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 是否显示滚动条</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">BOOL</span> showsHorizontalScrollIndicator;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">BOOL</span> showsVerticalScrollIndicator;</span><br></pre></td></tr></table></figure>
-<h3 id="增加、删除标签"><a href="#增加、删除标签" class="headerlink" title="增加、删除标签"></a>增加、删除标签</h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 增加一个标签</span></span><br><span class="line">- (<span class="keyword">void</span>)addTag:(<span class="built_in">NSString</span> *)tag;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)addTags:(<span class="built_in">NSArray</span> &lt;<span class="built_in">NSString</span> *&gt; *)tags;</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 删除标签</span></span><br><span class="line">- (<span class="keyword">void</span>)removeTag:(<span class="built_in">NSString</span> *)tag;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)removeTagAtIndex:(<span class="built_in">NSUInteger</span>)index;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)removeAllTags;</span><br></pre></td></tr></table></figure>
-<h3 id="在代码里控制标签的选中状态"><a href="#在代码里控制标签的选中状态" class="headerlink" title="在代码里控制标签的选中状态"></a>在代码里控制标签的选中状态</h3><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- <span class="params">(void)</span>setTagAtIndex:<span class="params">(NSUInteger)</span>index selected:<span class="params">(BOOL)</span>selected;</span><br></pre></td></tr></table></figure>
-<h3 id="获取所有、选中、未选中标签"><a href="#获取所有、选中、未选中标签" class="headerlink" title="获取所有、选中、未选中标签"></a>获取所有、选中、未选中标签</h3><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="name">NSArray</span> &lt;NSString *&gt; *)allTags<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">- (<span class="name">NSArray</span> &lt;NSString *&gt; *)allSelectedTags<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">- (<span class="name">NSArray</span> &lt;NSString *&gt; *)allNotSelectedTags<span class="comment">;</span></span><br></pre></td></tr></table></figure>
-<h3 id="重新加载-Reload"><a href="#重新加载-Reload" class="headerlink" title="重新加载 - Reload"></a>重新加载 - Reload</h3><p>用<code>- (void)reload</code>方法重新加载所有标签。</p>
-<h2 id="显示自定义的标签控件View-TTGTagCollectionView"><a href="#显示自定义的标签控件View-TTGTagCollectionView" class="headerlink" title="显示自定义的标签控件View - TTGTagCollectionView"></a>显示自定义的标签控件View - TTGTagCollectionView</h2><p>如果想自己定义标签View，如同时显示图像、文字、按钮，可以用<code>TTGTagCollectionView</code>类实现。</p>
-<h3 id="基本要求-实现DataSource和Delegate"><a href="#基本要求-实现DataSource和Delegate" class="headerlink" title="基本要求 - 实现DataSource和Delegate"></a>基本要求 - 实现DataSource和Delegate</h3><p>DataSource的定义如下：</p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">@protocol</span> TTGTagCollectionViewDataSource &lt;NSObject&gt;</span><br><span class="line"><span class="variable">@required</span></span><br><span class="line"><span class="comment">// 返回标签数量</span></span><br><span class="line">- (NSUInteger)<span class="attribute">numberOfTagsInTagCollectionView</span>:(TTGTagCollectionView *)tagCollectionView;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 返回对应标签View</span></span><br><span class="line"><span class="selector-tag">-</span> (UIView *)<span class="selector-tag">tagCollectionView</span><span class="selector-pseudo">:(TTGTagCollectionView</span> *)<span class="selector-tag">tagCollectionView</span> <span class="selector-tag">tagViewForIndex</span><span class="selector-pseudo">:(NSUInteger)index</span>;</span><br><span class="line">@<span class="selector-tag">end</span></span><br></pre></td></tr></table></figure>
-<p>Delegate的定义如下:</p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">@protocol</span> TTGTagCollectionViewDelegate &lt;NSObject&gt;</span><br><span class="line"><span class="variable">@required</span></span><br><span class="line"><span class="comment">// 必须实现：返回对应的标签Size</span></span><br><span class="line">- (CGSize)<span class="attribute">tagCollectionView</span>:(TTGTagCollectionView *)tagCollectionView <span class="attribute">sizeForTagAtIndex</span>:(NSUInteger)index;</span><br><span class="line"></span><br><span class="line"><span class="variable">@optional</span></span><br><span class="line"><span class="comment">// 是否可以点击Tag</span></span><br><span class="line">- (BOOL)<span class="attribute">tagCollectionView</span>:(TTGTagCollectionView *)tagCollectionView <span class="attribute">shouldSelectTag</span>:(UIView *)tagView <span class="attribute">atIndex</span>:(NSUInteger)index;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 点击标签时回调</span></span><br><span class="line"><span class="selector-tag">-</span> (void)<span class="selector-tag">tagCollectionView</span><span class="selector-pseudo">:(TTGTagCollectionView</span> *)<span class="selector-tag">tagCollectionView</span> <span class="selector-tag">didSelectTag</span><span class="selector-pseudo">:(UIView</span> *)<span class="selector-tag">tagView</span> <span class="selector-tag">atIndex</span><span class="selector-pseudo">:(NSUInteger)index</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 所有标签总体Size更新</span></span><br><span class="line"><span class="selector-tag">-</span> (void)<span class="selector-tag">tagCollectionView</span><span class="selector-pseudo">:(TTGTagCollectionView</span> *)<span class="selector-tag">tagCollectionView</span> <span class="selector-tag">updateContentSize</span><span class="selector-pseudo">:(CGSize)contentSize</span>;</span><br><span class="line">@<span class="selector-tag">end</span></span><br></pre></td></tr></table></figure>
-<p>跟UITableView的思路一致~</p>
-<h3 id="设置标签的行距、间隔"><a href="#设置标签的行距、间隔" class="headerlink" title="设置标签的行距、间隔"></a>设置标签的行距、间隔</h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 滚动方向</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) TTGTagCollectionScrollDirection scrollDirection;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 布局方式，默认靠左</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) TTGTagCollectionAlignment alignment;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 行数，默认0，不限制</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">NSUInteger</span> numberOfLines;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 水平间隔</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> horizontalSpacing;</span><br><span class="line"><span class="comment">// 行距</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> verticalSpacing;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 整体Inset</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">UIEdgeInsets</span> contentInset;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 所有标签总体Size</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>, <span class="keyword">readonly</span>) <span class="built_in">CGSize</span> contentSize;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 是否显示滚动条</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">BOOL</span> showsHorizontalScrollIndicator;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">BOOL</span> showsVerticalScrollIndicator;</span><br></pre></td></tr></table></figure>
-<h3 id="重新加载-Reload-1"><a href="#重新加载-Reload-1" class="headerlink" title="重新加载 - Reload"></a>重新加载 - Reload</h3><p>用<code>- (void)reload</code>方法重新加载所有标签。</p>
-<h2 id="End"><a href="#End" class="headerlink" title="End"></a>End</h2><p>2015最后一天~<br>新年快乐~</p>
-
-                
-<p class="teal-link-context">
-    <a href="/2016/03/29/modular-and-component-summary/" rel="next" title="对组件化与模块化的思考与总结">
-    上一篇：对组件化与模块化的思考与总结
-  </a>
-</p>
-
-
-
-<p class="teal-link-context">
-    <a href="/2015/12/14/autolayout-example-with-masonry3/" rel="next" title="有趣的Autolayout示例3-Masonry实现">
-    下一篇：有趣的Autolayout示例3-Masonry实现
-  </a>
-</p>
-
-
-            </div>
-
-            
-			
-        </div>
-    </div>
-</article>
-
-
-
-
-    <section id="comment">
-        <div id="disqus_thread"></div>
-        <script>
-            var disqus_config = function() {
-                this.page.url = 'http://tutuge.me/2015/12/31/TTGTagCollectionView/';
-                this.page.identifier = '2015/12/31/TTGTagCollectionView/';
-            };
-            (function() {
-                var d = document,
-                    s = d.createElement('script');
-                s.src = '//tutuge-me.disqus.com/embed.js';
-                s.setAttribute('data-timestamp', + new Date());
-                (d.head || d.body).appendChild(s);
-            })();
-        </script>
-        <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
-        </noscript>
-    </section>
-
-
-
-</div>
-
-        <div class="fixed-action-btn float-sitemap">
-    <a class="btn-floating btn-large teal">
-      <i class="fa fa-caret-square-o-up"></i>
-    </a>
-    <ul>
-      <li><a class="btn-return-top btn-floating waves-effect teal accent-4" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
-      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
-    </ul>
-  </div>
-
-    </main>
-    <footer class="page-footer blue-grey darken-1">
-    
-    <div class="footer-container container">
-        <div class="row">
-            
-            <div class="social-group col m4 s12">
-                <h5 class="white-text">社交</h5>
-                
-                    <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
-                        <i class="fa fa-2x fa-weibo"></i>
-                    </a>
-                
-                    <a class="social-link" href="https://github.com/zekunyan" target="_blank">
-                        <i class="fa fa-2x fa-github"></i>
-                    </a>
-                
-                    <a class="social-link" href="/atom.xml" target="_blank">
-                        <i class="fa fa-2x fa-rss"></i>
-                    </a>
-                
-                
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
-    </script>
-    <div class="site-visitors-container white-text">
-        <span>
-            <i class="fa fa-user"></i>
-            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
-        </span>
-        <span>&nbsp;|&nbsp;</span>
-        <span>
-            <i class="fa fa-eye"></i>
-            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
-        </span>
-    </div>
-
-
-            </div>
-            
-
-            
-            <div class="col m8 s12">
-                <h5 class="white-text">友情链接</h5>
-                
-                    <a class="social-link" href="http://chenrudan.github.io" target="_blank">女朋友的博客😊</a>
-                
-            </div>
-            
-        </div>
-        <p>Hosted by <a href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a></p>
-    </div>
-    
-
-    <div class="footer-copyright teal-link-context">
-        <div class="container">
-            © 2020 tutuge.me, All rights reserved.
-            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
-        </div>
-    </div>
-</footer>
-
-
-    <noscript>
-    <div class="noscript">
-        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
-    </div>
-</noscript>
-<div class="noscript">
-    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
-</div>
-
-
-<script src="/js/jquery.min.js"></script>
-<script src="/js/materialize.min.js"></script>
-
-<script>
-    (function($) {
-        $(document).ready(function() {
-            // 隐藏禁用javascript（针对微信内置浏览器）的提示
-            $('.noscript').hide();
-
-            // 图片缩放效果
-            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
-
-            // 给图片加上点击放大效果（materialbox插件）
-            $imgs.addClass('materialboxed').each(function(i, el) {
-                $(this).attr('data-caption', $(this).attr('alt') || ' ');
-            }).materialbox();
-
-            // 优化表格的显示
-            $('table').each(function() {
-                var $table = $(this);
-                // 除去多行代码的情况
-                if ($table.find('pre').length == 0) {
-                    $table.addClass('responsive-table striped bordered');
-                }
-            });
-
-            // 首页幻灯片
-            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
-
-            $(".button-collapse").sideNav();
-            $(".category-menu").sideNav();
-
-            // 针对gallery post
-            $('.carousel').carousel({full_width: true});
-            $('.carousel-control.prev').click(function() {
-                $('.carousel').carousel('prev');
-            });
-            $('.carousel-control.next').click(function() {
-                $('.carousel').carousel('next');
-            });
-
-            // 文章目录
-            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
-
-            // 目录随屏幕滚动（防止目录过长越过footer）
-            var $toc = $('.toc');
-            var scrollTargetTop = 0;
-            $(window).scroll(function() {
-                var $activeLink = $toc.find('a.active.section');
-                if ($(window).scrollTop() < 100) {
-                    scrollTargetTop = 0;
-                } else {
-                    if ($activeLink[0]) {
-                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
-                    }
-                }
-                $toc.css('top', '-' + scrollTargetTop + 'px');
-            });
-
-            // 修正文章目录的left-border颜色
-            var color = $('.table-of-contents-text').css('color');
-            $('.table-of-contents-link').css('border-left-color', color);
-
-            // 针对移动端做的优化：FAB按钮点击一下收回
-            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                $('.fixed-action-btn').addClass('click-to-toggle');
-            }
-            // 回到顶部
-            $('.btn-return-top').click(function() {
-                $('body, html').animate({
-                    scrollTop: 0
-                }, 500);
-            });
-
-            // 重置读书页面的Tab标签页的颜色
-            $('li.tab a').hover(function() {
-                $(this).toggleClass('text-lighten-4');
-            });
-            $('.indicator').addClass('teal lighten-2');
-
-            
-            // 添加new标签
-            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
-            
-
-            // 搜索功能
-            $('.modal-trigger').leanModal({
-                // 打开搜索框时自动聚焦
-                ready: function() {
-                    if ($('#search').is(":visible")) {
-                        $('#search-input').focus();
-                    }
-                }
-            });
-            var searchXml = "search.xml";
-            if (searchXml.length == 0) {
-             	searchXml = "search.xml";
-            }
-            var searchPath = "/" + searchXml;
-            initSearch(searchPath, 'search-input', 'search-result');
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
         });
-
-        // 初始化搜索与匹配函数
-        var initSearch = function(path, search_id, content_id) {
-            'use strict';
-            $.ajax({
-                url: path,
-                dataType: "xml",
-                success: function(xmlResponse) {
-                    // get the contents from search data
-                    var datas = $("entry", xmlResponse).map(function() {
-                        return {
-                            title: $("title", this).text(),
-                            content: $("content", this).text(),
-                            url: $("url", this).text()
-                        };
-                    }).get();
-                    var $input = document.getElementById(search_id);
-                    var $resultContent = document.getElementById(content_id);
-                    $input.addEventListener('input', function() {
-                        var str = '<ul class=\"search-result-list\">';
-                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
-                        $resultContent.innerHTML = "";
-                        if (this.value.trim().length <= 0) {
-                            return;
-                        }
-                        // perform local searching
-                        datas.forEach(function(data) {
-                            var isMatch = true;
-                            var content_index = [];
-                            var data_title = data.title.trim().toLowerCase();
-                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
-                            var data_url = data.url;
-                            var index_title = -1;
-                            var index_content = -1;
-                            var first_occur = -1;
-                            // only match artiles with not empty titles and contents
-                            if (data_title != '' && data_content != '') {
-                                keywords.forEach(function(keyword, i) {
-                                    index_title = data_title.indexOf(keyword);
-                                    index_content = data_content.indexOf(keyword);
-                                    if (index_title < 0 && index_content < 0) {
-                                        isMatch = false;
-                                    } else {
-                                        if (index_content < 0) {
-                                            index_content = 0;
-                                        }
-                                        if (i == 0) {
-                                            first_occur = index_content;
-                                        }
-                                    }
-                                });
-                            }
-                            // show search results
-                            if (isMatch) {
-                                keywords.forEach(function(keyword) {
-                                    var regS = new RegExp(keyword, "gi");
-                                    data_title = data_title.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
-                                });
-
-                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
-                                var content = data.content.trim().replace(/<[^>]+>/g, "");
-                                if (first_occur >= 0) {
-                                    // cut out 100 characters
-                                    var start = first_occur - 20;
-                                    var end = first_occur + 80;
-                                    if (start < 0) {
-                                        start = 0;
-                                    }
-                                    if (start == 0) {
-                                        end = 100;
-                                    }
-                                    if (end > content.length) {
-                                        end = content.length;
-                                    }
-                                    var match_content = content.substring(start, end);
-                                    // highlight all keywords
-                                    keywords.forEach(function(keyword) {
-                                        var regS = new RegExp(keyword, "gi");
-                                        match_content = match_content.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
-                                    });
-
-                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
-                                }
-                                str += "</li>";
-                            }
-                        });
-                        str += "</ul>";
-                        $resultContent.innerHTML = str;
-                    });
-                }
-            });
-        }
-    })(jQuery);
-</script>
-
-
-<script src="/js/prettify.js"></script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $("pre").addClass("prettyprint");
-        prettyPrint();
-    });
-</script>
-
-
-<script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-68058110-1', 'auto');
-    ga('send', 'pageview');
-
-</script>
-
-
-
-<script type="text/javascript" src="http://tajs.qq.com/stats?sId=55079830" charset="UTF-8"></script>
-
-
-
-
-
-</body>
-</html>
+        lightbox.init();
+    }
+</script></main></div><script type=text/javascript src=/ts/main.f856840516f7c2ad1769a8f5937e3d08d6cb386e2cd2dd025ae696e0ff207958.js defer></script></body></html>

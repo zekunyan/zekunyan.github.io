@@ -1,710 +1,78 @@
-<!DOCTYPE HTML>
-<html>
-<head><meta name="generator" content="Hexo 3.9.0">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="前言 第四篇来了。 还是3个小例子，仍然是主要部分用Masonry手写代码实现，其它的约束在storyboard里面直接拖拽搭建。 三个例子分别是：\n用约束优先级保证可移动View的内容可见 Autolayout的约束=控件间位置关系的“绑定” 利用layoutIfNeeded控制约束的生效时机 前三篇：\n第一篇：有趣的Autolayout示例-Masonry实现 第二篇：有趣的Autolayout示例2-Masonry实现 第三篇：有趣的Autolayout示例3-Masonry实现 Github地址： https://github.com/zekunyan/AutolayoutExampleWithMasonry\n"><title>有趣的Autolayout示例4-Masonry实现</title><link rel=canonical href=https://tutuge.me/2016/08/06/autolayout-example-with-masonry4/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=preload as=style href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href=/scss/style.min.e62e09c60ba428a627e03568fa3df938f6a8224f815b5846f00816c17d4a0be4.css><meta property='og:title' content="有趣的Autolayout示例4-Masonry实现"><meta property='og:description' content="前言 第四篇来了。 还是3个小例子，仍然是主要部分用Masonry手写代码实现，其它的约束在storyboard里面直接拖拽搭建。 三个例子分别是：\n用约束优先级保证可移动View的内容可见 Autolayout的约束=控件间位置关系的“绑定” 利用layoutIfNeeded控制约束的生效时机 前三篇：\n第一篇：有趣的Autolayout示例-Masonry实现 第二篇：有趣的Autolayout示例2-Masonry实现 第三篇：有趣的Autolayout示例3-Masonry实现 Github地址： https://github.com/zekunyan/AutolayoutExampleWithMasonry\n"><meta property='og:url' content='https://tutuge.me/2016/08/06/autolayout-example-with-masonry4/'><meta property='og:site_name' content='土土哥的技术 Blog'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='原创'><meta property='article:tag' content='iOS'><meta property='article:tag' content='Autolayout'><meta property='article:tag' content='Masonry'><meta property='article:published_time' content='2016-08-06T00:00:00+00:00'><meta property='article:modified_time' content='2016-08-06T00:00:00+00:00'><meta property='og:image' content='https://tutuge.me/assets/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_1.gif'><meta name=twitter:title content="有趣的Autolayout示例4-Masonry实现"><meta name=twitter:description content="前言 第四篇来了。 还是3个小例子，仍然是主要部分用Masonry手写代码实现，其它的约束在storyboard里面直接拖拽搭建。 三个例子分别是：\n用约束优先级保证可移动View的内容可见 Autolayout的约束=控件间位置关系的“绑定” 利用layoutIfNeeded控制约束的生效时机 前三篇：\n第一篇：有趣的Autolayout示例-Masonry实现 第二篇：有趣的Autolayout示例2-Masonry实现 第三篇：有趣的Autolayout示例3-Masonry实现 Github地址： https://github.com/zekunyan/AutolayoutExampleWithMasonry\n"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://tutuge.me/assets/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_1.gif'><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar.png width height class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>土土哥的技术 Blog</a></h1><h2 class=site-description>AI / iOS / Android / Flutter / Open Source</h2></div></header><ol class=menu-social><li><a href=https://github.com/zekunyan title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>首页</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav class=toc-nav id=TableOfContents><ul><li><a href=#前言>前言</a></li><li><a href=#case-1-用约束优先级保证可移动view的内容可见性>Case 1: 用约束优先级保证可移动View的内容可见性</a><ul><li><a href=#实现功能>实现功能</a></li><li><a href=#frame-vs-autolayout>Frame VS Autolayout</a></li><li><a href=#关键原理>关键原理</a></li><li><a href=#实现细节>实现细节</a></li><li><a href=#小节>小节</a></li></ul></li><li><a href=#case-2-autolayout的约束控件间位置关系的动态绑定>Case 2: Autolayout的约束=控件间位置关系的“动态绑定”</a><ul><li><a href=#实现功能-1>实现功能</a></li><li><a href=#关键概念约束--动态的绑定>关键概念：约束 = “动态的绑定”</a></li><li><a href=#实现细节-1>实现细节</a></li><li><a href=#小节-1>小节</a></li></ul></li><li><a href=#case-3-利用layoutifneeded控制约束的生效时机>Case 3: 利用layoutIfNeeded控制约束的生效时机</a><ul><li><a href=#实现功能-2>实现功能</a></li><li><a href=#步骤分析>步骤分析</a></li><li><a href=#实现关键>实现关键</a></li><li><a href=#实现细节-2>实现细节</a></li><li><a href=#小节-2>小节</a></li></ul></li><li><a href=#总结>总结</a></li></ul></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/2016/08/06/autolayout-example-with-masonry4/><img alt="Featured image of post 有趣的Autolayout示例4-Masonry实现" loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_1.gif></a></div><div class=article-details><header class=article-category><a href=/categories/ios/ style=background-color:#efbeed;color:#3d0f3c>IOS</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/2016/08/06/autolayout-example-with-masonry4/>有趣的Autolayout示例4-Masonry实现</a></h2></div><footer class=article-meta><div class=inline-meta><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2016-08-06T00:00:00Z>2016-08-06</time>
+<svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 6 分钟</time></div></footer></div></header><aside class=article-toc><details><summary><div class=article-toc-title><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6-6 6"/></svg>
+<span>目录</span></div></summary><nav class=toc-nav><ul><li><a href=#前言>前言</a></li><li><a href=#case-1-用约束优先级保证可移动view的内容可见性>Case 1: 用约束优先级保证可移动View的内容可见性</a><ul><li><a href=#实现功能>实现功能</a></li><li><a href=#frame-vs-autolayout>Frame VS Autolayout</a></li><li><a href=#关键原理>关键原理</a></li><li><a href=#实现细节>实现细节</a></li><li><a href=#小节>小节</a></li></ul></li><li><a href=#case-2-autolayout的约束控件间位置关系的动态绑定>Case 2: Autolayout的约束=控件间位置关系的“动态绑定”</a><ul><li><a href=#实现功能-1>实现功能</a></li><li><a href=#关键概念约束--动态的绑定>关键概念：约束 = “动态的绑定”</a></li><li><a href=#实现细节-1>实现细节</a></li><li><a href=#小节-1>小节</a></li></ul></li><li><a href=#case-3-利用layoutifneeded控制约束的生效时机>Case 3: 利用layoutIfNeeded控制约束的生效时机</a><ul><li><a href=#实现功能-2>实现功能</a></li><li><a href=#步骤分析>步骤分析</a></li><li><a href=#实现关键>实现关键</a></li><li><a href=#实现细节-2>实现细节</a></li><li><a href=#小节-2>小节</a></li></ul></li><li><a href=#总结>总结</a></li></ul></nav></details></aside><section class=article-content><h2 id=前言><a href=#%e5%89%8d%e8%a8%80 class=header-anchor></a>前言</h2><p>第四篇来了。
+还是3个小例子，仍然是主要部分用Masonry手写代码实现，其它的约束在storyboard里面直接拖拽搭建。
+三个例子分别是：</p><ol><li>用约束优先级保证可移动View的内容可见</li><li>Autolayout的约束=控件间位置关系的“绑定”</li><li>利用<code>layoutIfNeeded</code>控制约束的生效时机</li></ol><p>前三篇：</p><ul><li>第一篇：<a class=link href=http://tutuge.me/2015/05/23/autolayout-example-with-masonry/ target=_blank rel=noopener>有趣的Autolayout示例-Masonry实现</a></li><li>第二篇：<a class=link href=http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/ target=_blank rel=noopener>有趣的Autolayout示例2-Masonry实现</a></li><li>第三篇：<a class=link href=http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/ target=_blank rel=noopener>有趣的Autolayout示例3-Masonry实现</a></li></ul><p>Github地址：
+<a class=link href=https://github.com/zekunyan/AutolayoutExampleWithMasonry target=_blank rel=noopener>https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p><p><img alt=Gif示例 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_1.gif></p><h2 id=case-1-用约束优先级保证可移动view的内容可见性><a href=#case-1-%e7%94%a8%e7%ba%a6%e6%9d%9f%e4%bc%98%e5%85%88%e7%ba%a7%e4%bf%9d%e8%af%81%e5%8f%af%e7%a7%bb%e5%8a%a8view%e7%9a%84%e5%86%85%e5%ae%b9%e5%8f%af%e8%a7%81%e6%80%a7 class=header-anchor></a>Case 1: 用约束优先级保证可移动View的内容可见性</h2><h3 id=实现功能><a href=#%e5%ae%9e%e7%8e%b0%e5%8a%9f%e8%83%bd class=header-anchor></a>实现功能</h3><p>Case 1实现的功能就是，可以用手指拖动一个灰色的Tip控件，在红框containerView内移动，并且保持移动到红框边缘时，Tip控件的内容不会超出红框，保证内容的可见性。</p><h3 id=frame-vs-autolayout><a href=#frame-vs-autolayout class=header-anchor></a>Frame VS Autolayout</h3><p>如果不用Autolayout的话，直接计算、设定frame，那么可能的步骤如下：</p><ol><li>获取手指当前触摸点在红框containerView内的坐标</li><li>计算Tip控件的宽高</li><li>根据宽高，计算、判断Tip控件会不会在新的位置上超出边界</li><li>调整新的Tip位置坐标</li><li>设置Tip控件的frame，指定新的坐标</li></ol><p>这样去实现的话，代码将会比较“丑”=。。=，有大量的判断、数值计算，而且容易出错。</p><p>而用Autolayout的话，<strong>只需要两步</strong>：</p><ol><li>设置约束</li><li>根据手指坐标，更新left、top两个约束，即更新Tip的位置</li></ol><p>至于保证Tip内容在可见范围内，就交给Autolayout处理吧~</p><h3 id=关键原理><a href=#%e5%85%b3%e9%94%ae%e5%8e%9f%e7%90%86 class=header-anchor></a>关键原理</h3><p>用Autolayout实现的关键，就是<strong>善于利用约束的优先级</strong>。先看看设置的约束示意图：</p><p><img alt="Case 1: 用约束优先级保证可移动View的内容可见性" loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_2.png></p><p>中间的tipLabel就是被移动的控件</p><ul><li>褐色的两个约束，分别是Tip控件的centerX和centerY，与上级View的left和top的约束，用来对Tip定位</li><li>四个蓝色的约束，则是确保Tip内容不超出边界的约束</li></ul><p>重点其实就在于，<strong>蓝色的约束的优先级比褐色的优先级高，这样，在移动中，系统会优先满足Tip的内容保持在边界内</strong>。</p><h3 id=实现细节><a href=#%e5%ae%9e%e7%8e%b0%e7%bb%86%e8%8a%82 class=header-anchor></a>实现细节</h3><p>具体的设置约束代码如下：</p><h4 id=左边和顶部的约束---控制位置><a href=#%e5%b7%a6%e8%be%b9%e5%92%8c%e9%a1%b6%e9%83%a8%e7%9a%84%e7%ba%a6%e6%9d%9f---%e6%8e%a7%e5%88%b6%e4%bd%8d%e7%bd%ae class=header-anchor></a>左边和顶部的约束 - 控制位置</h4><p>首先设置两个属性，保存左边和顶部的约束，用于在移动时调整位置：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>@property (nonatomic, strong) MASConstraint *leftConstraint;
+</span></span><span class=line><span class=cl>@property (nonatomic, strong) MASConstraint *topConstraint;
+</span></span></code></pre></div><p>然后就是设置具体的left、top约束，并设置优先级为750，也就是High</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-scheme data-lang=scheme><span class=line><span class=cl><span class=p>[</span><span class=nv>_tipLabel</span> <span class=nv>mas_makeConstraints:^</span><span class=p>(</span><span class=nf>MASConstraintMaker</span> <span class=nv>*make</span><span class=p>)</span> <span class=err>{</span>
+</span></span><span class=line><span class=cl>    <span class=nv>//</span> <span class=nv>优先级要比边界条件低</span>
+</span></span><span class=line><span class=cl>    <span class=nv>_leftConstraint</span> <span class=nv>=</span> <span class=nv>make</span><span class=o>.</span><span class=nv>centerX</span><span class=o>.</span><span class=nv>equalTo</span><span class=p>(</span><span class=nf>_containerView</span><span class=o>.</span><span class=nv>mas_left</span><span class=p>)</span><span class=o>.</span><span class=nv>with</span><span class=o>.</span><span class=nv>offset</span><span class=p>(</span><span class=mi>50</span><span class=p>)</span><span class=o>.</span><span class=nv>priorityHigh</span><span class=p>()</span><span class=c1>;</span>
+</span></span><span class=line><span class=cl>    <span class=nv>//</span> <span class=nv>优先级要比边界条件低</span>
+</span></span><span class=line><span class=cl>    <span class=nv>_topConstraint</span> <span class=nv>=</span> <span class=nv>make</span><span class=o>.</span><span class=nv>centerY</span><span class=o>.</span><span class=nv>equalTo</span><span class=p>(</span><span class=nf>_containerView</span><span class=o>.</span><span class=nv>mas_top</span><span class=p>)</span><span class=o>.</span><span class=nv>with</span><span class=o>.</span><span class=nv>offset</span><span class=p>(</span><span class=mi>50</span><span class=p>)</span><span class=o>.</span><span class=nv>priorityHigh</span><span class=p>()</span><span class=c1>;</span>
+</span></span><span class=line><span class=cl>    <span class=nv>//</span> <span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=err>}</span><span class=p>]</span><span class=c1>;</span>
+</span></span></code></pre></div><h4 id=四周的约束---保证内容在边界内><a href=#%e5%9b%9b%e5%91%a8%e7%9a%84%e7%ba%a6%e6%9d%9f---%e4%bf%9d%e8%af%81%e5%86%85%e5%ae%b9%e5%9c%a8%e8%be%b9%e7%95%8c%e5%86%85 class=header-anchor></a>四周的约束 - 保证内容在边界内</h4><p>然后就是上下左右四个边界的约束：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-clojure data-lang=clojure><span class=line><span class=cl><span class=p>[</span><span class=nv>_tipLabel</span> <span class=nv>mas_makeConstraints</span><span class=err>:</span><span class=o>^</span><span class=p>(</span><span class=nf>MASConstraintMaker</span> <span class=nv>*make</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nv>//</span> <span class=nv>边界条件约束</span><span class=err>，</span><span class=nv>保证内容可见</span><span class=err>，</span><span class=nv>优先级1000</span>
+</span></span><span class=line><span class=cl>    <span class=nv>make.left.greaterThanOrEqualTo</span><span class=p>(</span><span class=nf>_containerView.mas_left</span><span class=p>)</span><span class=c1>;</span>
+</span></span><span class=line><span class=cl>    <span class=nv>make.right.lessThanOrEqualTo</span><span class=p>(</span><span class=nf>_containerView.mas_right</span><span class=p>)</span><span class=c1>;</span>
+</span></span><span class=line><span class=cl>    <span class=nv>make.top.greaterThanOrEqualTo</span><span class=p>(</span><span class=nf>_containerView.mas_top</span><span class=p>)</span><span class=c1>;</span>
+</span></span><span class=line><span class=cl>    <span class=nv>make.bottom.lessThanOrEqualTo</span><span class=p>(</span><span class=nf>_containerView.mas_bottom</span><span class=p>)</span><span class=c1>;</span>
+</span></span><span class=line><span class=cl>    <span class=nv>//</span> <span class=nv>...</span>
+</span></span><span class=line><span class=cl><span class=p>}]</span><span class=c1>;</span>
+</span></span></code></pre></div><p>这个地方要注意是<code>lessThanOrEqualTo</code>还是<code>greaterThanOrEqualTo</code>。</p><h4 id=滑动时更新tip位置><a href=#%e6%bb%91%e5%8a%a8%e6%97%b6%e6%9b%b4%e6%96%b0tip%e4%bd%8d%e7%bd%ae class=header-anchor></a>滑动时更新Tip位置</h4><p>这一点比较简单，直接将当前触摸的坐标赋值给<code>leftConstraint</code>和<code>rightConstraint</code>就好：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-ini data-lang=ini><span class=line><span class=cl><span class=na>_leftConstraint.offset</span> <span class=o>=</span> <span class=s>touchPoint.x;</span>
+</span></span><span class=line><span class=cl><span class=na>_topConstraint.offset</span> <span class=o>=</span> <span class=s>touchPoint.y;</span>
+</span></span></code></pre></div><h3 id=小节><a href=#%e5%b0%8f%e8%8a%82 class=header-anchor></a>小节</h3><p>对比起来，明显是用Autolayout的方法比计算设置frame的方法要“优雅”的多=。=，灵活运用约束的优先级，往往可以减少很多工作量。</p><h2 id=case-2-autolayout的约束控件间位置关系的动态绑定><a href=#case-2-autolayout%e7%9a%84%e7%ba%a6%e6%9d%9f%e6%8e%a7%e4%bb%b6%e9%97%b4%e4%bd%8d%e7%bd%ae%e5%85%b3%e7%b3%bb%e7%9a%84%e5%8a%a8%e6%80%81%e7%bb%91%e5%ae%9a class=header-anchor></a>Case 2: Autolayout的约束=控件间位置关系的“动态绑定”</h2><h3 id=实现功能-1><a href=#%e5%ae%9e%e7%8e%b0%e5%8a%9f%e8%83%bd-1 class=header-anchor></a>实现功能</h3><p>Case 2的功能其实是在Case 1的基础上实现的，就是在移动一个View的时候，另一个Attachment附件View，始终保持跟这个View的相对位置不变，就像是“附着”、“捆绑”在这个View上一样。</p><h3 id=关键概念约束--动态的绑定><a href=#%e5%85%b3%e9%94%ae%e6%a6%82%e5%bf%b5%e7%ba%a6%e6%9d%9f--%e5%8a%a8%e6%80%81%e7%9a%84%e7%bb%91%e5%ae%9a class=header-anchor></a>关键概念：约束 = “动态的绑定”</h3><p>之所以写这个例子，主要是想从概念上更加深入的理解Autolayout与传统的设置Frame的不同，即Autolayout里面的约束，其实是“动态的绑定”，是控件相互之间的位置关系绑定，约束是可以<strong>实时</strong>保证这种绑定关系的。</p><p>传统的设置Frame，在View的内容、位置要变化时，是要手动设置的，是“一次性”的，而Autolayout，在确定了约束后，会实时的用约束的规则去更新Frame，所以可以避免这种手动设置。</p><p>所以，对于本例子来说，设置Frame的方式和Autolayout的方式对比如下：</p><p><img alt="Case 2: Autolayout的约束=控件间位置关系的“绑定”" loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_3.png></p><p>用Autolayout的话，只要把Attachment的位置设置为相对于TipLabel就可以了。</p><h3 id=实现细节-1><a href=#%e5%ae%9e%e7%8e%b0%e7%bb%86%e8%8a%82-1 class=header-anchor></a>实现细节</h3><p>代码比较简单，如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-scheme data-lang=scheme><span class=line><span class=cl><span class=p>[</span><span class=nv>attachmentView</span> <span class=nv>mas_makeConstraints:^</span><span class=p>(</span><span class=nf>MASConstraintMaker</span> <span class=nv>*make</span><span class=p>)</span> <span class=err>{</span>
+</span></span><span class=line><span class=cl>    <span class=nv>//</span> <span class=nv>依附在tipLabel上</span>
+</span></span><span class=line><span class=cl>    <span class=nv>make</span><span class=o>.</span><span class=nv>left</span><span class=o>.</span><span class=nv>equalTo</span><span class=p>(</span><span class=nf>_tipLabel</span><span class=o>.</span><span class=nv>mas_left</span><span class=p>)</span><span class=o>.</span><span class=nv>with</span><span class=o>.</span><span class=nv>offset</span><span class=p>(</span><span class=mi>20</span><span class=p>)</span><span class=o>.</span><span class=nv>priorityHigh</span><span class=p>()</span><span class=c1>;</span>
+</span></span><span class=line><span class=cl>    <span class=nv>make</span><span class=o>.</span><span class=nv>bottom</span><span class=o>.</span><span class=nv>equalTo</span><span class=p>(</span><span class=nf>_tipLabel</span><span class=o>.</span><span class=nv>mas_top</span><span class=p>)</span><span class=o>.</span><span class=nv>with</span><span class=o>.</span><span class=nv>offset</span><span class=p>(</span><span class=mi>-2</span><span class=p>)</span><span class=o>.</span><span class=nv>priorityHigh</span><span class=p>()</span><span class=c1>;</span>
+</span></span><span class=line><span class=cl><span class=err>}</span><span class=p>]</span><span class=c1>;</span>
+</span></span></code></pre></div><p>移动Tip的相关代码看Case 1的就行~</p><h3 id=小节-1><a href=#%e5%b0%8f%e8%8a%82-1 class=header-anchor></a>小节</h3><p>本小节的Case比较简单，主要是为了着重点出“Autolayout约束=动态位置绑定”这个点，理解了这一点，才能更好地运用Autolayout~</p><h2 id=case-3-利用layoutifneeded控制约束的生效时机><a href=#case-3-%e5%88%a9%e7%94%a8layoutifneeded%e6%8e%a7%e5%88%b6%e7%ba%a6%e6%9d%9f%e7%9a%84%e7%94%9f%e6%95%88%e6%97%b6%e6%9c%ba class=header-anchor></a>Case 3: 利用layoutIfNeeded控制约束的生效时机</h2><h3 id=实现功能-2><a href=#%e5%ae%9e%e7%8e%b0%e5%8a%9f%e8%83%bd-2 class=header-anchor></a>实现功能</h3><p>Case 3的例子，是一个灰色的View，初始时在屏幕中央，然后按下“执行动画”后，从左边滑入。</p><h3 id=步骤分析><a href=#%e6%ad%a5%e9%aa%a4%e5%88%86%e6%9e%90 class=header-anchor></a>步骤分析</h3><p>直观上看，感觉是在按下按钮时，修改View的水平方向上的某个约束，然后用UIView的动画执行变化就好了。</p><p>但是仔细分析，应该是先设置View的位置到屏幕的左边看不见的区域，然后用动画平滑的再让View移动回原位。</p><p>就是说，只是从左边移动回来时，才让动画生效！问题就变成了，如何让<strong>约束分段执行</strong>，或者说，<strong>控制约束的生效时机</strong>。</p><p>步骤可以由下图表示：</p><p><img alt="Case 3: 利用layoutIfNeeded控制约束的生效时机" loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_4.png></p><h3 id=实现关键><a href=#%e5%ae%9e%e7%8e%b0%e5%85%b3%e9%94%ae class=header-anchor></a>实现关键</h3><p>步骤分析清楚了，那么问题就是如何让约束在修改后，“立即”生效，而不是等到系统自动在下次更新布局时被动的生效。</p><p>答案就是：利用**<code>layoutIfNeeded</code>**</p><p>在更改了约束后，调用<code>layoutIfNeeded</code>，就可以通知系统立即刷新布局，从而更新Frame。如果要更加“保险”，可以在调用<code>layoutIfNeeded</code>前，加上调用<code>setNeedsUpdateConstraints</code>、<code>setNeedsLayout</code>，系统刷新布局时，就会先更新约束，然后根据约束重新计算相关View的Frame，想了解具体的过程的，可以参考：<a class=link href=https://developer.apple.com/videos/play/wwdc2015/218/ target=_blank rel=noopener>Mysteries of Auto Layout, Part 1 - WWDC 2015</a>、<a class=link href=https://developer.apple.com/videos/play/wwdc2015/219/ target=_blank rel=noopener>Mysteries of Auto Layout, Part 2</a></p><h3 id=实现细节-2><a href=#%e5%ae%9e%e7%8e%b0%e7%bb%86%e8%8a%82-2 class=header-anchor></a>实现细节</h3><p>具体的实现代码如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>// 设置初始状态，移动View到屏幕左边不可见区域
+</span></span><span class=line><span class=cl>_centerXConstraint.equalTo(@(-CGRectGetWidth(self.view.frame)));
+</span></span><span class=line><span class=cl>// 立即让约束生效,刷新Frame
+</span></span><span class=line><span class=cl>[self.view layoutIfNeeded];
+</span></span><span class=line><span class=cl>// 设置要动画的约束，移回原位
+</span></span><span class=line><span class=cl>_centerXConstraint.equalTo(@0);
+</span></span><span class=line><span class=cl>// 执行动画
+</span></span><span class=line><span class=cl>[UIView animateWithDuration:0.3f animations:^{
+</span></span><span class=line><span class=cl>    [self.view layoutIfNeeded];
+</span></span><span class=line><span class=cl>}];
+</span></span></code></pre></div><h3 id=小节-2><a href=#%e5%b0%8f%e8%8a%82-2 class=header-anchor></a>小节</h3><p>之前在实现<a class=link href=https://github.com/zekunyan/TTGSnackbar target=_blank rel=noopener>TTGSnackbar</a>的时候，就大量的使用了<code>layoutIfNeeded</code>来立即刷新View的Frame，然后才让产生动画的约束变动生效，也就是分阶段的让约束生效，非常管用~</p><h2 id=总结><a href=#%e6%80%bb%e7%bb%93 class=header-anchor></a>总结</h2><p>不知不觉已经第四篇了，一共12个Case，都是平时开发时总结出来的点，以及对Autolayout的理解，希望可以一直将这个系列坚持下去~~</p></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/%E5%8E%9F%E5%88%9B/>原创</a>
+<a href=/tags/ios/>IOS</a>
+<a href=/tags/autolayout/>Autolayout</a>
+<a href=/tags/masonry/>Masonry</a></section></footer></article><aside><h2 class=section-title>相关文章</h2><div class=subsection-list><div class=article-list--tile><article class=has-image><a href=/2017/03/12/autolayout-example-with-masonry5/><div class=article-image><img alt="Featured image of post 有趣的Autolayout示例5-Masonry实现" loading=lazy src=/assets/2017/03/12/autolayout-example-with-masonry5/blog_autolayout_example_with_masonry5_1.png></div><div class=article-details><h2 class=article-title>有趣的Autolayout示例5-Masonry实现</h2></div></a></article><article class=has-image><a href=/2015/12/14/autolayout-example-with-masonry3/><div class=article-image><img alt="Featured image of post 有趣的Autolayout示例3-Masonry实现" loading=lazy src=/assets/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_1.gif></div><div class=article-details><h2 class=article-title>有趣的Autolayout示例3-Masonry实现</h2></div></a></article><article class=has-image><a href=/2015/08/08/autolayout-example-with-masonry2/><div class=article-image><img alt="Featured image of post 有趣的Autolayout示例2-Masonry实现" loading=lazy src=/assets/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_1.gif></div><div class=article-details><h2 class=article-title>有趣的Autolayout示例2-Masonry实现</h2></div></a></article><article class=has-image><a href=/2015/05/23/autolayout-example-with-masonry/><div class=article-image><img alt="Featured image of post 有趣的Autolayout示例-Masonry实现" loading=lazy src=/assets/2015/05/23/autolayout-example-with-masonry/blog_autolayout_example_with_masonry_1.gif></div><div class=article-details><h2 class=article-title>有趣的Autolayout示例-Masonry实现</h2></div></a></article><article class=has-image><a href=/2017/04/08/diy-methodSignatureForSelector/><div class=article-image><img alt="Featured image of post 反编译分析并模拟实现methodSignatureForSelector方法" loading=lazy src=/assets/2017/04/08/diy-methodSignatureForSelector/blog_RemakeMethodSignatureForSelector_1.jpg></div><div class=article-details><h2 class=article-title>反编译分析并模拟实现methodSignatureForSelector方法</h2></div></a></article></div></div></aside><footer class=site-footer><section class=copyright>&copy;
+2014 -
+2026 tutuge</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=4.0.3>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><script type=module>
+    import gallery from '\/ts\/gallery.js';
 
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
     
-
-    <title>有趣的Autolayout示例4-Masonry实现 | iOS程序猿.目前阿里,喜欢各种技术,RCFans</title>
-    <meta name="author" content="土土哥">
-    
-    <meta name="description" content="iOS程序猿.目前阿里,喜欢各种技术,RCFans">
-    
-    
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-    <meta property="og:title" content="有趣的Autolayout示例4-Masonry实现">
-    <meta property="og:site_name" content="土土哥的Blog">
-
-    
-    <meta property="og:image" content="undefined">
-    
-
-    <link rel="icon" type="image/png" href="/favicon.png">
-    <link rel="alternate" href="/atom.xml" title="土土哥的Blog" type="application/atom+xml">
-    <link rel="stylesheet" href="/css/lib/materialize.min.css">
-    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
-    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-
-    
-        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
-    
-    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-</head>
-</html>
-
-<body>
-    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
-
-    <nav class="blue-grey">
-    <div class="nav-wrapper">
-        <a href="#" data-activates="main-menu" class="button-collapse">
-            <i class="fa fa-navicon"></i>
-        </a>
-        <div class="">
-            <a href="/" class="brand-logo hide-on-med-and-down">土土哥的Blog</a>
-            <ul class="right hide-on-med-and-down">
-                
-                    <li>
-                        <a class="menu-home " href="/" >
-                            <i class="fa fa-home "></i>
-                            
-                            首页
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-archive " href="/archives" >
-                            <i class="fa fa-archive "></i>
-                            
-                            归档
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
-                            <i class="fa fa-bookmark "></i>
-                            
-                            分类
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-about " href="/about" >
-                            <i class="fa fa-user "></i>
-                            
-                            关于
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-search modal-trigger " href="#search" >
-                            <i class="fa fa-search "></i>
-                            
-                            搜索
-                        </a>
-                    </li>
-                
-            </ul>
-            <div>
-    <ul class="side-nav blue-grey darken-1" id="main-menu">
-        
-        <li class="side-user">
-            <div class="row">
-                <div class="col s4 no-padding">
-                    <img class="avatar-image circle responsive-img" src="http://tutuge.me/2019/07/29/2019-07-29-occupied-with-work/avatar_comic.jpg" alt="User Avatar">
-                </div>
-                <div class="info col s8 valign-wrapper no-padding">
-                    <div class="valign">
-                        <p class="name">土土哥</p>
-                        <p class="desc">iOS/Android/技术宅/RCFans</p>
-                    </div>
-                </div>
-            </div>
-        </li>
-        
-
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-home " href="/" >
-                    <i class="fa fa-home "></i>
-                    
-                    首页
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-archive " href="/archives" >
-                    <i class="fa fa-archive "></i>
-                    
-                    归档
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
-                    <i class="fa fa-bookmark "></i>
-                    
-                    分类
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-about " href="/about" >
-                    <i class="fa fa-user "></i>
-                    
-                    关于
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-search modal-trigger " href="#search" >
-                    <i class="fa fa-search "></i>
-                    
-                    搜索
-                </a>
-            </li>
-        
-    </ul>
-
-    <ul class="side-nav blue-grey darken-1" id="category-menu">
-    
-
-            
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/其它/">
-                    其它 <span class="right">5 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/iOS/">
-                    iOS <span class="right">37 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/Android/">
-                    Android <span class="right">1 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/Mac/">
-                    Mac <span class="right">1 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/服务端/">
-                    服务端 <span class="right">2 篇</span></a>
-                </a>
-            </li>
-
-        
-
-    </ul>
-</div>
-
-        </div>
-    </div>
-</nav>
-
-<div id="search" class="modal search-modal">
-    <div class="row">
-        <div class="input-field col s12">
-              <input id="search-input" type="text">
-              <label for="search-input">搜索</label>
-        </div>
-
-    </div>
-    <div id="search-result" class="search-result col s12">
-
-    </div>
-</div>
-
-
-    <main>
-        <div class="container main-container">
-    
-<nav class="page-nav hide-on-small-only">
-    <div class="nav-wrapper blue-grey">
-        <span class="breadcrumb">当前位置（分类目录）</span>
-        
-            
-    
-    
-    <a class="breadcrumb" href="/categories/iOS/">iOS</a>
-
-
-        
-
-        
-    </div>
-</nav>
-
-<article>
-    <div class="card">
-        <div class="card-content">
-            
-
-            <div class="article-title">
-                
-    
-        <h1>有趣的Autolayout示例4-Masonry实现</h1>
-    
-
-
-            </div>
-            <time class="teal-link-context" datetime="2016-08-06T13:41:17.000Z"><a href="/2016/08/06/autolayout-example-with-masonry4/">2016-08-06</a></time>
-
-            <span id="busuanzi_container_page_pv" class="read-times-container">
-    <i class="fa fa-eye"></i>
-    <span id="busuanzi_value_page_pv"></span>
-</span>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
-        
-            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
-        
-            <a href="/tags/Autolayout/" class="chip teal accent-4">Autolayout</a>
-        
-            <a href="/tags/Masonry/" class="chip teal accent-4">Masonry</a>
-        
-    </div>
-
-
-            <div class="toc teal-link-context hide-on-med-and-down">
-    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#前言"><span class="section table-of-contents-text">前言</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Case-1-用约束优先级保证可移动View的内容可见性"><span class="section table-of-contents-text">Case 1: 用约束优先级保证可移动View的内容可见性</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#实现功能"><span class="section table-of-contents-text">实现功能</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#Frame-VS-Autolayout"><span class="section table-of-contents-text">Frame VS Autolayout</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#关键原理"><span class="section table-of-contents-text">关键原理</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#实现细节"><span class="section table-of-contents-text">实现细节</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#左边和顶部的约束-控制位置"><span class="section table-of-contents-text">左边和顶部的约束 - 控制位置</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#四周的约束-保证内容在边界内"><span class="section table-of-contents-text">四周的约束 - 保证内容在边界内</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#滑动时更新Tip位置"><span class="section table-of-contents-text">滑动时更新Tip位置</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#小节"><span class="section table-of-contents-text">小节</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Case-2-Autolayout的约束-控件间位置关系的“动态绑定”"><span class="section table-of-contents-text">Case 2: Autolayout的约束=控件间位置关系的“动态绑定”</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#实现功能-1"><span class="section table-of-contents-text">实现功能</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#关键概念：约束-“动态的绑定”"><span class="section table-of-contents-text">关键概念：约束 = “动态的绑定”</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#实现细节-1"><span class="section table-of-contents-text">实现细节</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#小节-1"><span class="section table-of-contents-text">小节</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Case-3-利用layoutIfNeeded控制约束的生效时机"><span class="section table-of-contents-text">Case 3: 利用layoutIfNeeded控制约束的生效时机</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#实现功能-2"><span class="section table-of-contents-text">实现功能</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#步骤分析"><span class="section table-of-contents-text">步骤分析</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#实现关键"><span class="section table-of-contents-text">实现关键</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#实现细节-2"><span class="section table-of-contents-text">实现细节</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#小节-2"><span class="section table-of-contents-text">小节</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#总结"><span class="section table-of-contents-text">总结</span></a></li></ol>
-</div>
-
-
-            <div class="entry teal-link-context">
-                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>第四篇来了。<br>还是3个小例子，仍然是主要部分用Masonry手写代码实现，其它的约束在storyboard里面直接拖拽搭建。<br>三个例子分别是：  </p>
-<ol>
-<li>用约束优先级保证可移动View的内容可见</li>
-<li>Autolayout的约束=控件间位置关系的“绑定”</li>
-<li>利用<code>layoutIfNeeded</code>控制约束的生效时机</li>
-</ol>
-<p>前三篇：  </p>
-<ul>
-<li>第一篇：<a href="http://tutuge.me/2015/05/23/autolayout-example-with-masonry/">有趣的Autolayout示例-Masonry实现</a>  </li>
-<li>第二篇：<a href="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/">有趣的Autolayout示例2-Masonry实现</a>  </li>
-<li>第三篇：<a href="http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/">有趣的Autolayout示例3-Masonry实现</a></li>
-</ul>
-<p>Github地址：<br><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="noopener">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
-<p><img src="/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_1.gif" alt="Gif示例"></p>
-<a id="more"></a>
-<h2 id="Case-1-用约束优先级保证可移动View的内容可见性"><a href="#Case-1-用约束优先级保证可移动View的内容可见性" class="headerlink" title="Case 1: 用约束优先级保证可移动View的内容可见性"></a>Case 1: 用约束优先级保证可移动View的内容可见性</h2><h3 id="实现功能"><a href="#实现功能" class="headerlink" title="实现功能"></a>实现功能</h3><p>Case 1实现的功能就是，可以用手指拖动一个灰色的Tip控件，在红框containerView内移动，并且保持移动到红框边缘时，Tip控件的内容不会超出红框，保证内容的可见性。</p>
-<h3 id="Frame-VS-Autolayout"><a href="#Frame-VS-Autolayout" class="headerlink" title="Frame VS Autolayout"></a>Frame VS Autolayout</h3><p>如果不用Autolayout的话，直接计算、设定frame，那么可能的步骤如下：</p>
-<ol>
-<li>获取手指当前触摸点在红框containerView内的坐标</li>
-<li>计算Tip控件的宽高</li>
-<li>根据宽高，计算、判断Tip控件会不会在新的位置上超出边界</li>
-<li>调整新的Tip位置坐标</li>
-<li>设置Tip控件的frame，指定新的坐标</li>
-</ol>
-<p>这样去实现的话，代码将会比较“丑”=。。=，有大量的判断、数值计算，而且容易出错。</p>
-<p>而用Autolayout的话，<strong>只需要两步</strong>：</p>
-<ol>
-<li>设置约束</li>
-<li>根据手指坐标，更新left、top两个约束，即更新Tip的位置</li>
-</ol>
-<p>至于保证Tip内容在可见范围内，就交给Autolayout处理吧~</p>
-<h3 id="关键原理"><a href="#关键原理" class="headerlink" title="关键原理"></a>关键原理</h3><p>用Autolayout实现的关键，就是<strong>善于利用约束的优先级</strong>。先看看设置的约束示意图：</p>
-<p><img src="/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_2.png" alt="Case 1: 用约束优先级保证可移动View的内容可见性"></p>
-<p>中间的tipLabel就是被移动的控件  </p>
-<ul>
-<li>褐色的两个约束，分别是Tip控件的centerX和centerY，与上级View的left和top的约束，用来对Tip定位</li>
-<li>四个蓝色的约束，则是确保Tip内容不超出边界的约束</li>
-</ul>
-<p>重点其实就在于，<strong>蓝色的约束的优先级比褐色的优先级高，这样，在移动中，系统会优先满足Tip的内容保持在边界内</strong>。</p>
-<h3 id="实现细节"><a href="#实现细节" class="headerlink" title="实现细节"></a>实现细节</h3><p>具体的设置约束代码如下：</p>
-<h4 id="左边和顶部的约束-控制位置"><a href="#左边和顶部的约束-控制位置" class="headerlink" title="左边和顶部的约束 - 控制位置"></a>左边和顶部的约束 - 控制位置</h4><p>首先设置两个属性，保存左边和顶部的约束，用于在移动时调整位置：</p>
-<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@<span class="keyword">property</span><span class="title"> </span>(nonatomic, strong) MASConstraint *leftConstraint;</span><br><span class="line">@<span class="keyword">property</span><span class="title"> </span>(nonatomic, strong) MASConstraint *topConstraint;</span><br></pre></td></tr></table></figure>
-<p>然后就是设置具体的left、top约束，并设置优先级为750，也就是High</p>
-<figure class="highlight scheme"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[<span class="name">_tipLabel</span> mas_makeConstraints:^(<span class="name">MASConstraintMaker</span> *make) &#123;</span><br><span class="line">    // 优先级要比边界条件低</span><br><span class="line">    _leftConstraint = make.centerX.equalTo(<span class="name">_containerView.mas_left</span>).with.offset(<span class="name">50</span>).priorityHigh()<span class="comment">; </span></span><br><span class="line">    // 优先级要比边界条件低</span><br><span class="line">    _topConstraint = make.centerY.equalTo(<span class="name">_containerView.mas_top</span>).with.offset(<span class="name">50</span>).priorityHigh()<span class="comment">;</span></span><br><span class="line">    // ...</span><br><span class="line">&#125;]<span class="comment">;</span></span><br></pre></td></tr></table></figure>
-<h4 id="四周的约束-保证内容在边界内"><a href="#四周的约束-保证内容在边界内" class="headerlink" title="四周的约束 - 保证内容在边界内"></a>四周的约束 - 保证内容在边界内</h4><p>然后就是上下左右四个边界的约束：</p>
-<figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[_tipLabel mas_makeConstraints:^(<span class="name">MASConstraintMaker</span> *make) &#123;</span><br><span class="line">    // 边界条件约束，保证内容可见，优先级<span class="number">1000</span></span><br><span class="line">    make.left.greaterThanOrEqualTo(<span class="name">_containerView.mas_left</span>)<span class="comment">;</span></span><br><span class="line">    make.right.lessThanOrEqualTo(<span class="name">_containerView.mas_right</span>)<span class="comment">;</span></span><br><span class="line">    make.top.greaterThanOrEqualTo(<span class="name">_containerView.mas_top</span>)<span class="comment">;</span></span><br><span class="line">    make.bottom.lessThanOrEqualTo(<span class="name">_containerView.mas_bottom</span>)<span class="comment">;</span></span><br><span class="line">    // ...</span><br><span class="line">&#125;]<span class="comment">;</span></span><br></pre></td></tr></table></figure>
-<p>这个地方要注意是<code>lessThanOrEqualTo</code>还是<code>greaterThanOrEqualTo</code>。</p>
-<h4 id="滑动时更新Tip位置"><a href="#滑动时更新Tip位置" class="headerlink" title="滑动时更新Tip位置"></a>滑动时更新Tip位置</h4><p>这一点比较简单，直接将当前触摸的坐标赋值给<code>leftConstraint</code>和<code>rightConstraint</code>就好：</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">_leftConstraint.offset</span> = touchPoint.x<span class="comment">;</span></span><br><span class="line"><span class="attr">_topConstraint.offset</span> = touchPoint.y<span class="comment">;</span></span><br></pre></td></tr></table></figure>
-<h3 id="小节"><a href="#小节" class="headerlink" title="小节"></a>小节</h3><p>对比起来，明显是用Autolayout的方法比计算设置frame的方法要“优雅”的多=。=，灵活运用约束的优先级，往往可以减少很多工作量。</p>
-<h2 id="Case-2-Autolayout的约束-控件间位置关系的“动态绑定”"><a href="#Case-2-Autolayout的约束-控件间位置关系的“动态绑定”" class="headerlink" title="Case 2: Autolayout的约束=控件间位置关系的“动态绑定”"></a>Case 2: Autolayout的约束=控件间位置关系的“动态绑定”</h2><h3 id="实现功能-1"><a href="#实现功能-1" class="headerlink" title="实现功能"></a>实现功能</h3><p>Case 2的功能其实是在Case 1的基础上实现的，就是在移动一个View的时候，另一个Attachment附件View，始终保持跟这个View的相对位置不变，就像是“附着”、“捆绑”在这个View上一样。</p>
-<h3 id="关键概念：约束-“动态的绑定”"><a href="#关键概念：约束-“动态的绑定”" class="headerlink" title="关键概念：约束 = “动态的绑定”"></a>关键概念：约束 = “动态的绑定”</h3><p>之所以写这个例子，主要是想从概念上更加深入的理解Autolayout与传统的设置Frame的不同，即Autolayout里面的约束，其实是“动态的绑定”，是控件相互之间的位置关系绑定，约束是可以<strong>实时</strong>保证这种绑定关系的。</p>
-<p>传统的设置Frame，在View的内容、位置要变化时，是要手动设置的，是“一次性”的，而Autolayout，在确定了约束后，会实时的用约束的规则去更新Frame，所以可以避免这种手动设置。</p>
-<p>所以，对于本例子来说，设置Frame的方式和Autolayout的方式对比如下：</p>
-<p><img src="/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_3.png" alt="Case 2: Autolayout的约束=控件间位置关系的“绑定”"></p>
-<p>用Autolayout的话，只要把Attachment的位置设置为相对于TipLabel就可以了。</p>
-<h3 id="实现细节-1"><a href="#实现细节-1" class="headerlink" title="实现细节"></a>实现细节</h3><p>代码比较简单，如下：</p>
-<figure class="highlight scheme"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[<span class="name">attachmentView</span> mas_makeConstraints:^(<span class="name">MASConstraintMaker</span> *make) &#123;</span><br><span class="line">    // 依附在tipLabel上</span><br><span class="line">    make.left.equalTo(<span class="name">_tipLabel.mas_left</span>).with.offset(<span class="name">20</span>).priorityHigh()<span class="comment">;</span></span><br><span class="line">    make.bottom.equalTo(<span class="name">_tipLabel.mas_top</span>).with.offset(<span class="name">-2</span>).priorityHigh()<span class="comment">;</span></span><br><span class="line">&#125;]<span class="comment">;</span></span><br></pre></td></tr></table></figure>
-<p>移动Tip的相关代码看Case 1的就行~</p>
-<h3 id="小节-1"><a href="#小节-1" class="headerlink" title="小节"></a>小节</h3><p>本小节的Case比较简单，主要是为了着重点出“Autolayout约束=动态位置绑定”这个点，理解了这一点，才能更好地运用Autolayout~</p>
-<h2 id="Case-3-利用layoutIfNeeded控制约束的生效时机"><a href="#Case-3-利用layoutIfNeeded控制约束的生效时机" class="headerlink" title="Case 3: 利用layoutIfNeeded控制约束的生效时机"></a>Case 3: 利用layoutIfNeeded控制约束的生效时机</h2><h3 id="实现功能-2"><a href="#实现功能-2" class="headerlink" title="实现功能"></a>实现功能</h3><p>Case 3的例子，是一个灰色的View，初始时在屏幕中央，然后按下“执行动画”后，从左边滑入。</p>
-<h3 id="步骤分析"><a href="#步骤分析" class="headerlink" title="步骤分析"></a>步骤分析</h3><p>直观上看，感觉是在按下按钮时，修改View的水平方向上的某个约束，然后用UIView的动画执行变化就好了。  </p>
-<p>但是仔细分析，应该是先设置View的位置到屏幕的左边看不见的区域，然后用动画平滑的再让View移动回原位。</p>
-<p>就是说，只是从左边移动回来时，才让动画生效！问题就变成了，如何让<strong>约束分段执行</strong>，或者说，<strong>控制约束的生效时机</strong>。</p>
-<p>步骤可以由下图表示：</p>
-<p><img src="/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_4.png" alt="Case 3: 利用layoutIfNeeded控制约束的生效时机"></p>
-<h3 id="实现关键"><a href="#实现关键" class="headerlink" title="实现关键"></a>实现关键</h3><p>步骤分析清楚了，那么问题就是如何让约束在修改后，“立即”生效，而不是等到系统自动在下次更新布局时被动的生效。</p>
-<p>答案就是：利用<strong><code>layoutIfNeeded</code></strong>  </p>
-<p>在更改了约束后，调用<code>layoutIfNeeded</code>，就可以通知系统立即刷新布局，从而更新Frame。如果要更加“保险”，可以在调用<code>layoutIfNeeded</code>前，加上调用<code>setNeedsUpdateConstraints</code>、<code>setNeedsLayout</code>，系统刷新布局时，就会先更新约束，然后根据约束重新计算相关View的Frame，想了解具体的过程的，可以参考：<a href="https://developer.apple.com/videos/play/wwdc2015/218/" target="_blank" rel="noopener">Mysteries of Auto Layout, Part 1 - WWDC 2015</a>、<a href="https://developer.apple.com/videos/play/wwdc2015/219/" target="_blank" rel="noopener">Mysteries of Auto Layout, Part 2</a></p>
-<h3 id="实现细节-2"><a href="#实现细节-2" class="headerlink" title="实现细节"></a>实现细节</h3><p>具体的实现代码如下：</p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 设置初始状态，移动View到屏幕左边不可见区域</span></span><br><span class="line"><span class="selector-tag">_centerXConstraint</span><span class="selector-class">.equalTo</span>(@(-CGRectGetWidth(self.view.frame)));</span><br><span class="line"><span class="comment">// 立即让约束生效,刷新Frame</span></span><br><span class="line"><span class="selector-attr">[self.view layoutIfNeeded]</span>;</span><br><span class="line"><span class="comment">// 设置要动画的约束，移回原位</span></span><br><span class="line"><span class="selector-tag">_centerXConstraint</span><span class="selector-class">.equalTo</span>(<span class="variable">@0</span>);</span><br><span class="line"><span class="comment">// 执行动画</span></span><br><span class="line"><span class="selector-attr">[UIView animateWithDuration:0.3f animations:^&#123;</span></span><br><span class="line"><span class="selector-attr">    [self.view layoutIfNeeded]</span>; </span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
-<h3 id="小节-2"><a href="#小节-2" class="headerlink" title="小节"></a>小节</h3><p>之前在实现<a href="https://github.com/zekunyan/TTGSnackbar" target="_blank" rel="noopener">TTGSnackbar</a>的时候，就大量的使用了<code>layoutIfNeeded</code>来立即刷新View的Frame，然后才让产生动画的约束变动生效，也就是分阶段的让约束生效，非常管用~</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>不知不觉已经第四篇了，一共12个Case，都是平时开发时总结出来的点，以及对Autolayout的理解，希望可以一直将这个系列坚持下去~~</p>
-
-                
-<p class="teal-link-context">
-    <a href="/2016/08/28/TTGBingWallPaper/" rel="next" title="Swift开源Mac App - BingWallPaper">
-    上一篇：Swift开源Mac App - BingWallPaper
-  </a>
-</p>
-
-
-
-<p class="teal-link-context">
-    <a href="/2016/06/19/translation-why-objcmsgsend-must-be-written-in-assembly/" rel="next" title="翻译-为什么objc_msgSend必须用汇编实现">
-    下一篇：翻译-为什么objc_msgSend必须用汇编实现
-  </a>
-</p>
-
-
-            </div>
-
-            
-			
-        </div>
-    </div>
-</article>
-
-
-
-
-    <section id="comment">
-        <div id="disqus_thread"></div>
-        <script>
-            var disqus_config = function() {
-                this.page.url = 'http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/';
-                this.page.identifier = '2016/08/06/autolayout-example-with-masonry4/';
-            };
-            (function() {
-                var d = document,
-                    s = d.createElement('script');
-                s.src = '//tutuge-me.disqus.com/embed.js';
-                s.setAttribute('data-timestamp', + new Date());
-                (d.head || d.body).appendChild(s);
-            })();
-        </script>
-        <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
-        </noscript>
-    </section>
-
-
-
-</div>
-
-        <div class="fixed-action-btn float-sitemap">
-    <a class="btn-floating btn-large teal">
-      <i class="fa fa-caret-square-o-up"></i>
-    </a>
-    <ul>
-      <li><a class="btn-return-top btn-floating waves-effect teal accent-4" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
-      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
-    </ul>
-  </div>
-
-    </main>
-    <footer class="page-footer blue-grey darken-1">
-    
-    <div class="footer-container container">
-        <div class="row">
-            
-            <div class="social-group col m4 s12">
-                <h5 class="white-text">社交</h5>
-                
-                    <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
-                        <i class="fa fa-2x fa-weibo"></i>
-                    </a>
-                
-                    <a class="social-link" href="https://github.com/zekunyan" target="_blank">
-                        <i class="fa fa-2x fa-github"></i>
-                    </a>
-                
-                    <a class="social-link" href="/atom.xml" target="_blank">
-                        <i class="fa fa-2x fa-rss"></i>
-                    </a>
-                
-                
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
-    </script>
-    <div class="site-visitors-container white-text">
-        <span>
-            <i class="fa fa-user"></i>
-            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
-        </span>
-        <span>&nbsp;|&nbsp;</span>
-        <span>
-            <i class="fa fa-eye"></i>
-            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
-        </span>
-    </div>
-
-
-            </div>
-            
-
-            
-            <div class="col m8 s12">
-                <h5 class="white-text">友情链接</h5>
-                
-                    <a class="social-link" href="http://chenrudan.github.io" target="_blank">女朋友的博客😊</a>
-                
-            </div>
-            
-        </div>
-        <p>Hosted by <a href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a></p>
-    </div>
-    
-
-    <div class="footer-copyright teal-link-context">
-        <div class="container">
-            © 2020 tutuge.me, All rights reserved.
-            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
-        </div>
-    </div>
-</footer>
-
-
-    <noscript>
-    <div class="noscript">
-        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
-    </div>
-</noscript>
-<div class="noscript">
-    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
-</div>
-
-
-<script src="/js/jquery.min.js"></script>
-<script src="/js/materialize.min.js"></script>
-
-<script>
-    (function($) {
-        $(document).ready(function() {
-            // 隐藏禁用javascript（针对微信内置浏览器）的提示
-            $('.noscript').hide();
-
-            // 图片缩放效果
-            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
-
-            // 给图片加上点击放大效果（materialbox插件）
-            $imgs.addClass('materialboxed').each(function(i, el) {
-                $(this).attr('data-caption', $(this).attr('alt') || ' ');
-            }).materialbox();
-
-            // 优化表格的显示
-            $('table').each(function() {
-                var $table = $(this);
-                // 除去多行代码的情况
-                if ($table.find('pre').length == 0) {
-                    $table.addClass('responsive-table striped bordered');
-                }
-            });
-
-            // 首页幻灯片
-            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
-
-            $(".button-collapse").sideNav();
-            $(".category-menu").sideNav();
-
-            // 针对gallery post
-            $('.carousel').carousel({full_width: true});
-            $('.carousel-control.prev').click(function() {
-                $('.carousel').carousel('prev');
-            });
-            $('.carousel-control.next').click(function() {
-                $('.carousel').carousel('next');
-            });
-
-            // 文章目录
-            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
-
-            // 目录随屏幕滚动（防止目录过长越过footer）
-            var $toc = $('.toc');
-            var scrollTargetTop = 0;
-            $(window).scroll(function() {
-                var $activeLink = $toc.find('a.active.section');
-                if ($(window).scrollTop() < 100) {
-                    scrollTargetTop = 0;
-                } else {
-                    if ($activeLink[0]) {
-                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
-                    }
-                }
-                $toc.css('top', '-' + scrollTargetTop + 'px');
-            });
-
-            // 修正文章目录的left-border颜色
-            var color = $('.table-of-contents-text').css('color');
-            $('.table-of-contents-link').css('border-left-color', color);
-
-            // 针对移动端做的优化：FAB按钮点击一下收回
-            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                $('.fixed-action-btn').addClass('click-to-toggle');
-            }
-            // 回到顶部
-            $('.btn-return-top').click(function() {
-                $('body, html').animate({
-                    scrollTop: 0
-                }, 500);
-            });
-
-            // 重置读书页面的Tab标签页的颜色
-            $('li.tab a').hover(function() {
-                $(this).toggleClass('text-lighten-4');
-            });
-            $('.indicator').addClass('teal lighten-2');
-
-            
-            // 添加new标签
-            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
-            
-
-            // 搜索功能
-            $('.modal-trigger').leanModal({
-                // 打开搜索框时自动聚焦
-                ready: function() {
-                    if ($('#search').is(":visible")) {
-                        $('#search-input').focus();
-                    }
-                }
-            });
-            var searchXml = "search.xml";
-            if (searchXml.length == 0) {
-             	searchXml = "search.xml";
-            }
-            var searchPath = "/" + searchXml;
-            initSearch(searchPath, 'search-input', 'search-result');
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
         });
-
-        // 初始化搜索与匹配函数
-        var initSearch = function(path, search_id, content_id) {
-            'use strict';
-            $.ajax({
-                url: path,
-                dataType: "xml",
-                success: function(xmlResponse) {
-                    // get the contents from search data
-                    var datas = $("entry", xmlResponse).map(function() {
-                        return {
-                            title: $("title", this).text(),
-                            content: $("content", this).text(),
-                            url: $("url", this).text()
-                        };
-                    }).get();
-                    var $input = document.getElementById(search_id);
-                    var $resultContent = document.getElementById(content_id);
-                    $input.addEventListener('input', function() {
-                        var str = '<ul class=\"search-result-list\">';
-                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
-                        $resultContent.innerHTML = "";
-                        if (this.value.trim().length <= 0) {
-                            return;
-                        }
-                        // perform local searching
-                        datas.forEach(function(data) {
-                            var isMatch = true;
-                            var content_index = [];
-                            var data_title = data.title.trim().toLowerCase();
-                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
-                            var data_url = data.url;
-                            var index_title = -1;
-                            var index_content = -1;
-                            var first_occur = -1;
-                            // only match artiles with not empty titles and contents
-                            if (data_title != '' && data_content != '') {
-                                keywords.forEach(function(keyword, i) {
-                                    index_title = data_title.indexOf(keyword);
-                                    index_content = data_content.indexOf(keyword);
-                                    if (index_title < 0 && index_content < 0) {
-                                        isMatch = false;
-                                    } else {
-                                        if (index_content < 0) {
-                                            index_content = 0;
-                                        }
-                                        if (i == 0) {
-                                            first_occur = index_content;
-                                        }
-                                    }
-                                });
-                            }
-                            // show search results
-                            if (isMatch) {
-                                keywords.forEach(function(keyword) {
-                                    var regS = new RegExp(keyword, "gi");
-                                    data_title = data_title.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
-                                });
-
-                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
-                                var content = data.content.trim().replace(/<[^>]+>/g, "");
-                                if (first_occur >= 0) {
-                                    // cut out 100 characters
-                                    var start = first_occur - 20;
-                                    var end = first_occur + 80;
-                                    if (start < 0) {
-                                        start = 0;
-                                    }
-                                    if (start == 0) {
-                                        end = 100;
-                                    }
-                                    if (end > content.length) {
-                                        end = content.length;
-                                    }
-                                    var match_content = content.substring(start, end);
-                                    // highlight all keywords
-                                    keywords.forEach(function(keyword) {
-                                        var regS = new RegExp(keyword, "gi");
-                                        match_content = match_content.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
-                                    });
-
-                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
-                                }
-                                str += "</li>";
-                            }
-                        });
-                        str += "</ul>";
-                        $resultContent.innerHTML = str;
-                    });
-                }
-            });
-        }
-    })(jQuery);
-</script>
-
-
-<script src="/js/prettify.js"></script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $("pre").addClass("prettyprint");
-        prettyPrint();
-    });
-</script>
-
-
-<script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-68058110-1', 'auto');
-    ga('send', 'pageview');
-
-</script>
-
-
-
-<script type="text/javascript" src="http://tajs.qq.com/stats?sId=55079830" charset="UTF-8"></script>
-
-
-
-
-
-</body>
-</html>
+        lightbox.init();
+    }
+</script></main></div><script type=text/javascript src=/ts/main.f856840516f7c2ad1769a8f5937e3d08d6cb386e2cd2dd025ae696e0ff207958.js defer></script></body></html>

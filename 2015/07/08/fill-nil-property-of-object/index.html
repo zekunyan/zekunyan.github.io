@@ -1,671 +1,168 @@
-<!DOCTYPE HTML>
-<html>
-<head><meta name="generator" content="Hexo 3.9.0">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="前言 好久没有写东西了，忙啊。\n前段时间参加了一下我们华科联创的HackDay（本人在读研=。=，目前在阿里实习），作品是一款实时在线对战游戏 - 波波攒，（介绍请看知乎） 从iOS游戏客户端（用的SpriteKit）到后台（PHP CI + Node + SocketIO + MySQL）全是自己一个人倒腾出来的，做了一把真正的全栈工程师，爽啊~ 后面会完善整个游戏，增加角色、优化啥的，过上一段时间会上线的哈~\n回到正文，本文主要介绍了怎么用Runtime的手段遍历任意NSObject对象的所有property，检查其值是否是nil，是的话根据其类型为其填充一个默认值。 Runtime毕竟是个“危险”的技术，本文的代码只是个初步的尝试。\n"><title>用Runtime的手段填充任意NSObject对象的nil属性</title><link rel=canonical href=https://tutuge.me/2015/07/08/fill-nil-property-of-object/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=preload as=style href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href=/scss/style.min.e62e09c60ba428a627e03568fa3df938f6a8224f815b5846f00816c17d4a0be4.css><meta property='og:title' content="用Runtime的手段填充任意NSObject对象的nil属性"><meta property='og:description' content="前言 好久没有写东西了，忙啊。\n前段时间参加了一下我们华科联创的HackDay（本人在读研=。=，目前在阿里实习），作品是一款实时在线对战游戏 - 波波攒，（介绍请看知乎） 从iOS游戏客户端（用的SpriteKit）到后台（PHP CI + Node + SocketIO + MySQL）全是自己一个人倒腾出来的，做了一把真正的全栈工程师，爽啊~ 后面会完善整个游戏，增加角色、优化啥的，过上一段时间会上线的哈~\n回到正文，本文主要介绍了怎么用Runtime的手段遍历任意NSObject对象的所有property，检查其值是否是nil，是的话根据其类型为其填充一个默认值。 Runtime毕竟是个“危险”的技术，本文的代码只是个初步的尝试。\n"><meta property='og:url' content='https://tutuge.me/2015/07/08/fill-nil-property-of-object/'><meta property='og:site_name' content='土土哥的技术 Blog'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='原创'><meta property='article:tag' content='iOS'><meta property='article:tag' content='Runtime'><meta property='article:published_time' content='2015-07-08T00:00:00+00:00'><meta property='article:modified_time' content='2015-07-08T00:00:00+00:00'><meta name=twitter:title content="用Runtime的手段填充任意NSObject对象的nil属性"><meta name=twitter:description content="前言 好久没有写东西了，忙啊。\n前段时间参加了一下我们华科联创的HackDay（本人在读研=。=，目前在阿里实习），作品是一款实时在线对战游戏 - 波波攒，（介绍请看知乎） 从iOS游戏客户端（用的SpriteKit）到后台（PHP CI + Node + SocketIO + MySQL）全是自己一个人倒腾出来的，做了一把真正的全栈工程师，爽啊~ 后面会完善整个游戏，增加角色、优化啥的，过上一段时间会上线的哈~\n回到正文，本文主要介绍了怎么用Runtime的手段遍历任意NSObject对象的所有property，检查其值是否是nil，是的话根据其类型为其填充一个默认值。 Runtime毕竟是个“危险”的技术，本文的代码只是个初步的尝试。\n"><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar.png width height class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>土土哥的技术 Blog</a></h1><h2 class=site-description>AI / iOS / Android / Flutter / Open Source</h2></div></header><ol class=menu-social><li><a href=https://github.com/zekunyan title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>首页</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav class=toc-nav id=TableOfContents><ul><li><a href=#前言>前言</a></li><li><a href=#初衷>初衷</a></li><li><a href=#解决步骤>解决步骤</a></li><li><a href=#runtime>Runtime</a></li><li><a href=#示例>示例</a></li><li><a href=#重点---解析property_getattributes函数的结果>重点 - 解析property_getAttributes函数的结果</a></li><li><a href=#效果>效果</a></li><li><a href=#总结>总结</a></li><li><a href=#参考>参考</a></li></ul></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/ios/ style=background-color:#efbeed;color:#3d0f3c>IOS</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/2015/07/08/fill-nil-property-of-object/>用Runtime的手段填充任意NSObject对象的nil属性</a></h2></div><footer class=article-meta><div class=inline-meta><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2015-07-08T00:00:00Z>2015-07-08</time>
+<svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 4 分钟</time></div></footer></div></header><aside class=article-toc><details><summary><div class=article-toc-title><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6-6 6"/></svg>
+<span>目录</span></div></summary><nav class=toc-nav><ul><li><a href=#前言>前言</a></li><li><a href=#初衷>初衷</a></li><li><a href=#解决步骤>解决步骤</a></li><li><a href=#runtime>Runtime</a></li><li><a href=#示例>示例</a></li><li><a href=#重点---解析property_getattributes函数的结果>重点 - 解析property_getAttributes函数的结果</a></li><li><a href=#效果>效果</a></li><li><a href=#总结>总结</a></li><li><a href=#参考>参考</a></li></ul></nav></details></aside><section class=article-content><h2 id=前言><a href=#%e5%89%8d%e8%a8%80 class=header-anchor></a>前言</h2><p>好久没有写东西了，忙啊。</p><p>前段时间参加了一下我们华科联创的HackDay（本人在读研=。=，目前在阿里实习），作品是一款<strong>实时在线对战游戏 - 波波攒</strong>，（介绍请看<a class=link href=http://www.zhihu.com/question/24402279 target=_blank rel=noopener>知乎</a>）
+从iOS游戏客户端（用的<strong>SpriteKit</strong>）到后台（<strong>PHP CI + Node + SocketIO + MySQL</strong>）全是自己一个人倒腾出来的，做了一把真正的全栈工程师，爽啊~
+后面会完善整个游戏，增加角色、优化啥的，过上一段时间会上线的哈~</p><p><strong>回到正文</strong>，本文主要介绍了怎么用Runtime的手段遍历任意NSObject对象的所有property，检查其值是否是nil，是的话根据其类型为其填充一个默认值。
+Runtime毕竟是个“危险”的技术，本文的代码只是个初步的尝试。</p><h2 id=初衷><a href=#%e5%88%9d%e8%a1%b7 class=header-anchor></a>初衷</h2><p>在做项目的过程中，总是会写一大堆if、else语句去检查对象的Property是否是nil，如从服务器返回的JSON中缺少属性，导致Entity的某些值为空；或者创建的对象没有对所有属性做初始化等等。写多了觉得好烦啊=。=
+所以想到本文的方法，嗯，程序员总是懒的。</p><h2 id=解决步骤><a href=#%e8%a7%a3%e5%86%b3%e6%ad%a5%e9%aa%a4 class=header-anchor></a>解决步骤</h2><ol><li>遍历一个对象的所有属性（默认不包括父类属性）。</li><li>判断属性是否是nil。</li><li>为nil的属性，获取它的类型。</li><li>根据类型设置初始值（如NSString可以设为空字符串；NSNumber可以设为@0）</li></ol><h2 id=runtime><a href=#runtime class=header-anchor></a>Runtime</h2><p>OC是一门“动态”、“基于消息”的语言，而Runtime就是利用OC的动态特性，在运行时对程序做出“调整”的技术。有关Runtime的官方文档、网上的资料很多，大家自学哈~</p><p>本文主要用了如下几个Runtime的函数：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=o>//</span> <span class=err>获取类的所有</span><span class=n>Property</span>
+</span></span><span class=line><span class=cl><span class=mf>1.</span> <span class=n>objc_property_t</span> <span class=o>*</span><span class=n>class_copyPropertyList</span><span class=p>(</span><span class=n>Class</span> <span class=n>cls</span><span class=p>,</span> <span class=n>unsigned</span> <span class=ne>int</span> <span class=o>*</span><span class=n>outCount</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=o>//</span> <span class=err>获取一个</span><span class=n>Property的变量名</span>
+</span></span><span class=line><span class=cl><span class=mf>2.</span> <span class=k>const</span> <span class=n>char</span> <span class=o>*</span><span class=n>property_getName</span><span class=p>(</span><span class=n>objc_property_t</span> <span class=n>property</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=o>//</span> <span class=err>获取一个</span><span class=n>Property的详细类型表达字符串</span>
+</span></span><span class=line><span class=cl><span class=mf>3.</span> <span class=k>const</span> <span class=n>char</span> <span class=o>*</span><span class=n>property_getAttributes</span><span class=p>(</span><span class=n>objc_property_t</span> <span class=n>property</span><span class=p>)</span>
+</span></span></code></pre></div><h2 id=示例><a href=#%e7%a4%ba%e4%be%8b class=header-anchor></a>示例</h2><p>不好一块一块拆开说，直接上代码：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm> * 解析Property的Attributed字符串，参考Stackoverflow
+</span></span></span><span class=line><span class=cl><span class=cm> */</span>
+</span></span><span class=line><span class=cl><span class=k>static</span> <span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=nf>getPropertyType</span><span class=p>(</span><span class=n>objc_property_t</span> <span class=n>property</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>attributes</span> <span class=o>=</span> <span class=n>property_getAttributes</span><span class=p>(</span><span class=n>property</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>NSLog</span><span class=p>(</span><span class=s>@&#34;%s&#34;</span><span class=p>,</span> <span class=n>attributes</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>char</span> <span class=n>buffer</span><span class=p>[</span><span class=mi>1</span> <span class=o>+</span> <span class=n>strlen</span><span class=p>(</span><span class=n>attributes</span><span class=p>)];</span>
+</span></span><span class=line><span class=cl>    <span class=n>strcpy</span><span class=p>(</span><span class=n>buffer</span><span class=p>,</span> <span class=n>attributes</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=kt>char</span> <span class=o>*</span><span class=n>state</span> <span class=o>=</span> <span class=n>buffer</span><span class=p>,</span> <span class=o>*</span><span class=n>attribute</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>while</span> <span class=p>((</span><span class=n>attribute</span> <span class=o>=</span> <span class=n>strsep</span><span class=p>(</span><span class=o>&amp;</span><span class=n>state</span><span class=p>,</span> <span class=s>&#34;,&#34;</span><span class=p>))</span> <span class=o>!=</span> <span class=nb>NULL</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 非对象类型
+</span></span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>attribute</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>==</span> <span class=sc>&#39;T&#39;</span> <span class=o>&amp;&amp;</span> <span class=n>attribute</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span> <span class=o>!=</span> <span class=sc>&#39;@&#39;</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// 利用NSData复制一份字符串
+</span></span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=p>(</span><span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=p>)</span> <span class=p>[[</span><span class=n>NSData</span> <span class=nl>dataWithBytes</span><span class=p>:(</span><span class=n>attribute</span> <span class=o>+</span> <span class=mi>1</span><span class=p>)</span> <span class=nl>length</span><span class=p>:</span><span class=n>strlen</span><span class=p>(</span><span class=n>attribute</span><span class=p>)</span> <span class=o>-</span> <span class=mi>1</span><span class=p>]</span> <span class=n>bytes</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 纯id类型
+</span></span></span><span class=line><span class=cl>        <span class=p>}</span> <span class=k>else</span> <span class=k>if</span> <span class=p>(</span><span class=n>attribute</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>==</span> <span class=sc>&#39;T&#39;</span> <span class=o>&amp;&amp;</span> <span class=n>attribute</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span> <span class=o>==</span> <span class=sc>&#39;@&#39;</span> <span class=o>&amp;&amp;</span> <span class=n>strlen</span><span class=p>(</span><span class=n>attribute</span><span class=p>)</span> <span class=o>==</span> <span class=mi>2</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=s>&#34;id&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 对象类型
+</span></span></span><span class=line><span class=cl>        <span class=p>}</span> <span class=k>else</span> <span class=k>if</span> <span class=p>(</span><span class=n>attribute</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>==</span> <span class=sc>&#39;T&#39;</span> <span class=o>&amp;&amp;</span> <span class=n>attribute</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span> <span class=o>==</span> <span class=sc>&#39;@&#39;</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=p>(</span><span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=p>)</span> <span class=p>[[</span><span class=n>NSData</span> <span class=nl>dataWithBytes</span><span class=p>:(</span><span class=n>attribute</span> <span class=o>+</span> <span class=mi>3</span><span class=p>)</span> <span class=nl>length</span><span class=p>:</span><span class=n>strlen</span><span class=p>(</span><span class=n>attribute</span><span class=p>)</span> <span class=o>-</span> <span class=mi>4</span><span class=p>]</span> <span class=n>bytes</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=s>&#34;&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm> * 给对象的属性设置默认值
+</span></span></span><span class=line><span class=cl><span class=cm> */</span>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>checkEntity</span><span class=p>(</span><span class=n>NSObject</span> <span class=o>*</span><span class=n>object</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 不同类型的字符串表示，目前只是简单检查字符串、数字、数组
+</span></span></span><span class=line><span class=cl>    <span class=k>static</span> <span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>CLASS_NAME_NSSTRING</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>static</span> <span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>CLASS_NAME_NSNUMBER</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>static</span> <span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>CLASS_NAME_NSARRAY</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 初始化类型常量
+</span></span></span><span class=line><span class=cl>    <span class=k>static</span> <span class=n>dispatch_once_t</span> <span class=n>onceToken</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>dispatch_once</span><span class=p>(</span><span class=o>&amp;</span><span class=n>onceToken</span><span class=p>,</span> <span class=o>^</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// &#34;NSString&#34;
+</span></span></span><span class=line><span class=cl>        <span class=n>CLASS_NAME_NSSTRING</span> <span class=o>=</span>  <span class=n>NSStringFromClass</span><span class=p>([</span><span class=n>NSString</span> <span class=k>class</span><span class=p>]).</span><span class=n>UTF8String</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// &#34;NSNumber
+</span></span></span><span class=line><span class=cl>        <span class=n>CLASS_NAME_NSNUMBER</span> <span class=o>=</span> <span class=n>NSStringFromClass</span><span class=p>([</span><span class=n>NSNumber</span> <span class=k>class</span><span class=p>]).</span><span class=n>UTF8String</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// &#34;NSArray&#34;
+</span></span></span><span class=line><span class=cl>        <span class=n>CLASS_NAME_NSARRAY</span> <span class=o>=</span> <span class=n>NSStringFromClass</span><span class=p>([</span><span class=n>NSArray</span> <span class=k>class</span><span class=p>]).</span><span class=n>UTF8String</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>});</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>@try</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>unsigned</span> <span class=kt>int</span> <span class=n>outCount</span><span class=p>,</span> <span class=n>i</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 包含所有Property的数组
+</span></span></span><span class=line><span class=cl>        <span class=n>objc_property_t</span> <span class=o>*</span><span class=n>properties</span> <span class=o>=</span> <span class=n>class_copyPropertyList</span><span class=p>([</span><span class=n>object</span> <span class=k>class</span><span class=p>],</span> <span class=o>&amp;</span><span class=n>outCount</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 遍历每个Property
+</span></span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=p>(</span><span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>outCount</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// 取出对应Property
+</span></span></span><span class=line><span class=cl>            <span class=n>objc_property_t</span> <span class=n>property</span> <span class=o>=</span> <span class=n>properties</span><span class=p>[</span><span class=n>i</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// 获取Property对应的变量名
+</span></span></span><span class=line><span class=cl>            <span class=n>NSString</span> <span class=o>*</span><span class=n>propertyName</span> <span class=o>=</span> <span class=p>[</span><span class=n>NSString</span> <span class=nl>stringWithUTF8String</span><span class=p>:</span><span class=n>property_getName</span><span class=p>(</span><span class=n>property</span><span class=p>)];</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// 获取Property的类型名
+</span></span></span><span class=line><span class=cl>            <span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>propertyTypeName</span> <span class=o>=</span> <span class=n>getPropertyType</span><span class=p>(</span><span class=n>property</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// 获取Property的值
+</span></span></span><span class=line><span class=cl>            <span class=kt>id</span> <span class=n>propertyValue</span> <span class=o>=</span> <span class=p>[</span><span class=n>object</span> <span class=nl>valueForKey</span><span class=p>:</span><span class=n>propertyName</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=c1>// 值为空，才设置默认值
+</span></span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=n>propertyValue</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=c1>// NSString
+</span></span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=p>(</span><span class=n>strncmp</span><span class=p>(</span><span class=n>CLASS_NAME_NSSTRING</span><span class=p>,</span> <span class=n>propertyTypeName</span><span class=p>,</span> <span class=n>strlen</span><span class=p>(</span><span class=n>CLASS_NAME_NSSTRING</span><span class=p>))</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=p>[</span><span class=n>object</span> <span class=nl>setValue</span><span class=p>:</span><span class=s>@&#34;&#34;</span> <span class=nl>forKey</span><span class=p>:</span><span class=n>propertyName</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                <span class=c1>// NSNumber
+</span></span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=p>(</span><span class=n>strncmp</span><span class=p>(</span><span class=n>CLASS_NAME_NSNUMBER</span><span class=p>,</span> <span class=n>propertyTypeName</span><span class=p>,</span> <span class=n>strlen</span><span class=p>(</span><span class=n>CLASS_NAME_NSNUMBER</span><span class=p>))</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=p>[</span><span class=n>object</span> <span class=nl>setValue</span><span class=p>:</span><span class=mi>@0</span> <span class=nl>forKey</span><span class=p>:</span><span class=n>propertyName</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                <span class=c1>// NSArray
+</span></span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=p>(</span><span class=n>strncmp</span><span class=p>(</span><span class=n>CLASS_NAME_NSARRAY</span><span class=p>,</span> <span class=n>propertyTypeName</span><span class=p>,</span> <span class=n>strlen</span><span class=p>(</span><span class=n>CLASS_NAME_NSARRAY</span><span class=p>))</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=p>[</span><span class=n>object</span> <span class=nl>setValue</span><span class=p>:</span><span class=l>@[]</span> <span class=nl>forKey</span><span class=p>:</span><span class=n>propertyName</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 别忘了释放数组
+</span></span></span><span class=line><span class=cl>        <span class=n>free</span><span class=p>(</span><span class=n>properties</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span> <span class=k>@catch</span> <span class=p>(</span><span class=n>NSException</span> <span class=o>*</span><span class=n>exception</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>NSLog</span><span class=p>(</span><span class=s>@&#34;Check Entity Exception: %@&#34;</span><span class=p>,</span> <span class=p>[</span><span class=n>exception</span> <span class=n>description</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><h2 id=重点---解析property_getattributes函数的结果><a href=#%e9%87%8d%e7%82%b9---%e8%a7%a3%e6%9e%90property_getattributes%e5%87%bd%e6%95%b0%e7%9a%84%e7%bb%93%e6%9e%9c class=header-anchor></a>重点 - 解析property_getAttributes函数的结果</h2><p>在整个处理过程中，property_getAttributes函数是关键，因为我们要首先确定Property的类型，才能根据类型赋初值，但是property_getAttributes函数返回的字符串比较“晦涩难懂”：</p><p>如下定义的Property：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>copy</span><span class=p>,</span> <span class=k>nonatomic</span><span class=p>)</span> <span class=n>NSString</span> <span class=o>*</span><span class=n>name</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>strong</span><span class=p>,</span> <span class=k>nonatomic</span><span class=p>)</span> <span class=n>NSNumber</span> <span class=o>*</span><span class=n>number</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>strong</span><span class=p>,</span> <span class=k>nonatomic</span><span class=p>)</span> <span class=n>NSArray</span> <span class=o>*</span><span class=n>array</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>assign</span><span class=p>,</span> <span class=k>nonatomic</span><span class=p>)</span> <span class=n>NSInteger</span> <span class=n>i</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>assign</span><span class=p>,</span> <span class=k>nonatomic</span><span class=p>)</span> <span class=n>CGFloat</span> <span class=n>f</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>@property</span> <span class=p>(</span><span class=k>assign</span><span class=p>,</span> <span class=k>nonatomic</span><span class=p>)</span> <span class=kt>char</span> <span class=o>*</span><span class=n>cStr</span><span class=p>;</span>
+</span></span></code></pre></div><p>依次通过property_getAttributes获取的结果是：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>T@&#34;NSString&#34;,C,N,V_name
+</span></span><span class=line><span class=cl>T@&#34;NSNumber&#34;,&amp;,N,V_number
+</span></span><span class=line><span class=cl>T@&#34;NSArray&#34;,&amp;,N,V_array
+</span></span><span class=line><span class=cl>Tq,N,V_i
+</span></span><span class=line><span class=cl>Td,N,V_f
+</span></span><span class=line><span class=cl>T*,N,V_cStr
+</span></span></code></pre></div><p>参考<a class=link href=https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html#//apple_ref/doc/uid/TP40008048-CH101 target=_blank rel=noopener>Declared Properties of Objective-C Runtime Programming Guide</a>
+我们大概可以知道，T表示Type，后面跟着@表示Cocoa对象类型，后面的表示Property的属性，如Copy、strong等，然后就是变量名。
+所以getPropertyType函数的工作就是纯粹的解析字符串，获取T@后面的类型名。</p><h2 id=效果><a href=#%e6%95%88%e6%9e%9c class=header-anchor></a>效果</h2><p>例如我们有如下对象：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>@interface UserEntity : NSObject
+</span></span><span class=line><span class=cl>@property (copy, nonatomic) NSString *name;
+</span></span><span class=line><span class=cl>@property (strong, nonatomic) NSNumber *number;
+</span></span><span class=line><span class=cl>@property (strong, nonatomic) NSArray *array;
+</span></span><span class=line><span class=cl>@end
+</span></span></code></pre></div><p>设置默认值：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=n>UserEntity</span> <span class=o>*</span><span class=n>userEntity</span> <span class=o>=</span> <span class=p>[</span><span class=n>UserEntity</span> <span class=n>new</span><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=c1>// 检查属性，设置默认值。
+</span></span></span><span class=line><span class=cl><span class=n>checkEntity</span><span class=p>(</span><span class=n>userEntity</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=c1>// 使用...
+</span></span></span><span class=line><span class=cl><span class=n>NSLog</span><span class=p>(</span><span class=s>@&#34;name: %@&#34;</span><span class=p>,</span> <span class=n>userEntity</span><span class=p>.</span><span class=n>name</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>NSLog</span><span class=p>(</span><span class=s>@&#34;number: %@&#34;</span><span class=p>,</span> <span class=n>userEntity</span><span class=p>.</span><span class=n>number</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>NSLog</span><span class=p>(</span><span class=s>@&#34;array: %@&#34;</span><span class=p>,</span> <span class=n>userEntity</span><span class=p>.</span><span class=n>array</span><span class=p>);</span>
+</span></span></code></pre></div><p>输出：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>2015-07-11 18:17:25.918 Common[6939:270543] name:
+</span></span><span class=line><span class=cl>2015-07-11 18:17:25.918 Common[6939:270543] number: 0
+</span></span><span class=line><span class=cl>2015-07-11 18:17:25.918 Common[6939:270543] array: (
+</span></span><span class=line><span class=cl>)
+</span></span></code></pre></div><p>这样，一个对象的所有Property都有了初值。</p><h2 id=总结><a href=#%e6%80%bb%e7%bb%93 class=header-anchor></a>总结</h2><p>上面的例子只是个粗略的版本，只是检查了字符串、数字、数组，其实完全可以扩展出很多功能，如针对不同的类型，根据对象的类型，设置不同的默认初值等，靠读者你了~</p><p>Runtime是个好东西，但是别乱用啊=。=</p><h2 id=参考><a href=#%e5%8f%82%e8%80%83 class=header-anchor></a>参考</h2><ul><li><a class=link href=https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ObjCRuntimeRef/index.html target=_blank rel=noopener>Objective-C Runtime Reference</a></li><li><a class=link href=https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html#//apple_ref/doc/uid/TP40008048-CH101 target=_blank rel=noopener>Objective-C Runtime Programming Guide - Declared Properties</a></li><li><a class=link href=http://stackoverflow.com/questions/754824/get-an-object-properties-list-in-objective-c target=_blank rel=noopener>Get an object properties list in Objective-C</a></li></ul></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/%E5%8E%9F%E5%88%9B/>原创</a>
+<a href=/tags/ios/>IOS</a>
+<a href=/tags/runtime/>Runtime</a></section></footer></article><aside><h2 class=section-title>相关文章</h2><div class=subsection-list><div class=article-list--tile><article class=has-image><a href=/2015/07/25/compatibility-with-macro-category-and-runtime/><div class=article-image><img alt="Featured image of post 解决iOS项目的版本兼容问题-结合宏、Category和Runtime" loading=lazy src=/assets/2015/07/25/compatibility-with-macro-category-and-runtime/blog_compatibility-with-macro-category-and-runtime_1.png></div><div class=article-details><h2 class=article-title>解决iOS项目的版本兼容问题-结合宏、Category和Runtime</h2></div></a></article><article class=has-image><a href=/2017/04/08/diy-methodSignatureForSelector/><div class=article-image><img alt="Featured image of post 反编译分析并模拟实现methodSignatureForSelector方法" loading=lazy src=/assets/2017/04/08/diy-methodSignatureForSelector/blog_RemakeMethodSignatureForSelector_1.jpg></div><div class=article-details><h2 class=article-title>反编译分析并模拟实现methodSignatureForSelector方法</h2></div></a></article><article class=has-image><a href=/2017/03/14/xcode8-crash-on-out-parameter/><div class=article-image><img alt="Featured image of post 反编译分析Xcode8的Bug, release下连续两次调用有二级指针参数的空方法会Crash" loading=lazy src=/assets/2017/03/14/xcode8-crash-on-out-parameter/xcode8_crash_on_out_parameter_1.jpg></div><div class=article-details><h2 class=article-title>反编译分析Xcode8的Bug, release下连续两次调用有二级指针参数的空方法会Crash</h2></div></a></article><article class=has-image><a href=/2017/03/12/autolayout-example-with-masonry5/><div class=article-image><img alt="Featured image of post 有趣的Autolayout示例5-Masonry实现" loading=lazy src=/assets/2017/03/12/autolayout-example-with-masonry5/blog_autolayout_example_with_masonry5_1.png></div><div class=article-details><h2 class=article-title>有趣的Autolayout示例5-Masonry实现</h2></div></a></article><article class=has-image><a href=/2017/03/11/TTGDeallocTaskHelper/><div class=article-image><img alt="Featured image of post 在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper" loading=lazy src=/assets/2017/03/11/TTGDeallocTaskHelper/TTGDeallocTaskHelper_1.jpg></div><div class=article-details><h2 class=article-title>在对象dealloc的后期执行Task-开源库TTGDeallocTaskHelper</h2></div></a></article></div></div></aside><footer class=site-footer><section class=copyright>&copy;
+2014 -
+2026 tutuge</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=4.0.3>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><script type=module>
+    import gallery from '\/ts\/gallery.js';
 
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
     
-
-    <title>用Runtime的手段填充任意NSObject对象的nil属性 | iOS程序猿.目前阿里,喜欢各种技术,RCFans</title>
-    <meta name="author" content="土土哥">
-    
-    <meta name="description" content="iOS程序猿.目前阿里,喜欢各种技术,RCFans">
-    
-    
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-    <meta property="og:title" content="用Runtime的手段填充任意NSObject对象的nil属性">
-    <meta property="og:site_name" content="土土哥的Blog">
-
-    
-    <meta property="og:image" content="undefined">
-    
-
-    <link rel="icon" type="image/png" href="/favicon.png">
-    <link rel="alternate" href="/atom.xml" title="土土哥的Blog" type="application/atom+xml">
-    <link rel="stylesheet" href="/css/lib/materialize.min.css">
-    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
-    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-
-    
-        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
-    
-    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-</head>
-</html>
-
-<body>
-    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
-
-    <nav class="blue-grey">
-    <div class="nav-wrapper">
-        <a href="#" data-activates="main-menu" class="button-collapse">
-            <i class="fa fa-navicon"></i>
-        </a>
-        <div class="">
-            <a href="/" class="brand-logo hide-on-med-and-down">土土哥的Blog</a>
-            <ul class="right hide-on-med-and-down">
-                
-                    <li>
-                        <a class="menu-home " href="/" >
-                            <i class="fa fa-home "></i>
-                            
-                            首页
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-archive " href="/archives" >
-                            <i class="fa fa-archive "></i>
-                            
-                            归档
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
-                            <i class="fa fa-bookmark "></i>
-                            
-                            分类
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-about " href="/about" >
-                            <i class="fa fa-user "></i>
-                            
-                            关于
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-search modal-trigger " href="#search" >
-                            <i class="fa fa-search "></i>
-                            
-                            搜索
-                        </a>
-                    </li>
-                
-            </ul>
-            <div>
-    <ul class="side-nav blue-grey darken-1" id="main-menu">
-        
-        <li class="side-user">
-            <div class="row">
-                <div class="col s4 no-padding">
-                    <img class="avatar-image circle responsive-img" src="http://tutuge.me/2019/07/29/2019-07-29-occupied-with-work/avatar_comic.jpg" alt="User Avatar">
-                </div>
-                <div class="info col s8 valign-wrapper no-padding">
-                    <div class="valign">
-                        <p class="name">土土哥</p>
-                        <p class="desc">iOS/Android/技术宅/RCFans</p>
-                    </div>
-                </div>
-            </div>
-        </li>
-        
-
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-home " href="/" >
-                    <i class="fa fa-home "></i>
-                    
-                    首页
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-archive " href="/archives" >
-                    <i class="fa fa-archive "></i>
-                    
-                    归档
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
-                    <i class="fa fa-bookmark "></i>
-                    
-                    分类
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-about " href="/about" >
-                    <i class="fa fa-user "></i>
-                    
-                    关于
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-search modal-trigger " href="#search" >
-                    <i class="fa fa-search "></i>
-                    
-                    搜索
-                </a>
-            </li>
-        
-    </ul>
-
-    <ul class="side-nav blue-grey darken-1" id="category-menu">
-    
-
-            
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/其它/">
-                    其它 <span class="right">5 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/iOS/">
-                    iOS <span class="right">37 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/Android/">
-                    Android <span class="right">1 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/Mac/">
-                    Mac <span class="right">1 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/服务端/">
-                    服务端 <span class="right">2 篇</span></a>
-                </a>
-            </li>
-
-        
-
-    </ul>
-</div>
-
-        </div>
-    </div>
-</nav>
-
-<div id="search" class="modal search-modal">
-    <div class="row">
-        <div class="input-field col s12">
-              <input id="search-input" type="text">
-              <label for="search-input">搜索</label>
-        </div>
-
-    </div>
-    <div id="search-result" class="search-result col s12">
-
-    </div>
-</div>
-
-
-    <main>
-        <div class="container main-container">
-    
-<nav class="page-nav hide-on-small-only">
-    <div class="nav-wrapper blue-grey">
-        <span class="breadcrumb">当前位置（分类目录）</span>
-        
-            
-    
-    
-    <a class="breadcrumb" href="/categories/iOS/">iOS</a>
-
-
-        
-
-        
-    </div>
-</nav>
-
-<article>
-    <div class="card">
-        <div class="card-content">
-            
-
-            <div class="article-title">
-                
-    
-        <h1>用Runtime的手段填充任意NSObject对象的nil属性</h1>
-    
-
-
-            </div>
-            <time class="teal-link-context" datetime="2015-07-08T15:23:23.000Z"><a href="/2015/07/08/fill-nil-property-of-object/">2015-07-08</a></time>
-
-            <span id="busuanzi_container_page_pv" class="read-times-container">
-    <i class="fa fa-eye"></i>
-    <span id="busuanzi_value_page_pv"></span>
-</span>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
-        
-            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
-        
-            <a href="/tags/Runtime/" class="chip teal accent-4">Runtime</a>
-        
-    </div>
-
-
-            <div class="toc teal-link-context hide-on-med-and-down">
-    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#前言"><span class="section table-of-contents-text">前言</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#初衷"><span class="section table-of-contents-text">初衷</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#解决步骤"><span class="section table-of-contents-text">解决步骤</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Runtime"><span class="section table-of-contents-text">Runtime</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#示例"><span class="section table-of-contents-text">示例</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#重点-解析property-getAttributes函数的结果"><span class="section table-of-contents-text">重点 - 解析property_getAttributes函数的结果</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#效果"><span class="section table-of-contents-text">效果</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#总结"><span class="section table-of-contents-text">总结</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#参考"><span class="section table-of-contents-text">参考</span></a></li></ol>
-</div>
-
-
-            <div class="entry teal-link-context">
-                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>好久没有写东西了，忙啊。</p>
-<p>前段时间参加了一下我们华科联创的HackDay（本人在读研=。=，目前在阿里实习），作品是一款<strong>实时在线对战游戏 - 波波攒</strong>，（介绍请看<a href="http://www.zhihu.com/question/24402279" target="_blank" rel="noopener">知乎</a>）<br>从iOS游戏客户端（用的<strong>SpriteKit</strong>）到后台（<strong>PHP CI + Node + SocketIO + MySQL</strong>）全是自己一个人倒腾出来的，做了一把真正的全栈工程师，爽啊~<br>后面会完善整个游戏，增加角色、优化啥的，过上一段时间会上线的哈~</p>
-<p><strong>回到正文</strong>，本文主要介绍了怎么用Runtime的手段遍历任意NSObject对象的所有property，检查其值是否是nil，是的话根据其类型为其填充一个默认值。<br>Runtime毕竟是个“危险”的技术，本文的代码只是个初步的尝试。</p>
-<a id="more"></a>
-<h2 id="初衷"><a href="#初衷" class="headerlink" title="初衷"></a>初衷</h2><p>在做项目的过程中，总是会写一大堆if、else语句去检查对象的Property是否是nil，如从服务器返回的JSON中缺少属性，导致Entity的某些值为空；或者创建的对象没有对所有属性做初始化等等。写多了觉得好烦啊=。=<br>所以想到本文的方法，嗯，程序员总是懒的。</p>
-<h2 id="解决步骤"><a href="#解决步骤" class="headerlink" title="解决步骤"></a>解决步骤</h2><ol>
-<li>遍历一个对象的所有属性（默认不包括父类属性）。</li>
-<li>判断属性是否是nil。</li>
-<li>为nil的属性，获取它的类型。</li>
-<li>根据类型设置初始值（如NSString可以设为空字符串；NSNumber可以设为@0）</li>
-</ol>
-<h2 id="Runtime"><a href="#Runtime" class="headerlink" title="Runtime"></a>Runtime</h2><p>OC是一门“动态”、“基于消息”的语言，而Runtime就是利用OC的动态特性，在运行时对程序做出“调整”的技术。有关Runtime的官方文档、网上的资料很多，大家自学哈~</p>
-<p>本文主要用了如下几个Runtime的函数：</p>
-<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 获取类的所有<span class="keyword">Property</span><span class="title"></span></span><br><span class="line"><span class="number">1</span>. objc_property_t *class_copyPropertyList(Class cls, unsigned int *outCount)</span><br><span class="line">// 获取一个<span class="keyword">Property</span><span class="title"></span>的变量名</span><br><span class="line"><span class="number">2</span>. const char *property_getName(objc_property_t <span class="keyword">property</span><span class="title"></span>)</span><br><span class="line">// 获取一个<span class="keyword">Property</span><span class="title"></span>的详细类型表达字符串</span><br><span class="line"><span class="number">3</span>. const char *property_getAttributes(objc_property_t <span class="keyword">property</span><span class="title"></span>)</span><br></pre></td></tr></table></figure>
-<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>不好一块一块拆开说，直接上代码：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 解析Property的Attributed字符串，参考Stackoverflow</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">char</span> *getPropertyType(objc_property_t property) &#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *attributes = property_getAttributes(property);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%s"</span>, attributes);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">char</span> buffer[<span class="number">1</span> + strlen(attributes)];</span><br><span class="line">    strcpy(buffer, attributes);</span><br><span class="line">    <span class="keyword">char</span> *state = buffer, *attribute;</span><br><span class="line">    <span class="keyword">while</span> ((attribute = strsep(&amp;state, <span class="string">","</span>)) != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="comment">// 非对象类型</span></span><br><span class="line">        <span class="keyword">if</span> (attribute[<span class="number">0</span>] == <span class="string">'T'</span> &amp;&amp; attribute[<span class="number">1</span>] != <span class="string">'@'</span>) &#123;</span><br><span class="line">            <span class="comment">// 利用NSData复制一份字符串</span></span><br><span class="line">            <span class="keyword">return</span> (<span class="keyword">const</span> <span class="keyword">char</span> *) [[<span class="built_in">NSData</span> dataWithBytes:(attribute + <span class="number">1</span>) length:strlen(attribute) - <span class="number">1</span>] bytes];</span><br><span class="line">        <span class="comment">// 纯id类型</span></span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (attribute[<span class="number">0</span>] == <span class="string">'T'</span> &amp;&amp; attribute[<span class="number">1</span>] == <span class="string">'@'</span> &amp;&amp; strlen(attribute) == <span class="number">2</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"id"</span>;</span><br><span class="line">        <span class="comment">// 对象类型</span></span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (attribute[<span class="number">0</span>] == <span class="string">'T'</span> &amp;&amp; attribute[<span class="number">1</span>] == <span class="string">'@'</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> (<span class="keyword">const</span> <span class="keyword">char</span> *) [[<span class="built_in">NSData</span> dataWithBytes:(attribute + <span class="number">3</span>) length:strlen(attribute) - <span class="number">4</span>] bytes];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 给对象的属性设置默认值</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">void</span> checkEntity(<span class="built_in">NSObject</span> *object) &#123;</span><br><span class="line">    <span class="comment">// 不同类型的字符串表示，目前只是简单检查字符串、数字、数组</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">char</span> *<span class="built_in">CLASS_NAME_NSSTRING</span>;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">char</span> *<span class="built_in">CLASS_NAME_NSNUMBER</span>;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">char</span> *<span class="built_in">CLASS_NAME_NSARRAY</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化类型常量</span></span><br><span class="line">    <span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;</span><br><span class="line">    <span class="built_in">dispatch_once</span>(&amp;onceToken, ^&#123;</span><br><span class="line">        <span class="comment">// "NSString"</span></span><br><span class="line">        <span class="built_in">CLASS_NAME_NSSTRING</span> =  <span class="built_in">NSStringFromClass</span>([<span class="built_in">NSString</span> <span class="keyword">class</span>]).UTF8String;</span><br><span class="line">        <span class="comment">// "NSNumber</span></span><br><span class="line">        <span class="built_in">CLASS_NAME_NSNUMBER</span> = <span class="built_in">NSStringFromClass</span>([<span class="built_in">NSNumber</span> <span class="keyword">class</span>]).UTF8String;</span><br><span class="line">        <span class="comment">// "NSArray"</span></span><br><span class="line">        <span class="built_in">CLASS_NAME_NSARRAY</span> = <span class="built_in">NSStringFromClass</span>([<span class="built_in">NSArray</span> <span class="keyword">class</span>]).UTF8String;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">@try</span> &#123;</span><br><span class="line">        <span class="keyword">unsigned</span> <span class="keyword">int</span> outCount, i;</span><br><span class="line">        <span class="comment">// 包含所有Property的数组</span></span><br><span class="line">        objc_property_t *properties = class_copyPropertyList([object <span class="keyword">class</span>], &amp;outCount);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 遍历每个Property</span></span><br><span class="line">        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; outCount; i++) &#123;</span><br><span class="line">            <span class="comment">// 取出对应Property</span></span><br><span class="line">            objc_property_t property = properties[i];</span><br><span class="line">            <span class="comment">// 获取Property对应的变量名</span></span><br><span class="line">            <span class="built_in">NSString</span> *propertyName = [<span class="built_in">NSString</span> stringWithUTF8String:property_getName(property)];</span><br><span class="line">            <span class="comment">// 获取Property的类型名</span></span><br><span class="line">            <span class="keyword">const</span> <span class="keyword">char</span> *propertyTypeName = getPropertyType(property);</span><br><span class="line">            <span class="comment">// 获取Property的值</span></span><br><span class="line">            <span class="keyword">id</span> propertyValue = [object valueForKey:propertyName];</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 值为空，才设置默认值</span></span><br><span class="line">            <span class="keyword">if</span> (!propertyValue) &#123;</span><br><span class="line">                <span class="comment">// NSString</span></span><br><span class="line">                <span class="keyword">if</span> (strncmp(<span class="built_in">CLASS_NAME_NSSTRING</span>, propertyTypeName, strlen(<span class="built_in">CLASS_NAME_NSSTRING</span>)) == <span class="number">0</span>) &#123;</span><br><span class="line">                    [object setValue:<span class="string">@""</span> forKey:propertyName];</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// NSNumber</span></span><br><span class="line">                <span class="keyword">if</span> (strncmp(<span class="built_in">CLASS_NAME_NSNUMBER</span>, propertyTypeName, strlen(<span class="built_in">CLASS_NAME_NSNUMBER</span>)) == <span class="number">0</span>) &#123;</span><br><span class="line">                    [object setValue:@<span class="number">0</span> forKey:propertyName];</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// NSArray</span></span><br><span class="line">                <span class="keyword">if</span> (strncmp(<span class="built_in">CLASS_NAME_NSARRAY</span>, propertyTypeName, strlen(<span class="built_in">CLASS_NAME_NSARRAY</span>)) == <span class="number">0</span>) &#123;</span><br><span class="line">                    [object setValue:@[] forKey:propertyName];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 别忘了释放数组</span></span><br><span class="line">        free(properties);</span><br><span class="line">    &#125; <span class="keyword">@catch</span> (<span class="built_in">NSException</span> *exception) &#123;</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"Check Entity Exception: %@"</span>, [exception description]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="重点-解析property-getAttributes函数的结果"><a href="#重点-解析property-getAttributes函数的结果" class="headerlink" title="重点 - 解析property_getAttributes函数的结果"></a>重点 - 解析property_getAttributes函数的结果</h2><p>在整个处理过程中，property_getAttributes函数是关键，因为我们要首先确定Property的类型，才能根据类型赋初值，但是property_getAttributes函数返回的字符串比较“晦涩难懂”：</p>
-<p>如下定义的Property：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">@property</span> (<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *name;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSNumber</span> *number;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSArray</span> *array;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSInteger</span> i;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> f;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="keyword">char</span> *cStr;</span><br></pre></td></tr></table></figure>
-<p>依次通过property_getAttributes获取的结果是：</p>
-<figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">T</span>@<span class="string">"NSString"</span>,C,<span class="built_in">N</span>,V_name</span><br><span class="line"><span class="built_in">T</span>@<span class="string">"NSNumber"</span>,&amp;,<span class="built_in">N</span>,V_number</span><br><span class="line"><span class="built_in">T</span>@<span class="string">"NSArray"</span>,&amp;,<span class="built_in">N</span>,V_array</span><br><span class="line">Tq,<span class="built_in">N</span>,V_i</span><br><span class="line">Td,<span class="built_in">N</span>,V_f</span><br><span class="line"><span class="built_in">T</span>*,<span class="built_in">N</span>,V_cStr</span><br></pre></td></tr></table></figure>
-<p>参考<a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html#//apple_ref/doc/uid/TP40008048-CH101" target="_blank" rel="noopener"> Declared Properties of Objective-C Runtime Programming Guide</a><br>我们大概可以知道，T表示Type，后面跟着@表示Cocoa对象类型，后面的表示Property的属性，如Copy、strong等，然后就是变量名。<br>所以getPropertyType函数的工作就是纯粹的解析字符串，获取T@后面的类型名。</p>
-<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p>例如我们有如下对象：</p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">@interface</span> <span class="attribute">UserEntity </span>: NSObject</span><br><span class="line"><span class="variable">@property</span> (copy, nonatomic) NSString *name;</span><br><span class="line"><span class="variable">@property</span> (strong, nonatomic) NSNumber *number;</span><br><span class="line"><span class="variable">@property</span> (strong, nonatomic) NSArray *array;</span><br><span class="line"><span class="variable">@end</span></span><br></pre></td></tr></table></figure>
-<p>设置默认值：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">UserEntity *userEntity = [UserEntity new];</span><br><span class="line"><span class="comment">// 检查属性，设置默认值。</span></span><br><span class="line">checkEntity(userEntity);</span><br><span class="line"><span class="comment">// 使用...</span></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"name: %@"</span>, userEntity.name);</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"number: %@"</span>, userEntity.number);</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"array: %@"</span>, userEntity.array);</span><br></pre></td></tr></table></figure>
-<p>输出：</p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">2015-07-11</span> <span class="selector-tag">18</span><span class="selector-pseudo">:17</span><span class="selector-pseudo">:25.918</span> <span class="selector-tag">Common</span><span class="selector-attr">[6939:270543]</span> <span class="selector-tag">name</span>:</span><br><span class="line"><span class="selector-tag">2015-07-11</span> <span class="selector-tag">18</span><span class="selector-pseudo">:17</span><span class="selector-pseudo">:25.918</span> <span class="selector-tag">Common</span><span class="selector-attr">[6939:270543]</span> <span class="selector-tag">number</span>: <span class="selector-tag">0</span></span><br><span class="line"><span class="selector-tag">2015-07-11</span> <span class="selector-tag">18</span><span class="selector-pseudo">:17</span><span class="selector-pseudo">:25.918</span> <span class="selector-tag">Common</span><span class="selector-attr">[6939:270543]</span> <span class="selector-tag">array</span>: (</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<p>这样，一个对象的所有Property都有了初值。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>上面的例子只是个粗略的版本，只是检查了字符串、数字、数组，其实完全可以扩展出很多功能，如针对不同的类型，根据对象的类型，设置不同的默认初值等，靠读者你了~</p>
-<p>Runtime是个好东西，但是别乱用啊=。=</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><a href="https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ObjCRuntimeRef/index.html" target="_blank" rel="noopener">Objective-C Runtime Reference</a></li>
-<li><a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html#//apple_ref/doc/uid/TP40008048-CH101" target="_blank" rel="noopener">Objective-C Runtime Programming Guide - Declared Properties</a></li>
-<li><a href="http://stackoverflow.com/questions/754824/get-an-object-properties-list-in-objective-c" target="_blank" rel="noopener">Get an object properties list in Objective-C</a></li>
-</ul>
-
-                
-<p class="teal-link-context">
-    <a href="/2015/07/25/compatibility-with-macro-category-and-runtime/" rel="next" title="解决iOS项目的版本兼容问题-结合宏、Category和Runtime">
-    上一篇：解决iOS项目的版本兼容问题-结合宏、Category和Runtime
-  </a>
-</p>
-
-
-
-<p class="teal-link-context">
-    <a href="/2015/05/23/autolayout-example-with-masonry/" rel="next" title="有趣的Autolayout示例-Masonry实现">
-    下一篇：有趣的Autolayout示例-Masonry实现
-  </a>
-</p>
-
-
-            </div>
-
-            
-			
-        </div>
-    </div>
-</article>
-
-
-
-
-    <section id="comment">
-        <div id="disqus_thread"></div>
-        <script>
-            var disqus_config = function() {
-                this.page.url = 'http://tutuge.me/2015/07/08/fill-nil-property-of-object/';
-                this.page.identifier = '2015/07/08/fill-nil-property-of-object/';
-            };
-            (function() {
-                var d = document,
-                    s = d.createElement('script');
-                s.src = '//tutuge-me.disqus.com/embed.js';
-                s.setAttribute('data-timestamp', + new Date());
-                (d.head || d.body).appendChild(s);
-            })();
-        </script>
-        <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
-        </noscript>
-    </section>
-
-
-
-</div>
-
-        <div class="fixed-action-btn float-sitemap">
-    <a class="btn-floating btn-large teal">
-      <i class="fa fa-caret-square-o-up"></i>
-    </a>
-    <ul>
-      <li><a class="btn-return-top btn-floating waves-effect teal accent-4" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
-      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
-    </ul>
-  </div>
-
-    </main>
-    <footer class="page-footer blue-grey darken-1">
-    
-    <div class="footer-container container">
-        <div class="row">
-            
-            <div class="social-group col m4 s12">
-                <h5 class="white-text">社交</h5>
-                
-                    <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
-                        <i class="fa fa-2x fa-weibo"></i>
-                    </a>
-                
-                    <a class="social-link" href="https://github.com/zekunyan" target="_blank">
-                        <i class="fa fa-2x fa-github"></i>
-                    </a>
-                
-                    <a class="social-link" href="/atom.xml" target="_blank">
-                        <i class="fa fa-2x fa-rss"></i>
-                    </a>
-                
-                
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
-    </script>
-    <div class="site-visitors-container white-text">
-        <span>
-            <i class="fa fa-user"></i>
-            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
-        </span>
-        <span>&nbsp;|&nbsp;</span>
-        <span>
-            <i class="fa fa-eye"></i>
-            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
-        </span>
-    </div>
-
-
-            </div>
-            
-
-            
-            <div class="col m8 s12">
-                <h5 class="white-text">友情链接</h5>
-                
-                    <a class="social-link" href="http://chenrudan.github.io" target="_blank">女朋友的博客😊</a>
-                
-            </div>
-            
-        </div>
-        <p>Hosted by <a href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a></p>
-    </div>
-    
-
-    <div class="footer-copyright teal-link-context">
-        <div class="container">
-            © 2020 tutuge.me, All rights reserved.
-            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
-        </div>
-    </div>
-</footer>
-
-
-    <noscript>
-    <div class="noscript">
-        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
-    </div>
-</noscript>
-<div class="noscript">
-    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
-</div>
-
-
-<script src="/js/jquery.min.js"></script>
-<script src="/js/materialize.min.js"></script>
-
-<script>
-    (function($) {
-        $(document).ready(function() {
-            // 隐藏禁用javascript（针对微信内置浏览器）的提示
-            $('.noscript').hide();
-
-            // 图片缩放效果
-            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
-
-            // 给图片加上点击放大效果（materialbox插件）
-            $imgs.addClass('materialboxed').each(function(i, el) {
-                $(this).attr('data-caption', $(this).attr('alt') || ' ');
-            }).materialbox();
-
-            // 优化表格的显示
-            $('table').each(function() {
-                var $table = $(this);
-                // 除去多行代码的情况
-                if ($table.find('pre').length == 0) {
-                    $table.addClass('responsive-table striped bordered');
-                }
-            });
-
-            // 首页幻灯片
-            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
-
-            $(".button-collapse").sideNav();
-            $(".category-menu").sideNav();
-
-            // 针对gallery post
-            $('.carousel').carousel({full_width: true});
-            $('.carousel-control.prev').click(function() {
-                $('.carousel').carousel('prev');
-            });
-            $('.carousel-control.next').click(function() {
-                $('.carousel').carousel('next');
-            });
-
-            // 文章目录
-            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
-
-            // 目录随屏幕滚动（防止目录过长越过footer）
-            var $toc = $('.toc');
-            var scrollTargetTop = 0;
-            $(window).scroll(function() {
-                var $activeLink = $toc.find('a.active.section');
-                if ($(window).scrollTop() < 100) {
-                    scrollTargetTop = 0;
-                } else {
-                    if ($activeLink[0]) {
-                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
-                    }
-                }
-                $toc.css('top', '-' + scrollTargetTop + 'px');
-            });
-
-            // 修正文章目录的left-border颜色
-            var color = $('.table-of-contents-text').css('color');
-            $('.table-of-contents-link').css('border-left-color', color);
-
-            // 针对移动端做的优化：FAB按钮点击一下收回
-            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                $('.fixed-action-btn').addClass('click-to-toggle');
-            }
-            // 回到顶部
-            $('.btn-return-top').click(function() {
-                $('body, html').animate({
-                    scrollTop: 0
-                }, 500);
-            });
-
-            // 重置读书页面的Tab标签页的颜色
-            $('li.tab a').hover(function() {
-                $(this).toggleClass('text-lighten-4');
-            });
-            $('.indicator').addClass('teal lighten-2');
-
-            
-            // 添加new标签
-            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
-            
-
-            // 搜索功能
-            $('.modal-trigger').leanModal({
-                // 打开搜索框时自动聚焦
-                ready: function() {
-                    if ($('#search').is(":visible")) {
-                        $('#search-input').focus();
-                    }
-                }
-            });
-            var searchXml = "search.xml";
-            if (searchXml.length == 0) {
-             	searchXml = "search.xml";
-            }
-            var searchPath = "/" + searchXml;
-            initSearch(searchPath, 'search-input', 'search-result');
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
         });
-
-        // 初始化搜索与匹配函数
-        var initSearch = function(path, search_id, content_id) {
-            'use strict';
-            $.ajax({
-                url: path,
-                dataType: "xml",
-                success: function(xmlResponse) {
-                    // get the contents from search data
-                    var datas = $("entry", xmlResponse).map(function() {
-                        return {
-                            title: $("title", this).text(),
-                            content: $("content", this).text(),
-                            url: $("url", this).text()
-                        };
-                    }).get();
-                    var $input = document.getElementById(search_id);
-                    var $resultContent = document.getElementById(content_id);
-                    $input.addEventListener('input', function() {
-                        var str = '<ul class=\"search-result-list\">';
-                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
-                        $resultContent.innerHTML = "";
-                        if (this.value.trim().length <= 0) {
-                            return;
-                        }
-                        // perform local searching
-                        datas.forEach(function(data) {
-                            var isMatch = true;
-                            var content_index = [];
-                            var data_title = data.title.trim().toLowerCase();
-                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
-                            var data_url = data.url;
-                            var index_title = -1;
-                            var index_content = -1;
-                            var first_occur = -1;
-                            // only match artiles with not empty titles and contents
-                            if (data_title != '' && data_content != '') {
-                                keywords.forEach(function(keyword, i) {
-                                    index_title = data_title.indexOf(keyword);
-                                    index_content = data_content.indexOf(keyword);
-                                    if (index_title < 0 && index_content < 0) {
-                                        isMatch = false;
-                                    } else {
-                                        if (index_content < 0) {
-                                            index_content = 0;
-                                        }
-                                        if (i == 0) {
-                                            first_occur = index_content;
-                                        }
-                                    }
-                                });
-                            }
-                            // show search results
-                            if (isMatch) {
-                                keywords.forEach(function(keyword) {
-                                    var regS = new RegExp(keyword, "gi");
-                                    data_title = data_title.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
-                                });
-
-                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
-                                var content = data.content.trim().replace(/<[^>]+>/g, "");
-                                if (first_occur >= 0) {
-                                    // cut out 100 characters
-                                    var start = first_occur - 20;
-                                    var end = first_occur + 80;
-                                    if (start < 0) {
-                                        start = 0;
-                                    }
-                                    if (start == 0) {
-                                        end = 100;
-                                    }
-                                    if (end > content.length) {
-                                        end = content.length;
-                                    }
-                                    var match_content = content.substring(start, end);
-                                    // highlight all keywords
-                                    keywords.forEach(function(keyword) {
-                                        var regS = new RegExp(keyword, "gi");
-                                        match_content = match_content.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
-                                    });
-
-                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
-                                }
-                                str += "</li>";
-                            }
-                        });
-                        str += "</ul>";
-                        $resultContent.innerHTML = str;
-                    });
-                }
-            });
-        }
-    })(jQuery);
-</script>
-
-
-<script src="/js/prettify.js"></script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $("pre").addClass("prettyprint");
-        prettyPrint();
-    });
-</script>
-
-
-<script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-68058110-1', 'auto');
-    ga('send', 'pageview');
-
-</script>
-
-
-
-<script type="text/javascript" src="http://tajs.qq.com/stats?sId=55079830" charset="UTF-8"></script>
-
-
-
-
-
-</body>
-</html>
+        lightbox.init();
+    }
+</script></main></div><script type=text/javascript src=/ts/main.f856840516f7c2ad1769a8f5937e3d08d6cb386e2cd2dd025ae696e0ff207958.js defer></script></body></html>

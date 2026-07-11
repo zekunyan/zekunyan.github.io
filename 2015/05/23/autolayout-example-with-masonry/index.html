@@ -1,722 +1,152 @@
-<!DOCTYPE HTML>
-<html>
-<head><meta name="generator" content="Hexo 3.9.0">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="更新 2016-08-06: 第四篇: 有趣的Autolayout示例4-Masonry实现 2015-12-23: 感谢XVXVXXX的PR，更新了Case2 2015-12-15: 第三篇：有趣的Autolayout示例3-Masonry实现 2015-11-27: 感谢“谢小雷”指出打字错误~ 2015-9-10: 第二篇: 有趣的Autolayout示例2-Masonry实现 2015-9-1: 感谢“王振宇C艹”指出打字错误，已经修改了哈~ 前言 好久没有写Blog了，这段时间有点忙啊=。= 本文举了3个比较有“特点”的Autolayout例子，源于微博上好友的提问，感觉比较有意思，也比较有代表性，就写了出来，分享给大家~ 至于为什么用Masonry，那是因为它好用啊！（被问到过有关Masonry的问题，就索性用它来实现吧=。=）。\n效果图 Github地址 https://github.com/zekunyan/AutolayoutExampleWithMasonry\n"><title>有趣的Autolayout示例-Masonry实现</title><link rel=canonical href=https://tutuge.me/2015/05/23/autolayout-example-with-masonry/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=preload as=style href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href=/scss/style.min.e62e09c60ba428a627e03568fa3df938f6a8224f815b5846f00816c17d4a0be4.css><meta property='og:title' content="有趣的Autolayout示例-Masonry实现"><meta property='og:description' content="更新 2016-08-06: 第四篇: 有趣的Autolayout示例4-Masonry实现 2015-12-23: 感谢XVXVXXX的PR，更新了Case2 2015-12-15: 第三篇：有趣的Autolayout示例3-Masonry实现 2015-11-27: 感谢“谢小雷”指出打字错误~ 2015-9-10: 第二篇: 有趣的Autolayout示例2-Masonry实现 2015-9-1: 感谢“王振宇C艹”指出打字错误，已经修改了哈~ 前言 好久没有写Blog了，这段时间有点忙啊=。= 本文举了3个比较有“特点”的Autolayout例子，源于微博上好友的提问，感觉比较有意思，也比较有代表性，就写了出来，分享给大家~ 至于为什么用Masonry，那是因为它好用啊！（被问到过有关Masonry的问题，就索性用它来实现吧=。=）。\n效果图 Github地址 https://github.com/zekunyan/AutolayoutExampleWithMasonry\n"><meta property='og:url' content='https://tutuge.me/2015/05/23/autolayout-example-with-masonry/'><meta property='og:site_name' content='土土哥的技术 Blog'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='原创'><meta property='article:tag' content='iOS'><meta property='article:tag' content='Autolayout'><meta property='article:tag' content='Masonry'><meta property='article:published_time' content='2015-05-23T00:00:00+00:00'><meta property='article:modified_time' content='2015-05-23T00:00:00+00:00'><meta property='og:image' content='https://tutuge.me/assets/2015/05/23/autolayout-example-with-masonry/blog_autolayout_example_with_masonry_1.gif'><meta name=twitter:title content="有趣的Autolayout示例-Masonry实现"><meta name=twitter:description content="更新 2016-08-06: 第四篇: 有趣的Autolayout示例4-Masonry实现 2015-12-23: 感谢XVXVXXX的PR，更新了Case2 2015-12-15: 第三篇：有趣的Autolayout示例3-Masonry实现 2015-11-27: 感谢“谢小雷”指出打字错误~ 2015-9-10: 第二篇: 有趣的Autolayout示例2-Masonry实现 2015-9-1: 感谢“王振宇C艹”指出打字错误，已经修改了哈~ 前言 好久没有写Blog了，这段时间有点忙啊=。= 本文举了3个比较有“特点”的Autolayout例子，源于微博上好友的提问，感觉比较有意思，也比较有代表性，就写了出来，分享给大家~ 至于为什么用Masonry，那是因为它好用啊！（被问到过有关Masonry的问题，就索性用它来实现吧=。=）。\n效果图 Github地址 https://github.com/zekunyan/AutolayoutExampleWithMasonry\n"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://tutuge.me/assets/2015/05/23/autolayout-example-with-masonry/blog_autolayout_example_with_masonry_1.gif'><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar.png width height class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>土土哥的技术 Blog</a></h1><h2 class=site-description>AI / iOS / Android / Flutter / Open Source</h2></div></header><ol class=menu-social><li><a href=https://github.com/zekunyan title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>首页</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav class=toc-nav id=TableOfContents><ul><li><a href=#更新>更新</a></li><li><a href=#前言>前言</a><ul><li><a href=#效果图>效果图</a></li><li><a href=#github地址>Github地址</a></li><li><a href=#关于例子工程结构>关于例子工程结构</a></li></ul></li><li><a href=#关于autolayout>关于Autolayout</a></li><li><a href=#关于masonry>关于Masonry</a></li><li><a href=#case-1-并排两个label宽度由内容决定父级view宽度不够时优先显示左边label的内容>Case 1: 并排两个label，宽度由内容决定。父级View宽度不够时，优先显示左边label的内容</a><ul><li><a href=#content-compression-resistance--不许挤我>Content Compression Resistance = 不许挤我！</a></li><li><a href=#content-hugging--抱紧>Content Hugging = 抱紧！</a></li><li><a href=#分析>分析</a></li><li><a href=#约束示例图>约束示例图</a></li><li><a href=#关键代码>关键代码</a></li><li><a href=#小节>小节</a></li></ul></li><li><a href=#case-2-四个imageview整体居中可以任意显示隐藏>Case 2: 四个ImageView整体居中，可以任意显示、隐藏</a><ul><li><a href=#分析-1>分析</a></li><li><a href=#约束示例图-1>约束示例图</a></li><li><a href=#关键代码-1>关键代码</a></li><li><a href=#小节-1>小节</a></li></ul></li><li><a href=#case-3-子view的宽度始终是父级view的一半或者任意百分比>Case 3: 子View的宽度始终是父级View的一半（或者任意百分比）</a><ul><li><a href=#关键代码-2>关键代码</a></li><li><a href=#小节-2>小节</a></li></ul></li><li><a href=#总结>总结</a></li><li><a href=#参考>参考</a></li></ul></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/2015/05/23/autolayout-example-with-masonry/><img alt="Featured image of post 有趣的Autolayout示例-Masonry实现" loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2015/05/23/autolayout-example-with-masonry/blog_autolayout_example_with_masonry_1.gif></a></div><div class=article-details><header class=article-category><a href=/categories/ios/ style=background-color:#efbeed;color:#3d0f3c>IOS</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/2015/05/23/autolayout-example-with-masonry/>有趣的Autolayout示例-Masonry实现</a></h2></div><footer class=article-meta><div class=inline-meta><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2015-05-23T00:00:00Z>2015-05-23</time>
+<svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 7 分钟</time></div></footer></div></header><aside class=article-toc><details><summary><div class=article-toc-title><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6-6 6"/></svg>
+<span>目录</span></div></summary><nav class=toc-nav><ul><li><a href=#更新>更新</a></li><li><a href=#前言>前言</a><ul><li><a href=#效果图>效果图</a></li><li><a href=#github地址>Github地址</a></li><li><a href=#关于例子工程结构>关于例子工程结构</a></li></ul></li><li><a href=#关于autolayout>关于Autolayout</a></li><li><a href=#关于masonry>关于Masonry</a></li><li><a href=#case-1-并排两个label宽度由内容决定父级view宽度不够时优先显示左边label的内容>Case 1: 并排两个label，宽度由内容决定。父级View宽度不够时，优先显示左边label的内容</a><ul><li><a href=#content-compression-resistance--不许挤我>Content Compression Resistance = 不许挤我！</a></li><li><a href=#content-hugging--抱紧>Content Hugging = 抱紧！</a></li><li><a href=#分析>分析</a></li><li><a href=#约束示例图>约束示例图</a></li><li><a href=#关键代码>关键代码</a></li><li><a href=#小节>小节</a></li></ul></li><li><a href=#case-2-四个imageview整体居中可以任意显示隐藏>Case 2: 四个ImageView整体居中，可以任意显示、隐藏</a><ul><li><a href=#分析-1>分析</a></li><li><a href=#约束示例图-1>约束示例图</a></li><li><a href=#关键代码-1>关键代码</a></li><li><a href=#小节-1>小节</a></li></ul></li><li><a href=#case-3-子view的宽度始终是父级view的一半或者任意百分比>Case 3: 子View的宽度始终是父级View的一半（或者任意百分比）</a><ul><li><a href=#关键代码-2>关键代码</a></li><li><a href=#小节-2>小节</a></li></ul></li><li><a href=#总结>总结</a></li><li><a href=#参考>参考</a></li></ul></nav></details></aside><section class=article-content><h2 id=更新><a href=#%e6%9b%b4%e6%96%b0 class=header-anchor></a>更新</h2><ul><li>2016-08-06: 第四篇: <a class=link href=http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/ target=_blank rel=noopener>有趣的Autolayout示例4-Masonry实现</a></li><li>2015-12-23: 感谢<a class=link href=https://github.com/XVXVXXX target=_blank rel=noopener>XVXVXXX</a>的PR，更新了Case2</li><li>2015-12-15: 第三篇：<a class=link href=http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/ target=_blank rel=noopener>有趣的Autolayout示例3-Masonry实现</a></li><li>2015-11-27: 感谢“谢小雷”指出打字错误~</li><li>2015-9-10: 第二篇: <a class=link href=http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/ target=_blank rel=noopener>有趣的Autolayout示例2-Masonry实现</a></li><li>2015-9-1: 感谢“王振宇C艹”指出打字错误，已经修改了哈~</li></ul><h2 id=前言><a href=#%e5%89%8d%e8%a8%80 class=header-anchor></a>前言</h2><p>好久没有写Blog了，这段时间有点忙啊=。=
+本文举了3个比较有“特点”的Autolayout例子，源于微博上好友的提问，感觉比较有意思，也比较有代表性，就写了出来，分享给大家~
+至于为什么用Masonry，那是因为它好用啊！（被问到过有关Masonry的问题，就索性用它来实现吧=。=）。</p><h3 id=效果图><a href=#%e6%95%88%e6%9e%9c%e5%9b%be class=header-anchor></a>效果图</h3><p><img alt=效果图 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2015/05/23/autolayout-example-with-masonry/blog_autolayout_example_with_masonry_1.gif></p><h3 id=github地址><a href=#github%e5%9c%b0%e5%9d%80 class=header-anchor></a>Github地址</h3><p><a class=link href=https://github.com/zekunyan/AutolayoutExampleWithMasonry target=_blank rel=noopener>https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p><h3 id=关于例子工程结构><a href=#%e5%85%b3%e4%ba%8e%e4%be%8b%e5%ad%90%e5%b7%a5%e7%a8%8b%e7%bb%93%e6%9e%84 class=header-anchor></a>关于例子工程结构</h3><p>实现的时候采用的是用StoryBoard拖拽约束+Masonry手写代码相结合的方式实现。最关键的地方是用Masonry，为了更好地突出重点。其它的无关紧要的空间约束，直接就拖拽了。</p><h2 id=关于autolayout><a href=#%e5%85%b3%e4%ba%8eautolayout class=header-anchor></a>关于Autolayout</h2><p>刚开始学习Autolayout的时候，什么“Leading Edges”、“Horizontal Centers”，好多啊，感觉一下子适应不来，有时候面对一个界面布局上的需求，可能都无从下手。</p><p>总的来说，我觉得Autolayout的关键就是“<strong>Constraint（约束）</strong>”。其实就是以下两点：</p><ol><li>从显式设置frame的属性，到利用约束控制View的大小、位置。</li><li>思考如何布局时，重点从单个的View，到整体所有View之间的相互关系。</li></ol><p>既然没有了具体设置View的frame属性，也就是说，系统会在运行时，通过我们设定的“约束”，计算出每个View的frame，再去绘制屏幕内容。</p><p>也就是说，我们设置的Constraint，要能体现出View的<strong>位置（x、y坐标）</strong>、<strong>大小（宽高）</strong>。无论是用IB拖拽约束，还是手写代码，只要从这个角度去思考，很多问题就都能解决。</p><p>有关Autolayout的知识，网上有很多，在这里就不详细列出了，但是有个公式倒是可以贴出来：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-vhdl data-lang=vhdl><span class=line><span class=cl><span class=n>viewA</span><span class=o>-</span><span class=k>attribute</span> <span class=o>=</span> <span class=n>viewB</span><span class=o>-</span><span class=k>attribute</span> <span class=o>*</span> <span class=n>multiplier</span> <span class=o>+</span> <span class=k>constant</span>
+</span></span></code></pre></div><h2 id=关于masonry><a href=#%e5%85%b3%e4%ba%8emasonry class=header-anchor></a>关于Masonry</h2><p>好用！</p><h2 id=case-1-并排两个label宽度由内容决定父级view宽度不够时优先显示左边label的内容><a href=#case-1-%e5%b9%b6%e6%8e%92%e4%b8%a4%e4%b8%aalabel%e5%ae%bd%e5%ba%a6%e7%94%b1%e5%86%85%e5%ae%b9%e5%86%b3%e5%ae%9a%e7%88%b6%e7%ba%a7view%e5%ae%bd%e5%ba%a6%e4%b8%8d%e5%a4%9f%e6%97%b6%e4%bc%98%e5%85%88%e6%98%be%e7%a4%ba%e5%b7%a6%e8%be%b9label%e7%9a%84%e5%86%85%e5%ae%b9 class=header-anchor></a>Case 1: 并排两个label，宽度由内容决定。父级View宽度不够时，优先显示左边label的内容</h2><p>遇到这种跟内容压缩、优先级有关的布局，就不得不提Autolayout中的两个重要的属性“<strong>Content Compression Resistance</strong>”和“<strong>Content Hugging</strong>”。</p><h3 id=content-compression-resistance--不许挤我><a href=#content-compression-resistance--%e4%b8%8d%e8%ae%b8%e6%8c%a4%e6%88%91 class=header-anchor></a>Content Compression Resistance = 不许挤我！</h3><p>对，这个属性说白了就是“不许挤我”=。=
+这个属性的优先级（Priority）越高，越不“容易”被压缩。也就是说，当整体的空间装不下所有的View的时候，Content Compression Resistance优先级越高的，显示的内容越完整。</p><h3 id=content-hugging--抱紧><a href=#content-hugging--%e6%8a%b1%e7%b4%a7 class=header-anchor></a>Content Hugging = 抱紧！</h3><p>这个属性的优先级越高，整个View就要越“抱紧”View里面的内容。也就是View的大小不会随着父级View的扩大而扩大。</p><h3 id=分析><a href=#%e5%88%86%e6%9e%90 class=header-anchor></a>分析</h3><p>根据要求，可以将约束分为两个部分：</p><ol><li>整体空间足够时，两个label的宽度由内容决定，也就是说，label的“Content Hugging”优先级很高，而且没有固定的Width属性。</li><li>整体空间不够时，左边的label更不容易被压缩，也就是“Content Compression Resistance”优先级更高。</li></ol><p>重点：</p><ol><li>label不设置具体的宽度（width）属性，宽度由内容决定。</li><li>显示的优先级由“Content Compression Resistance”属性的高低决定。</li></ol><h3 id=约束示例图><a href=#%e7%ba%a6%e6%9d%9f%e7%a4%ba%e4%be%8b%e5%9b%be class=header-anchor></a>约束示例图</h3><p><img alt=约束示例图 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2015/05/23/autolayout-example-with-masonry/blog_autolayout_example_with_masonry_2.png></p><h3 id=关键代码><a href=#%e5%85%b3%e9%94%ae%e4%bb%a3%e7%a0%81 class=header-anchor></a>关键代码</h3><p>关键的代码如下：（label1是左边的label，label2是右边的）</p><h4 id=设置位置><a href=#%e8%ae%be%e7%bd%ae%e4%bd%8d%e7%bd%ae class=header-anchor></a>设置位置</h4><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>// label1: 位于左上角
+</span></span><span class=line><span class=cl>[_label1 mas_makeConstraints:^(MASConstraintMaker *make) {
+</span></span><span class=line><span class=cl>    make.top.equalTo(_contentView1.mas_top).with.offset(5);
+</span></span><span class=line><span class=cl>    make.left.equalTo(_contentView1.mas_left).with.offset(2);
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    // 40高度
+</span></span><span class=line><span class=cl>    make.height.equalTo(@40);
+</span></span><span class=line><span class=cl>}];
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// label2: 位于右上角
+</span></span><span class=line><span class=cl>[_label2 mas_makeConstraints:^(MASConstraintMaker *make) {
+</span></span><span class=line><span class=cl>    //左边贴着label1，间隔2
+</span></span><span class=line><span class=cl>    make.left.equalTo(_label1.mas_right).with.offset(2);
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    //上边贴着父view，间隔5
+</span></span><span class=line><span class=cl>    make.top.equalTo(_contentView1.mas_top).with.offset(5);
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    //右边的间隔保持大于等于2，注意是lessThanOrEqual
+</span></span><span class=line><span class=cl>    //这里的“lessThanOrEqualTo”放在从左往右的X轴上考虑会更好理解。
+</span></span><span class=line><span class=cl>    //即：label2的右边界的X坐标值“小于等于”containView的右边界的X坐标值。
+</span></span><span class=line><span class=cl>    make.right.lessThanOrEqualTo(_contentView1.mas_right).with.offset(-2);
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    //只设置高度40
+</span></span><span class=line><span class=cl>    make.height.equalTo(@40);
+</span></span><span class=line><span class=cl>}];
+</span></span></code></pre></div><h4 id=设置内容约束><a href=#%e8%ae%be%e7%bd%ae%e5%86%85%e5%ae%b9%e7%ba%a6%e6%9d%9f class=header-anchor></a>设置内容约束</h4><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=c1>//设置label1的content hugging 为1000
+</span></span></span><span class=line><span class=cl><span class=p>[</span><span class=n>_label1</span> <span class=nl>setContentHuggingPriority</span><span class=p>:</span><span class=n>UILayoutPriorityRequired</span>
+</span></span><span class=line><span class=cl>                           <span class=nl>forAxis</span><span class=p>:</span><span class=n>UILayoutConstraintAxisHorizontal</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//设置label1的content compression 为1000
+</span></span></span><span class=line><span class=cl><span class=p>[</span><span class=n>_label1</span> <span class=nl>setContentCompressionResistancePriority</span><span class=p>:</span><span class=n>UILayoutPriorityRequired</span>
+</span></span><span class=line><span class=cl>                                         <span class=nl>forAxis</span><span class=p>:</span><span class=n>UILayoutConstraintAxisHorizontal</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//设置右边的label2的content hugging 为1000
+</span></span></span><span class=line><span class=cl><span class=p>[</span><span class=n>_label2</span> <span class=nl>setContentHuggingPriority</span><span class=p>:</span><span class=n>UILayoutPriorityRequired</span>
+</span></span><span class=line><span class=cl>                           <span class=nl>forAxis</span><span class=p>:</span><span class=n>UILayoutConstraintAxisHorizontal</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//设置右边的label2的content compression 为250
+</span></span></span><span class=line><span class=cl><span class=p>[</span><span class=n>_label2</span> <span class=nl>setContentCompressionResistancePriority</span><span class=p>:</span><span class=n>UILayoutPriorityDefaultLow</span>
+</span></span><span class=line><span class=cl>                                         <span class=nl>forAxis</span><span class=p>:</span><span class=n>UILayoutConstraintAxisHorizontal</span><span class=p>];</span>
+</span></span></code></pre></div><h3 id=小节><a href=#%e5%b0%8f%e8%8a%82 class=header-anchor></a>小节</h3><p>灵活运用“Content Compression Resistance”和“Content Hugging”属性。</p><h2 id=case-2-四个imageview整体居中可以任意显示隐藏><a href=#case-2-%e5%9b%9b%e4%b8%aaimageview%e6%95%b4%e4%bd%93%e5%b1%85%e4%b8%ad%e5%8f%af%e4%bb%a5%e4%bb%bb%e6%84%8f%e6%98%be%e7%a4%ba%e9%9a%90%e8%97%8f class=header-anchor></a>Case 2: 四个ImageView整体居中，可以任意显示、隐藏</h2><p>先看看示例的截图：</p><p><img alt=效果图 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2015/05/23/autolayout-example-with-masonry/blog_autolayout_example_with_masonry_3.png></p><p>下面的四个Switch控件分别控制上面对应位置的图片是否显示。</p><h3 id=分析-1><a href=#%e5%88%86%e6%9e%90-1 class=header-anchor></a>分析</h3><ol><li>首先就是整体居中，为了实现这个，最简单的办法就是将四个图片“装进”一个<strong>容器View</strong>里面，然后让这个容器View在整个页面中居中即可。这样就不用控制每个图片的居中效果了。</li><li>然后就是显示与隐藏。在这里我直接控制图片ImageView的宽度，宽度为0的时候不就“隐藏”了吗。</li></ol><h3 id=约束示例图-1><a href=#%e7%ba%a6%e6%9d%9f%e7%a4%ba%e4%be%8b%e5%9b%be-1 class=header-anchor></a>约束示例图</h3><p><img alt=约束示例图 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/assets/2015/05/23/autolayout-example-with-masonry/blog_autolayout_example_with_masonry_4.png></p><p><strong>解释</strong></p><p>之所以这么设置，主要目的有以下几点：</p><ol><li>尽量减少无效的约束，保证约束不多也不少。</li><li>内部的每个imageView约束其实都只有四个：left、centerY、width和height，这样有个好处，就是可以在循环里面依次添加约束，大大减少代码量。</li><li>最右边的imageView还要单独设置跟容器View的右边约束，是为了不用设置容器View的width，保证容器View是刚好包含内部的View的，这样整体才是居中的。</li></ol><h3 id=关键代码-1><a href=#%e5%85%b3%e9%94%ae%e4%bb%a3%e7%a0%81-1 class=header-anchor></a>关键代码</h3><p>先看看最外层容器View的代码：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=cp>//containerView 就是 容器View</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>[</span><span class=nx>_containerView</span><span class=w> </span><span class=nx>mas_makeConstraints</span><span class=p>:^(</span><span class=nx>MASConstraintMaker</span><span class=w> </span><span class=o>*</span><span class=nx>make</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=cp>//只设置高度，宽度由子View决定</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nx>make</span><span class=p>.</span><span class=nx>height</span><span class=p>.</span><span class=nf>equalTo</span><span class=p>(</span><span class=err>@</span><span class=p>(</span><span class=nx>IMAGE_SIZE</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=cp>//水平居中</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nx>make</span><span class=p>.</span><span class=nx>centerX</span><span class=p>.</span><span class=nf>equalTo</span><span class=p>(</span><span class=nx>self</span><span class=p>.</span><span class=nx>view</span><span class=p>.</span><span class=nx>mas_centerX</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=cp>//距离父View顶部200点</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nx>make</span><span class=p>.</span><span class=nx>top</span><span class=p>.</span><span class=nf>equalTo</span><span class=p>(</span><span class=nx>self</span><span class=p>.</span><span class=nx>view</span><span class=p>.</span><span class=nx>mas_top</span><span class=p>).</span><span class=nf>offset</span><span class=p>(</span><span class=mi>200</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}];</span><span class=w>
+</span></span></span></code></pre></div><p>循环创建每个内部的imageView</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-groovy data-lang=groovy><span class=line><span class=cl><span class=c1>//循环创建、添加imageView
+</span></span></span><span class=line><span class=cl><span class=k>for</span> <span class=o>(</span><span class=n>NSUInteger</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=o>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=mi>4</span><span class=o>;</span> <span class=n>i</span><span class=o>++)</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>UIImageView</span> <span class=o>*</span><span class=n>imageView</span> <span class=o>=</span> <span class=o>[[</span><span class=n>UIImageView</span> <span class=n>alloc</span><span class=o>]</span> <span class=nl>initWithImage:</span><span class=o>[</span><span class=n>UIImage</span> <span class=nl>imageNamed:</span><span class=n>_imageNames</span><span class=o>[</span><span class=n>i</span><span class=o>]]];</span>
+</span></span><span class=line><span class=cl>    <span class=o>[</span><span class=n>_imageViews</span> <span class=nl>addObject:</span><span class=n>imageView</span><span class=o>];</span>
+</span></span><span class=line><span class=cl>    <span class=o>[</span><span class=n>_containerView</span> <span class=nl>addSubview:</span><span class=n>imageView</span><span class=o>];</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span></code></pre></div><p>最后是循环对imageView加上约束： 感谢<a class=link href=https://github.com/XVXVXXX target=_blank rel=noopener>XVXVXXX</a>的PR:-D</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=o>//</span><span class=err>设定大小</span>
+</span></span><span class=line><span class=cl><span class=n>CGSize</span> <span class=n>imageViewSize</span> <span class=o>=</span> <span class=n>CGSizeMake</span><span class=p>(</span><span class=n>IMAGE_SIZE</span><span class=p>,</span> <span class=n>IMAGE_SIZE</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>//</span><span class=err>分别设置每个</span><span class=n>imageView的宽高</span><span class=err>、左边、垂直中心约束，注意约束的对象</span>
+</span></span><span class=line><span class=cl><span class=o>//</span><span class=err>每个</span><span class=n>View的左边约束和左边的View的右边相等</span><span class=o>=</span><span class=err>。</span><span class=o>=</span><span class=err>，有点绕口</span><span class=o>...</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>//</span> <span class=err>保存循环中的临时结果</span>
+</span></span><span class=line><span class=cl><span class=n>__block</span> <span class=n>UIView</span> <span class=o>*</span><span class=n>lastView</span> <span class=o>=</span> <span class=n>nil</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=n>__block</span> <span class=n>MASConstraint</span> <span class=o>*</span><span class=n>widthConstraint</span> <span class=o>=</span> <span class=n>nil</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>NSUInteger</span> <span class=n>arrayCount</span> <span class=o>=</span> <span class=n>_imageViews</span><span class=o>.</span><span class=n>count</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>_imageViews</span> <span class=n>enumerateObjectsUsingBlock</span><span class=p>:</span><span class=o>^</span><span class=p>(</span><span class=n>UIView</span> <span class=o>*</span><span class=n>view</span><span class=p>,</span> <span class=n>NSUInteger</span> <span class=n>idx</span><span class=p>,</span> <span class=n>BOOL</span> <span class=o>*</span><span class=n>stop</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=n>view</span> <span class=n>mas_makeConstraints</span><span class=p>:</span><span class=o>^</span><span class=p>(</span><span class=n>MASConstraintMaker</span> <span class=o>*</span><span class=n>make</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span><span class=err>宽高固定</span>
+</span></span><span class=line><span class=cl>        <span class=n>widthConstraint</span> <span class=o>=</span> <span class=n>make</span><span class=o>.</span><span class=n>width</span><span class=o>.</span><span class=n>equalTo</span><span class=p>(</span><span class=err>@</span><span class=p>(</span><span class=n>imageViewSize</span><span class=o>.</span><span class=n>width</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>        <span class=n>make</span><span class=o>.</span><span class=n>height</span><span class=o>.</span><span class=n>equalTo</span><span class=p>(</span><span class=err>@</span><span class=p>(</span><span class=n>imageViewSize</span><span class=o>.</span><span class=n>height</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span><span class=err>左边约束</span>
+</span></span><span class=line><span class=cl>        <span class=n>make</span><span class=o>.</span><span class=n>left</span><span class=o>.</span><span class=n>equalTo</span><span class=p>(</span><span class=n>lastView</span> <span class=err>?</span> <span class=n>lastView</span><span class=o>.</span><span class=n>mas_right</span> <span class=p>:</span> <span class=n>view</span><span class=o>.</span><span class=n>superview</span><span class=o>.</span><span class=n>mas_left</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span><span class=err>垂直中心对齐</span>
+</span></span><span class=line><span class=cl>        <span class=n>make</span><span class=o>.</span><span class=n>centerY</span><span class=o>.</span><span class=n>equalTo</span><span class=p>(</span><span class=n>view</span><span class=o>.</span><span class=n>superview</span><span class=o>.</span><span class=n>mas_centerY</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=o>//</span><span class=err>设置最右边的</span><span class=n>imageView的右边与父view的最右对齐</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>idx</span> <span class=o>==</span> <span class=n>arrayCount</span> <span class=o>-</span> <span class=mi>1</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>make</span><span class=o>.</span><span class=n>right</span><span class=o>.</span><span class=n>equalTo</span><span class=p>(</span><span class=n>view</span><span class=o>.</span><span class=n>superview</span><span class=o>.</span><span class=n>mas_right</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=p>[</span><span class=n>_widthConstraints</span> <span class=n>addObject</span><span class=p>:</span><span class=n>widthConstraint</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>        <span class=n>lastView</span> <span class=o>=</span> <span class=n>view</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}];</span>
+</span></span><span class=line><span class=cl><span class=p>}];</span>
+</span></span></code></pre></div><p>控制ImageView显示、隐藏的时候，直接让其宽度等于0就行：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-objectivec data-lang=objectivec><span class=line><span class=cl><span class=p>-</span> <span class=p>(</span><span class=kt>IBAction</span><span class=p>)</span><span class=nf>showOrHideImage:</span><span class=p>(</span><span class=n>UISwitch</span> <span class=o>*</span><span class=p>)</span><span class=nv>sender</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>NSUInteger</span> <span class=n>index</span> <span class=o>=</span> <span class=p>(</span><span class=n>NSUInteger</span><span class=p>)</span> <span class=n>sender</span><span class=p>.</span><span class=n>tag</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>MASConstraint</span> <span class=o>*</span><span class=n>width</span> <span class=o>=</span> <span class=n>_widthConstraints</span><span class=p>[</span><span class=n>index</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>sender</span><span class=p>.</span><span class=n>on</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>width</span><span class=p>.</span><span class=n>equalTo</span><span class=p>(</span><span class=l>@(</span><span class=n>IMAGE_SIZE</span><span class=l>)</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>width</span><span class=p>.</span><span class=n>equalTo</span><span class=p>(</span><span class=mi>@0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><h3 id=小节-1><a href=#%e5%b0%8f%e8%8a%82-1 class=header-anchor></a>小节</h3><p>有时候用个“容器View”管理内部的View，往往会起到事半功倍的效果。而且在组织约束的时候，尽量的将约束统一起来，这样可以用一个函数去设置，减少代码量。</p><h2 id=case-3-子view的宽度始终是父级view的一半或者任意百分比><a href=#case-3-%e5%ad%90view%e7%9a%84%e5%ae%bd%e5%ba%a6%e5%a7%8b%e7%bb%88%e6%98%af%e7%88%b6%e7%ba%a7view%e7%9a%84%e4%b8%80%e5%8d%8a%e6%88%96%e8%80%85%e4%bb%bb%e6%84%8f%e7%99%be%e5%88%86%e6%af%94 class=header-anchor></a>Case 3: 子View的宽度始终是父级View的一半（或者任意百分比）</h2><p>其实这个很简单=。= 再看看这个公式：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-vhdl data-lang=vhdl><span class=line><span class=cl><span class=n>viewA</span><span class=o>-</span><span class=k>attribute</span> <span class=o>=</span> <span class=n>viewB</span><span class=o>-</span><span class=k>attribute</span> <span class=o>*</span> <span class=n>multiplier</span> <span class=o>+</span> <span class=k>constant</span>
+</span></span></code></pre></div><p>这个是Autolayout里面一个约束的不同属性的基本组合关系，替换成宽度的话，就是下面这样：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>子View的宽度 = 父级View宽度 * 系数 + 常数；
+</span></span></code></pre></div><p>在Masonry里面，其实有个函数“<strong>multipliedBy</strong>”，就是用来设置multipler属性的（跟原本的NSLayoutConstraint的对应）。</p><h3 id=关键代码-2><a href=#%e5%85%b3%e9%94%ae%e4%bb%a3%e7%a0%81-2 class=header-anchor></a>关键代码</h3><p>如下：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-scheme data-lang=scheme><span class=line><span class=cl><span class=p>[</span><span class=nv>subView</span> <span class=nv>mas_makeConstraints:^</span><span class=p>(</span><span class=nf>MASConstraintMaker</span> <span class=nv>*make</span><span class=p>)</span> <span class=err>{</span>
+</span></span><span class=line><span class=cl>    <span class=nv>//上下左贴边</span>
+</span></span><span class=line><span class=cl>    <span class=nv>make</span><span class=o>.</span><span class=nv>left</span><span class=o>.</span><span class=nv>equalTo</span><span class=p>(</span><span class=nf>_containerView</span><span class=o>.</span><span class=nv>mas_left</span><span class=p>)</span><span class=c1>;</span>
+</span></span><span class=line><span class=cl>    <span class=nv>make</span><span class=o>.</span><span class=nv>top</span><span class=o>.</span><span class=nv>equalTo</span><span class=p>(</span><span class=nf>_containerView</span><span class=o>.</span><span class=nv>mas_top</span><span class=p>)</span><span class=c1>;</span>
+</span></span><span class=line><span class=cl>    <span class=nv>make</span><span class=o>.</span><span class=nv>bottom</span><span class=o>.</span><span class=nv>equalTo</span><span class=p>(</span><span class=nf>_containerView</span><span class=o>.</span><span class=nv>mas_bottom</span><span class=p>)</span><span class=c1>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nv>//宽度为父view的宽度的一半</span>
+</span></span><span class=line><span class=cl>    <span class=nv>make</span><span class=o>.</span><span class=nv>width</span><span class=o>.</span><span class=nv>equalTo</span><span class=p>(</span><span class=nf>_containerView</span><span class=o>.</span><span class=nv>mas_width</span><span class=p>)</span><span class=o>.</span><span class=nv>multipliedBy</span><span class=p>(</span><span class=mf>0.5</span><span class=p>)</span><span class=c1>;</span>
+</span></span><span class=line><span class=cl><span class=err>}</span><span class=p>]</span><span class=c1>;</span>
+</span></span></code></pre></div><p>接着，只要控制父级View的宽度，子View的宽度就会随着变化了。</p><h3 id=小节-2><a href=#%e5%b0%8f%e8%8a%82-2 class=header-anchor></a>小节</h3><p>multipliedBy在Masonry的Github主页里面没有=。=
+所以要养成读头文件的习惯~</p><h2 id=总结><a href=#%e6%80%bb%e7%bb%93 class=header-anchor></a>总结</h2><p>有关Autolayout的东西还有好多没有写，什么动画啊、动态修改约束之类的，本文也算是个引子吧，任重而道远~</p><p>能看到这的朋友，也算是很有耐心了，哈哈~~</p><h2 id=参考><a href=#%e5%8f%82%e8%80%83 class=header-anchor></a>参考</h2><ul><li><a class=link href=https://github.com/SnapKit/Masonry target=_blank rel=noopener>SnapKit/Masonry</a></li><li><a class=link href=http://adad184.com/2014/09/28/use-masonry-to-quick-solve-autolayout/ target=_blank rel=noopener>Masonry介绍与使用实践(快速上手Autolayout)</a></li><li><a class=link href=http://www.vienta.me/2014/12/07/AutoLayout-%e5%bf%98%e6%8e%89Frame-%e6%8b%a5%e6%8a%b1Constraint%ef%bc%88I%ef%bc%89/ target=_blank rel=noopener>AutoLayout:忘掉Frame,拥抱Constraint</a></li><li><a class=link href=https://www.zybuluo.com/MicroCai/note/73867#autolayout-%e5%9f%ba%e7%a1%80 target=_blank rel=noopener>Autolayout 基础</a></li><li><a class=link href=http://codingobjc.com/blog/2015/01/28/autolayoutzhong-de-content-compression-resistancehe-content-huggingdao-di-shi-shi-yao-yi-si/ target=_blank rel=noopener>对Auto Layout中的Content Compression Resistance和Content Hugging的总结</a></li><li><a class=link href=https://developer.apple.com/library/ios/documentation/UserExperience/Conceptual/AutolayoutPG/Introduction/Introduction.html target=_blank rel=noopener>Auto Layout Guide</a></li></ul></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/%E5%8E%9F%E5%88%9B/>原创</a>
+<a href=/tags/ios/>IOS</a>
+<a href=/tags/autolayout/>Autolayout</a>
+<a href=/tags/masonry/>Masonry</a></section></footer></article><aside><h2 class=section-title>相关文章</h2><div class=subsection-list><div class=article-list--tile><article class=has-image><a href=/2017/03/12/autolayout-example-with-masonry5/><div class=article-image><img alt="Featured image of post 有趣的Autolayout示例5-Masonry实现" loading=lazy src=/assets/2017/03/12/autolayout-example-with-masonry5/blog_autolayout_example_with_masonry5_1.png></div><div class=article-details><h2 class=article-title>有趣的Autolayout示例5-Masonry实现</h2></div></a></article><article class=has-image><a href=/2016/08/06/autolayout-example-with-masonry4/><div class=article-image><img alt="Featured image of post 有趣的Autolayout示例4-Masonry实现" loading=lazy src=/assets/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_1.gif></div><div class=article-details><h2 class=article-title>有趣的Autolayout示例4-Masonry实现</h2></div></a></article><article class=has-image><a href=/2015/12/14/autolayout-example-with-masonry3/><div class=article-image><img alt="Featured image of post 有趣的Autolayout示例3-Masonry实现" loading=lazy src=/assets/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_1.gif></div><div class=article-details><h2 class=article-title>有趣的Autolayout示例3-Masonry实现</h2></div></a></article><article class=has-image><a href=/2015/08/08/autolayout-example-with-masonry2/><div class=article-image><img alt="Featured image of post 有趣的Autolayout示例2-Masonry实现" loading=lazy src=/assets/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_1.gif></div><div class=article-details><h2 class=article-title>有趣的Autolayout示例2-Masonry实现</h2></div></a></article><article class=has-image><a href=/2017/04/08/diy-methodSignatureForSelector/><div class=article-image><img alt="Featured image of post 反编译分析并模拟实现methodSignatureForSelector方法" loading=lazy src=/assets/2017/04/08/diy-methodSignatureForSelector/blog_RemakeMethodSignatureForSelector_1.jpg></div><div class=article-details><h2 class=article-title>反编译分析并模拟实现methodSignatureForSelector方法</h2></div></a></article></div></div></aside><footer class=site-footer><section class=copyright>&copy;
+2014 -
+2026 tutuge</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=4.0.3>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><script type=module>
+    import gallery from '\/ts\/gallery.js';
 
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
     
-
-    <title>有趣的Autolayout示例-Masonry实现 | iOS程序猿.目前阿里,喜欢各种技术,RCFans</title>
-    <meta name="author" content="土土哥">
-    
-    <meta name="description" content="iOS程序猿.目前阿里,喜欢各种技术,RCFans">
-    
-    
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-    <meta property="og:title" content="有趣的Autolayout示例-Masonry实现">
-    <meta property="og:site_name" content="土土哥的Blog">
-
-    
-    <meta property="og:image" content="undefined">
-    
-
-    <link rel="icon" type="image/png" href="/favicon.png">
-    <link rel="alternate" href="/atom.xml" title="土土哥的Blog" type="application/atom+xml">
-    <link rel="stylesheet" href="/css/lib/materialize.min.css">
-    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
-    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-
-    
-        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
-    
-    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-</head>
-</html>
-
-<body>
-    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
-
-    <nav class="blue-grey">
-    <div class="nav-wrapper">
-        <a href="#" data-activates="main-menu" class="button-collapse">
-            <i class="fa fa-navicon"></i>
-        </a>
-        <div class="">
-            <a href="/" class="brand-logo hide-on-med-and-down">土土哥的Blog</a>
-            <ul class="right hide-on-med-and-down">
-                
-                    <li>
-                        <a class="menu-home " href="/" >
-                            <i class="fa fa-home "></i>
-                            
-                            首页
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-archive " href="/archives" >
-                            <i class="fa fa-archive "></i>
-                            
-                            归档
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
-                            <i class="fa fa-bookmark "></i>
-                            
-                            分类
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-about " href="/about" >
-                            <i class="fa fa-user "></i>
-                            
-                            关于
-                        </a>
-                    </li>
-                
-                    <li>
-                        <a class="menu-search modal-trigger " href="#search" >
-                            <i class="fa fa-search "></i>
-                            
-                            搜索
-                        </a>
-                    </li>
-                
-            </ul>
-            <div>
-    <ul class="side-nav blue-grey darken-1" id="main-menu">
-        
-        <li class="side-user">
-            <div class="row">
-                <div class="col s4 no-padding">
-                    <img class="avatar-image circle responsive-img" src="http://tutuge.me/2019/07/29/2019-07-29-occupied-with-work/avatar_comic.jpg" alt="User Avatar">
-                </div>
-                <div class="info col s8 valign-wrapper no-padding">
-                    <div class="valign">
-                        <p class="name">土土哥</p>
-                        <p class="desc">iOS/Android/技术宅/RCFans</p>
-                    </div>
-                </div>
-            </div>
-        </li>
-        
-
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-home " href="/" >
-                    <i class="fa fa-home "></i>
-                    
-                    首页
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-archive " href="/archives" >
-                    <i class="fa fa-archive "></i>
-                    
-                    归档
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
-                    <i class="fa fa-bookmark "></i>
-                    
-                    分类
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-about " href="/about" >
-                    <i class="fa fa-user "></i>
-                    
-                    关于
-                </a>
-            </li>
-        
-            <li class="no-padding">
-                <a class="waves-effect menu-search modal-trigger " href="#search" >
-                    <i class="fa fa-search "></i>
-                    
-                    搜索
-                </a>
-            </li>
-        
-    </ul>
-
-    <ul class="side-nav blue-grey darken-1" id="category-menu">
-    
-
-            
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/其它/">
-                    其它 <span class="right">5 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/iOS/">
-                    iOS <span class="right">37 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/Android/">
-                    Android <span class="right">1 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/Mac/">
-                    Mac <span class="right">1 篇</span></a>
-                </a>
-            </li>
-
-        
-
-            <li class="collapse-level-0" collapse-level="0">
-                <a class="no-padding" href="/categories/服务端/">
-                    服务端 <span class="right">2 篇</span></a>
-                </a>
-            </li>
-
-        
-
-    </ul>
-</div>
-
-        </div>
-    </div>
-</nav>
-
-<div id="search" class="modal search-modal">
-    <div class="row">
-        <div class="input-field col s12">
-              <input id="search-input" type="text">
-              <label for="search-input">搜索</label>
-        </div>
-
-    </div>
-    <div id="search-result" class="search-result col s12">
-
-    </div>
-</div>
-
-
-    <main>
-        <div class="container main-container">
-    
-<nav class="page-nav hide-on-small-only">
-    <div class="nav-wrapper blue-grey">
-        <span class="breadcrumb">当前位置（分类目录）</span>
-        
-            
-    
-    
-    <a class="breadcrumb" href="/categories/iOS/">iOS</a>
-
-
-        
-
-        
-    </div>
-</nav>
-
-<article>
-    <div class="card">
-        <div class="card-content">
-            
-
-            <div class="article-title">
-                
-    
-        <h1>有趣的Autolayout示例-Masonry实现</h1>
-    
-
-
-            </div>
-            <time class="teal-link-context" datetime="2015-05-23T11:59:22.000Z"><a href="/2015/05/23/autolayout-example-with-masonry/">2015-05-23</a></time>
-
-            <span id="busuanzi_container_page_pv" class="read-times-container">
-    <i class="fa fa-eye"></i>
-    <span id="busuanzi_value_page_pv"></span>
-</span>
-
-            
-    <div class="tags-row">
-        
-            <a href="/tags/原创/" class="chip teal accent-4">原创</a>
-        
-            <a href="/tags/iOS/" class="chip teal accent-4">iOS</a>
-        
-            <a href="/tags/Autolayout/" class="chip teal accent-4">Autolayout</a>
-        
-            <a href="/tags/Masonry/" class="chip teal accent-4">Masonry</a>
-        
-    </div>
-
-
-            <div class="toc teal-link-context hide-on-med-and-down">
-    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#更新"><span class="section table-of-contents-text">更新</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#前言"><span class="section table-of-contents-text">前言</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#效果图"><span class="section table-of-contents-text">效果图</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#Github地址"><span class="section table-of-contents-text">Github地址</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#关于例子工程结构"><span class="section table-of-contents-text">关于例子工程结构</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#关于Autolayout"><span class="section table-of-contents-text">关于Autolayout</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#关于Masonry"><span class="section table-of-contents-text">关于Masonry</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Case-1-并排两个label，宽度由内容决定。父级View宽度不够时，优先显示左边label的内容"><span class="section table-of-contents-text">Case 1: 并排两个label，宽度由内容决定。父级View宽度不够时，优先显示左边label的内容</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#Content-Compression-Resistance-不许挤我！"><span class="section table-of-contents-text">Content Compression Resistance = 不许挤我！</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#Content-Hugging-抱紧！"><span class="section table-of-contents-text">Content Hugging = 抱紧！</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#分析"><span class="section table-of-contents-text">分析</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#约束示例图"><span class="section table-of-contents-text">约束示例图</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#关键代码"><span class="section table-of-contents-text">关键代码</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#设置位置"><span class="section table-of-contents-text">设置位置</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#设置内容约束"><span class="section table-of-contents-text">设置内容约束</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#小节"><span class="section table-of-contents-text">小节</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Case-2-四个ImageView整体居中，可以任意显示、隐藏"><span class="section table-of-contents-text">Case 2: 四个ImageView整体居中，可以任意显示、隐藏</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#分析-1"><span class="section table-of-contents-text">分析</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#约束示例图-1"><span class="section table-of-contents-text">约束示例图</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#关键代码-1"><span class="section table-of-contents-text">关键代码</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#小节-1"><span class="section table-of-contents-text">小节</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Case-3-子View的宽度始终是父级View的一半（或者任意百分比）"><span class="section table-of-contents-text">Case 3: 子View的宽度始终是父级View的一半（或者任意百分比）</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#关键代码-2"><span class="section table-of-contents-text">关键代码</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#小节-2"><span class="section table-of-contents-text">小节</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#总结"><span class="section table-of-contents-text">总结</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#参考"><span class="section table-of-contents-text">参考</span></a></li></ol>
-</div>
-
-
-            <div class="entry teal-link-context">
-                <h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><ul>
-<li>2016-08-06: 第四篇: <a href="http://tutuge.me/2016/08/06/autolayout-example-with-masonry4/">有趣的Autolayout示例4-Masonry实现</a></li>
-<li>2015-12-23: 感谢<a href="https://github.com/XVXVXXX" target="_blank" rel="noopener">XVXVXXX</a>的PR，更新了Case2</li>
-<li>2015-12-15: 第三篇：<a href="http://tutuge.me/2015/12/14/autolayout-example-with-masonry3/">有趣的Autolayout示例3-Masonry实现</a></li>
-<li>2015-11-27: 感谢“谢小雷”指出打字错误~</li>
-<li>2015-9-10: 第二篇: <a href="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/">有趣的Autolayout示例2-Masonry实现</a></li>
-<li>2015-9-1: 感谢“王振宇C艹”指出打字错误，已经修改了哈~</li>
-</ul>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>好久没有写Blog了，这段时间有点忙啊=。=<br>本文举了3个比较有“特点”的Autolayout例子，源于微博上好友的提问，感觉比较有意思，也比较有代表性，就写了出来，分享给大家~<br>至于为什么用Masonry，那是因为它好用啊！（被问到过有关Masonry的问题，就索性用它来实现吧=。=）。</p>
-<h3 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h3><p><img src="/2015/05/23/autolayout-example-with-masonry/blog_autolayout_example_with_masonry_1.gif" alt="效果图"></p>
-<h3 id="Github地址"><a href="#Github地址" class="headerlink" title="Github地址"></a>Github地址</h3><p><a href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="noopener">https://github.com/zekunyan/AutolayoutExampleWithMasonry</a></p>
-<a id="more"></a>
-<h3 id="关于例子工程结构"><a href="#关于例子工程结构" class="headerlink" title="关于例子工程结构"></a>关于例子工程结构</h3><p>实现的时候采用的是用StoryBoard拖拽约束+Masonry手写代码相结合的方式实现。最关键的地方是用Masonry，为了更好地突出重点。其它的无关紧要的空间约束，直接就拖拽了。</p>
-<h2 id="关于Autolayout"><a href="#关于Autolayout" class="headerlink" title="关于Autolayout"></a>关于Autolayout</h2><p>刚开始学习Autolayout的时候，什么“Leading Edges”、“Horizontal Centers”，好多啊，感觉一下子适应不来，有时候面对一个界面布局上的需求，可能都无从下手。</p>
-<p>总的来说，我觉得Autolayout的关键就是“<strong>Constraint（约束）</strong>”。其实就是以下两点：</p>
-<ol>
-<li>从显式设置frame的属性，到利用约束控制View的大小、位置。</li>
-<li>思考如何布局时，重点从单个的View，到整体所有View之间的相互关系。</li>
-</ol>
-<p>既然没有了具体设置View的frame属性，也就是说，系统会在运行时，通过我们设定的“约束”，计算出每个View的frame，再去绘制屏幕内容。</p>
-<p>也就是说，我们设置的Constraint，要能体现出View的<strong>位置（x、y坐标）</strong>、<strong>大小（宽高）</strong>。无论是用IB拖拽约束，还是手写代码，只要从这个角度去思考，很多问题就都能解决。</p>
-<p>有关Autolayout的知识，网上有很多，在这里就不详细列出了，但是有个公式倒是可以贴出来：</p>
-<figure class="highlight vhdl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">viewA-<span class="keyword">attribute</span> = viewB-<span class="keyword">attribute</span> * multiplier + <span class="keyword">constant</span></span><br></pre></td></tr></table></figure>
-<h2 id="关于Masonry"><a href="#关于Masonry" class="headerlink" title="关于Masonry"></a>关于Masonry</h2><p>好用！</p>
-<h2 id="Case-1-并排两个label，宽度由内容决定。父级View宽度不够时，优先显示左边label的内容"><a href="#Case-1-并排两个label，宽度由内容决定。父级View宽度不够时，优先显示左边label的内容" class="headerlink" title="Case 1: 并排两个label，宽度由内容决定。父级View宽度不够时，优先显示左边label的内容"></a>Case 1: 并排两个label，宽度由内容决定。父级View宽度不够时，优先显示左边label的内容</h2><p>遇到这种跟内容压缩、优先级有关的布局，就不得不提Autolayout中的两个重要的属性“<strong>Content Compression Resistance</strong>”和“<strong>Content Hugging</strong>”。</p>
-<h3 id="Content-Compression-Resistance-不许挤我！"><a href="#Content-Compression-Resistance-不许挤我！" class="headerlink" title="Content Compression Resistance = 不许挤我！"></a>Content Compression Resistance = 不许挤我！</h3><p>对，这个属性说白了就是“不许挤我”=。=<br>这个属性的优先级（Priority）越高，越不“容易”被压缩。也就是说，当整体的空间装不下所有的View的时候，Content Compression Resistance优先级越高的，显示的内容越完整。</p>
-<h3 id="Content-Hugging-抱紧！"><a href="#Content-Hugging-抱紧！" class="headerlink" title="Content Hugging = 抱紧！"></a>Content Hugging = 抱紧！</h3><p>这个属性的优先级越高，整个View就要越“抱紧”View里面的内容。也就是View的大小不会随着父级View的扩大而扩大。</p>
-<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>根据要求，可以将约束分为两个部分：</p>
-<ol>
-<li>整体空间足够时，两个label的宽度由内容决定，也就是说，label的“Content Hugging”优先级很高，而且没有固定的Width属性。</li>
-<li>整体空间不够时，左边的label更不容易被压缩，也就是“Content Compression Resistance”优先级更高。</li>
-</ol>
-<p>重点：</p>
-<ol>
-<li>label不设置具体的宽度（width）属性，宽度由内容决定。</li>
-<li>显示的优先级由“Content Compression Resistance”属性的高低决定。</li>
-</ol>
-<h3 id="约束示例图"><a href="#约束示例图" class="headerlink" title="约束示例图"></a>约束示例图</h3><p><img src="/2015/05/23/autolayout-example-with-masonry/blog_autolayout_example_with_masonry_2.png" alt="约束示例图"></p>
-<h3 id="关键代码"><a href="#关键代码" class="headerlink" title="关键代码"></a>关键代码</h3><p>关键的代码如下：（label1是左边的label，label2是右边的）</p>
-<h4 id="设置位置"><a href="#设置位置" class="headerlink" title="设置位置"></a>设置位置</h4><figure class="highlight sqf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// label1: 位于左上角</span></span><br><span class="line">[<span class="variable">_label1</span> mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">    make.top.equalTo(<span class="variable">_contentView1</span>.mas_top).<span class="keyword">with</span>.offset(<span class="number">5</span>);</span><br><span class="line">    make.left.equalTo(<span class="variable">_contentView1</span>.mas_left).<span class="keyword">with</span>.offset(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 40高度</span></span><br><span class="line">    make.height.equalTo(@<span class="number">40</span>);</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line"><span class="comment">// label2: 位于右上角</span></span><br><span class="line">[<span class="variable">_label2</span> mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">    <span class="comment">//左边贴着label1，间隔2</span></span><br><span class="line">    make.left.equalTo(<span class="variable">_label1</span>.mas_right).<span class="keyword">with</span>.offset(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//上边贴着父view，间隔5</span></span><br><span class="line">    make.top.equalTo(<span class="variable">_contentView1</span>.mas_top).<span class="keyword">with</span>.offset(<span class="number">5</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//右边的间隔保持大于等于2，注意是lessThanOrEqual</span></span><br><span class="line">    <span class="comment">//这里的“lessThanOrEqualTo”放在从左往右的X轴上考虑会更好理解。</span></span><br><span class="line">    <span class="comment">//即：label2的右边界的X坐标值“小于等于”containView的右边界的X坐标值。</span></span><br><span class="line">    make.right.lessThanOrEqualTo(<span class="variable">_contentView1</span>.mas_right).<span class="keyword">with</span>.offset(-<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//只设置高度40</span></span><br><span class="line">    make.height.equalTo(@<span class="number">40</span>);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
-<h4 id="设置内容约束"><a href="#设置内容约束" class="headerlink" title="设置内容约束"></a>设置内容约束</h4><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//设置label1的content hugging 为1000</span></span><br><span class="line">[_label1 setContentHuggingPriority:<span class="built_in">UILayoutPriorityRequired</span></span><br><span class="line">                           forAxis:<span class="built_in">UILayoutConstraintAxisHorizontal</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//设置label1的content compression 为1000</span></span><br><span class="line">[_label1 setContentCompressionResistancePriority:<span class="built_in">UILayoutPriorityRequired</span></span><br><span class="line">                                         forAxis:<span class="built_in">UILayoutConstraintAxisHorizontal</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//设置右边的label2的content hugging 为1000</span></span><br><span class="line">[_label2 setContentHuggingPriority:<span class="built_in">UILayoutPriorityRequired</span></span><br><span class="line">                           forAxis:<span class="built_in">UILayoutConstraintAxisHorizontal</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//设置右边的label2的content compression 为250</span></span><br><span class="line">[_label2 setContentCompressionResistancePriority:<span class="built_in">UILayoutPriorityDefaultLow</span></span><br><span class="line">                                         forAxis:<span class="built_in">UILayoutConstraintAxisHorizontal</span>];</span><br></pre></td></tr></table></figure>
-<h3 id="小节"><a href="#小节" class="headerlink" title="小节"></a>小节</h3><p>灵活运用“Content Compression Resistance”和“Content Hugging”属性。</p>
-<h2 id="Case-2-四个ImageView整体居中，可以任意显示、隐藏"><a href="#Case-2-四个ImageView整体居中，可以任意显示、隐藏" class="headerlink" title="Case 2: 四个ImageView整体居中，可以任意显示、隐藏"></a>Case 2: 四个ImageView整体居中，可以任意显示、隐藏</h2><p>先看看示例的截图：</p>
-<p><img src="/2015/05/23/autolayout-example-with-masonry/blog_autolayout_example_with_masonry_3.png" alt="效果图"></p>
-<p>下面的四个Switch控件分别控制上面对应位置的图片是否显示。</p>
-<h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><ol>
-<li>首先就是整体居中，为了实现这个，最简单的办法就是将四个图片“装进”一个<strong>容器View</strong>里面，然后让这个容器View在整个页面中居中即可。这样就不用控制每个图片的居中效果了。</li>
-<li>然后就是显示与隐藏。在这里我直接控制图片ImageView的宽度，宽度为0的时候不就“隐藏”了吗。</li>
-</ol>
-<h3 id="约束示例图-1"><a href="#约束示例图-1" class="headerlink" title="约束示例图"></a>约束示例图</h3><p><img src="/2015/05/23/autolayout-example-with-masonry/blog_autolayout_example_with_masonry_4.png" alt="约束示例图"></p>
-<p><strong>解释</strong></p>
-<p>之所以这么设置，主要目的有以下几点：</p>
-<ol>
-<li>尽量减少无效的约束，保证约束不多也不少。</li>
-<li>内部的每个imageView约束其实都只有四个：left、centerY、width和height，这样有个好处，就是可以在循环里面依次添加约束，大大减少代码量。</li>
-<li>最右边的imageView还要单独设置跟容器View的右边约束，是为了不用设置容器View的width，保证容器View是刚好包含内部的View的，这样整体才是居中的。</li>
-</ol>
-<h3 id="关键代码-1"><a href="#关键代码-1" class="headerlink" title="关键代码"></a>关键代码</h3><p>先看看最外层容器View的代码：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//containerView 就是 容器View</span></span><br><span class="line"></span><br><span class="line">[_containerView mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) &#123;</span><br><span class="line">    <span class="comment">//只设置高度，宽度由子View决定</span></span><br><span class="line">    <span class="built_in">make</span>.height.equalTo(@(IMAGE_SIZE));</span><br><span class="line">    <span class="comment">//水平居中</span></span><br><span class="line">    <span class="built_in">make</span>.centerX.equalTo(self.view.mas_centerX);</span><br><span class="line">    <span class="comment">//距离父View顶部200点</span></span><br><span class="line">    <span class="built_in">make</span>.top.equalTo(self.view.mas_top).offset(<span class="number">200</span>);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
-<p>循环创建每个内部的imageView</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//循环创建、添加imageView</span></span><br><span class="line"><span class="keyword">for</span> (NSUInteger i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">    UIImageView *imageView = [[UIImageView alloc] <span class="string">initWithImage:</span>[UIImage <span class="string">imageNamed:</span>_imageNames[i]]];</span><br><span class="line">    [_imageViews <span class="string">addObject:</span>imageView];</span><br><span class="line">    [_containerView <span class="string">addSubview:</span>imageView];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>最后是循环对imageView加上约束： 感谢<a href="https://github.com/XVXVXXX" target="_blank" rel="noopener">XVXVXXX</a>的PR:-D</p>
-<figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//设定大小</span></span><br><span class="line">CGSize imageViewSize = <span class="built_in">CGSizeMake</span>(IMAGE_SIZE, IMAGE_SIZE);</span><br><span class="line"></span><br><span class="line"><span class="comment">//分别设置每个imageView的宽高、左边、垂直中心约束，注意约束的对象</span></span><br><span class="line"><span class="comment">//每个View的左边约束和左边的View的右边相等=。=，有点绕口...</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 保存循环中的临时结果</span></span><br><span class="line">__block UIView *lastView = nil;</span><br><span class="line">__block MASConstraint *widthConstraint = nil;</span><br><span class="line"></span><br><span class="line">NSUInteger arrayCount = _imageViews.count;</span><br><span class="line">[_imageViews enumerateObjectsUsingBlock:^(UIView *<span class="built_in">view</span>, NSUInteger idx, <span class="keyword">BOOL</span> *<span class="keyword">stop</span>) &#123;</span><br><span class="line">    [<span class="built_in">view</span> mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) &#123;</span><br><span class="line">        <span class="comment">//宽高固定</span></span><br><span class="line">        widthConstraint = make.width.<span class="built_in">equalTo</span>(<span class="comment">@(imageViewSize.width));</span></span><br><span class="line"><span class="comment">        make.height.equalTo(@</span>(imageViewSize.height));</span><br><span class="line">        <span class="comment">//左边约束</span></span><br><span class="line">        make.left.<span class="built_in">equalTo</span>(lastView ? lastView.mas_right : <span class="built_in">view</span>.superview.mas_left);</span><br><span class="line">        <span class="comment">//垂直中心对齐</span></span><br><span class="line">        make.centerY.<span class="built_in">equalTo</span>(<span class="built_in">view</span>.superview.mas_centerY);</span><br><span class="line">        <span class="comment">//设置最右边的imageView的右边与父view的最右对齐</span></span><br><span class="line">        <span class="keyword">if</span> (idx == arrayCount - <span class="number">1</span>) &#123;</span><br><span class="line">            make.right.<span class="built_in">equalTo</span>(<span class="built_in">view</span>.superview.mas_right);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        [_widthConstraints addObject:widthConstraint];</span><br><span class="line">        lastView = <span class="built_in">view</span>;</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
-<p>控制ImageView显示、隐藏的时候，直接让其宽度等于0就行：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">IBAction</span>)showOrHideImage:(<span class="built_in">UISwitch</span> *)sender &#123;</span><br><span class="line">    <span class="built_in">NSUInteger</span> index = (<span class="built_in">NSUInteger</span>) sender.tag;</span><br><span class="line">    MASConstraint *width = _widthConstraints[index];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (sender.on) &#123;</span><br><span class="line">        width.equalTo(@(IMAGE_SIZE));</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        width.equalTo(@<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="小节-1"><a href="#小节-1" class="headerlink" title="小节"></a>小节</h3><p>有时候用个“容器View”管理内部的View，往往会起到事半功倍的效果。而且在组织约束的时候，尽量的将约束统一起来，这样可以用一个函数去设置，减少代码量。</p>
-<h2 id="Case-3-子View的宽度始终是父级View的一半（或者任意百分比）"><a href="#Case-3-子View的宽度始终是父级View的一半（或者任意百分比）" class="headerlink" title="Case 3: 子View的宽度始终是父级View的一半（或者任意百分比）"></a>Case 3: 子View的宽度始终是父级View的一半（或者任意百分比）</h2><p>其实这个很简单=。= 再看看这个公式：</p>
-<figure class="highlight vhdl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">viewA-<span class="keyword">attribute</span> = viewB-<span class="keyword">attribute</span> * multiplier + <span class="keyword">constant</span></span><br></pre></td></tr></table></figure>
-<p>这个是Autolayout里面一个约束的不同属性的基本组合关系，替换成宽度的话，就是下面这样：</p>
-<figure class="highlight cos"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">子<span class="keyword">View</span>的宽度 = 父级<span class="keyword">View</span>宽度 * 系数 + 常数；</span><br></pre></td></tr></table></figure>
-<p>在Masonry里面，其实有个函数“<strong>multipliedBy</strong>”，就是用来设置multipler属性的（跟原本的NSLayoutConstraint的对应）。</p>
-<h3 id="关键代码-2"><a href="#关键代码-2" class="headerlink" title="关键代码"></a>关键代码</h3><p>如下：</p>
-<figure class="highlight scheme"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[<span class="name">subView</span> mas_makeConstraints:^(<span class="name">MASConstraintMaker</span> *make) &#123;</span><br><span class="line">    //上下左贴边</span><br><span class="line">    make.left.equalTo(<span class="name">_containerView.mas_left</span>)<span class="comment">;</span></span><br><span class="line">    make.top.equalTo(<span class="name">_containerView.mas_top</span>)<span class="comment">;</span></span><br><span class="line">    make.bottom.equalTo(<span class="name">_containerView.mas_bottom</span>)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">    //宽度为父view的宽度的一半</span><br><span class="line">    make.width.equalTo(<span class="name">_containerView.mas_width</span>).multipliedBy(<span class="name">0.5</span>)<span class="comment">;</span></span><br><span class="line">&#125;]<span class="comment">;</span></span><br></pre></td></tr></table></figure>
-<p>接着，只要控制父级View的宽度，子View的宽度就会随着变化了。</p>
-<h3 id="小节-2"><a href="#小节-2" class="headerlink" title="小节"></a>小节</h3><p>multipliedBy在Masonry的Github主页里面没有=。=<br>所以要养成读头文件的习惯~</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>有关Autolayout的东西还有好多没有写，什么动画啊、动态修改约束之类的，本文也算是个引子吧，任重而道远~</p>
-<p>能看到这的朋友，也算是很有耐心了，哈哈~~</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><a href="https://github.com/SnapKit/Masonry" target="_blank" rel="noopener">SnapKit/Masonry</a></li>
-<li><a href="http://adad184.com/2014/09/28/use-masonry-to-quick-solve-autolayout/" target="_blank" rel="noopener">Masonry介绍与使用实践(快速上手Autolayout)</a></li>
-<li><a href="http://www.vienta.me/2014/12/07/AutoLayout-忘掉Frame-拥抱Constraint（I）/" target="_blank" rel="noopener">AutoLayout:忘掉Frame,拥抱Constraint</a></li>
-<li><a href="https://www.zybuluo.com/MicroCai/note/73867#autolayout-基础" target="_blank" rel="noopener">Autolayout 基础</a></li>
-<li><a href="http://codingobjc.com/blog/2015/01/28/autolayoutzhong-de-content-compression-resistancehe-content-huggingdao-di-shi-shi-yao-yi-si/" target="_blank" rel="noopener">对Auto Layout中的Content Compression Resistance和Content Hugging的总结</a></li>
-<li><a href="https://developer.apple.com/library/ios/documentation/UserExperience/Conceptual/AutolayoutPG/Introduction/Introduction.html" target="_blank" rel="noopener">Auto Layout Guide</a></li>
-</ul>
-
-                
-<p class="teal-link-context">
-    <a href="/2015/07/08/fill-nil-property-of-object/" rel="next" title="用Runtime的手段填充任意NSObject对象的nil属性">
-    上一篇：用Runtime的手段填充任意NSObject对象的nil属性
-  </a>
-</p>
-
-
-
-<p class="teal-link-context">
-    <a href="/2015/04/21/resizable-nstextattachment/" rel="next" title="UITextView编辑时插入自定义表情-续-自定义表情图片的大小">
-    下一篇：UITextView编辑时插入自定义表情-续-自定义表情图片的大小
-  </a>
-</p>
-
-
-            </div>
-
-            
-			
-        </div>
-    </div>
-</article>
-
-
-
-
-    <section id="comment">
-        <div id="disqus_thread"></div>
-        <script>
-            var disqus_config = function() {
-                this.page.url = 'http://tutuge.me/2015/05/23/autolayout-example-with-masonry/';
-                this.page.identifier = '2015/05/23/autolayout-example-with-masonry/';
-            };
-            (function() {
-                var d = document,
-                    s = d.createElement('script');
-                s.src = '//tutuge-me.disqus.com/embed.js';
-                s.setAttribute('data-timestamp', + new Date());
-                (d.head || d.body).appendChild(s);
-            })();
-        </script>
-        <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
-        </noscript>
-    </section>
-
-
-
-</div>
-
-        <div class="fixed-action-btn float-sitemap">
-    <a class="btn-floating btn-large teal">
-      <i class="fa fa-caret-square-o-up"></i>
-    </a>
-    <ul>
-      <li><a class="btn-return-top btn-floating waves-effect teal accent-4" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
-      <li><a class="btn-floating waves-effect button-collapse teal accent-4"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
-    </ul>
-  </div>
-
-    </main>
-    <footer class="page-footer blue-grey darken-1">
-    
-    <div class="footer-container container">
-        <div class="row">
-            
-            <div class="social-group col m4 s12">
-                <h5 class="white-text">社交</h5>
-                
-                    <a class="social-link" href="http://weibo.com/zekunyan" target="_blank">
-                        <i class="fa fa-2x fa-weibo"></i>
-                    </a>
-                
-                    <a class="social-link" href="https://github.com/zekunyan" target="_blank">
-                        <i class="fa fa-2x fa-github"></i>
-                    </a>
-                
-                    <a class="social-link" href="/atom.xml" target="_blank">
-                        <i class="fa fa-2x fa-rss"></i>
-                    </a>
-                
-                
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
-    </script>
-    <div class="site-visitors-container white-text">
-        <span>
-            <i class="fa fa-user"></i>
-            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
-        </span>
-        <span>&nbsp;|&nbsp;</span>
-        <span>
-            <i class="fa fa-eye"></i>
-            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
-        </span>
-    </div>
-
-
-            </div>
-            
-
-            
-            <div class="col m8 s12">
-                <h5 class="white-text">友情链接</h5>
-                
-                    <a class="social-link" href="http://chenrudan.github.io" target="_blank">女朋友的博客😊</a>
-                
-            </div>
-            
-        </div>
-        <p>Hosted by <a href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a></p>
-    </div>
-    
-
-    <div class="footer-copyright teal-link-context">
-        <div class="container">
-            © 2020 tutuge.me, All rights reserved.
-            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
-        </div>
-    </div>
-</footer>
-
-
-    <noscript>
-    <div class="noscript">
-        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
-    </div>
-</noscript>
-<div class="noscript">
-    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
-</div>
-
-
-<script src="/js/jquery.min.js"></script>
-<script src="/js/materialize.min.js"></script>
-
-<script>
-    (function($) {
-        $(document).ready(function() {
-            // 隐藏禁用javascript（针对微信内置浏览器）的提示
-            $('.noscript').hide();
-
-            // 图片缩放效果
-            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
-
-            // 给图片加上点击放大效果（materialbox插件）
-            $imgs.addClass('materialboxed').each(function(i, el) {
-                $(this).attr('data-caption', $(this).attr('alt') || ' ');
-            }).materialbox();
-
-            // 优化表格的显示
-            $('table').each(function() {
-                var $table = $(this);
-                // 除去多行代码的情况
-                if ($table.find('pre').length == 0) {
-                    $table.addClass('responsive-table striped bordered');
-                }
-            });
-
-            // 首页幻灯片
-            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
-
-            $(".button-collapse").sideNav();
-            $(".category-menu").sideNav();
-
-            // 针对gallery post
-            $('.carousel').carousel({full_width: true});
-            $('.carousel-control.prev').click(function() {
-                $('.carousel').carousel('prev');
-            });
-            $('.carousel-control.next').click(function() {
-                $('.carousel').carousel('next');
-            });
-
-            // 文章目录
-            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
-
-            // 目录随屏幕滚动（防止目录过长越过footer）
-            var $toc = $('.toc');
-            var scrollTargetTop = 0;
-            $(window).scroll(function() {
-                var $activeLink = $toc.find('a.active.section');
-                if ($(window).scrollTop() < 100) {
-                    scrollTargetTop = 0;
-                } else {
-                    if ($activeLink[0]) {
-                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
-                    }
-                }
-                $toc.css('top', '-' + scrollTargetTop + 'px');
-            });
-
-            // 修正文章目录的left-border颜色
-            var color = $('.table-of-contents-text').css('color');
-            $('.table-of-contents-link').css('border-left-color', color);
-
-            // 针对移动端做的优化：FAB按钮点击一下收回
-            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                $('.fixed-action-btn').addClass('click-to-toggle');
-            }
-            // 回到顶部
-            $('.btn-return-top').click(function() {
-                $('body, html').animate({
-                    scrollTop: 0
-                }, 500);
-            });
-
-            // 重置读书页面的Tab标签页的颜色
-            $('li.tab a').hover(function() {
-                $(this).toggleClass('text-lighten-4');
-            });
-            $('.indicator').addClass('teal lighten-2');
-
-            
-            // 添加new标签
-            $('.menu-about').append('<span class="new badge teal accent-4"></span>');
-            
-
-            // 搜索功能
-            $('.modal-trigger').leanModal({
-                // 打开搜索框时自动聚焦
-                ready: function() {
-                    if ($('#search').is(":visible")) {
-                        $('#search-input').focus();
-                    }
-                }
-            });
-            var searchXml = "search.xml";
-            if (searchXml.length == 0) {
-             	searchXml = "search.xml";
-            }
-            var searchPath = "/" + searchXml;
-            initSearch(searchPath, 'search-input', 'search-result');
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
         });
-
-        // 初始化搜索与匹配函数
-        var initSearch = function(path, search_id, content_id) {
-            'use strict';
-            $.ajax({
-                url: path,
-                dataType: "xml",
-                success: function(xmlResponse) {
-                    // get the contents from search data
-                    var datas = $("entry", xmlResponse).map(function() {
-                        return {
-                            title: $("title", this).text(),
-                            content: $("content", this).text(),
-                            url: $("url", this).text()
-                        };
-                    }).get();
-                    var $input = document.getElementById(search_id);
-                    var $resultContent = document.getElementById(content_id);
-                    $input.addEventListener('input', function() {
-                        var str = '<ul class=\"search-result-list\">';
-                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
-                        $resultContent.innerHTML = "";
-                        if (this.value.trim().length <= 0) {
-                            return;
-                        }
-                        // perform local searching
-                        datas.forEach(function(data) {
-                            var isMatch = true;
-                            var content_index = [];
-                            var data_title = data.title.trim().toLowerCase();
-                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
-                            var data_url = data.url;
-                            var index_title = -1;
-                            var index_content = -1;
-                            var first_occur = -1;
-                            // only match artiles with not empty titles and contents
-                            if (data_title != '' && data_content != '') {
-                                keywords.forEach(function(keyword, i) {
-                                    index_title = data_title.indexOf(keyword);
-                                    index_content = data_content.indexOf(keyword);
-                                    if (index_title < 0 && index_content < 0) {
-                                        isMatch = false;
-                                    } else {
-                                        if (index_content < 0) {
-                                            index_content = 0;
-                                        }
-                                        if (i == 0) {
-                                            first_occur = index_content;
-                                        }
-                                    }
-                                });
-                            }
-                            // show search results
-                            if (isMatch) {
-                                keywords.forEach(function(keyword) {
-                                    var regS = new RegExp(keyword, "gi");
-                                    data_title = data_title.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
-                                });
-
-                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
-                                var content = data.content.trim().replace(/<[^>]+>/g, "");
-                                if (first_occur >= 0) {
-                                    // cut out 100 characters
-                                    var start = first_occur - 20;
-                                    var end = first_occur + 80;
-                                    if (start < 0) {
-                                        start = 0;
-                                    }
-                                    if (start == 0) {
-                                        end = 100;
-                                    }
-                                    if (end > content.length) {
-                                        end = content.length;
-                                    }
-                                    var match_content = content.substring(start, end);
-                                    // highlight all keywords
-                                    keywords.forEach(function(keyword) {
-                                        var regS = new RegExp(keyword, "gi");
-                                        match_content = match_content.replace(regS, "<span class=\"search-keyword teal lighten-2\">" + keyword + "</span>");
-                                    });
-
-                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
-                                }
-                                str += "</li>";
-                            }
-                        });
-                        str += "</ul>";
-                        $resultContent.innerHTML = str;
-                    });
-                }
-            });
-        }
-    })(jQuery);
-</script>
-
-
-<script src="/js/prettify.js"></script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $("pre").addClass("prettyprint");
-        prettyPrint();
-    });
-</script>
-
-
-<script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-68058110-1', 'auto');
-    ga('send', 'pageview');
-
-</script>
-
-
-
-<script type="text/javascript" src="http://tajs.qq.com/stats?sId=55079830" charset="UTF-8"></script>
-
-
-
-
-
-</body>
-</html>
+        lightbox.init();
+    }
+</script></main></div><script type=text/javascript src=/ts/main.f856840516f7c2ad1769a8f5937e3d08d6cb386e2cd2dd025ae696e0ff207958.js defer></script></body></html>
