@@ -1,15 +1,13 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pages on 土土哥的技术 Blog</title><link>https://tutuge.me/page/</link><description>Recent content in Pages on 土土哥的技术 Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>tutuge</copyright><lastBuildDate>Sat, 01 Nov 2014 00:00:00 +0000</lastBuildDate><atom:link href="https://tutuge.me/page/index.xml" rel="self" type="application/rss+xml"/><item><title>关于</title><link>https://tutuge.me/about/</link><pubDate>Sat, 01 Nov 2014 00:00:00 +0000</pubDate><guid>https://tutuge.me/about/</guid><description>&lt;p&gt;这里是土土哥的技术 Blog，主要记录 iOS、macOS、开源库和工程实践相关内容。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pages on 土土哥的技术 Blog</title><link>https://tutuge.me/page/</link><description>Recent content in Pages on 土土哥的技术 Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>tutuge</copyright><lastBuildDate>Wed, 01 Jul 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://tutuge.me/page/index.xml" rel="self" type="application/rss+xml"/><item><title>关于</title><link>https://tutuge.me/about/</link><pubDate>Wed, 01 Jul 2026 00:00:00 +0000</pubDate><guid>https://tutuge.me/about/</guid><description>&lt;p&gt;这里是土土哥的技术Blog，主要记录 AI/iOS/Android/Flutter/开源和工程实践相关内容。&lt;/p&gt;
 
  &lt;blockquote&gt;
  &lt;p&gt;姓名: 燕泽堃&lt;br&gt;
-Email: &lt;a class="link" href="mailto:zekunyan@163.com" &gt;zekunyan@163.com&lt;/a&gt;&lt;br&gt;
+Email: &lt;a class="link" href="mailto:zekunyan.tutuge@gmail.com" &gt;zekunyan.tutuge@gmail.com&lt;/a&gt;&lt;br&gt;
 Github: &lt;a class="link" href="https://github.com/zekunyan" target="_blank" rel="noopener"
  &gt;https://github.com/zekunyan&lt;/a&gt;&lt;br&gt;
-Linkedin: &lt;a class="link" href="https://www.linkedin.com/in/zekunyan" target="_blank" rel="noopener"
- &gt;https://www.linkedin.com/in/zekunyan&lt;/a&gt;&lt;br&gt;
 博客: 土土哥的技术博客: &lt;a class="link" href="http://tutuge.me" target="_blank" rel="noopener"
  &gt;http://tutuge.me&lt;/a&gt;&lt;br&gt;
-开发经验: iOS、Android、Java、Flutter、PHP、Python 等&lt;br&gt;
+开发经验: AI应用、iOS、Android、Java、Flutter、PHP、Python 等&lt;br&gt;
 微博: &lt;a class="link" href="http://weibo.com/zekunyan" target="_blank" rel="noopener"
  &gt;http://weibo.com/zekunyan&lt;/a&gt;&lt;/p&gt;
 
@@ -19,41 +17,47 @@ Linkedin: &lt;a class="link" href="https://www.linkedin.com/in/zekunyan" target=
 &lt;li&gt;&lt;strong&gt;阿里巴巴 - 无线开发专家(P7) - (2019-07至今)&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;阿里巴巴 - 高级无线开发工程师(P6) - (2017-07至2019-07)&lt;/li&gt;
 &lt;li&gt;阿里巴巴 - 无线开发工程师(P5) - (2016-07至2017-07)&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="实习经历"&gt;&lt;a href="#%e5%ae%9e%e4%b9%a0%e7%bb%8f%e5%8e%86" class="header-anchor"&gt;&lt;/a&gt;实习经历
-&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;阿里巴巴 - iOS开发工程师 - (2015-6至2015-9)&lt;/li&gt;
+&lt;li&gt;阿里巴巴 - 实习iOS开发工程师 - (2015-6至2015-9)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id="教育经历"&gt;&lt;a href="#%e6%95%99%e8%82%b2%e7%bb%8f%e5%8e%86" class="header-anchor"&gt;&lt;/a&gt;教育经历
 &lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;华中科技大学&lt;/strong&gt; - 工程硕士 - 电子与通信工程 - (2014-2016)&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;华中科技大学&lt;/strong&gt; - 本科 - 电子信息工程 - (2010-2014)&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id="技能"&gt;&lt;a href="#%e6%8a%80%e8%83%bd" class="header-anchor"&gt;&lt;/a&gt;技能
-&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;熟悉：iOS 开发，C, C++, Java, Objective-C, Swift, Dart, Flutter&lt;/li&gt;
-&lt;li&gt;了解：PHP, Python, HTML, JavaScript, CSS, Node.js, Linux Shell 脚本&lt;/li&gt;
-&lt;li&gt;数据库：MySQL, SQLite, MongoDB&lt;/li&gt;
-&lt;li&gt;在校期间：华科蝴蝶 Hudbt 网站（PHP + nginx + memcache）服务器管理员&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="专利"&gt;&lt;a href="#%e4%b8%93%e5%88%a9" class="header-anchor"&gt;&lt;/a&gt;专利
-&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;《基于 IM 聊天场景下的实时翻译前置功能方案》&lt;/li&gt;
-&lt;/ul&gt;
-&lt;hr&gt;
 &lt;h2 id="工作内容---20167至今"&gt;&lt;a href="#%e5%b7%a5%e4%bd%9c%e5%86%85%e5%ae%b9---20167%e8%87%b3%e4%bb%8a" class="header-anchor"&gt;&lt;/a&gt;工作内容 - 2016.7至今
 &lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;Alibaba.com 买家 App 的重点项目&lt;strong&gt;技术支持 &amp;amp; 业务开发 &amp;amp; iOS 小组长&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;Alibaba.com 买家 App 的 &lt;strong&gt;Crash 治理 &amp;amp; 防御&lt;/strong&gt; - 底层 Crash 拦截库、疑难问题逆向追踪、Crash 防护意识布局（2018 至今）&lt;/li&gt;
-&lt;li&gt;Alibaba.com 买家 App 的 &lt;strong&gt;Native 动态化领域端侧核心骨干 + iOS 端负责人&lt;/strong&gt; - 区块级、页面级动态化 FreeX 技术方案制定、落地（2018 至今）&lt;/li&gt;
-&lt;li&gt;Alibaba.com 买家 App 的&lt;strong&gt;三期技术自驱体验优化项目落地&lt;/strong&gt; - 沉淀 10+ 高性能、通用、跨 App 友好 UI 组件，底层统一代码架构（2016-10 至 2017-07）&lt;/li&gt;
-&lt;li&gt;阿里巴巴 ICBU 国际站三个 App 的日常开发与基础建设（2016-2017）&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Alibaba.com 买家 App - 主要工作&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;AI+Code+DevOps 建设：提效、项目 AI 友好化建设、AI 自动化、Skill 沉淀、Rules/知识库制定 &amp;amp; 自动迭代等 AI 提效基建&lt;/strong&gt; （2025 - 至今）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;搜索推荐 App 端小组长&lt;/strong&gt; - 重点业务承接 &amp;amp; 技术方案负责 &amp;amp; 自驱项目落地，架构/性能/稳定性/动态化/监控等优化（2022 - 至今）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Crash 治理 &amp;amp; 防御&lt;/strong&gt; - 底层 Crash 拦截库、疑难问题逆向追踪、Crash 防护意识布局（2018 - 2022）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Native 动态化领域端侧核心骨干 + iOS 端负责人&lt;/strong&gt; - 区块级、页面级动态化 FreeX 技术方案制定、落地（2018 - 2022）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;三期技术自驱体验优化项目落地&lt;/strong&gt; - 沉淀 10+ 高性能、通用、跨 App 友好 UI 组件，底层统一代码架构（2016-10 - 2017-07）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;阿里巴巴 ICBU 国际站三个 App 的日常开发与基础建设（2016 -2017）&lt;/p&gt;
+&lt;ul&gt;
 &lt;li&gt;&lt;a class="link" href="https://itunes.apple.com/us/app/alibaba-com-app-buy-sell-goods-across-the-world/id503451073?mt=8" target="_blank" rel="noopener"
  &gt;Alibaba.com App - Buy &amp;amp; sell goods across the world&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://itunes.apple.com/cn/app/%e9%98%bf%e9%87%8c%e5%8d%96%e5%ae%b6-%e9%98%bf%e9%87%8c%e5%b7%b4%e5%b7%b4%e5%9b%bd%e9%99%85%e7%ab%99b2b%e5%a4%96%e8%b4%b8%e5%87%ba%e5%8f%a3%e5%ae%98%e6%96%b9app/id708064914?mt=8" target="_blank" rel="noopener"
  &gt;阿里卖家 - 阿里巴巴国际站 B2B 外贸出口官方 App&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://itunes.apple.com/us/app/%e9%98%bf%e9%87%8c%e5%8f%8b%e5%8a%9e-%e5%a4%96%e8%b4%b8%e7%a7%bb%e5%8a%a8%e5%8d%8f%e5%90%8c%e5%b9%b3%e5%8f%b0/id1101588739?mt=8" target="_blank" rel="noopener"
  &gt;阿里友办 - 外贸移动协同平台&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="技能"&gt;&lt;a href="#%e6%8a%80%e8%83%bd" class="header-anchor"&gt;&lt;/a&gt;技能
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;熟悉：App全端型开发，C, C++, Java, Objective-C, Swift, Dart, Flutter, Java&lt;/li&gt;
+&lt;li&gt;了解：PHP, Python, HTML, JavaScript, CSS, Node.js, Linux Shell 脚本&lt;/li&gt;
+&lt;li&gt;数据库：MySQL, SQLite, MongoDB&lt;/li&gt;
+&lt;li&gt;在校期间：华科蝴蝶 Hudbt 网站（PHP + nginx + memcache）服务器管理员、大学生创业项目（蓝牙门禁管理系统）、智能小车大赛、黑客松等&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="专利"&gt;&lt;a href="#%e4%b8%93%e5%88%a9" class="header-anchor"&gt;&lt;/a&gt;专利
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;《基于 IM 聊天场景下的实时翻译前置功能方案》等&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
 &lt;h2 id="github---3000-star"&gt;&lt;a href="#github---3000-star" class="header-anchor"&gt;&lt;/a&gt;Github - 3000 Star+
