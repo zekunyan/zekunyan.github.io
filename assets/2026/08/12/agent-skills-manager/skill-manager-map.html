@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>轻量 Skill 管理：一处维护，多工具发现</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      width: 1600px;
+      height: 980px;
+      overflow: hidden;
+      color: #dbeafe;
+      background: radial-gradient(circle at 50% -10%, #1e3a8a 0, #0c1530 42%, #070b18 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    main { padding: 68px 86px 54px; }
+    .eyebrow { color: #67e8f9; font-size: 22px; letter-spacing: .16em; font-weight: 700; }
+    h1 { margin: 13px 0 8px; color: #f8fafc; font-size: 54px; line-height: 1.14; letter-spacing: -.04em; }
+    .intro { margin: 0; color: #9fb0cf; font-size: 23px; }
+    .board { display: grid; grid-template-columns: 420px 1fr; gap: 38px; margin-top: 42px; }
+    .source, .lane { border: 1px solid rgba(148, 163, 184, .25); border-radius: 24px; background: rgba(15, 23, 42, .72); box-shadow: 0 20px 55px rgba(0, 0, 0, .24); }
+    .source { min-height: 640px; padding: 31px; border-color: rgba(34, 211, 238, .55); background: linear-gradient(160deg, rgba(14, 116, 144, .26), rgba(15, 23, 42, .84) 48%); }
+    .label { color: #67e8f9; font-size: 16px; letter-spacing: .12em; font-weight: 700; }
+    h2 { color: #f8fafc; font-size: 27px; margin: 11px 0 24px; }
+    .path { padding: 17px 18px; border-radius: 13px; color: #cffafe; background: #071d32; border: 1px solid #155e75; font: 600 20px ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .split { position: relative; margin: 28px 0 25px; padding: 26px 0 2px; border-top: 1px dashed rgba(148, 163, 184, .38); }
+    .split::before { position: absolute; top: -12px; left: 50%; padding: 0 11px; transform: translateX(-50%); color: #71809c; background: #10243c; content: "或"; font-size: 16px; }
+    .skill { margin-top: 12px; padding: 15px 17px; border-radius: 12px; background: rgba(30, 41, 59, .75); border: 1px solid rgba(148, 163, 184, .22); }
+    .skill b { display: block; color: #f8fafc; font: 600 18px ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .skill span { display: block; margin-top: 5px; color: #8da0bc; font-size: 15px; }
+    .source-note { margin: 26px 0 0; color: #a5f3fc; font-size: 17px; line-height: 1.7; }
+    .right { display: grid; grid-template-rows: 1fr 1fr; gap: 24px; }
+    .lane { position: relative; padding: 25px 30px; }
+    .lane::before { position: absolute; left: -39px; top: 50%; width: 38px; height: 2px; background: #22d3ee; content: ""; }
+    .lane::after { position: absolute; left: -11px; top: calc(50% - 6px); width: 12px; height: 12px; transform: rotate(45deg); border-top: 2px solid #22d3ee; border-right: 2px solid #22d3ee; content: ""; }
+    .lane-head { display: flex; justify-content: space-between; align-items: baseline; }
+    .lane h3 { margin: 0; color: #f8fafc; font-size: 26px; }
+    .badge { padding: 6px 10px; border-radius: 999px; color: #a5f3fc; background: rgba(8, 145, 178, .19); font-size: 14px; }
+    .lane p { margin: 8px 0 18px; color: #94a3b8; font-size: 17px; }
+    .tools { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .tool { min-height: 82px; padding: 12px 14px; border-radius: 12px; background: rgba(30, 41, 59, .68); border: 1px solid rgba(148, 163, 184, .2); }
+    .tool b { display: block; color: #e2e8f0; font-size: 17px; }
+    .tool code { display: block; margin-top: 7px; color: #7dd3fc; font: 14px ui-monospace, SFMono-Regular, Menlo, monospace; white-space: nowrap; }
+    .adapter { border-color: rgba(167, 139, 250, .34); background: linear-gradient(110deg, rgba(76, 29, 149, .18), rgba(30, 41, 59, .72)); }
+    .adapter code { color: #c4b5fd; }
+    footer { display: flex; align-items: center; justify-content: space-between; margin-top: 32px; padding: 17px 22px; border: 1px solid rgba(148, 163, 184, .2); border-radius: 14px; color: #aebcd2; background: rgba(15, 23, 42, .55); font-size: 18px; }
+    footer b { color: #f8fafc; }
+    .link { color: #c4b5fd; font: 600 17px ui-monospace, SFMono-Regular, Menlo, monospace; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="eyebrow">LIGHTWEIGHT AGENT SKILLS MANAGER</div>
+    <h1>一处维护，按工具需要发现</h1>
+    <p class="intro">不改 Skill 内容；只统一目录、迁移已有副本，并在必要时建立原生目录的软链接。</p>
+
+    <section class="board">
+      <article class="source">
+        <div class="label">唯一维护源</div>
+        <h2>先统一到 <code>.agents/skills</code></h2>
+        <div class="path">项目：./.agents/skills/</div>
+        <div class="split"></div>
+        <div class="path">用户：~/.agents/skills/</div>
+        <div class="skill"><b>release-note/SKILL.md</b><span>可以带脚本、模板、参考资料</span></div>
+        <div class="skill"><b>ios-release/SKILL.md</b><span>每个 Skill 只维护一份</span></div>
+        <div class="skill"><b>team-onboarding/SKILL.md</b><span>不解析、不校验、不改写内容</span></div>
+        <p class="source-note">目录是管理对象，<br>Skill 本身仍遵循各自规范。</p>
+      </article>
+
+      <div class="right">
+        <article class="lane">
+          <div class="lane-head"><h3>直接发现共享目录</h3><span class="badge">不用额外复制或链接</span></div>
+          <p>这些工具已经识别 <code>.agents/skills/</code>，集中后可直接读取。</p>
+          <div class="tools">
+            <div class="tool"><b>Gemini CLI</b><code>.agents/skills/</code></div>
+            <div class="tool"><b>GitHub Copilot</b><code>.agents/skills/</code></div>
+            <div class="tool"><b>Windsurf</b><code>.agents/skills/</code></div>
+            <div class="tool"><b>Amp / OpenCode</b><code>.agents/skills/</code></div>
+            <div class="tool"><b>Roo Code</b><code>.agents/skills/</code></div>
+            <div class="tool"><b>OpenClaw</b><code>.agents/skills/</code></div>
+          </div>
+        </article>
+
+        <article class="lane">
+          <div class="lane-head"><h3>原生目录按需软链接</h3><span class="badge">兼容尚未扫描共享目录的工具</span></div>
+          <p>链接的目标始终是同一份 <code>.agents/skills/</code>；不会再产生多份 Skill 拷贝。</p>
+          <div class="tools">
+            <div class="tool adapter"><b>Claude Code</b><code>.claude/skills → .agents/skills</code></div>
+            <div class="tool adapter"><b>Qoder</b><code>.qoder/skills → .agents/skills</code></div>
+            <div class="tool adapter"><b>Cline</b><code>.cline/skills → .agents/skills</code></div>
+            <div class="tool adapter"><b>Kiro</b><code>.kiro/skills → .agents/skills</code></div>
+            <div class="tool adapter"><b>Codex（用户态）</b><code>~/.codex/skills → ~/.agents/skills</code></div>
+            <div class="tool adapter"><b>迁移旧目录</b><code>先移入，再建链接</code></div>
+          </div>
+        </article>
+      </div>
+    </section>
+    <footer><span><b>管理脚本负责：</b>迁移 · 检查兼容性 · 修复链接 · 同步 Git 来源</span><span class="link">ln -s .agents/skills .claude/skills</span></footer>
+  </main>
+</body>
+</html>
