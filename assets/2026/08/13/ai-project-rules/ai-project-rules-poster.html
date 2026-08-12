@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI 项目 Rules：分层、按需、可演进</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      width: 1600px;
+      height: 980px;
+      margin: 0;
+      overflow: hidden;
+      color: #e9efff;
+      background:
+        radial-gradient(circle at 78% 6%, rgba(67, 99, 255, .32), transparent 28%),
+        radial-gradient(circle at 6% 94%, rgba(23, 168, 190, .22), transparent 29%),
+        #091222;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    main { padding: 66px 88px 58px; }
+
+    .eyebrow {
+      color: #75e4ef;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: .17em;
+    }
+
+    h1 {
+      margin: 14px 0 8px;
+      color: #fbfdff;
+      font-size: 56px;
+      line-height: 1.13;
+      letter-spacing: -.045em;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: #aebdd8;
+      font-size: 24px;
+      letter-spacing: .01em;
+    }
+
+    .baseline {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 860px;
+      min-height: 125px;
+      margin: 38px auto 0;
+      padding: 23px 30px;
+      border: 1px solid rgba(101, 224, 239, .56);
+      border-radius: 21px;
+      background: linear-gradient(105deg, rgba(9, 83, 112, .78), rgba(31, 47, 115, .72));
+      box-shadow: 0 18px 52px rgba(0, 0, 0, .25), inset 0 1px 0 rgba(255, 255, 255, .08);
+    }
+
+    .baseline::after {
+      position: absolute;
+      bottom: -39px;
+      left: 50%;
+      width: 2px;
+      height: 39px;
+      transform: translateX(-50%);
+      background: linear-gradient(#69e1ef, rgba(105, 225, 239, .1));
+      content: "";
+    }
+
+    .baseline .label { color: #8af2f8; font-size: 17px; font-weight: 700; letter-spacing: .12em; }
+    .baseline strong { display: block; margin-top: 5px; color: #fff; font-size: 30px; }
+    .baseline code { color: #c7f8fb; font: 700 26px ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 52px;
+    }
+
+    .card {
+      position: relative;
+      min-height: 294px;
+      padding: 29px 30px;
+      border: 1px solid rgba(149, 174, 219, .25);
+      border-radius: 20px;
+      background: rgba(18, 31, 57, .78);
+      box-shadow: 0 17px 38px rgba(0, 0, 0, .17);
+    }
+
+    .card::before {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      width: 14px;
+      height: 14px;
+      transform: translateX(-50%) rotate(45deg);
+      border-top: 2px solid #69e1ef;
+      border-left: 2px solid #69e1ef;
+      background: #153252;
+      content: "";
+    }
+
+    .card:nth-child(2) { border-color: rgba(177, 132, 255, .36); background: rgba(34, 28, 67, .78); }
+    .card:nth-child(2)::before { border-color: #bd9cff; background: #302b5d; }
+    .card:nth-child(3) { border-color: rgba(94, 222, 166, .34); background: rgba(18, 55, 54, .76); }
+    .card:nth-child(3)::before { border-color: #79e6b5; background: #1b4e50; }
+
+    .num { color: #6fdfea; font: 700 18px ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .card:nth-child(2) .num { color: #c7b0ff; }
+    .card:nth-child(3) .num { color: #8ef2c4; }
+    h2 { margin: 12px 0 9px; color: #fff; font-size: 31px; letter-spacing: -.025em; }
+    .card p { margin: 0; color: #acbbd3; font-size: 19px; line-height: 1.62; }
+    .tags { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 22px; }
+    .tag { padding: 7px 10px; border-radius: 999px; color: #c6d5ed; background: rgba(93, 120, 168, .17); font-size: 15px; }
+    .card:nth-child(2) .tag { color: #dfd3ff; background: rgba(154, 111, 237, .16); }
+    .card:nth-child(3) .tag { color: #c7f8e0; background: rgba(80, 184, 140, .15); }
+
+    .drift {
+      display: grid;
+      grid-template-columns: 238px 1fr;
+      align-items: center;
+      gap: 25px;
+      margin-top: 33px;
+      padding: 22px 28px;
+      border: 1px solid rgba(141, 161, 204, .25);
+      border-radius: 17px;
+      background: rgba(8, 18, 37, .64);
+    }
+
+    .drift-title { color: #f5f8ff; font-size: 24px; font-weight: 700; }
+    .drift-title span { display: block; margin-bottom: 5px; color: #ffc779; font-size: 15px; letter-spacing: .12em; }
+    .flow { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .flow-item { color: #c9d5e8; font-size: 17px; white-space: nowrap; }
+    .arrow { width: 62px; height: 1px; background: #526987; position: relative; }
+    .arrow::after { position: absolute; right: 0; top: -4px; width: 8px; height: 8px; transform: rotate(45deg); border-top: 1px solid #89a1c0; border-right: 1px solid #89a1c0; content: ""; }
+    .flow-item b { color: #fff; }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 24px;
+      color: #8495b2;
+      font-size: 17px;
+    }
+    footer b { color: #cbd7eb; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="eyebrow">AI PROJECT RULES</div>
+    <h1>不要把所有规则都塞进一个文件</h1>
+    <p class="subtitle">一份跨工具基线，三种清晰职责，再让规则随代码持续演进。</p>
+
+    <section class="baseline">
+      <div><div class="label">跨工具、默认加载的项目基线</div><strong>短小、具体、每次都值得知道</strong></div>
+      <code>AGENTS.md</code>
+    </section>
+
+    <section class="cards">
+      <article class="card">
+        <div class="num">01 / RULES</div>
+        <h2>按路径、按场景的约束</h2>
+        <p>模块边界、真实命令、集中配置和常见坑。只在相关任务中加载，避免默认上下文变成噪音。</p>
+        <div class="tags"><span class="tag">架构边界</span><span class="tag">测试策略</span><span class="tag">路径范围</span></div>
+      </article>
+      <article class="card">
+        <div class="num">02 / SKILLS</div>
+        <h2>按需执行的工作流</h2>
+        <p>把 Review、发布、迁移和排查放进可复用流程；脚本、模板和参考资料不必常驻上下文。</p>
+        <div class="tags"><span class="tag">Code Review</span><span class="tag">发布检查</span><span class="tag">排查手册</span></div>
+      </article>
+      <article class="card">
+        <div class="num">03 / CI · HOOK</div>
+        <h2>必须执行的强制层</h2>
+        <p>格式化、测试门槛、敏感路径和禁止操作，不能只依赖模型“记得做”，要交给自动化保证。</p>
+        <div class="tags"><span class="tag">自动验证</span><span class="tag">权限控制</span><span class="tag">确定性执行</span></div>
+      </article>
+    </section>
+
+    <section class="drift">
+      <div class="drift-title"><span>RULE DRIFT</span>规则也需要维护</div>
+      <div class="flow">
+        <div class="flow-item"><b>代码演进</b></div><div class="arrow"></div>
+        <div class="flow-item">发现差异</div><div class="arrow"></div>
+        <div class="flow-item">提出修订</div><div class="arrow"></div>
+        <div class="flow-item"><b>验证后更新</b></div>
+      </div>
+    </section>
+
+    <footer><span><b>核心原则：</b>具体 · 可验证 · 作用域明确</span><span>Rules 是项目知识，不是越来越厚的总手册</span></footer>
+  </main>
+</body>
+</html>

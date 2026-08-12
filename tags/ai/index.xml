@@ -1,4 +1,255 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>AI on 土土哥的技术 Blog</title><link>https://tutuge.me/tags/ai/</link><description>Recent content in AI on 土土哥的技术 Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>tutuge</copyright><lastBuildDate>Wed, 12 Aug 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://tutuge.me/tags/ai/index.xml" rel="self" type="application/rss+xml"/><item><title>用一个轻量脚本统一管理多个 AI 工具的 Skills</title><link>https://tutuge.me/2026/08/12/agent-skills-manager/</link><pubDate>Tue, 11 Aug 2026 17:00:00 +0000</pubDate><guid>https://tutuge.me/2026/08/12/agent-skills-manager/</guid><description>&lt;img src="https://tutuge.me/assets/2026/08/12/agent-skills-manager/skill-manager-map.png" alt="Featured image of post 用一个轻量脚本统一管理多个 AI 工具的 Skills" /&gt;&lt;h2 id="前言"&gt;&lt;a href="#%e5%89%8d%e8%a8%80" class="header-anchor"&gt;&lt;/a&gt;前言
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>AI on 土土哥的技术 Blog</title><link>https://tutuge.me/tags/ai/</link><description>Recent content in AI on 土土哥的技术 Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>tutuge</copyright><lastBuildDate>Thu, 13 Aug 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://tutuge.me/tags/ai/index.xml" rel="self" type="application/rss+xml"/><item><title>别把所有规则都塞进 CLAUDE.md：兼容多种 AI 的项目 Rules 设计与维护</title><link>https://tutuge.me/2026/08/13/ai-project-rules/</link><pubDate>Wed, 12 Aug 2026 17:00:00 +0000</pubDate><guid>https://tutuge.me/2026/08/13/ai-project-rules/</guid><description>&lt;img src="https://tutuge.me/assets/2026/08/13/ai-project-rules/ai-project-rules-poster.png" alt="Featured image of post 别把所有规则都塞进 CLAUDE.md：兼容多种 AI 的项目 Rules 设计与维护" /&gt;&lt;h2 id="前言"&gt;&lt;a href="#%e5%89%8d%e8%a8%80" class="header-anchor"&gt;&lt;/a&gt;前言
+&lt;/h2&gt;&lt;p&gt;上一篇整理多个 AI 工具的 Skills 时，重点是“同一个 Skill 放在哪里，才能让不同工具都发现”。后来继续看项目里的 AI 协作配置，发现另一个问题其实更常见：Rules 文件越来越多。&lt;/p&gt;
+&lt;p&gt;根目录有 &lt;code&gt;CLAUDE.md&lt;/code&gt;，又补了 &lt;code&gt;AGENTS.md&lt;/code&gt;；Cursor 有 &lt;code&gt;.cursor/rules/&lt;/code&gt;，Copilot 有 &lt;code&gt;.github/copilot-instructions.md&lt;/code&gt;，某次 Code Review 发现一条遗漏，再往其中一个文件里加一句。过一阵子，文件确实变长了，但不知道哪些是每次都要遵守的硬约束，哪些只对某个目录有效，哪些本来应该放到 Skill 或 CI 里面。&lt;/p&gt;
+&lt;p&gt;这篇就结合一个虚拟业务模块的 Rules 设计，整理一下我现在对这件事的理解：&lt;strong&gt;Rules 不是给模型塞得越多越好，而是要像项目代码一样，有作用域、有职责、有验证，也会过时。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="AI 项目 Rules 的分层：AGENTS.md 作为跨工具基线，Rules、Skills、CI 各自承担明确职责，并通过 Rule Drift 持续演进" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/08/13/ai-project-rules/ai-project-rules-poster.png"&gt;&lt;/p&gt;
+&lt;h2 id="先看一个虚拟业务模块的设计"&gt;&lt;a href="#%e5%85%88%e7%9c%8b%e4%b8%80%e4%b8%aa%e8%99%9a%e6%8b%9f%e4%b8%9a%e5%8a%a1%e6%a8%a1%e5%9d%97%e7%9a%84%e8%ae%be%e8%ae%a1" class="header-anchor"&gt;&lt;/a&gt;先看一个虚拟业务模块的设计
+&lt;/h2&gt;&lt;p&gt;为了方便说明，下面虚拟一个包含搜索、结果展示和推荐内容的业务模块。它有多个入口和不同展示场景，模块本身也依赖一套公共应用框架；重点不是技术栈，而是它没有把所有说明都写进一个文件。&lt;/p&gt;
+&lt;p&gt;它的入口大致是这样：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-markdown" data-lang="markdown"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gh"&gt;# 业务模块 · AI 协作规范
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gu"&gt;## 公共规范：应用基础 Skill
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;高频红线在 &lt;span class="sb"&gt;`docs/rules/base-project-rule.md`&lt;/span&gt;。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;完整的应用框架、网络、日志和发布说明放在 &lt;span class="sb"&gt;`app-foundation`&lt;/span&gt; Skill 中；
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;做 Code Review、重构时再按需查阅。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gu"&gt;## 本模块 Rules
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;-&lt;/span&gt; base-project-rule：异常、网络、资源、日志、释放、路由
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;-&lt;/span&gt; architecture-rule：子模块边界、依赖方向和技术约束
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;-&lt;/span&gt; change-rule：代码风格与改动范围
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;-&lt;/span&gt; scenario-rule：场景差异统一经过集中配置
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;-&lt;/span&gt; edge-case-rule：复杂交互、动画和数值比较
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;-&lt;/span&gt; testing-rule：测试环境切换和最小相关测试策略
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这里最关键的并不是列出了多少规则，而是先做了三次拆分：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;公共框架和业务模块分开。&lt;/strong&gt; 统一的网络封装、路由、日志、资源加载和生命周期管理，不应该由每个业务模块各写一遍。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;默认上下文和按需知识分开。&lt;/strong&gt; 集中配置、复杂交互、测试环境切换都很重要，但只有进入对应任务时才需要完整细节。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Rules 和 Skill 分开。&lt;/strong&gt; 常驻规则适合放事实和约束；包含很多 API、示例、Review 流程的内容，更适合在做特定任务时作为 Skill 查询。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这比把一大段“请写出高质量代码”放到 &lt;code&gt;CLAUDE.md&lt;/code&gt; 有用得多。后者几乎不能指导任何具体选择；前者能直接让 AI 知道：同一功能在不同入口或用户场景下的差异，应该集中在配置或策略层表达，不能在各处散落“来源是 A 吗”的条件分支。&lt;/p&gt;
+&lt;h2 id="rulesskill-和-ci-不是一回事"&gt;&lt;a href="#rulesskill-%e5%92%8c-ci-%e4%b8%8d%e6%98%af%e4%b8%80%e5%9b%9e%e4%ba%8b" class="header-anchor"&gt;&lt;/a&gt;Rules、Skill 和 CI 不是一回事
+&lt;/h2&gt;&lt;p&gt;一开始我也容易把它们都理解成“写给 AI 的说明”。实际上它们进入上下文和承担责任的方式完全不一样。&lt;/p&gt;
+&lt;table&gt;
+	&lt;thead&gt;
+			&lt;tr&gt;
+					&lt;th&gt;机制&lt;/th&gt;
+					&lt;th&gt;应放什么&lt;/th&gt;
+					&lt;th&gt;不应该放什么&lt;/th&gt;
+			&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tbody&gt;
+			&lt;tr&gt;
+					&lt;td&gt;Rules&lt;/td&gt;
+					&lt;td&gt;真实命令、模块边界、不可违反的约定、常见坑&lt;/td&gt;
+					&lt;td&gt;很长的教程、低频多步骤流程&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;Skill / Workflow&lt;/td&gt;
+					&lt;td&gt;Review、发布、迁移、排查等按需工作流；脚本、模板、参考资料&lt;/td&gt;
+					&lt;td&gt;每次改一个文件都必须知道的红线&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;文档&lt;/td&gt;
+					&lt;td&gt;架构背景、接口细节、设计决策、历史上下文&lt;/td&gt;
+					&lt;td&gt;需要每轮自动加载的内容&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;CI / Hook / 权限&lt;/td&gt;
+					&lt;td&gt;格式化、测试门槛、敏感路径、禁止命令等必须执行的事&lt;/td&gt;
+					&lt;td&gt;期待模型“记得做”的软提醒&lt;/td&gt;
+			&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;这个边界很重要。Rules 本质上仍然是提供给模型的上下文，不是强制配置。Claude Code 的文档也明确区分了行为指令和由 settings / hook 执行的强制策略：如果某项操作无论模型如何判断都不能发生，就不要只写一句“禁止”，而应该用权限、Hook 或 CI 保证它。 &lt;a class="link" href="https://code.claude.com/docs/zh-CN/memory" target="_blank" rel="noopener"
+ &gt;Claude Code Memory&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;例如“单测必须通过项目提供的测试环境切换脚本运行，不能直接调用默认测试命令”是一条很好的 Rules；但如果某个生成命令绝对不能在 CI 或开发环境执行，只靠 Rules 显然不够，还应在脚本权限、Hook 或 CI 里拦住。&lt;/p&gt;
+&lt;h2 id="agentsmd-做基线原生-rules-做增强"&gt;&lt;a href="#agentsmd-%e5%81%9a%e5%9f%ba%e7%ba%bf%e5%8e%9f%e7%94%9f-rules-%e5%81%9a%e5%a2%9e%e5%bc%ba" class="header-anchor"&gt;&lt;/a&gt;&lt;code&gt;AGENTS.md&lt;/code&gt; 做基线，原生 Rules 做增强
+&lt;/h2&gt;&lt;p&gt;现在很多工具都开始支持 &lt;code&gt;AGENTS.md&lt;/code&gt;。Codex 会按全局、项目根目录到当前目录的层级读取它；GitHub Copilot 的 agent 也会使用目录中最近的 &lt;code&gt;AGENTS.md&lt;/code&gt;。这使它很适合承担一份跨工具的项目基线。 &lt;a class="link" href="https://learn.chatgpt.com/docs/agent-configuration/agents-md" target="_blank" rel="noopener"
+ &gt;Codex AGENTS.md&lt;/a&gt; &lt;a class="link" href="https://docs.github.com/en/copilot/how-tos/configure-custom-instructions-in-your-ide/add-repository-instructions-in-your-ide" target="_blank" rel="noopener"
+ &gt;GitHub Copilot Instructions&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;我倾向于让根目录 &lt;code&gt;AGENTS.md&lt;/code&gt; 保持短小，只写所有工具都能理解、而且每个任务都值得带上的内容：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-markdown" data-lang="markdown"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gh"&gt;# Project Rules
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gu"&gt;## 修改前
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;-&lt;/span&gt; 先阅读当前目录与父目录的 Rules；不确定模块边界时先搜索现有实现。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;-&lt;/span&gt; 不顺手重构与当前目标无关的代码；跨模块改动先说明影响范围。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gu"&gt;## 模块约束
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;-&lt;/span&gt; 场景差异必须通过集中配置或策略层表达，禁止新增分散的来源判断。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;-&lt;/span&gt; 外部资源统一经过项目已有的封装，不直接绕开缓存、鉴权或错误处理。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;-&lt;/span&gt; 涉及布局、尺寸、偏移等数值比较时必须保留容差，不能依赖严格相等。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gu"&gt;## 验证
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;-&lt;/span&gt; 修改逻辑后运行最小相关测试；无法运行时说明原因和未验证范围。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;-&lt;/span&gt; 改动公共行为时检查可观测性、错误处理和配置默认值。
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这里有个容易忽略的兼容性问题：&lt;code&gt;@docs/rules/base-project-rule.md&lt;/code&gt; 这种导入语法不是所有工具的通用能力。Claude Code 支持 &lt;code&gt;@&lt;/code&gt; 导入，也明确建议已有 &lt;code&gt;AGENTS.md&lt;/code&gt; 的仓库通过 &lt;code&gt;CLAUDE.md&lt;/code&gt; 导入它；Gemini CLI 也支持用 &lt;code&gt;@&lt;/code&gt; 拆分 &lt;code&gt;GEMINI.md&lt;/code&gt;。 &lt;a class="link" href="https://code.claude.com/docs/zh-CN/memory" target="_blank" rel="noopener"
+ &gt;Claude Code Memory&lt;/a&gt; &lt;a class="link" href="https://geminicli.com/docs/cli/gemini-md/" target="_blank" rel="noopener"
+ &gt;Gemini CLI Context Files&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;但不能因为 Claude 能展开导入，就假设其他工具也会这样做。因此，&lt;strong&gt;“始终生效”的核心红线应该实际存在于 &lt;code&gt;AGENTS.md&lt;/code&gt; 中&lt;/strong&gt;；长文档可以作为任务导航，或用某个工具的原生 Rules 在匹配场景下加载。&lt;/p&gt;
+&lt;p&gt;对应的目录可以是这样：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;AGENTS.md # 跨工具、默认加载的项目基线
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;CLAUDE.md # @AGENTS.md + Claude Code 专属补充
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;GEMINI.md # @AGENTS.md + Gemini CLI 专属补充
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;docs/rules/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├── base-project-rule.md # 公共框架速查
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├── architecture-rule.md # 架构和依赖方向
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├── scenario-rule.md # 场景配置约束
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├── testing-rule.md # 测试策略
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├── observability-rule.md # 日志、指标、错误处理
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├── release-rule.md # 开关、发布、回滚
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;└── rule-registry.md # 规则的来源、验证方式、维护说明
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;.claude/rules/ # Claude Code 的路径范围规则
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;.cursor/rules/ # Cursor 的 glob / 手动 / 按需规则
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;.github/instructions/ # Copilot 的路径专属 instructions
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;不是每个目录都要立刻创建。根目录基线先稳定下来，再在某个工具确实需要路径匹配、手动调用或 Review 专属提示时，增加原生适配即可。&lt;/p&gt;
+&lt;h2 id="为什么不能只维护一个-claudemd"&gt;&lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e4%b8%8d%e8%83%bd%e5%8f%aa%e7%bb%b4%e6%8a%a4%e4%b8%80%e4%b8%aa-claudemd" class="header-anchor"&gt;&lt;/a&gt;为什么不能只维护一个 CLAUDE.md
+&lt;/h2&gt;&lt;p&gt;&lt;code&gt;CLAUDE.md&lt;/code&gt; 当然很好用。Claude Code 会自动加载项目、用户和子目录里的文件，子目录规则还能按实际读取的文件按需进入上下文。官方也提供 &lt;code&gt;.claude/rules/&lt;/code&gt; 来按路径拆分规则。 &lt;a class="link" href="https://code.claude.com/docs/zh-CN/memory" target="_blank" rel="noopener"
+ &gt;Claude Code Memory&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;问题不在 &lt;code&gt;CLAUDE.md&lt;/code&gt;，而在把它当成所有工具、所有场景、所有流程的唯一容器。&lt;/p&gt;
+&lt;p&gt;这样很快会遇到三个问题：&lt;/p&gt;
+&lt;h3 id="1-上下文越来越吵"&gt;&lt;a href="#1-%e4%b8%8a%e4%b8%8b%e6%96%87%e8%b6%8a%e6%9d%a5%e8%b6%8a%e5%90%b5" class="header-anchor"&gt;&lt;/a&gt;1. 上下文越来越吵
+&lt;/h3&gt;&lt;p&gt;一段只在 Review 时有用的网络排查流程，和一个只在测试时有用的环境切换步骤，如果每次修改一个简单页面都带进上下文，反而会稀释真正重要的约束。&lt;/p&gt;
+&lt;p&gt;Claude Code 的建议是让常驻 &lt;code&gt;CLAUDE.md&lt;/code&gt; 保持在大约 200 行以内；太长不仅占上下文，也会降低遵循度。这个数字不必机械套到所有工具上，但“默认内容必须短且信号密度高”是通用原则。 &lt;a class="link" href="https://code.claude.com/docs/zh-CN/memory" target="_blank" rel="noopener"
+ &gt;Claude Code Memory&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id="2-工具差异被隐藏了"&gt;&lt;a href="#2-%e5%b7%a5%e5%85%b7%e5%b7%ae%e5%bc%82%e8%a2%ab%e9%9a%90%e8%97%8f%e4%ba%86" class="header-anchor"&gt;&lt;/a&gt;2. 工具差异被隐藏了
+&lt;/h3&gt;&lt;p&gt;Cursor 的 &lt;code&gt;.cursor/rules/*.mdc&lt;/code&gt; 可以按 glob、手动、模型判断等模式加载；Copilot 可以通过 &lt;code&gt;.github/instructions/*.instructions.md&lt;/code&gt; 的 &lt;code&gt;applyTo&lt;/code&gt; 针对路径生效。把这些能力压缩成一份纯 Markdown，等于放弃了本来很适合解决“只在这里生效”的机制。 &lt;a class="link" href="https://docs.cursor.com/context/rules-for-ai" target="_blank" rel="noopener"
+ &gt;Cursor Rules&lt;/a&gt; &lt;a class="link" href="https://docs.github.com/en/copilot/how-tos/configure-custom-instructions-in-your-ide/add-repository-instructions-in-your-ide" target="_blank" rel="noopener"
+ &gt;GitHub Copilot Instructions&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id="3-同一份内容开始复制"&gt;&lt;a href="#3-%e5%90%8c%e4%b8%80%e4%bb%bd%e5%86%85%e5%ae%b9%e5%bc%80%e5%a7%8b%e5%a4%8d%e5%88%b6" class="header-anchor"&gt;&lt;/a&gt;3. 同一份内容开始复制
+&lt;/h3&gt;&lt;p&gt;先复制一份 &lt;code&gt;AGENTS.md&lt;/code&gt; 到 &lt;code&gt;CLAUDE.md&lt;/code&gt;，再复制到 Copilot、Cursor 的规则目录，刚开始并没有问题。后面测试命令改了、基座组件替换了、目录迁移了，很容易只改到其中一份。&lt;/p&gt;
+&lt;p&gt;所以这里的目标不是“只保留一个文件”，而是：&lt;strong&gt;只有一份跨工具基线；原生文件只保存无法用基线表达的适配内容。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;例如 Claude Code 的薄适配可以很简单：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-markdown" data-lang="markdown"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="ni"&gt;@AGENTS&lt;/span&gt;.md
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gu"&gt;## Claude Code
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;-&lt;/span&gt; 涉及 &lt;span class="sb"&gt;`modules/payment/`&lt;/span&gt; 的改动先使用 Plan Mode。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;-&lt;/span&gt; 读取外部导入文件前遵循仓库现有的审批约定。
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如果根本没有 Claude 专属内容，也可以直接把 &lt;code&gt;CLAUDE.md&lt;/code&gt; 链接到 &lt;code&gt;AGENTS.md&lt;/code&gt;；不过 Windows 上软链接需要额外权限时，导入方式会更稳妥。 &lt;a class="link" href="https://code.claude.com/docs/zh-CN/memory" target="_blank" rel="noopener"
+ &gt;Claude Code Memory&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id="回到业务模块还可以补哪些-rules"&gt;&lt;a href="#%e5%9b%9e%e5%88%b0%e4%b8%9a%e5%8a%a1%e6%a8%a1%e5%9d%97%e8%bf%98%e5%8f%af%e4%bb%a5%e8%a1%a5%e5%93%aa%e4%ba%9b-rules" class="header-anchor"&gt;&lt;/a&gt;回到业务模块：还可以补哪些 Rules
+&lt;/h2&gt;&lt;p&gt;前面的模块已经覆盖了公共规范、架构、代码风格、场景配置、边界情况和测试，实际上已经比很多项目完整。继续扩展时，我会优先补“容易在多人协作和线上链路中漏掉”的部分，而不是再增加泛泛的代码风格。&lt;/p&gt;
+&lt;table&gt;
+	&lt;thead&gt;
+			&lt;tr&gt;
+					&lt;th&gt;Rule&lt;/th&gt;
+					&lt;th&gt;应解决的问题&lt;/th&gt;
+					&lt;th&gt;示例&lt;/th&gt;
+			&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tbody&gt;
+			&lt;tr&gt;
+					&lt;td&gt;&lt;code&gt;contract-rule&lt;/code&gt;&lt;/td&gt;
+					&lt;td&gt;接口、路由、事件和配置字段变更的兼容性&lt;/td&gt;
+					&lt;td&gt;新字段默认值、旧值兼容、废弃时机&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;&lt;code&gt;observability-rule&lt;/code&gt;&lt;/td&gt;
+					&lt;td&gt;线上行为难排查，异常没有上下文&lt;/td&gt;
+					&lt;td&gt;关键日志字段、指标、错误码、脱敏&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;&lt;code&gt;performance-rule&lt;/code&gt;&lt;/td&gt;
+					&lt;td&gt;页面加载、长列表、缓存和重复请求&lt;/td&gt;
+					&lt;td&gt;分页、取消旧请求、缓存、避免在渲染路径做重活&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;&lt;code&gt;release-rule&lt;/code&gt;&lt;/td&gt;
+					&lt;td&gt;开关、发布、回滚场景遗漏&lt;/td&gt;
+					&lt;td&gt;默认值、降级与回滚路径&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;&lt;code&gt;privacy-rule&lt;/code&gt;&lt;/td&gt;
+					&lt;td&gt;用户输入和标识处理不一致&lt;/td&gt;
+					&lt;td&gt;哪些字段禁止记录，哪些日志必须脱敏&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;&lt;code&gt;review-rule&lt;/code&gt;&lt;/td&gt;
+					&lt;td&gt;Review 只看语法，漏掉业务红线&lt;/td&gt;
+					&lt;td&gt;是否绕过集中配置、是否遗漏资源释放、是否破坏默认行为&lt;/td&gt;
+			&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;写这些 Rules 时，最好不要只写“注意性能”“注意埋点”。一条真正有用的规则至少应该能回答五个问题：什么时候适用、应该怎么做、不能怎么做、为什么，以及怎么验证。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-markdown" data-lang="markdown"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gu"&gt;## 场景差异的集中配置
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gs"&gt;**适用范围**&lt;/span&gt;：新增或修改同一功能在不同入口、用户类型或运行环境下的差异行为。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gs"&gt;**要求**&lt;/span&gt;：通过统一的配置对象或策略层表达差异。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gs"&gt;**禁止**&lt;/span&gt;：在页面、控制器或业务函数内新增散落的来源、类型或环境分支。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gs"&gt;**原因**&lt;/span&gt;：同一场景的默认值、开关和回滚必须有唯一入口。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gs"&gt;**验证**&lt;/span&gt;：检查默认配置；覆盖至少一个默认场景和一个差异场景。
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这样写虽然多了几行，但 Review 时不用猜这条规则是在限制命名，还是在约束发布和回滚能力。&lt;/p&gt;
+&lt;h2 id="rules-也要有自己的生命周期"&gt;&lt;a href="#rules-%e4%b9%9f%e8%a6%81%e6%9c%89%e8%87%aa%e5%b7%b1%e7%9a%84%e7%94%9f%e5%91%bd%e5%91%a8%e6%9c%9f" class="header-anchor"&gt;&lt;/a&gt;Rules 也要有自己的生命周期
+&lt;/h2&gt;&lt;p&gt;最喜欢这个模块设计的一点，是它没有假设 Rules 永远正确，而是明确规定：&lt;strong&gt;代码实际情况和 Rules 不一致时，以代码为准完成当前任务，同时提出是否同步修订规则。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;这比“AI 必须永远遵守 Rules”更符合真实项目。技术栈会迁移、组件会替换、测试策略也会变；如果规则不允许被质疑，最后只会变成一份谁也不看的旧文档。&lt;/p&gt;
+&lt;p&gt;我会把这个过程固定成一个小的 &lt;code&gt;Rule Drift&lt;/code&gt; 输出：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-markdown" data-lang="markdown"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gu"&gt;## Rule Drift
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;-&lt;/span&gt; 发现：&lt;span class="sb"&gt;`testing-rule.md`&lt;/span&gt; 要求使用已废弃的测试环境切换方式，但项目测试基座已迁移。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;-&lt;/span&gt; 当前处理：按现有测试代码完成修改，并运行新的最小相关测试命令。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;-&lt;/span&gt; 建议：修订 testing-rule，删除旧方式说明，补充新测试入口。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;-&lt;/span&gt; 需要确认：是否将这次规则修订和当前代码变更一起提交？
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这样有几个好处：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;当前任务不会为了修文档而卡住。&lt;/li&gt;
+&lt;li&gt;规则变化有明确依据，而不是 AI 每次想到什么就改什么。&lt;/li&gt;
+&lt;li&gt;人可以决定这条差异是临时例外、规则过时，还是应该真的改回代码。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;也可以给每条重要 Rule 记录来源：线上事故、Review 反馈、架构决策或安全要求；再记录验证方式和最后复查时间。它不一定需要很重的系统，一个 &lt;code&gt;doc/rules/rule-registry.md&lt;/code&gt; 就足够开始。&lt;/p&gt;
+&lt;h2 id="从小开始不要先做-rules-平台"&gt;&lt;a href="#%e4%bb%8e%e5%b0%8f%e5%bc%80%e5%a7%8b%e4%b8%8d%e8%a6%81%e5%85%88%e5%81%9a-rules-%e5%b9%b3%e5%8f%b0" class="header-anchor"&gt;&lt;/a&gt;从小开始，不要先做 Rules 平台
+&lt;/h2&gt;&lt;p&gt;对于一个刚开始引入 AI Coding 的项目，我觉得可以先按下面顺序做：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;写一份不超过一两屏的 &lt;code&gt;AGENTS.md&lt;/code&gt;：项目怎么运行、改动后如何验证、哪些边界不能碰。&lt;/li&gt;
+&lt;li&gt;给 Claude Code、Gemini CLI 做很薄的导入适配；支持 &lt;code&gt;AGENTS.md&lt;/code&gt; 的工具优先直接读取它。&lt;/li&gt;
+&lt;li&gt;当某类任务反复出现、又不值得每次都默认加载时，把它拆成 Skill 或 Workflow。&lt;/li&gt;
+&lt;li&gt;当某条规则只对特定路径、语言或 Review 生效时，再采用 Cursor、Copilot、Claude Code 等工具的原生路径范围能力。&lt;/li&gt;
+&lt;li&gt;把必须执行的要求移到 CI、Hook、权限设置，Rules 只保留对模型有解释价值的部分。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;不要一开始就做一个“Rules 管理平台”、十几层注册表或自动生成器。只有当同一段内容已经出现多处复制、且确实频繁漂移时，再考虑用脚本从统一来源生成各工具适配文件。&lt;/p&gt;
+&lt;h2 id="总结"&gt;&lt;a href="#%e6%80%bb%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;总结
+&lt;/h2&gt;&lt;p&gt;&lt;code&gt;CLAUDE.md&lt;/code&gt;、&lt;code&gt;AGENTS.md&lt;/code&gt;、&lt;code&gt;.cursor/rules/&lt;/code&gt; 这些文件名会继续变化，工具的支持范围也还在演进。不过它们背后的工程问题其实很老：如何把团队真实的约定、踩过的坑和边界条件，变成新同事也能稳定执行的项目知识。&lt;/p&gt;
+&lt;p&gt;对 AI 来说，Rules 就是这份入职资料。&lt;/p&gt;
+&lt;p&gt;它不应该是一份越来越厚、谁都不敢改的总手册；更适合是一个分层系统：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;短小的跨工具基线
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ↓
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;按路径、按任务加载的模块 Rules
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ↓
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;按需执行的 Skills / Workflows
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ↓
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;CI、Hook、权限负责真正的强制
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ↓
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;代码变化后持续发现并修复 Rule Drift
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;总的来说，先把每条规则写得具体、可验证、作用域明确，比先选哪一个 AI Coding 工具更有价值。等项目和工具一起演进时，也记得让 Rules 跟着代码更新，不然它们很快就会从“帮手”变成新的噪音。~~~&lt;/p&gt;
+&lt;h2 id="参考"&gt;&lt;a href="#%e5%8f%82%e8%80%83" class="header-anchor"&gt;&lt;/a&gt;参考
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://learn.chatgpt.com/docs/agent-configuration/agents-md" target="_blank" rel="noopener"
+ &gt;OpenAI Codex：Custom instructions with AGENTS.md&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://code.claude.com/docs/zh-CN/memory" target="_blank" rel="noopener"
+ &gt;Claude Code：管理项目记忆与 CLAUDE.md&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://geminicli.com/docs/cli/gemini-md/" target="_blank" rel="noopener"
+ &gt;Gemini CLI：GEMINI.md Context Files&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.github.com/en/copilot/how-tos/configure-custom-instructions-in-your-ide/add-repository-instructions-in-your-ide" target="_blank" rel="noopener"
+ &gt;GitHub Copilot：Repository custom instructions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.cursor.com/context/rules-for-ai" target="_blank" rel="noopener"
+ &gt;Cursor：Rules&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.cline.bot/customization/cline-rules" target="_blank" rel="noopener"
+ &gt;Cline：Rules&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.qoder.com/user-guide/rules" target="_blank" rel="noopener"
+ &gt;Qoder：Rules&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://kiro.dev/docs/cli/steering/" target="_blank" rel="noopener"
+ &gt;Kiro：Steering&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>用一个轻量脚本统一管理多个 AI 工具的 Skills</title><link>https://tutuge.me/2026/08/12/agent-skills-manager/</link><pubDate>Tue, 11 Aug 2026 17:00:00 +0000</pubDate><guid>https://tutuge.me/2026/08/12/agent-skills-manager/</guid><description>&lt;img src="https://tutuge.me/assets/2026/08/12/agent-skills-manager/skill-manager-map.png" alt="Featured image of post 用一个轻量脚本统一管理多个 AI 工具的 Skills" /&gt;&lt;h2 id="前言"&gt;&lt;a href="#%e5%89%8d%e8%a8%80" class="header-anchor"&gt;&lt;/a&gt;前言
 &lt;/h2&gt;&lt;p&gt;最近在不同的 AI Coding 工具之间切换得比较多：Claude Code、Codex、Qoder，还有一些项目里用到的 Gemini CLI、Copilot 等。&lt;/p&gt;
 &lt;p&gt;Skill 的格式现在已经逐步收敛了。基本都是一个目录，入口叫 &lt;code&gt;SKILL.md&lt;/code&gt;，里面放 &lt;code&gt;name&lt;/code&gt;、&lt;code&gt;description&lt;/code&gt; 和具体的工作流说明；需要时还可以带脚本、模板和参考资料。&lt;/p&gt;
 &lt;p&gt;问题不在 Skill 怎么写，而在&lt;strong&gt;它们放在哪里&lt;/strong&gt;。&lt;/p&gt;
