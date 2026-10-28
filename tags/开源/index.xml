@@ -2,7 +2,7 @@
 &lt;/h2&gt;&lt;p&gt;最近这段时间用 Claude Code 比较多，慢慢发现一个很实际的问题：AI 写代码的时候人不应该一直盯着它。&lt;/p&gt;
 &lt;p&gt;比如我让它跑一个重构任务，然后切到浏览器查资料、看文档，或者去另一个项目里继续处理事情。几分钟后切回来，发现它早就停在权限确认那里了；再或者任务已经结束，但我完全不知道。项目窗口一多，这种反复切换就更明显了。&lt;/p&gt;
 &lt;p&gt;所以我写了一个小工具：&lt;code&gt;Claude Code Notifier Plus&lt;/code&gt;。它的目标很简单：&lt;strong&gt;当 Claude Code 需要我注意时，用系统通知提醒我，并且点击通知能回到对应的 VS Code 窗口或终端窗口&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Claude Code Notifier Plus" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/13/claude-code-notifier-plus/promo-banner.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Claude Code Notifier Plus" class="gallery-image" data-flex-basis="472px" data-flex-grow="196" height="660" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/13/claude-code-notifier-plus/promo-banner.jpg" width="1300"&gt;&lt;/p&gt;
 &lt;p&gt;Github: &lt;a class="link" href="https://github.com/zekunyan/claude-code-notifier-plus" target="_blank" rel="noopener"
  &gt;https://github.com/zekunyan/claude-code-notifier-plus&lt;/a&gt;&lt;/p&gt;
 &lt;h2 id="为什么还要再做一个通知插件"&gt;&lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e8%bf%98%e8%a6%81%e5%86%8d%e5%81%9a%e4%b8%80%e4%b8%aa%e9%80%9a%e7%9f%a5%e6%8f%92%e4%bb%b6" class="header-anchor"&gt;&lt;/a&gt;为什么还要再做一个通知插件
@@ -57,7 +57,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这个权限的作用不是读取内容，而是允许它把对应窗口 raise 到前台。没有这个权限时，点击通知通常只能激活 App，不能精确切到某个项目窗口。&lt;/p&gt;
 &lt;h2 id="整体架构"&gt;&lt;a href="#%e6%95%b4%e4%bd%93%e6%9e%b6%e6%9e%84" class="header-anchor"&gt;&lt;/a&gt;整体架构
 &lt;/h2&gt;&lt;p&gt;先看整体流程：&lt;/p&gt;
-&lt;p&gt;&lt;img alt="How It Works" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/13/claude-code-notifier-plus/how-it-works.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="How It Works" class="gallery-image" data-flex-basis="213px" data-flex-grow="88" height="1350" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/13/claude-code-notifier-plus/how-it-works.jpg" width="1200"&gt;&lt;/p&gt;
 &lt;p&gt;实现上拆成几块：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;extension.js&lt;/code&gt;：VS Code 扩展入口，负责安装 hook、监听 pipe 文件、读取配置、发通知。&lt;/li&gt;
@@ -266,7 +266,7 @@
 &lt;/h2&gt;&lt;p&gt;这次是一个全新的项目：&lt;code&gt;TTGRefresh&lt;/code&gt;。&lt;/p&gt;
 &lt;p&gt;iOS 里下拉刷新、上拉加载更多是非常常见的需求。自己写并不难，但真正放到项目里以后，会慢慢遇到一些细节：&lt;code&gt;contentInset&lt;/code&gt; 怎么恢复、刷新和加载更多能不能同时触发、异步任务结束时 UI 怎么收起、列表内容不满一屏时 footer 怎么处理、想换一个动画样式是不是要改很多业务代码。&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;TTGRefresh&lt;/code&gt; 的目标就是把这些细节收拢起来，同时保持 API 尽量轻：通过一个 &lt;code&gt;scrollView.ttg&lt;/code&gt; 命名空间，把 header refresh、footer refresh、infinite load、默认 UI、路径动画和自定义 View 都接进去。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="TTGRefresh Poster" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/10/ttgrefresh-0-1-0/promo_poster.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="TTGRefresh Poster" class="gallery-image" data-flex-basis="426px" data-flex-grow="177" height="2160" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/10/ttgrefresh-0-1-0/promo_poster.png" width="3840"&gt;&lt;/p&gt;
 &lt;p&gt;Github: &lt;a class="link" href="https://github.com/zekunyan/TTGRefresh" target="_blank" rel="noopener"
  &gt;https://github.com/zekunyan/TTGRefresh&lt;/a&gt;&lt;/p&gt;
 &lt;h2 id="项目特点"&gt;&lt;a href="#%e9%a1%b9%e7%9b%ae%e7%89%b9%e7%82%b9" class="header-anchor"&gt;&lt;/a&gt;项目特点
@@ -280,7 +280,7 @@
 &lt;li&gt;&lt;strong&gt;避免重复触发&lt;/strong&gt;：内部有 activity coordinator，默认拦截重复刷新、加载更多互相打架这类问题。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;开箱即用动画样式&lt;/strong&gt;：内置 20 个路径动画样式，先能用、再定制。✨&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="Overview" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/10/ttgrefresh-0-1-0/posterOverview-hires.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Overview" class="gallery-image" data-flex-basis="110px" data-flex-grow="46" height="2868" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/10/ttgrefresh-0-1-0/posterOverview-hires.png" width="1320"&gt;&lt;/p&gt;
 &lt;h2 id="快速使用"&gt;&lt;a href="#%e5%bf%ab%e9%80%9f%e4%bd%bf%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;快速使用
 &lt;/h2&gt;&lt;p&gt;最常见的下拉刷新：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;import&lt;/span&gt; &lt;span class="nc"&gt;TTGRefresh&lt;/span&gt;
@@ -299,7 +299,7 @@
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;collectionView&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ttg&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;addInfiniteLoad&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;preloadOffset&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;180&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;await&lt;/span&gt; &lt;span class="n"&gt;viewModel&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;loadNextPage&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Quick Start" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/10/ttgrefresh-0-1-0/quick_start.png"&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Quick Start" class="gallery-image" data-flex-basis="384px" data-flex-grow="160" height="1800" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/10/ttgrefresh-0-1-0/quick_start.png" width="2880"&gt;&lt;/p&gt;
 &lt;p&gt;这个 API 的重点是 &lt;code&gt;scrollView.ttg&lt;/code&gt;。它不会要求你换一个列表基类，也不会把刷新逻辑藏到 ViewController 之外。它只是给已有的 &lt;code&gt;UIScrollView&lt;/code&gt; 增加一个很薄的入口，业务代码仍然围绕原本的 tableView / collectionView 写。&lt;/p&gt;
 &lt;h2 id="programmatic-control"&gt;&lt;a href="#programmatic-control" class="header-anchor"&gt;&lt;/a&gt;Programmatic Control
 &lt;/h2&gt;&lt;p&gt;刷新控件不能只响应手势，很多页面会在首次进入时自动刷新，或者在筛选条件变化后主动重新加载。这类入口也走同一套状态机：&lt;/p&gt;
@@ -325,7 +325,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;collectionView&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ttg&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;addPathEffectInfiniteLoad&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;style&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pulseCircuit&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;preloadOffset&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;160&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;await&lt;/span&gt; &lt;span class="n"&gt;viewModel&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;loadNextPage&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Path Grid" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/10/ttgrefresh-0-1-0/posterPathGrid-hires.png"&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Path Grid" class="gallery-image" data-flex-basis="110px" data-flex-grow="46" height="2868" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/10/ttgrefresh-0-1-0/posterPathGrid-hires.png" width="1320"&gt;&lt;/p&gt;
 &lt;p&gt;这些内置样式不是为了让每个项目都用花哨动画，而是给组件提供一个足够完整的默认能力：普通工具型 App 可以用默认文字 UI，内容型或品牌型 App 可以快速挑一个合适的动画，再用 template 调整颜色、高度、速度、线宽。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;let&lt;/span&gt; &lt;span class="nv"&gt;template&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TTGRefreshPathEffectTemplate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;style&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;quantumKnot&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
@@ -340,7 +340,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;tableView&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ttg&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;addPathEffectHeaderRefresh&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;template&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;template&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;await&lt;/span&gt; &lt;span class="n"&gt;viewModel&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;reload&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Custom Paths" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/10/ttgrefresh-0-1-0/posterCustomPaths-hires.png"&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Custom Paths" class="gallery-image" data-flex-basis="110px" data-flex-grow="46" height="2868" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/10/ttgrefresh-0-1-0/posterCustomPaths-hires.png" width="1320"&gt;&lt;/p&gt;
 &lt;h2 id="完全自定义-view"&gt;&lt;a href="#%e5%ae%8c%e5%85%a8%e8%87%aa%e5%ae%9a%e4%b9%89-view" class="header-anchor"&gt;&lt;/a&gt;完全自定义 View
 &lt;/h2&gt;&lt;p&gt;如果内置样式不够，任意 &lt;code&gt;UIView&lt;/code&gt; 都可以作为 header 或 footer，只要实现一个很小的协议。比如自定义 header：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kr"&gt;final&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;CustomHeaderView&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;UIView&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;TTGRefreshHeaderContentView&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
@@ -372,7 +372,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;库只规定状态协议，不规定你的 UI 长什么样。这样对宿主页面的侵入就会低很多：页面不需要知道 header 内部动画怎么画，header 也不需要知道业务怎么加载数据。&lt;/p&gt;
 &lt;h2 id="架构"&gt;&lt;a href="#%e6%9e%b6%e6%9e%84" class="header-anchor"&gt;&lt;/a&gt;架构
-&lt;/h2&gt;&lt;p&gt;&lt;img alt="Architecture" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/10/ttgrefresh-0-1-0/architecture_diagram.png"&gt;&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;&lt;img alt="Architecture" class="gallery-image" data-flex-basis="426px" data-flex-grow="177" height="2160" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/10/ttgrefresh-0-1-0/architecture_diagram.png" width="3840"&gt;&lt;/p&gt;
 &lt;p&gt;内部大致分成几块：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;UIScrollView+TTGRefresh.swift&lt;/code&gt;：通过 associated object 安装 header/footer，提供 &lt;code&gt;scrollView.ttg&lt;/code&gt; 入口。&lt;/li&gt;
@@ -388,7 +388,7 @@
 &lt;p&gt;我自己最看重的几个点是：&lt;strong&gt;API 足够简单、对宿主 UI 低侵入、定制能力足够强、内置样式开箱即用&lt;/strong&gt;。后面如果继续扩展，也应该围绕这几个原则来做，而不是把它做成一个很重、很难接入的列表框架。&lt;/p&gt;</description></item><item><title>老项目大升级系列 - TTGTagCollectionView：Swift-first 的标签布局控件更新</title><link>https://tutuge.me/2026/07/08/ttgtagcollectionview-3-3-0/</link><pubDate>Wed, 08 Jul 2026 02:00:00 +0000</pubDate><guid>https://tutuge.me/2026/07/08/ttgtagcollectionview-3-3-0/</guid><description>&lt;img src="https://tutuge.me/assets/2026/07/08/ttgtagcollectionview-3-3-0/promo_poster.png" alt="Featured image of post 老项目大升级系列 - TTGTagCollectionView：Swift-first 的标签布局控件更新" /&gt;&lt;h2 id="前言"&gt;&lt;a href="#%e5%89%8d%e8%a8%80" class="header-anchor"&gt;&lt;/a&gt;前言
 &lt;/h2&gt;&lt;p&gt;&lt;code&gt;TTGTagCollectionView&lt;/code&gt; 是我很早之前写的标签布局控件。最开始的目标很简单：项目里总是要做“标签云”、“筛选项”、“兴趣标签”这种 UI，不想每次都重新计算换行和选中状态，所以把这块抽出来做了一个库。&lt;/p&gt;
 &lt;p&gt;这次整理到了 &lt;code&gt;3.3.0&lt;/code&gt;，变化就不只是补几个属性了，而是把它重新整理成了一个 &lt;strong&gt;Swift-first、Objective-C 仍然可用、布局和视图分离&lt;/strong&gt; 的版本。简单来说，老项目能继续用，新项目也可以更自然地接入 Swift / SPM / AutoLayout。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="TTGTagCollectionView Promo" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/08/ttgtagcollectionview-3-3-0/promo_poster.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="TTGTagCollectionView Promo" class="gallery-image" data-flex-basis="426px" data-flex-grow="177" height="2160" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/08/ttgtagcollectionview-3-3-0/promo_poster.png" width="3840"&gt;&lt;/p&gt;
 &lt;p&gt;Github: &lt;a class="link" href="https://github.com/zekunyan/TTGTagCollectionView" target="_blank" rel="noopener"
  &gt;https://github.com/zekunyan/TTGTagCollectionView&lt;/a&gt;&lt;/p&gt;
 &lt;h2 id="更新"&gt;&lt;a href="#%e6%9b%b4%e6%96%b0" class="header-anchor"&gt;&lt;/a&gt;更新
@@ -401,7 +401,7 @@
 &lt;li&gt;&lt;strong&gt;性能更可控&lt;/strong&gt;：文字测量缓存和纯布局缓存拆出来，密集标签列表不用每次都全量重新算。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;交互补齐&lt;/strong&gt;：除了点击和选中，还加了滑动选择、长按拖拽排序、拖到删除区域等常见需求。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="Concepts" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/08/ttgtagcollectionview-3-3-0/concepts_poster.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Concepts" class="gallery-image" data-flex-basis="426px" data-flex-grow="177" height="2160" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/08/ttgtagcollectionview-3-3-0/concepts_poster.png" width="3840"&gt;&lt;/p&gt;
 &lt;h2 id="快速使用"&gt;&lt;a href="#%e5%bf%ab%e9%80%9f%e4%bd%bf%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;快速使用
 &lt;/h2&gt;&lt;p&gt;现在的使用方式更像“先构造一个 tag 模型，再交给 collection view 布局”：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;import&lt;/span&gt; &lt;span class="nc"&gt;TTGTags&lt;/span&gt;
@@ -424,7 +424,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;let&lt;/span&gt; &lt;span class="nv"&gt;tag&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TextTag&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;content&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;content&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;style&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;style&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;tagView&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tag&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;tag&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;tagView&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;reload&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Create" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/08/ttgtagcollectionview-3-3-0/quick_start_01_create.png"&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Create" class="gallery-image" data-flex-basis="384px" data-flex-grow="160" height="1800" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/08/ttgtagcollectionview-3-3-0/quick_start_01_create.png" width="2880"&gt;&lt;/p&gt;
 &lt;p&gt;如果只做简单文字标签，这个模型看起来比以前多了一层，但好处是后面扩展不会把 &lt;code&gt;TextTagCollectionView&lt;/code&gt; 自己撑得越来越大。文字、样式、选中样式、附件数据各管各的，调用方也更容易做 diff、缓存或者复用。&lt;/p&gt;
 &lt;h2 id="样式更新"&gt;&lt;a href="#%e6%a0%b7%e5%bc%8f%e6%9b%b4%e6%96%b0" class="header-anchor"&gt;&lt;/a&gt;样式更新
 &lt;/h2&gt;&lt;p&gt;以前标签样式基本是一些直接挂在 View 上的属性。现在统一放到了 &lt;code&gt;TextTagStyle&lt;/code&gt;：&lt;/p&gt;
@@ -436,7 +436,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;tag&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;selectedStyle&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;selectedStyle&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;tagView&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;selectionLimit&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;TextTagStyle&lt;/code&gt; 里面包含背景色、渐变背景、圆角、边框、阴影、padding、最大/最小/固定宽高等属性。这个设计的重点不是属性数量，而是 &lt;strong&gt;每个 Tag 可以有自己的 style&lt;/strong&gt;，不再只能让整个 collection 共享一套样式。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Style" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/08/ttgtagcollectionview-3-3-0/quick_start_02_style.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Style" class="gallery-image" data-flex-basis="384px" data-flex-grow="160" height="1800" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/08/ttgtagcollectionview-3-3-0/quick_start_02_style.png" width="2880"&gt;&lt;/p&gt;
 &lt;h2 id="布局层拆出来"&gt;&lt;a href="#%e5%b8%83%e5%b1%80%e5%b1%82%e6%8b%86%e5%87%ba%e6%9d%a5" class="header-anchor"&gt;&lt;/a&gt;布局层拆出来
 &lt;/h2&gt;&lt;p&gt;这次重构里比较重要的一点，是把布局计算抽成了 &lt;code&gt;TagCollectionLayout&lt;/code&gt;。它接收 tag sizes、滚动方向、alignment、spacing、inset、容器宽高等输入，然后输出每个 tag 的 frame 和最终 contentSize。&lt;/p&gt;
 &lt;p&gt;这样做有几个好处：&lt;/p&gt;
@@ -445,7 +445,7 @@
 &lt;li&gt;布局计算可以单独写单元测试，不需要依赖 UIKit 交互过程。&lt;/li&gt;
 &lt;li&gt;对相同输入可以做布局缓存，避免频繁刷新时重复计算。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="Layout" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/08/ttgtagcollectionview-3-3-0/quick_start_04_layout.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Layout" class="gallery-image" data-flex-basis="384px" data-flex-grow="160" height="1800" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/08/ttgtagcollectionview-3-3-0/quick_start_04_layout.png" width="2880"&gt;&lt;/p&gt;
 &lt;p&gt;比如下面这个配置，可以从普通换行标签切到水平滚动的筛选条：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;tagView&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;alignment&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fillByExpandingWidth&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;tagView&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;horizontalSpacing&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt;
@@ -479,7 +479,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这类功能放在库里并不是为了替业务层做决定，而是把手势、快照、自动滚动、frame 重排这些重复工作处理掉。业务层只需要决定“能不能选”、“能不能删”、“移动后数据源怎么更新”。&lt;/p&gt;
 &lt;h2 id="架构"&gt;&lt;a href="#%e6%9e%b6%e6%9e%84" class="header-anchor"&gt;&lt;/a&gt;架构
-&lt;/h2&gt;&lt;p&gt;&lt;img alt="Architecture" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/08/ttgtagcollectionview-3-3-0/architecture_poster.png"&gt;&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;&lt;img alt="Architecture" class="gallery-image" data-flex-basis="256px" data-flex-grow="106" height="1500" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/08/ttgtagcollectionview-3-3-0/architecture_poster.png" width="1600"&gt;&lt;/p&gt;
 &lt;p&gt;从架构上看，新的版本大致分成几块：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;TextTag&lt;/code&gt; / &lt;code&gt;TextTagContent&lt;/code&gt; / &lt;code&gt;TextTagStyle&lt;/code&gt;：描述标签数据和外观。&lt;/li&gt;
@@ -494,7 +494,7 @@
 &lt;p&gt;如果项目里只是几个固定标签，自己写当然也可以；但如果标签数量多、样式多、还要放在 Cell 或筛选页里反复复用，用一个专门的布局控件会省掉不少琐碎工作。嗯，这也是这个库一开始存在的原因。&lt;/p&gt;</description></item><item><title>老项目大升级系列 - TTGSnackbar：从简单提示条到现代消息反馈组件</title><link>https://tutuge.me/2026/07/06/ttgsnackbar-2-0-0/</link><pubDate>Mon, 06 Jul 2026 02:05:00 +0000</pubDate><guid>https://tutuge.me/2026/07/06/ttgsnackbar-2-0-0/</guid><description>&lt;img src="https://tutuge.me/assets/2026/07/06/ttgsnackbar-2-0-0/ttgsnackbar-poster.jpg" alt="Featured image of post 老项目大升级系列 - TTGSnackbar：从简单提示条到现代消息反馈组件" /&gt;&lt;h2 id="前言"&gt;&lt;a href="#%e5%89%8d%e8%a8%80" class="header-anchor"&gt;&lt;/a&gt;前言
 &lt;/h2&gt;&lt;p&gt;&lt;code&gt;TTGSnackbar&lt;/code&gt; 最早只是我用 Swift 写的一个 Android Snackbar 风格提示条：显示一段文案，带一个 Action，几秒后自动消失。&lt;/p&gt;
 &lt;p&gt;这次整理到 &lt;code&gt;2.0.0&lt;/code&gt;，目标变成了一个更完整的 iOS 消息反馈组件：不仅能显示顶部/底部消息，还要支持语义样式、队列管理、自定义 View、Swift concurrency、无障碍、触觉反馈和现代 Apple 平台要求。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="TTGSnackbar Poster" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/06/ttgsnackbar-2-0-0/ttgsnackbar-poster.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="TTGSnackbar Poster" class="gallery-image" data-flex-basis="384px" data-flex-grow="160" height="2100" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/06/ttgsnackbar-2-0-0/ttgsnackbar-poster.jpg" width="3360"&gt;&lt;/p&gt;
 &lt;p&gt;Github: &lt;a class="link" href="https://github.com/zekunyan/TTGSnackbar" target="_blank" rel="noopener"
  &gt;https://github.com/zekunyan/TTGSnackbar&lt;/a&gt;&lt;/p&gt;
 &lt;h2 id="更新"&gt;&lt;a href="#%e6%9b%b4%e6%96%b0" class="header-anchor"&gt;&lt;/a&gt;更新
@@ -508,14 +508,14 @@
 &lt;li&gt;&lt;strong&gt;体验细节&lt;/strong&gt;：Dynamic Type、VoiceOver、Reduce Motion、haptics、生命周期暂停/恢复计时器。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;自定义能力&lt;/strong&gt;：支持自定义内容 View，也可以放到自定义容器里展示。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="Architecture" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/06/ttgsnackbar-2-0-0/ttgsnackbar-architecture.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Architecture" class="gallery-image" data-flex-basis="349px" data-flex-grow="145" height="1100" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/06/ttgsnackbar-2-0-0/ttgsnackbar-architecture.jpg" width="1600"&gt;&lt;/p&gt;
 &lt;h2 id="快速使用"&gt;&lt;a href="#%e5%bf%ab%e9%80%9f%e4%bd%bf%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;快速使用
 &lt;/h2&gt;&lt;p&gt;最简单的用法还是没有变：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;import&lt;/span&gt; &lt;span class="nc"&gt;TTGSnackbar&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;let&lt;/span&gt; &lt;span class="nv"&gt;snackbar&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TTGSnackbar&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;TTGSnackbar!&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;duration&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;short&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;snackbar&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;show&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Simple snackbar" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/06/ttgsnackbar-2-0-0/snackbar_1.png"&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Simple snackbar" class="gallery-image" data-flex-basis="400px" data-flex-grow="166" height="1440" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/06/ttgsnackbar-2-0-0/snackbar_1.png" width="2400"&gt;&lt;/p&gt;
 &lt;p&gt;如果消息需要一个恢复入口，比如删除文件后的 Undo：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;let&lt;/span&gt; &lt;span class="nv"&gt;snackbar&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TTGSnackbar&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;File deleted&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
@@ -527,7 +527,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;snackbar&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;show&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Action snackbar" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/06/ttgsnackbar-2-0-0/snackbar_2.png"&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Action snackbar" class="gallery-image" data-flex-basis="400px" data-flex-grow="166" height="1440" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/06/ttgsnackbar-2-0-0/snackbar_2.png" width="2400"&gt;&lt;/p&gt;
 &lt;p&gt;这个 API 继续保留，是为了兼容老项目，也因为它确实足够直接。对一个提示控件来说，简单场景不应该被复杂 API 绑架。&lt;/p&gt;
 &lt;h2 id="语义样式"&gt;&lt;a href="#%e8%af%ad%e4%b9%89%e6%a0%b7%e5%bc%8f" class="header-anchor"&gt;&lt;/a&gt;语义样式
 &lt;/h2&gt;&lt;p&gt;以前做不同状态的提示，通常是自己设置背景色、文字色、icon。写多了之后就会发现，业务里其实反复出现的是几类固定语义：成功、警告、错误、加载中。&lt;/p&gt;
@@ -535,7 +535,7 @@
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;let&lt;/span&gt; &lt;span class="nv"&gt;snackbar&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TTGSnackbar&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;Saved successfully&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;duration&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;middle&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;snackbar&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;style&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;success&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;snackbar&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;show&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Semantic snackbar" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/06/ttgsnackbar-2-0-0/snackbar_4.png"&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Semantic snackbar" class="gallery-image" data-flex-basis="400px" data-flex-grow="166" height="1440" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/06/ttgsnackbar-2-0-0/snackbar_4.png" width="2400"&gt;&lt;/p&gt;
 &lt;p&gt;加载中的场景也可以直接用 &lt;code&gt;.loading&lt;/code&gt;，配合 &lt;code&gt;.forever&lt;/code&gt; 手动结束：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;let&lt;/span&gt; &lt;span class="nv"&gt;snackbar&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TTGSnackbar&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;Uploading...&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;duration&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;forever&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;snackbar&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;style&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;loading&lt;/span&gt;
@@ -545,7 +545,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;snackbar&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dismiss&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;snackbar&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;show&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Loading snackbar" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/06/ttgsnackbar-2-0-0/snackbar_3.png"&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Loading snackbar" class="gallery-image" data-flex-basis="400px" data-flex-grow="166" height="1440" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/06/ttgsnackbar-2-0-0/snackbar_3.png" width="2400"&gt;&lt;/p&gt;
 &lt;h2 id="configuration-api"&gt;&lt;a href="#configuration-api" class="header-anchor"&gt;&lt;/a&gt;Configuration API
 &lt;/h2&gt;&lt;p&gt;属性式配置比较直观，但是当参数多起来以后，会出现“创建对象、设置一堆属性、最后 show”的散落代码。&lt;code&gt;2.0.0&lt;/code&gt; 里增加了 &lt;code&gt;TTGSnackbarConfiguration&lt;/code&gt;，把一次展示需要的信息收拢到一个 value object：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;let&lt;/span&gt; &lt;span class="nv"&gt;snackbar&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TTGSnackbar&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;configuration&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="kd"&gt;init&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
@@ -599,14 +599,14 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;let&lt;/span&gt; &lt;span class="nv"&gt;snackbar&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TTGSnackbar&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;customContentView&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;contentView&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;duration&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;forever&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;snackbar&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;shouldActivateLeftAndRightMarginOnCustomContentView&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;snackbar&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;show&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Custom snackbar" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/06/ttgsnackbar-2-0-0/snackbar_6.png"&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Custom snackbar" class="gallery-image" data-flex-basis="400px" data-flex-grow="166" height="1440" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/06/ttgsnackbar-2-0-0/snackbar_6.png" width="2400"&gt;&lt;/p&gt;
 &lt;p&gt;这个设计里，库继续负责安全区域、展示位置、动画和 dismiss，内容内部怎么布局交给业务。边界要分清，不然控件会越来越像一个小页面 =。=&lt;/p&gt;
 &lt;h2 id="总结"&gt;&lt;a href="#%e6%80%bb%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;总结
 &lt;/h2&gt;&lt;p&gt;&lt;code&gt;TTGSnackbar 2.0.0&lt;/code&gt; 最大的变化不是“样式变好看了”，而是从一个简单提示条，补成了一个更适合现代 iOS 项目的反馈组件。&lt;/p&gt;
 &lt;p&gt;简单场景仍然可以一行 &lt;code&gt;show()&lt;/code&gt;；复杂场景可以用 configuration、manager 和 async result 做统一管理。这个平衡比较重要：提示控件要轻，但也不能在真正接到业务流程时马上露怯。&lt;/p&gt;</description></item><item><title>老项目大升级系列 - TTGPuzzleVerify：拼图验证控件的 Swift 化和能力补齐</title><link>https://tutuge.me/2026/07/04/ttgpuzzleverify-2-0-0/</link><pubDate>Sat, 04 Jul 2026 02:10:00 +0000</pubDate><guid>https://tutuge.me/2026/07/04/ttgpuzzleverify-2-0-0/</guid><description>&lt;img src="https://tutuge.me/assets/2026/07/04/ttgpuzzleverify-2-0-0/promo_poster.jpg" alt="Featured image of post 老项目大升级系列 - TTGPuzzleVerify：拼图验证控件的 Swift 化和能力补齐" /&gt;&lt;h2 id="前言"&gt;&lt;a href="#%e5%89%8d%e8%a8%80" class="header-anchor"&gt;&lt;/a&gt;前言
 &lt;/h2&gt;&lt;p&gt;&lt;code&gt;TTGPuzzleVerify&lt;/code&gt; 是一个拼图验证控件。最早写它的时候，重点是“怎么从图片里抠出一块拼图、怎么做镂空、怎么判断拖动是否成功”。那篇旧文章里也主要讲的是 &lt;code&gt;UIBezierPath&lt;/code&gt;、&lt;code&gt;CAShapeLayer.mask&lt;/code&gt; 和手势判断。&lt;/p&gt;
 &lt;p&gt;这次更新到 &lt;code&gt;2.0.0&lt;/code&gt;，核心思路没有变，但项目本身变得完整了很多：Swift 原生实现、Objective-C 可调用、SwiftUI 可包装、统一配置对象、更多验证行为、状态机、失败反馈、结果指标等等。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="TTGPuzzleVerify Poster" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/04/ttgpuzzleverify-2-0-0/promo_poster.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="TTGPuzzleVerify Poster" class="gallery-image" data-flex-basis="426px" data-flex-grow="177" height="900" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/04/ttgpuzzleverify-2-0-0/promo_poster.jpg" width="1600"&gt;&lt;/p&gt;
 &lt;p&gt;Github: &lt;a class="link" href="https://github.com/zekunyan/TTGPuzzleVerify" target="_blank" rel="noopener"
  &gt;https://github.com/zekunyan/TTGPuzzleVerify&lt;/a&gt;&lt;/p&gt;
 &lt;h2 id="更新"&gt;&lt;a href="#%e6%9b%b4%e6%96%b0" class="header-anchor"&gt;&lt;/a&gt;更新
@@ -620,7 +620,7 @@
 &lt;li&gt;&lt;strong&gt;结果指标&lt;/strong&gt;：成功/失败回调里带上偏移、耗时、拖动距离、交互次数等数据。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;SwiftUI / UIKit / Objective-C 共用核心&lt;/strong&gt;：不同集成方式不再各写一套逻辑。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="Architecture" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/04/ttgpuzzleverify-2-0-0/architecture_diagram.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Architecture" class="gallery-image" data-flex-basis="384px" data-flex-grow="160" height="1000" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/04/ttgpuzzleverify-2-0-0/architecture_diagram.jpg" width="1600"&gt;&lt;/p&gt;
 &lt;h2 id="快速使用"&gt;&lt;a href="#%e5%bf%ab%e9%80%9f%e4%bd%bf%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;快速使用
 &lt;/h2&gt;&lt;p&gt;UIKit 里最基本的配置如下：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;import&lt;/span&gt; &lt;span class="nc"&gt;TTGPuzzleVerify&lt;/span&gt;
@@ -637,7 +637,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;puzzleView&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;applyConfiguration&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;configuration&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;puzzleView&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;puzzleBlankPosition&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;CGPoint&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;210&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;puzzleView&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;resetVerification&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Quick Start" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/04/ttgpuzzleverify-2-0-0/quick_start.jpg"&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Quick Start" class="gallery-image" data-flex-basis="85px" data-flex-grow="35" height="3600" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/04/ttgpuzzleverify-2-0-0/quick_start.jpg" width="1280"&gt;&lt;/p&gt;
 &lt;p&gt;如果在 SwiftUI 里用，也就是包一层 &lt;code&gt;UIViewRepresentable&lt;/code&gt;：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;struct&lt;/span&gt; &lt;span class="nc"&gt;PuzzleVerifyRepresentable&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;UIViewRepresentable&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;@&lt;/span&gt;&lt;span class="n"&gt;Binding&lt;/span&gt; &lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nv"&gt;isVerified&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;Bool&lt;/span&gt;
@@ -721,7 +721,7 @@
 &lt;p&gt;当然，拼图验证这种东西也要看使用场景。它可以增加交互门槛、减少误触或低成本刷操作，但不要把它当成完整安全方案。控件负责交互体验，安全策略还是要回到整体系统设计里。&lt;/p&gt;</description></item><item><title>老项目大升级系列 - TTGEmojiRate：让评分控件重新有表情</title><link>https://tutuge.me/2026/07/02/ttgemojirate-1-0-0/</link><pubDate>Thu, 02 Jul 2026 02:20:00 +0000</pubDate><guid>https://tutuge.me/2026/07/02/ttgemojirate-1-0-0/</guid><description>&lt;img src="https://tutuge.me/assets/2026/07/02/ttgemojirate-1-0-0/promo_poster.png" alt="Featured image of post 老项目大升级系列 - TTGEmojiRate：让评分控件重新有表情" /&gt;&lt;h2 id="前言"&gt;&lt;a href="#%e5%89%8d%e8%a8%80" class="header-anchor"&gt;&lt;/a&gt;前言
 &lt;/h2&gt;&lt;p&gt;&lt;code&gt;TTGEmojiRate&lt;/code&gt; 是我很早之前写的一个评分控件。最初的灵感来自一个 Dribbble 动画：用户上下拖动 Emoji，表情从不开心慢慢变成开心，评分也跟着变化。相比星星评分，这种方式更像是在表达一个情绪。&lt;/p&gt;
 &lt;p&gt;这次整理到 &lt;code&gt;1.0.0&lt;/code&gt;，不是简单把 Swift 版本升级一下，而是把原来“一个会变嘴型的表情评分”扩展成了一个更完整的情绪评分组件：范围、步进、点击评分、只读展示、表情预设、眼睛/嘴型样式、脸型、渐变、填充、自定义路径都补了进来。😊&lt;/p&gt;
-&lt;p&gt;&lt;img alt="TTGEmojiRate Poster" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/02/ttgemojirate-1-0-0/promo_poster.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="TTGEmojiRate Poster" class="gallery-image" data-flex-basis="426px" data-flex-grow="177" height="2160" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/02/ttgemojirate-1-0-0/promo_poster.png" width="3840"&gt;&lt;/p&gt;
 &lt;p&gt;Github: &lt;a class="link" href="https://github.com/zekunyan/TTGEmojiRate" target="_blank" rel="noopener"
  &gt;https://github.com/zekunyan/TTGEmojiRate&lt;/a&gt;&lt;/p&gt;
 &lt;h2 id="更新"&gt;&lt;a href="#%e6%9b%b4%e6%96%b0" class="header-anchor"&gt;&lt;/a&gt;更新
@@ -735,7 +735,7 @@
 &lt;li&gt;&lt;strong&gt;自定义路径&lt;/strong&gt;：可以替换内置绘制，也可以在内置 Emoji 上 overlay 自己的路径。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Objective-C 兼容&lt;/strong&gt;：枚举和 setter 都提供了 ObjC-friendly 入口。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="Face Shapes" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/02/ttgemojirate-1-0-0/review-face-shapes.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Face Shapes" class="gallery-image" data-flex-basis="110px" data-flex-grow="46" height="800" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/02/ttgemojirate-1-0-0/review-face-shapes.jpg" width="368"&gt;&lt;/p&gt;
 &lt;h2 id="快速使用"&gt;&lt;a href="#%e5%bf%ab%e9%80%9f%e4%bd%bf%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;快速使用
 &lt;/h2&gt;&lt;p&gt;基础用法还是创建一个 &lt;code&gt;EmojiRateView&lt;/code&gt;，设置评分范围，然后监听变化：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;import&lt;/span&gt; &lt;span class="nc"&gt;TTGEmojiRate&lt;/span&gt;
@@ -750,7 +750,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;addSubview&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;rateView&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Create" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/02/ttgemojirate-1-0-0/quick_start_create.png"&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Create" class="gallery-image" data-flex-basis="384px" data-flex-grow="160" height="1800" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/02/ttgemojirate-1-0-0/quick_start_create.png" width="2880"&gt;&lt;/p&gt;
 &lt;p&gt;如果产品需要更明确的分值，比如 1 到 5 分、每次 0.5：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;rateView&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;minimumRateValue&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;rateView&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;maximumRateValue&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;
@@ -774,7 +774,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;systemBlue&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;systemPurple&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Configure" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/02/ttgemojirate-1-0-0/quick_start_configure.png"&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Configure" class="gallery-image" data-flex-basis="384px" data-flex-grow="160" height="1800" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/02/ttgemojirate-1-0-0/quick_start_configure.png" width="2880"&gt;&lt;/p&gt;
 &lt;p&gt;这里的设计思路还是沿用旧版：&lt;code&gt;rateValue&lt;/code&gt; 是核心状态，表情、颜色、路径都根据当前 progress 重新计算。只是现在可参与计算的维度更多了，不再只有嘴巴和线条颜色。&lt;/p&gt;
 &lt;h2 id="自定义路径"&gt;&lt;a href="#%e8%87%aa%e5%ae%9a%e4%b9%89%e8%b7%af%e5%be%84" class="header-anchor"&gt;&lt;/a&gt;自定义路径
 &lt;/h2&gt;&lt;p&gt;如果内置 Emoji 不符合产品气质，可以用自定义路径替换，或者保留内置表情再叠加额外图形：&lt;/p&gt;
@@ -793,14 +793,14 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;path&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Custom Paths" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/02/ttgemojirate-1-0-0/quick_start_custom_paths.png"&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Custom Paths" class="gallery-image" data-flex-basis="384px" data-flex-grow="160" height="1800" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/02/ttgemojirate-1-0-0/quick_start_custom_paths.png" width="2880"&gt;&lt;/p&gt;
 &lt;p&gt;自定义路径这里我比较喜欢保留两种模式：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;replace&lt;/code&gt;：完全替换内置绘制，适合品牌化很强的控件。&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;overlay&lt;/code&gt;：保留内置 Emoji，再叠加自己的符号、波形、徽章等。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;这样可以避免“想加一点点元素，却被迫重写所有绘制”的问题。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Review Custom Paths" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/02/ttgemojirate-1-0-0/review-custom-paths.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Review Custom Paths" class="gallery-image" data-flex-basis="110px" data-flex-grow="46" height="800" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/02/ttgemojirate-1-0-0/review-custom-paths.jpg" width="368"&gt;&lt;/p&gt;
 &lt;h2 id="交互方向和只读状态"&gt;&lt;a href="#%e4%ba%a4%e4%ba%92%e6%96%b9%e5%90%91%e5%92%8c%e5%8f%aa%e8%af%bb%e7%8a%b6%e6%80%81" class="header-anchor"&gt;&lt;/a&gt;交互方向和只读状态
 &lt;/h2&gt;&lt;p&gt;旧版主要是上下拖动。这次增加了水平手势方向，也补了 tap-to-rate 和 read-only：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;rateView&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;rateGestureDirection&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TTGEmojiRateGestureDirection&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;horizontal&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;rawValue&lt;/span&gt;
@@ -808,7 +808,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;rateView&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isReadOnly&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;rateView&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;setRateColor&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;from&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;systemBlue&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;systemGreen&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Vertical Interaction" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/02/ttgemojirate-1-0-0/review-vertical.jpg"&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Vertical Interaction" class="gallery-image" data-flex-basis="110px" data-flex-grow="46" height="800" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/02/ttgemojirate-1-0-0/review-vertical.jpg" width="368"&gt;&lt;/p&gt;
 &lt;p&gt;只读状态看起来是小功能，但实际挺常见：详情页展示平均分、评价列表展示用户打过的分、统计页展示结果，都不应该还能被拖动修改。把输入态和展示态放在同一个控件里，会比再写一个只读 View 简单。&lt;/p&gt;
 &lt;h2 id="实现小结"&gt;&lt;a href="#%e5%ae%9e%e7%8e%b0%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;实现小结
 &lt;/h2&gt;&lt;p&gt;从实现上看，&lt;code&gt;TTGEmojiRate&lt;/code&gt; 仍然是基于 &lt;code&gt;CAShapeLayer&lt;/code&gt; 和 &lt;code&gt;UIBezierPath&lt;/code&gt;：&lt;/p&gt;
@@ -830,7 +830,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Github地址：&lt;a class="link" href="https://github.com/zekunyan/TTGDeallocTaskHelper/" target="_blank" rel="noopener"
  &gt;https://github.com/zekunyan/TTGDeallocTaskHelper&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;一张图说明原理：&lt;/p&gt;
-&lt;p&gt;&lt;img alt="总体结构" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/11/TTGDeallocTaskHelper/TTGDeallocTaskHelper_1.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="总体结构" class="gallery-image" data-flex-basis="768px" data-flex-grow="320" height="391" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/11/TTGDeallocTaskHelper/TTGDeallocTaskHelper_1.jpg" width="1252"&gt;&lt;/p&gt;
 &lt;p&gt;库的详细原理、限制、注意事项，为什么说“&lt;strong&gt;后期&lt;/strong&gt;”执行，将在下文给出。&lt;/p&gt;
 &lt;h2 id="使用案例"&gt;&lt;a href="#%e4%bd%bf%e7%94%a8%e6%a1%88%e4%be%8b" class="header-anchor"&gt;&lt;/a&gt;使用案例
 &lt;/h2&gt;&lt;p&gt;先给出几个使用案例。&lt;/p&gt;
@@ -870,7 +870,7 @@
 &lt;li&gt;实现Associated Object的&lt;code&gt;dealloc&lt;/code&gt;方法，在Associated Object释放的时候，批量执行之前添加的Block&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;图示如下：&lt;/p&gt;
-&lt;p&gt;&lt;img alt="总体结构" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/11/TTGDeallocTaskHelper/TTGDeallocTaskHelper_1.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="总体结构" class="gallery-image" data-flex-basis="768px" data-flex-grow="320" height="391" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/11/TTGDeallocTaskHelper/TTGDeallocTaskHelper_1.jpg" width="1252"&gt;&lt;/p&gt;
 &lt;h3 id="associated-object---taskmodel"&gt;&lt;a href="#associated-object---taskmodel" class="header-anchor"&gt;&lt;/a&gt;Associated Object - TaskModel
 &lt;/h3&gt;&lt;p&gt;&lt;strong&gt;属性&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;上图中的TaskModel，就是库代码里面的&lt;code&gt;TTGDeallocTaskModel&lt;/code&gt;类，包含三个属性：&lt;/p&gt;
@@ -998,13 +998,13 @@ Key的类型是NSUInteger，全局自增，保证唯一。&lt;/p&gt;
 &lt;/h2&gt;&lt;p&gt;什么时候Associated Object的释放能在对象属性release之前就好了=。=&lt;/p&gt;</description></item><item><title>用QuartzCode快速实现一个收藏动画</title><link>https://tutuge.me/2017/03/08/quartzcode-demo-star-animation/</link><pubDate>Tue, 07 Mar 2017 16:00:00 +0000</pubDate><guid>https://tutuge.me/2017/03/08/quartzcode-demo-star-animation/</guid><description>&lt;img src="https://tutuge.me/assets/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_1.gif" alt="Featured image of post 用QuartzCode快速实现一个收藏动画" /&gt;&lt;h2 id="前言"&gt;&lt;a href="#%e5%89%8d%e8%a8%80" class="header-anchor"&gt;&lt;/a&gt;前言
 &lt;/h2&gt;&lt;p&gt;“工欲善其事,必先利其器”，iOS的Core Animation非常强大，可以做出非常炫酷的动画，但是实际写起来还是比较麻烦，代码不直观，需要反复的改参数、Build、运行，所以诞生了各种动画制作工具，本文就以其中比较有名的&lt;a class="link" href="http://www.quartzcodeapp.com/" target="_blank" rel="noopener"
  &gt;QuartzCode&lt;/a&gt;为例，快速实现一个收藏功能的星星动画，最终的效果如下：&lt;/p&gt;
-&lt;p&gt;&lt;img loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_1.gif"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class="gallery-image" data-flex-basis="164px" data-flex-grow="68" height="402" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_1.gif" width="276"&gt;&lt;/p&gt;
 &lt;p&gt;GitHub地址：&lt;a class="link" href="https://github.com/zekunyan/QuartzCodeExample-StarAimation" target="_blank" rel="noopener"
  &gt;https://github.com/zekunyan/QuartzCodeExample-StarAimation&lt;/a&gt;&lt;/p&gt;
 &lt;h2 id="quartzcode简介"&gt;&lt;a href="#quartzcode%e7%ae%80%e4%bb%8b" class="header-anchor"&gt;&lt;/a&gt;QuartzCode简介
 &lt;/h2&gt;&lt;p&gt;QuartzCode是一款专门用来创作iOS/macOS动画的软件，基本上把整个Core Animation框架的内容都搬到了软件里面，比如各种Layer、Mask、可以用来动画的属性，基本上跟代码是一致的，完全可以当成**“可视化动画编程”&lt;strong&gt;工具，而且制作以后可以&lt;/strong&gt;导出代码+资源文件**，直接就可以在代码里面调用，方便自定义修改。&lt;/p&gt;
 &lt;p&gt;以QuartzCode 1.54.0为例，主体界面如下：&lt;/p&gt;
-&lt;p&gt;&lt;img loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_2.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class="gallery-image" data-flex-basis="346px" data-flex-grow="144" height="1840" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_2.jpg" width="2654"&gt;&lt;/p&gt;
 &lt;p&gt;简单讲下：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;A: Layers，用于动画的Layer在这里显示，先后顺序、层级和StoryBoard比较像&lt;/li&gt;
@@ -1018,7 +1018,7 @@ Key的类型是NSUInteger，全局自增，保证唯一。&lt;/p&gt;
  &gt;http://www.quartzcodeapp.com/&lt;/a&gt;&lt;/p&gt;
 &lt;h2 id="整理思路"&gt;&lt;a href="#%e6%95%b4%e7%90%86%e6%80%9d%e8%b7%af" class="header-anchor"&gt;&lt;/a&gt;整理思路
 &lt;/h2&gt;&lt;p&gt;首先整理下思路：&lt;/p&gt;
-&lt;p&gt;&lt;img loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_3.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class="gallery-image" data-flex-basis="435px" data-flex-grow="181" height="838" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_3.jpg" width="1522"&gt;&lt;/p&gt;
 &lt;p&gt;总体上可以分成两个部分，一个是动画部分，用QuartzCode实现可视化编辑创建；另一个是功能、代码API设置部分，需要在QuartzCode最后导出的代码基础上，添加、修改，封装成简单的控件库。&lt;/p&gt;
 &lt;h2 id="quartzcode实现动画"&gt;&lt;a href="#quartzcode%e5%ae%9e%e7%8e%b0%e5%8a%a8%e7%94%bb" class="header-anchor"&gt;&lt;/a&gt;QuartzCode实现动画
 &lt;/h2&gt;&lt;p&gt;先来看看动画的实现，本节只把主要步骤流程列出来，详细的参数、设置，参考&lt;a class="link" href="https://github.com/zekunyan/QuartzCodeExample-StarAimation" target="_blank" rel="noopener"
@@ -1026,7 +1026,7 @@ Key的类型是NSUInteger，全局自增，保证唯一。&lt;/p&gt;
 &lt;h3 id="显示星星动画"&gt;&lt;a href="#%e6%98%be%e7%a4%ba%e6%98%9f%e6%98%9f%e5%8a%a8%e7%94%bb" class="header-anchor"&gt;&lt;/a&gt;显示星星动画
 &lt;/h3&gt;&lt;p&gt;显示星星的动画由三个部分组成，分别是实心的星星从小到大出现，空心的从大到小并透明度减小消失，最后星星四周闪动圆点、短线。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;实心星星从小到大出现&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_4.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class="gallery-image" data-flex-basis="331px" data-flex-grow="138" height="1460" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_4.jpg" width="2015"&gt;&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;拖入图片素材到中间的画布上，软件会自动创建一个layer，可以通过Inspector调整大小、位置&lt;/li&gt;
 &lt;li&gt;对Layers里面自动生成的layer重命名&lt;/li&gt;
@@ -1035,7 +1035,7 @@ Key的类型是NSUInteger，全局自增，保证唯一。&lt;/p&gt;
 &lt;li&gt;Timeline里面的每一行对应帧动画的时间轴，可以在轴上双击、右键添加关键帧，这里默认就好，分别&lt;strong&gt;选中&lt;/strong&gt;Bounds帧动画时间轴&lt;strong&gt;两端的关键点&lt;/strong&gt;，在右边的Keyframe inspector里面设置Size值，起始是（0，0），结束时大小为原图大小&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;&lt;strong&gt;空心星星从大到小、透明度减小消失&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_5.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class="gallery-image" data-flex-basis="331px" data-flex-grow="138" height="1495" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_5.jpg" width="2066"&gt;&lt;/p&gt;
 &lt;p&gt;基本和上一步一样，可以先隐藏实心的layer以便于观察。&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;添加空心的星星图片素材&lt;/li&gt;
@@ -1045,7 +1045,7 @@ Key的类型是NSUInteger，全局自增，保证唯一。&lt;/p&gt;
 &lt;/ol&gt;
 &lt;p&gt;&lt;strong&gt;四周闪动短线、圆点&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;短线、圆点是沿着星星的四周&lt;strong&gt;重复排列&lt;/strong&gt;的，所以这里可以用&lt;code&gt;CAReplicatorLayer&lt;/code&gt;来实现，对应到QuartzCode里面就是工具栏的”Replicator”类型的Layer。&lt;code&gt;CAReplicatorLayer&lt;/code&gt;可以根据一定的&lt;strong&gt;规则重复&lt;/strong&gt;的绘制内部的子Layer，在这里只需要按照旋转角度变化就好。&lt;/p&gt;
-&lt;p&gt;&lt;img loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_6.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class="gallery-image" data-flex-basis="398px" data-flex-grow="166" height="1508" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_6.jpg" width="2505"&gt;&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;点击”Replicator”，在中间的画布上拖动出一个layer，然后选择”Shape”里面的圆角矩形，在星星的一角拖动画出一个小的圆角矩形，&lt;strong&gt;保证star_layer在replicator layer的内部&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;设置replicator的属性，实现循环重复内部的layer，这里设置”instance count”为5，”Rotation”为72，也就是360/5=72，就可以实现按照星星的五个角重复绘制&lt;/li&gt;
@@ -1055,7 +1055,7 @@ Key的类型是NSUInteger，全局自增，保证唯一。&lt;/p&gt;
 &lt;p&gt;至此，显示的动画就创建好了。&lt;/p&gt;
 &lt;h3 id="隐藏星星动画"&gt;&lt;a href="#%e9%9a%90%e8%97%8f%e6%98%9f%e6%98%9f%e5%8a%a8%e7%94%bb" class="header-anchor"&gt;&lt;/a&gt;隐藏星星动画
 &lt;/h3&gt;&lt;p&gt;再来看看隐藏星星的动画，有了上一小节的基础，隐藏星星的动画就容易多了，基本步骤都是一样的，如下：&lt;/p&gt;
-&lt;p&gt;&lt;img loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_7.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class="gallery-image" data-flex-basis="329px" data-flex-grow="137" height="1552" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_7.jpg" width="2128"&gt;&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;添加一个新的动画组hide&lt;/li&gt;
 &lt;li&gt;分别设置每个layer的动画，实心的星星从大到小、同时透明度降低，空心的相反，replicator layer一直隐藏&lt;/li&gt;
@@ -1063,7 +1063,7 @@ Key的类型是NSUInteger，全局自增，保证唯一。&lt;/p&gt;
 &lt;h3 id="导出动画代码"&gt;&lt;a href="#%e5%af%bc%e5%87%ba%e5%8a%a8%e7%94%bb%e4%bb%a3%e7%a0%81" class="header-anchor"&gt;&lt;/a&gt;导出动画代码
 &lt;/h3&gt;&lt;p&gt;动画都实现了好了以后，就可以导出代码了。&lt;/p&gt;
 &lt;p&gt;依次&lt;code&gt;File-&amp;gt;Export Code...&lt;/code&gt;，就可以打开导出代码的预览界面：&lt;/p&gt;
-&lt;p&gt;&lt;img loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_8.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class="gallery-image" data-flex-basis="373px" data-flex-grow="155" height="1293" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/08/quartzcode-demo-star-animation/quartzcode_demo_star_animation_8.jpg" width="2010"&gt;&lt;/p&gt;
 &lt;p&gt;右边的选项，按照需要选择，默认的基本可以满足要求，“Export Image Assets”最好选上，可以一同导出图片资源。选项的说明参见文档：&lt;a class="link" href="http://www.quartzcodeapp.com/code-generation/code-options/" target="_blank" rel="noopener"
  &gt;http://www.quartzcodeapp.com/code-generation/code-options/&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;至此，最复杂的动画部分就完成了，不用写一行代码，全部可视化编辑～&lt;/p&gt;
@@ -1217,12 +1217,12 @@ Key的类型是NSUInteger，全局自增，保证唯一。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;CocoaPods&lt;/strong&gt;: &lt;code&gt;pod &amp;quot;TTGPuzzleVerify&amp;quot;&lt;/code&gt;
 &lt;strong&gt;Github&lt;/strong&gt;: &lt;a class="link" href="https://github.com/zekunyan/TTGPuzzleVerify" target="_blank" rel="noopener"
  &gt;https://github.com/zekunyan/TTGPuzzleVerify&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/12/25/TTGPuzzleVerify/blog_TTGPuzzleVerify_gif.gif"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class="gallery-image" data-flex-basis="135px" data-flex-grow="56" height="991" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/12/25/TTGPuzzleVerify/blog_TTGPuzzleVerify_gif.gif" width="560"&gt;&lt;/p&gt;
 &lt;p&gt;接下来，说说TTGPuzzleVerify的整体设计思路和实现原理。&lt;/p&gt;
 &lt;h2 id="分析"&gt;&lt;a href="#%e5%88%86%e6%9e%90" class="header-anchor"&gt;&lt;/a&gt;分析
 &lt;/h2&gt;&lt;h3 id="组成部分"&gt;&lt;a href="#%e7%bb%84%e6%88%90%e9%83%a8%e5%88%86" class="header-anchor"&gt;&lt;/a&gt;组成部分
 &lt;/h3&gt;&lt;p&gt;先直观上分析一下控件的组成部分：&lt;/p&gt;
-&lt;p&gt;&lt;img alt="组成部分" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/12/25/TTGPuzzleVerify/blog_TTGPuzzleVerify_1.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="组成部分" class="gallery-image" data-flex-basis="425px" data-flex-grow="177" height="493" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/12/25/TTGPuzzleVerify/blog_TTGPuzzleVerify_1.png" width="875"&gt;&lt;/p&gt;
 &lt;p&gt;可以直观看出，控件应该由三个部分组成：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;拼图块：就是从原图上**“抠”**出来的拼图形状的图片块&lt;/li&gt;
@@ -1231,7 +1231,7 @@ Key的类型是NSUInteger，全局自增，保证唯一。&lt;/p&gt;
 &lt;/ul&gt;
 &lt;h3 id="拆解步骤"&gt;&lt;a href="#%e6%8b%86%e8%a7%a3%e6%ad%a5%e9%aa%a4" class="header-anchor"&gt;&lt;/a&gt;拆解步骤
 &lt;/h3&gt;&lt;p&gt;分析完了控件的组成，现在就来梳理一下控件的整个创建、交互流程。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="步骤" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/12/25/TTGPuzzleVerify/blog_TTGPuzzleVerify_2.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="步骤" class="gallery-image" data-flex-basis="648px" data-flex-grow="270" height="517" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/12/25/TTGPuzzleVerify/blog_TTGPuzzleVerify_2.png" width="1398"&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;输入：图片、拼图形状、拼图大小、镂空的位置、拼图块的起始位置&lt;/li&gt;
 &lt;li&gt;生成拼图路径：根据拼图类型，生成对应的贝塞尔曲线&lt;/li&gt;
@@ -1257,7 +1257,7 @@ Key的类型是NSUInteger，全局自增，保证唯一。&lt;/p&gt;
  &gt;iconmonstr.com&lt;/a&gt;找来的。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;2. 编辑&lt;/strong&gt;
 直接下载回来的SVG还需要调整一下，如去除背景，我是用Sketch来编辑的。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="拼图SVG编辑" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/12/25/TTGPuzzleVerify/blog_TTGPuzzleVerify_3.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="拼图SVG编辑" class="gallery-image" data-flex-basis="237px" data-flex-grow="99" height="345" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/12/25/TTGPuzzleVerify/blog_TTGPuzzleVerify_3.png" width="342"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;3. 生成代码&lt;/strong&gt;
 拼图的路径本质上就是拼图的轮廓，在Sketch里面把拼图SVG的背景色等颜色删除，然后就是将其转换为代码。
 这里可以用&lt;a class="link" href="https://www.paintcodeapp.com/sketch" target="_blank" rel="noopener"
@@ -1302,7 +1302,7 @@ Key的类型是NSUInteger，全局自增，保证唯一。&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Mask到图片imageView上
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;_puzzleImageView&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;layer&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mask&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;puzzleMaskLayer&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;效果就是：&lt;/p&gt;
-&lt;p&gt;&lt;img alt="拼图块" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/12/25/TTGPuzzleVerify/blog_TTGPuzzleVerify_4.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="拼图块" class="gallery-image" data-flex-basis="232px" data-flex-grow="96" height="185" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/12/25/TTGPuzzleVerify/blog_TTGPuzzleVerify_4.png" width="179"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;2. 镂空图片&lt;/strong&gt;
 抠出拼图块还是很容易的，但是“镂空”怎么办？
 其实道理是一样的，都是&lt;strong&gt;mask&lt;/strong&gt;，只不过mask的区域反过来而已。
@@ -1330,12 +1330,12 @@ Key的类型是NSUInteger，全局自增，保证唯一。&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 设置mask
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;_frontImageView&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;layer&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mask&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;frontMaskLayer&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;效果：&lt;/p&gt;
-&lt;p&gt;&lt;img alt="镂空" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/12/25/TTGPuzzleVerify/blog_TTGPuzzleVerify_5.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="镂空" class="gallery-image" data-flex-basis="370px" data-flex-grow="154" height="325" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/12/25/TTGPuzzleVerify/blog_TTGPuzzleVerify_5.png" width="502"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;3. 镂空背景&lt;/strong&gt;
 有了拼图块、镂空，还差一块，就是镂空的“半透明背景”，其实这个“半透明背景”和拼图块是一模一样的，所以不再重复代码，唯一增加的就是设置其透明度。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;4. 组合&lt;/strong&gt;
 将上面的组合到一起，就能形成最终的效果，从Reveal里面看到分层结构如下：&lt;/p&gt;
-&lt;p&gt;&lt;img alt="分层" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/12/25/TTGPuzzleVerify/blog_TTGPuzzleVerify_6.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="分层" class="gallery-image" data-flex-basis="378px" data-flex-grow="157" height="407" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/12/25/TTGPuzzleVerify/blog_TTGPuzzleVerify_6.png" width="642"&gt;&lt;/p&gt;
 &lt;p&gt;其实就是三张一样的图片，按照不同的mask规则做了处理，叠加起来。&lt;/p&gt;
 &lt;h3 id="用户拖动拼图完成拼图验证"&gt;&lt;a href="#%e7%94%a8%e6%88%b7%e6%8b%96%e5%8a%a8%e6%8b%bc%e5%9b%be%e5%ae%8c%e6%88%90%e6%8b%bc%e5%9b%be%e9%aa%8c%e8%af%81" class="header-anchor"&gt;&lt;/a&gt;用户拖动拼图、完成拼图验证
 &lt;/h3&gt;&lt;p&gt;&lt;strong&gt;1. 拖动图片&lt;/strong&gt;
@@ -1377,9 +1377,9 @@ Key的类型是NSUInteger，全局自增，保证唯一。&lt;/p&gt;
 &lt;li&gt;2016-09-03: &lt;a class="link" href="https://github.com/zekunyan/TTGBingWallPaper/releases/download/0.2.0/BingWallPaper.app.zip" target="_blank" rel="noopener"
  &gt;新版0.2.0！&lt;/a&gt;增加“Auto Update”选项；增加“Random”随机选择设置壁纸；修复自动更新不准的Bug。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="Banner" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/08/28/TTGBingWallPaper/BingWallPaper_banner.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Banner" class="gallery-image" data-flex-basis="1798px" data-flex-grow="749" height="321" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/08/28/TTGBingWallPaper/BingWallPaper_banner.png" width="2405"&gt;&lt;/p&gt;
 &lt;p&gt;极简的壁纸Mac App，每天&lt;strong&gt;自动&lt;/strong&gt;下载最新微软Bing的每日壁纸并设置为桌面背景。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="ScreenShot1" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/08/28/TTGBingWallPaper/BingWallPaper_screenshot_2.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="ScreenShot1" class="gallery-image" data-flex-basis="1045px" data-flex-grow="435" height="256" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/08/28/TTGBingWallPaper/BingWallPaper_screenshot_2.png" width="1115"&gt;&lt;/p&gt;
 &lt;p&gt;Github: &lt;a class="link" href="https://github.com/zekunyan/TTGBingWallPaper" target="_blank" rel="noopener"
  &gt;https://github.com/zekunyan/TTGBingWallPaper&lt;/a&gt;&lt;/p&gt;
 &lt;h2 id="由来"&gt;&lt;a href="#%e7%94%b1%e6%9d%a5" class="header-anchor"&gt;&lt;/a&gt;由来
@@ -1417,9 +1417,9 @@ Key的类型是NSUInteger，全局自增，保证唯一。&lt;/p&gt;
 &lt;/ul&gt;
 &lt;h2 id="前言"&gt;&lt;a href="#%e5%89%8d%e8%a8%80" class="header-anchor"&gt;&lt;/a&gt;前言
 &lt;/h2&gt;&lt;p&gt;这段时间做项目的时候，总是需要显示一些“标签”样式的内容，但是又找不到用的顺手的库，所以琢磨了几天，自己实现了出来，就有了这个库：TTGTagCollectionView。如果只需要显示文字标签的话，直接使用&lt;code&gt;TTGTextTagCollectionView&lt;/code&gt;，需要自己定义标签的话，就用&lt;code&gt;TTGTagCollectionView&lt;/code&gt;，效果如下:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="ScreenShot" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/12/31/TTGTagCollectionView/TTGTagCollectionView_screenshot.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="ScreenShot" class="gallery-image" data-flex-basis="426px" data-flex-grow="177" height="1080" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/12/31/TTGTagCollectionView/TTGTagCollectionView_screenshot.png" width="1920"&gt;&lt;/p&gt;
 &lt;p&gt;支持五种布局排版：&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Alignment" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/12/31/TTGTagCollectionView/TTGTagCollectionView_alignment_type_1.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Alignment" class="gallery-image" data-flex-basis="426px" data-flex-grow="177" height="1080" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/12/31/TTGTagCollectionView/TTGTagCollectionView_alignment_type_1.png" width="1920"&gt;&lt;/p&gt;
 &lt;p&gt;CocoaPods: &lt;code&gt;pod &amp;quot;TTGTagCollectionView&amp;quot;&lt;/code&gt;
 Carthage: &lt;code&gt;github &amp;quot;zekunyan/TTGTagCollectionView&amp;quot;&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Github地址: &lt;a class="link" href="https://github.com/zekunyan/TTGTagCollectionView" target="_blank" rel="noopener"
@@ -1588,11 +1588,11 @@ Carthage: &lt;code&gt;github &amp;quot;zekunyan/TTGTagCollectionView&amp;quot;&l
  &gt;Rating控件&lt;/a&gt;的演示动画，控件以Emoji表情为基础，结合了上下滑动手势，正好最近正在深入学习iOS动画、绘图相关的知识，就尝试着用&lt;code&gt;UIBezierPath&lt;/code&gt;实现了出来。本文就是TTGEmojiRate的实现过程。&lt;/p&gt;
 &lt;p&gt;Github: &lt;a class="link" href="https://github.com/zekunyan/TTGEmojiRate" target="_blank" rel="noopener"
  &gt;https://github.com/zekunyan/TTGEmojiRate&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="TTGEmojiRate Example" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/10/25/ttgemojirate-lib/TTGEmojiRate_screenshot2.gif"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="TTGEmojiRate Example" class="gallery-image" data-flex-basis="134px" data-flex-grow="55" height="565" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/10/25/ttgemojirate-lib/TTGEmojiRate_screenshot2.gif" width="316"&gt;&lt;/p&gt;
 &lt;h2 id="分析"&gt;&lt;a href="#%e5%88%86%e6%9e%90" class="header-anchor"&gt;&lt;/a&gt;分析
 &lt;/h2&gt;&lt;p&gt;先看看原本的效果：&lt;a class="link" href="https://dribbble.com/shots/2211556-Rating-Version-A" target="_blank" rel="noopener"
  &gt;Rating Version A - Hoang Nguyen&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Rating Version A - Hoang Nguyen" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/10/25/ttgemojirate-lib/TTGEmojiRate_Dribbble.gif"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Rating Version A - Hoang Nguyen" class="gallery-image" data-flex-basis="320px" data-flex-grow="133" height="360" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/10/25/ttgemojirate-lib/TTGEmojiRate_Dribbble.gif" width="480"&gt;&lt;/p&gt;
 &lt;p&gt;可以看出来，主要的特点如下：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;可以上下拖动，改变Emoji表情嘴的弧度。&lt;/li&gt;
@@ -1604,7 +1604,7 @@ Carthage: &lt;code&gt;github &amp;quot;zekunyan/TTGTagCollectionView&amp;quot;&l
 &lt;/h2&gt;&lt;h3 id="思路"&gt;&lt;a href="#%e6%80%9d%e8%b7%af" class="header-anchor"&gt;&lt;/a&gt;思路
 &lt;/h3&gt;&lt;p&gt;开始写代码之前，先理理思路。&lt;/p&gt;
 &lt;p&gt;拖动的时候，直接影响的应该是Rate值，然后在Rate值改变的时候刷新整个控件，刷新的时候重绘。重绘的时候，嘴、眼睛的弧度，颜色的值都要根据Rate值重新计算，如下图：&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Image" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/10/25/ttgemojirate-lib/blog_ttgemojirate_1.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Image" class="gallery-image" data-flex-basis="611px" data-flex-grow="254" height="540" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/10/25/ttgemojirate-lib/blog_ttgemojirate_1.png" width="1376"&gt;&lt;/p&gt;
 &lt;h3 id="拖动改变rate值"&gt;&lt;a href="#%e6%8b%96%e5%8a%a8%e6%94%b9%e5%8f%98rate%e5%80%bc" class="header-anchor"&gt;&lt;/a&gt;拖动改变Rate值
 &lt;/h3&gt;&lt;p&gt;这个还是很容易实现的，直接重写&lt;code&gt;UIView&lt;/code&gt;的touch相关的三个方法，在里面记录拖动在Y轴上的变化值，然后映射到Rate值上就可以了。&lt;/p&gt;
 &lt;p&gt;先声明一个CGPoint属性，用来保存手指按下时的点位置：&lt;/p&gt;
@@ -1640,9 +1640,9 @@ Carthage: &lt;code&gt;github &amp;quot;zekunyan/TTGTagCollectionView&amp;quot;&l
 &lt;h3 id="嘴眼睛"&gt;&lt;a href="#%e5%98%b4%e7%9c%bc%e7%9d%9b" class="header-anchor"&gt;&lt;/a&gt;嘴、眼睛
 &lt;/h3&gt;&lt;p&gt;先看看&lt;code&gt;UIBezierPath&lt;/code&gt;提供的可以用来绘制曲线的方法：
 &lt;code&gt;addCurveToPoint(_:controlPoint1:controlPoint2:)&lt;/code&gt;和&lt;code&gt;addQuadCurveToPoint(_:controlPoint:)&lt;/code&gt;，如下图:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="UIBezierPath" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/10/25/ttgemojirate-lib/blog_ttgemojirate_2.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="UIBezierPath" class="gallery-image" data-flex-basis="568px" data-flex-grow="236" height="535" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/10/25/ttgemojirate-lib/blog_ttgemojirate_2.png" width="1267"&gt;&lt;/p&gt;
 &lt;p&gt;直观上来讲，嘴、眼睛的绘制跟&lt;code&gt;addQuadCurveToPoint&lt;/code&gt;方法绘制的效果基本一致，但是这样的效果没法调整，因为只能控制唯一的一个控制点，所以还是要用&lt;code&gt;addCurveToPoint&lt;/code&gt;方法，对称的绘制两条曲线，拼接起来，如下图：&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Curve拼接" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/10/25/ttgemojirate-lib/blog_ttgemojirate_3.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Curve拼接" class="gallery-image" data-flex-basis="1217px" data-flex-grow="507" height="278" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/10/25/ttgemojirate-lib/blog_ttgemojirate_3.png" width="1410"&gt;&lt;/p&gt;
 &lt;p&gt;这样的话，就可以通过调整两个控制点，来控制嘴、眼睛的弯曲宽度、形状。&lt;/p&gt;
 &lt;p&gt;以绘制嘴为例：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-arduino" data-lang="arduino"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;private&lt;/span&gt; &lt;span class="n"&gt;func&lt;/span&gt; &lt;span class="nf"&gt;drawMouthWithRect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;rect&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;CGRect&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
@@ -1708,7 +1708,7 @@ Carthage: &lt;code&gt;github &amp;quot;zekunyan/TTGTagCollectionView&amp;quot;&l
  &gt;百度百科&lt;/a&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;
-&lt;p&gt;&lt;img alt="HSB色彩模式" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/10/25/ttgemojirate-lib/blog_ttgemojirate_4.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="HSB色彩模式" class="gallery-image" data-flex-basis="300px" data-flex-grow="125" height="384" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/10/25/ttgemojirate-lib/blog_ttgemojirate_4.jpg" width="480"&gt;&lt;/p&gt;
 &lt;p&gt;对应到&lt;code&gt;UIColor&lt;/code&gt;类，就是下面两个方法：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-gdscript3" data-lang="gdscript3"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;//&lt;/span&gt; &lt;span class="err"&gt;创建&lt;/span&gt;&lt;span class="n"&gt;UIColor&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;init&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;hue&lt;/span&gt; &lt;span class="n"&gt;hue&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;CGFloat&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;saturation&lt;/span&gt; &lt;span class="n"&gt;saturation&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;CGFloat&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;brightness&lt;/span&gt; &lt;span class="n"&gt;brightness&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;CGFloat&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;alpha&lt;/span&gt; &lt;span class="n"&gt;alpha&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;CGFloat&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -1764,7 +1764,7 @@ Carthage: &lt;code&gt;github &amp;quot;zekunyan/TTGTagCollectionView&amp;quot;&l
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;详细的使用可以参考NSHipster上的文章：&lt;a class="link" href="http://nshipster.cn/ibinspectable-ibdesignable/" target="_blank" rel="noopener"
  &gt;IBInspectable / IBDesignable&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;最后，在IB里面就是下面这样：
-&lt;img alt="IB example" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/10/25/ttgemojirate-lib/TTGEmojiRate_IBExample.png"&gt;&lt;/p&gt;
+&lt;img alt="IB example" class="gallery-image" data-flex-basis="236px" data-flex-grow="98" height="1264" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/10/25/ttgemojirate-lib/TTGEmojiRate_IBExample.png" width="1244"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;By the way =。=&lt;/strong&gt;
 属性名字太长，在IB里面显示不完整，咋办。。。&lt;/p&gt;
 &lt;h3 id="回调"&gt;&lt;a href="#%e5%9b%9e%e8%b0%83" class="header-anchor"&gt;&lt;/a&gt;回调
@@ -1803,9 +1803,9 @@ Carthage: &lt;code&gt;github &amp;quot;zekunyan/TTGTagCollectionView&amp;quot;&l
 &lt;/h2&gt;&lt;p&gt;用Swift写了个简单的控件库：TTGSnackbar，模仿Android的Snackbar。目前更新到了版本1.3.0。支持多种动画，增强了自定义。&lt;/p&gt;
 &lt;p&gt;Github: &lt;a class="link" href="https://github.com/zekunyan/TTGSnackbar" target="_blank" rel="noopener"
  &gt;https://github.com/zekunyan/TTGSnackbar&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Screenshot" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/10/09/ttgsnackbar-lib/TTGSnackbar_screen_shot.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Screenshot" class="gallery-image" data-flex-basis="426px" data-flex-grow="177" height="1080" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/10/09/ttgsnackbar-lib/TTGSnackbar_screen_shot.png" width="1920"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Gif&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Screenshot" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/10/09/ttgsnackbar-lib/TTGSnackbar_example.gif"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Screenshot" class="gallery-image" data-flex-basis="155px" data-flex-grow="64" height="981" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/10/09/ttgsnackbar-lib/TTGSnackbar_example.gif" width="637"&gt;&lt;/p&gt;
 &lt;h2 id="安装"&gt;&lt;a href="#%e5%ae%89%e8%a3%85" class="header-anchor"&gt;&lt;/a&gt;安装
 &lt;/h2&gt;&lt;p&gt;需要Swift3, Xcode8, iOS 8+&lt;/p&gt;
 &lt;h3 id="cocoapods"&gt;&lt;a href="#cocoapods" class="header-anchor"&gt;&lt;/a&gt;CocoaPods
@@ -1817,18 +1817,18 @@ Carthage: &lt;code&gt;github &amp;quot;zekunyan/TTGTagCollectionView&amp;quot;&l
 &lt;/h3&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-nginx" data-lang="nginx"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;github&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;zekunyan/TTGSnackbar&amp;#34;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="简单的使用案例"&gt;&lt;a href="#%e7%ae%80%e5%8d%95%e7%9a%84%e4%bd%bf%e7%94%a8%e6%a1%88%e4%be%8b" class="header-anchor"&gt;&lt;/a&gt;简单的使用案例
 &lt;/h2&gt;&lt;h3 id="只显示文字"&gt;&lt;a href="#%e5%8f%aa%e6%98%be%e7%a4%ba%e6%96%87%e5%ad%97" class="header-anchor"&gt;&lt;/a&gt;只显示文字
-&lt;/h3&gt;&lt;p&gt;&lt;img alt="Example" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/10/09/ttgsnackbar-lib/TTGSnackbar_2.png"&gt;&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;img alt="Example" class="gallery-image" data-flex-basis="1387px" data-flex-grow="578" height="110" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/10/09/ttgsnackbar-lib/TTGSnackbar_2.png" width="636"&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-groovy" data-lang="groovy"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;let&lt;/span&gt; &lt;span class="n"&gt;snackbar&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TTGSnackbar&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;init&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nl"&gt;message:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;Message&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nl"&gt;duration:&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;Short&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;snackbar&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;show&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="显示文字和一个动作按钮"&gt;&lt;a href="#%e6%98%be%e7%a4%ba%e6%96%87%e5%ad%97%e5%92%8c%e4%b8%80%e4%b8%aa%e5%8a%a8%e4%bd%9c%e6%8c%89%e9%92%ae" class="header-anchor"&gt;&lt;/a&gt;显示文字和一个动作按钮
-&lt;/h3&gt;&lt;p&gt;&lt;img alt="Example" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/10/09/ttgsnackbar-lib/TTGSnackbar_3.png"&gt;&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;img alt="Example" class="gallery-image" data-flex-basis="1472px" data-flex-grow="613" height="104" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/10/09/ttgsnackbar-lib/TTGSnackbar_3.png" width="638"&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;let snackbar = TTGSnackbar.init(message: &amp;#34;Message&amp;#34;, duration: .Middle, actionText: &amp;#34;Action&amp;#34;)
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;{ (snackbar) -&amp;gt; Void in
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; NSLog(&amp;#34;Click action!&amp;#34;)
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;snackbar.show()
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="显示文字和一个耗时操作按钮"&gt;&lt;a href="#%e6%98%be%e7%a4%ba%e6%96%87%e5%ad%97%e5%92%8c%e4%b8%80%e4%b8%aa%e8%80%97%e6%97%b6%e6%93%8d%e4%bd%9c%e6%8c%89%e9%92%ae" class="header-anchor"&gt;&lt;/a&gt;显示文字和一个耗时操作按钮
-&lt;/h3&gt;&lt;p&gt;&lt;img alt="Example" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/10/09/ttgsnackbar-lib/TTGSnackbar_5.png"&gt;&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;img alt="Example" class="gallery-image" data-flex-basis="1444px" data-flex-grow="601" height="106" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/10/09/ttgsnackbar-lib/TTGSnackbar_5.png" width="638"&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-kotlin" data-lang="kotlin"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;let&lt;/span&gt; &lt;span class="n"&gt;snackbar&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="nc"&gt;TTGSnackbar&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="k"&gt;init&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;Message&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;duration&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Forever&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;actionText&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;Action&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;snackbar&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;Void&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;NSLog&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;Click action!&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -1839,7 +1839,7 @@ Carthage: &lt;code&gt;github &amp;quot;zekunyan/TTGTagCollectionView&amp;quot;&l
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;snackbar&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;show&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="显示文字和两个动作按钮"&gt;&lt;a href="#%e6%98%be%e7%a4%ba%e6%96%87%e5%ad%97%e5%92%8c%e4%b8%a4%e4%b8%aa%e5%8a%a8%e4%bd%9c%e6%8c%89%e9%92%ae" class="header-anchor"&gt;&lt;/a&gt;显示文字和两个动作按钮
-&lt;/h3&gt;&lt;p&gt;&lt;img alt="Example" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/10/09/ttgsnackbar-lib/TTGSnackbar_9.png"&gt;&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;img alt="Example" class="gallery-image" data-flex-basis="1590px" data-flex-grow="662" height="96" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/10/09/ttgsnackbar-lib/TTGSnackbar_9.png" width="636"&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-stylus" data-lang="stylus"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt;let&lt;/span&gt; &lt;span class="err"&gt;snackbar&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="err"&gt;TTGSnackbar&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="err"&gt;TTGSnackbar&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;init&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="err"&gt;message&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="err"&gt;&amp;#34;Two&lt;/span&gt; &lt;span class="err"&gt;actions&lt;/span&gt; &lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="err"&gt;&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="err"&gt;duration&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;Long&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;//&lt;/span&gt; &lt;span class="err"&gt;Action&lt;/span&gt; &lt;span class="err"&gt;1&lt;/span&gt;
@@ -1871,7 +1871,7 @@ Carthage: &lt;code&gt;github &amp;quot;zekunyan/TTGTagCollectionView&amp;quot;&l
 &lt;/h2&gt;&lt;p&gt;名称：&lt;a class="link" href="https://github.com/zekunyan/LinkTextView" target="_blank" rel="noopener"
  &gt;LinkTextView&lt;/a&gt;。喜欢的话就Star一下吧。&lt;/p&gt;
 &lt;h3 id="example"&gt;&lt;a href="#example" class="header-anchor"&gt;&lt;/a&gt;Example
-&lt;/h3&gt;&lt;p&gt;&lt;img alt="示例" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2014/11/02/LinkTextView-Android开源库-原创/LinkTextView_Sample.gif"&gt;&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;img alt="示例" class="gallery-image" data-flex-basis="143px" data-flex-grow="59" height="615" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2014/11/02/LinkTextView-Android开源库-原创/LinkTextView_Sample.gif" width="367"&gt;&lt;/p&gt;
 &lt;h3 id="功能"&gt;&lt;a href="#%e5%8a%9f%e8%83%bd" class="header-anchor"&gt;&lt;/a&gt;功能：
 &lt;/h3&gt;&lt;ol&gt;
 &lt;li&gt;可以方便的对TextView里面的文字增加可点击链接，并且绑定回调。&lt;/li&gt;

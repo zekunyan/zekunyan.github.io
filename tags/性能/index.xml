@@ -2,7 +2,7 @@
 &lt;/h2&gt;&lt;p&gt;随着App的用户界面的内容越来越丰富，再强的手机可能都无法同时渲染复杂的UI界面和保证流畅的体验。所以，我们这些程序猿=。=在写代码的时候就要注意，如何尽可能提高用户的操作流畅性。&lt;/p&gt;
 &lt;p&gt;之前的做的项目，&lt;a class="link" href="https://itunes.apple.com/us/app/qing-ju-yin-le-quan-guo-zui/id913235479?l=zh&amp;amp;ls=1&amp;amp;mt=8" target="_blank" rel="noopener"
  &gt;青桔音乐iOS客户端&lt;/a&gt;里面的首页就是一个类似微信朋友圈的“动态”页面，大致如下：&lt;/p&gt;
-&lt;p&gt;&lt;img alt="青桔动态页面" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/02/19/提升UITableView性能-复杂页面的优化/blog_ios_speed_up_uitableview_1_1.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="青桔动态页面" class="gallery-image" data-flex-basis="134px" data-flex-grow="56" height="1334" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/02/19/提升UITableView性能-复杂页面的优化/blog_ios_speed_up_uitableview_1_1.png" width="750"&gt;&lt;/p&gt;
 &lt;p&gt;如果是你，你会怎么实现这个页面呢？&lt;/p&gt;
 &lt;p&gt;这还用问，当然是用UITableView+自定义的UITableViewCell。&lt;/p&gt;
 &lt;p&gt;UITableView是可以滑动的，为了不让用户在滑动中感到有卡顿，该如何优化？下面，我就写一下我自己在做项目时的“经验”~&lt;/p&gt;
@@ -30,7 +30,7 @@
 &lt;h4 id="善用hidden隐藏显示subview"&gt;&lt;a href="#%e5%96%84%e7%94%a8hidden%e9%9a%90%e8%97%8f%e6%98%be%e7%a4%basubview" class="header-anchor"&gt;&lt;/a&gt;善用hidden隐藏（显示）Subview
 &lt;/h4&gt;&lt;p&gt;既然只定义一种Cell，那该如何显示不同类型的内容呢？
 答案就是，把所有不同类型的view都定义好，放在cell里面，通过hidden显示、隐藏，来显示不同类型的内容。如下图定义Cell：&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Cell示意图" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/02/19/提升UITableView性能-复杂页面的优化/blog_ios_speed_up_uitableview_1_2.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Cell示意图" class="gallery-image" data-flex-basis="220px" data-flex-grow="91" height="910" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/02/19/提升UITableView性能-复杂页面的优化/blog_ios_speed_up_uitableview_1_2.jpg" width="836"&gt;&lt;/p&gt;
 &lt;p&gt;图中的Subview1、Subview2、Subview3就是不同类型Cell的不同之处，所以我们在“&lt;strong&gt;cellForRowAtIndexPath&lt;/strong&gt;”函数中，设置Cell的样式、内容时，就可以通过显示、隐藏这三个子view来显示。&lt;/p&gt;
 &lt;p&gt;毕竟，在用户快速滑动中，只是单纯的显示、隐藏subview比实时创建要快得多。&lt;/p&gt;
 &lt;h3 id="提前计算并缓存每个cell的高度"&gt;&lt;a href="#%e6%8f%90%e5%89%8d%e8%ae%a1%e7%ae%97%e5%b9%b6%e7%bc%93%e5%ad%98%e6%af%8f%e4%b8%aacell%e7%9a%84%e9%ab%98%e5%ba%a6" class="header-anchor"&gt;&lt;/a&gt;提前计算并缓存每个Cell的高度

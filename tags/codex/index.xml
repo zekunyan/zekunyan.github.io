@@ -2,7 +2,7 @@
 &lt;/h2&gt;&lt;p&gt;上一篇整理多个 AI 工具的 Skills 时，重点是“同一个 Skill 放在哪里，才能让不同工具都发现”。后来继续看项目里的 AI 协作配置，发现另一个问题其实更常见：Rules 文件越来越多。&lt;/p&gt;
 &lt;p&gt;根目录有 &lt;code&gt;CLAUDE.md&lt;/code&gt;，又补了 &lt;code&gt;AGENTS.md&lt;/code&gt;；Cursor 有 &lt;code&gt;.cursor/rules/&lt;/code&gt;，Copilot 有 &lt;code&gt;.github/copilot-instructions.md&lt;/code&gt;，某次 Code Review 发现一条遗漏，再往其中一个文件里加一句。过一阵子，文件确实变长了，但不知道哪些是每次都要遵守的硬约束，哪些只对某个目录有效，哪些本来应该放到 Skill 或 CI 里面。&lt;/p&gt;
 &lt;p&gt;这篇就结合一个虚拟业务模块的 Rules 设计，整理一下我现在对这件事的理解：&lt;strong&gt;Rules 不是给模型塞得越多越好，而是要像项目代码一样，有作用域、有职责、有验证，也会过时。&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="AI 项目 Rules 的分层：AGENTS.md 作为跨工具基线，Rules、Skills、CI 各自承担明确职责，并通过 Rule Drift 持续演进" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/08/13/ai-project-rules/ai-project-rules-poster.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="AI 项目 Rules 的分层：AGENTS.md 作为跨工具基线，Rules、Skills、CI 各自承担明确职责，并通过 Rule Drift 持续演进" class="gallery-image" data-flex-basis="391px" data-flex-grow="163" height="1960" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/08/13/ai-project-rules/ai-project-rules-poster.png" width="3200"&gt;&lt;/p&gt;
 &lt;h2 id="先看一个虚拟业务模块的设计"&gt;&lt;a href="#%e5%85%88%e7%9c%8b%e4%b8%80%e4%b8%aa%e8%99%9a%e6%8b%9f%e4%b8%9a%e5%8a%a1%e6%a8%a1%e5%9d%97%e7%9a%84%e8%ae%be%e8%ae%a1" class="header-anchor"&gt;&lt;/a&gt;先看一个虚拟业务模块的设计
 &lt;/h2&gt;&lt;p&gt;为了方便说明，下面虚拟一个包含搜索、结果展示和推荐内容的业务模块。它有多个入口和不同展示场景，模块本身也依赖一套公共应用框架；重点不是技术栈，而是它没有把所有说明都写进一个文件。&lt;/p&gt;
 &lt;p&gt;它的入口大致是这样：&lt;/p&gt;
@@ -262,7 +262,7 @@
 &lt;p&gt;所以我写了一个很小的脚本原型：不发明新的 Skill 格式，也不检查 &lt;code&gt;SKILL.md&lt;/code&gt; 内容，只做一件事——&lt;strong&gt;把自己的 Skills 集中放好，再让不同工具能找到它们。&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;完整脚本：&lt;a class="link" href="https://tutuge.me/assets/2026/08/12/agent-skills-manager/agent-skills-manager.sh" &gt;agent-skills-manager.sh&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;GitHub：仓库准备中，后续会补在这里。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="以 .agents/skills 为唯一维护源，直接扫描或通过原生目录软链接让不同工具发现" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/08/12/agent-skills-manager/skill-manager-map.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="以 .agents/skills 为唯一维护源，直接扫描或通过原生目录软链接让不同工具发现" class="gallery-image" data-flex-basis="391px" data-flex-grow="163" height="1960" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/08/12/agent-skills-manager/skill-manager-map.png" width="3200"&gt;&lt;/p&gt;
 &lt;h2 id="问题目录不统一不等于格式不统一"&gt;&lt;a href="#%e9%97%ae%e9%a2%98%e7%9b%ae%e5%bd%95%e4%b8%8d%e7%bb%9f%e4%b8%80%e4%b8%8d%e7%ad%89%e4%ba%8e%e6%a0%bc%e5%bc%8f%e4%b8%8d%e7%bb%9f%e4%b8%80" class="header-anchor"&gt;&lt;/a&gt;问题：目录不统一，不等于格式不统一
 &lt;/h2&gt;&lt;p&gt;现在主流工具对 &lt;code&gt;SKILL.md&lt;/code&gt; 的理解已经比较接近，不过发现目录各有一套。&lt;/p&gt;
 &lt;table&gt;

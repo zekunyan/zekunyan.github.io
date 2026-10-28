@@ -100,7 +100,7 @@ Github: &lt;a class="link" href="https://github.com/zekunyan" target="_blank" re
 &lt;li&gt;富文本样式内容排版、渲染&lt;/li&gt;
 &lt;li&gt;对 UITableView 做大幅度封装，集成下拉刷新、加载更多、无内容时的 PlaceHolder 显示、Loading 动画显示、变高 Cell 计算等常用功能，并可以独立配置 &lt;strong&gt;TTGTableManager&lt;/strong&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="妈妈搜索" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2019/07/29/2019-07-29-occupied-with-work/resume_momsearch.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="妈妈搜索" class="gallery-image" data-flex-basis="426px" data-flex-grow="177" height="1080" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2019/07/29/2019-07-29-occupied-with-work/resume_momsearch.jpg" width="1920"&gt;&lt;/p&gt;
 &lt;h3 id="青桔音乐-ios-客户端"&gt;&lt;a href="#%e9%9d%92%e6%a1%94%e9%9f%b3%e4%b9%90-ios-%e5%ae%a2%e6%88%b7%e7%ab%af" class="header-anchor"&gt;&lt;/a&gt;&lt;a class="link" href="https://itunes.apple.com/us/app/qing-ju-yin-le-quan-guo-zui/id913235479?l=zh&amp;amp;ls=1&amp;amp;mt=8" target="_blank" rel="noopener"
  &gt;青桔音乐 iOS 客户端&lt;/a&gt;
 &lt;/h3&gt;&lt;p&gt;简介：&lt;a class="link" href="http://www.qingvoice.com" target="_blank" rel="noopener"
@@ -115,7 +115,7 @@ Github: &lt;a class="link" href="https://github.com/zekunyan" target="_blank" re
 &lt;li&gt;实现评论列表、输入框等复杂 UI 控件的重用。&lt;/li&gt;
 &lt;li&gt;运用委托者、模板方法、代理、MVC、MVVM 等设计模式，优化代码结构。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="青桔音乐" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2019/07/29/2019-07-29-occupied-with-work/resume_qingvoice.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="青桔音乐" class="gallery-image" data-flex-basis="426px" data-flex-grow="177" height="1080" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2019/07/29/2019-07-29-occupied-with-work/resume_qingvoice.jpg" width="1920"&gt;&lt;/p&gt;
 &lt;h3 id="波波攒---实时在线对战游戏"&gt;&lt;a href="#%e6%b3%a2%e6%b3%a2%e6%94%92---%e5%ae%9e%e6%97%b6%e5%9c%a8%e7%ba%bf%e5%af%b9%e6%88%98%e6%b8%b8%e6%88%8f" class="header-anchor"&gt;&lt;/a&gt;波波攒 - 实时在线对战游戏
 &lt;/h3&gt;&lt;p&gt;&lt;a class="link" href="https://segmentfault.com/e/1160000002680118" target="_blank" rel="noopener"
  &gt;2015 华中科技大学联创团队 HackDay&lt;/a&gt; 参赛作品。&lt;br&gt;
@@ -125,13 +125,13 @@ iOS 客户端 + PHP、Node.js、SocketIO、MySQL 后台。&lt;br&gt;
 &lt;li&gt;采用 SpriteKit 编写 iOS 端游戏部分。&lt;/li&gt;
 &lt;li&gt;SocketIO 实现客户端与服务器间游戏对战实时通信。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="波波攒" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2019/07/29/2019-07-29-occupied-with-work/resume_bobozan.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="波波攒" class="gallery-image" data-flex-basis="439px" data-flex-grow="183" height="1048" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2019/07/29/2019-07-29-occupied-with-work/resume_bobozan.jpg" width="1920"&gt;&lt;/p&gt;
 &lt;h3 id="android-应用---vnote-笔记"&gt;&lt;a href="#android-%e5%ba%94%e7%94%a8---vnote-%e7%ac%94%e8%ae%b0" class="header-anchor"&gt;&lt;/a&gt;Android 应用 - &lt;a class="link" href="http://app.mi.com/detail/49044" target="_blank" rel="noopener"
  &gt;VNote 笔记&lt;/a&gt;
 &lt;/h3&gt;&lt;p&gt;&lt;strong&gt;Google 2013 年第四届 Android 应用开发中国大学生挑战赛 - 华中赛区 - &lt;a class="link" href="http://www.google.cn/university/androidchallenge/2013/regional.html#tab=group5" target="_blank" rel="noopener"
  &gt;三等奖&lt;/a&gt;&lt;/strong&gt;&lt;br&gt;
 多功能笔记应用，可记录文字、待办事项、图片、录音、涂鸦，同时支持悬浮笔记。&lt;strong&gt;独立完成设计、美工、开发&lt;/strong&gt;。那个时候只会用 PS=。=&lt;/p&gt;
-&lt;p&gt;&lt;img alt="VNote 笔记" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2019/07/29/2019-07-29-occupied-with-work/resume_vnote.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="VNote 笔记" class="gallery-image" data-flex-basis="426px" data-flex-grow="177" height="1080" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2019/07/29/2019-07-29-occupied-with-work/resume_vnote.jpg" width="1920"&gt;&lt;/p&gt;
 &lt;h3 id="其它项目"&gt;&lt;a href="#%e5%85%b6%e5%ae%83%e9%a1%b9%e7%9b%ae" class="header-anchor"&gt;&lt;/a&gt;其它项目
 &lt;/h3&gt;&lt;ul&gt;
 &lt;li&gt;Android: &lt;a class="link" href="http://www.appchina.com/app/com.example.android_broadcast_wifi" target="_blank" rel="noopener"

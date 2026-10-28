@@ -6,7 +6,7 @@
 &lt;/h2&gt;&lt;p&gt;先简单分析下项目的原理：秘诀在多级&amp;quot;缓存&amp;quot;的分工。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;BF16 权重 250 GB ──IQ3_S 量化──▶ 总量 83.6 GB ──按热度分层──▶ VRAM / RAM / SSD
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;每个 token：24,576 个 expert 只点亮 10 个 → 真正计算的只有 ≈6B 参数
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Strata 多层存储架构" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/10/28/strata-125b-4090/strata-diagram-wide.png"&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Strata 多层存储架构" class="gallery-image" data-flex-basis="675px" data-flex-grow="281" height="1607" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/10/28/strata-125b-4090/strata-diagram-wide.png" width="4522"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;图：同一个模型，按「每个 token 用不用得上」拆开放，从左到右越走越慢、越大。&lt;/em&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;MoE 稀疏激活是前提&lt;/strong&gt;：每 token 只算约 5% 的参数，其余 expert 不必常驻显存&lt;/li&gt;
@@ -20,11 +20,11 @@
 &lt;li&gt;&lt;strong&gt;Track A · 编程任务对照&lt;/strong&gt;：12 道 agentic 编程任务 × 每题 3 次 × 两侧 = &lt;strong&gt;72 次运行，0 作废&lt;/strong&gt;；双通道判分——确定性程序判分 + Kimi-K3 盲评&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Track B · 原始能力画像&lt;/strong&gt;（仅本地，直连 API）：长上下文 needle、工具调用、幻觉探测、严格格式&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="本地 vs 托管评测速览" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/10/28/strata-125b-4090/qwen-eval-diagram.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="本地 vs 托管评测速览" class="gallery-image" data-flex-basis="303px" data-flex-grow="126" height="3048" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/10/28/strata-125b-4090/qwen-eval-diagram.png" width="3858"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;图：评测速览——怎么测、结果如何，一张图看完。&lt;/em&gt;&lt;/p&gt;
 &lt;h2 id="-具体测了什么"&gt;&lt;a href="#-%e5%85%b7%e4%bd%93%e6%b5%8b%e4%ba%86%e4%bb%80%e4%b9%88" class="header-anchor"&gt;&lt;/a&gt;📋 具体测了什么
 &lt;/h2&gt;&lt;p&gt;12 道题都是日常工程活，不是选择题；跑题和判分全由脚本执行，不是人打分。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="12 道题一览" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/10/28/strata-125b-4090/qwen-12-questions-overview.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="12 道题一览" class="gallery-image" data-flex-basis="342px" data-flex-grow="142" height="2746" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/10/28/strata-125b-4090/qwen-12-questions-overview.png" width="3914"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;图：12 道题一览——12 道题分别在测什么、怎么判分，一张图看完。&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;本地丢的 0.5 分出在 A05：不是漏检，是模型自己的测试比规格卡得更严。&lt;/p&gt;
 &lt;p&gt;顺带说一下这次评测的数据体量：72 次运行的完整沙盒快照一共 836 MB（本地 374 MB + 托管 462 MB），原始 stream 轨迹本地 2.7 MB、托管 3.0 MB。不过别被 836 MB 吓到：排除 A11 的 .build 编译中间产物后，两侧模型真正写出来的代码只有本地 178 KB、托管 474 KB——99% 都是编译噪声，打包分享记得排除 .build。&lt;/p&gt;

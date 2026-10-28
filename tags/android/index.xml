@@ -5,7 +5,7 @@
 &lt;/h2&gt;&lt;p&gt;名称：&lt;a class="link" href="https://github.com/zekunyan/LinkTextView" target="_blank" rel="noopener"
  &gt;LinkTextView&lt;/a&gt;。喜欢的话就Star一下吧。&lt;/p&gt;
 &lt;h3 id="example"&gt;&lt;a href="#example" class="header-anchor"&gt;&lt;/a&gt;Example
-&lt;/h3&gt;&lt;p&gt;&lt;img alt="示例" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2014/11/02/LinkTextView-Android开源库-原创/LinkTextView_Sample.gif"&gt;&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;img alt="示例" class="gallery-image" data-flex-basis="143px" data-flex-grow="59" height="615" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2014/11/02/LinkTextView-Android开源库-原创/LinkTextView_Sample.gif" width="367"&gt;&lt;/p&gt;
 &lt;h3 id="功能"&gt;&lt;a href="#%e5%8a%9f%e8%83%bd" class="header-anchor"&gt;&lt;/a&gt;功能：
 &lt;/h3&gt;&lt;ol&gt;
 &lt;li&gt;可以方便的对TextView里面的文字增加可点击链接，并且绑定回调。&lt;/li&gt;

@@ -325,7 +325,7 @@
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-armasm" data-lang="armasm"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;NSString &lt;span class="err"&gt;*st&lt;/span&gt;&lt;span class="nc"&gt;r1&lt;/span&gt; &lt;span class="err"&gt;=&lt;/span&gt; &lt;span class="c1"&gt;@&amp;#34;a string&amp;#34;;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;NSString &lt;span class="err"&gt;*st&lt;/span&gt;&lt;span class="nc"&gt;r2&lt;/span&gt; &lt;span class="err"&gt;=&lt;/span&gt; &lt;span class="err"&gt;st&lt;/span&gt;&lt;span class="nc"&gt;r1&lt;/span&gt;&lt;span class="c1"&gt;;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;熟悉C语言的朋友应该知道这是怎么回事，内存当中只有一块区域储存着“a string”这个字符串，str1、str2都是指向着这个区域的字符串指针。如下图：&lt;/p&gt;
-&lt;p&gt;&lt;img alt="image" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/02/05/Effective-Objective-C-读书笔记-Item-1/blog_effective_objective_c_item_1_1.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="image" class="gallery-image" data-flex-basis="500px" data-flex-grow="208" height="658" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/02/05/Effective-Objective-C-读书笔记-Item-1/blog_effective_objective_c_item_1_1.jpg" width="1372"&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;str1、str2都在栈内存上分配的，就是字符串（NSString）类型的指针。&lt;/li&gt;
 &lt;li&gt;“a string”字符串实际储存在堆内存上。&lt;/li&gt;

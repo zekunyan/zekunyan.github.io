@@ -2,7 +2,7 @@
 &lt;/h2&gt;&lt;p&gt;最近这段时间用 Claude Code 比较多，慢慢发现一个很实际的问题：AI 写代码的时候人不应该一直盯着它。&lt;/p&gt;
 &lt;p&gt;比如我让它跑一个重构任务，然后切到浏览器查资料、看文档，或者去另一个项目里继续处理事情。几分钟后切回来，发现它早就停在权限确认那里了；再或者任务已经结束，但我完全不知道。项目窗口一多，这种反复切换就更明显了。&lt;/p&gt;
 &lt;p&gt;所以我写了一个小工具：&lt;code&gt;Claude Code Notifier Plus&lt;/code&gt;。它的目标很简单：&lt;strong&gt;当 Claude Code 需要我注意时，用系统通知提醒我，并且点击通知能回到对应的 VS Code 窗口或终端窗口&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Claude Code Notifier Plus" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/13/claude-code-notifier-plus/promo-banner.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Claude Code Notifier Plus" class="gallery-image" data-flex-basis="472px" data-flex-grow="196" height="660" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/13/claude-code-notifier-plus/promo-banner.jpg" width="1300"&gt;&lt;/p&gt;
 &lt;p&gt;Github: &lt;a class="link" href="https://github.com/zekunyan/claude-code-notifier-plus" target="_blank" rel="noopener"
  &gt;https://github.com/zekunyan/claude-code-notifier-plus&lt;/a&gt;&lt;/p&gt;
 &lt;h2 id="为什么还要再做一个通知插件"&gt;&lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e8%bf%98%e8%a6%81%e5%86%8d%e5%81%9a%e4%b8%80%e4%b8%aa%e9%80%9a%e7%9f%a5%e6%8f%92%e4%bb%b6" class="header-anchor"&gt;&lt;/a&gt;为什么还要再做一个通知插件
@@ -57,7 +57,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这个权限的作用不是读取内容，而是允许它把对应窗口 raise 到前台。没有这个权限时，点击通知通常只能激活 App，不能精确切到某个项目窗口。&lt;/p&gt;
 &lt;h2 id="整体架构"&gt;&lt;a href="#%e6%95%b4%e4%bd%93%e6%9e%b6%e6%9e%84" class="header-anchor"&gt;&lt;/a&gt;整体架构
 &lt;/h2&gt;&lt;p&gt;先看整体流程：&lt;/p&gt;
-&lt;p&gt;&lt;img alt="How It Works" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/13/claude-code-notifier-plus/how-it-works.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="How It Works" class="gallery-image" data-flex-basis="213px" data-flex-grow="88" height="1350" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/07/13/claude-code-notifier-plus/how-it-works.jpg" width="1200"&gt;&lt;/p&gt;
 &lt;p&gt;实现上拆成几块：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;extension.js&lt;/code&gt;：VS Code 扩展入口，负责安装 hook、监听 pipe 文件、读取配置、发通知。&lt;/li&gt;

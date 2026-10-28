@@ -6,7 +6,7 @@
 &lt;li&gt;StairView自定义View的&lt;code&gt;intrinsicContentSize&lt;/code&gt;，并支持在UITableViewCell中自动计算高度&lt;/li&gt;
 &lt;li&gt;给同一个属性添加&lt;strong&gt;多重约束&lt;/strong&gt;，实现复杂关系&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;&lt;img loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/12/autolayout-example-with-masonry5/blog_autolayout_example_with_masonry5_1.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class="gallery-image" data-flex-basis="415px" data-flex-grow="172" height="791" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/12/autolayout-example-with-masonry5/blog_autolayout_example_with_masonry5_1.png" width="1368"&gt;&lt;/p&gt;
 &lt;p&gt;前四篇：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;第一篇：&lt;a class="link" href="http://tutuge.me/2015/05/23/autolayout-example-with-masonry/" target="_blank" rel="noopener"
@@ -30,7 +30,7 @@
 &lt;p&gt;但是，实际设置Autolayout的时候，不存在什么&lt;code&gt;cell.height = MAX(labels.height)&lt;/code&gt;这样的关系。&lt;/p&gt;
 &lt;p&gt;所以要转换一下，改为**&lt;code&gt;ANY(label.bottom) &amp;lt;= cell.bottom&lt;/code&gt;&lt;strong&gt;，即&lt;/strong&gt;每个Label的底部bottom都是在cell的底部bottom上面的**，换算到坐标系里面，就是在Y轴上，&lt;strong&gt;&lt;code&gt;label.bottom &amp;lt;= cell.bottom&lt;/code&gt;&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;所以，cell的约束如下图所示：&lt;/p&gt;
-&lt;p&gt;&lt;img loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/12/autolayout-example-with-masonry5/blog_autolayout_example_with_masonry5_2.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class="gallery-image" data-flex-basis="480px" data-flex-grow="200" height="488" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/12/autolayout-example-with-masonry5/blog_autolayout_example_with_masonry5_2.png" width="978"&gt;&lt;/p&gt;
 &lt;h3 id="代码细节"&gt;&lt;a href="#%e4%bb%a3%e7%a0%81%e7%bb%86%e8%8a%82" class="header-anchor"&gt;&lt;/a&gt;代码细节
 &lt;/h3&gt;&lt;p&gt;对应的代码如下：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;-&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="nf"&gt;setupLayout&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
@@ -52,7 +52,7 @@
 &lt;/h2&gt;&lt;h3 id="实现功能-1"&gt;&lt;a href="#%e5%ae%9e%e7%8e%b0%e5%8a%9f%e8%83%bd-1" class="header-anchor"&gt;&lt;/a&gt;实现功能
 &lt;/h3&gt;&lt;p&gt;实现一个自定义布局的View - StairView，阶梯布局View。
 StairView支持设置Label成阶梯状从上到下、从左到右分布，如下图：&lt;/p&gt;
-&lt;p&gt;&lt;img loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/12/autolayout-example-with-masonry5/blog_autolayout_example_with_masonry5_3.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class="gallery-image" data-flex-basis="824px" data-flex-grow="343" height="279" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/12/autolayout-example-with-masonry5/blog_autolayout_example_with_masonry5_3.jpg" width="959"&gt;&lt;/p&gt;
 &lt;p&gt;同时，StairView要支持Autolayout，支持大小由内容决定，可以在Cell里面用，并自动计算高度。&lt;/p&gt;
 &lt;p&gt;接下来，看看如何实现这个StairView。&lt;/p&gt;
 &lt;h3 id="intrinsiccontentsize是什么"&gt;&lt;a href="#intrinsiccontentsize%e6%98%af%e4%bb%80%e4%b9%88" class="header-anchor"&gt;&lt;/a&gt;intrinsicContentSize是什么
@@ -222,7 +222,7 @@ StairView支持设置Label成阶梯状从上到下、从左到右分布，如下
 &lt;h2 id="case3-给同一个属性添加多重约束实现复杂关系"&gt;&lt;a href="#case3-%e7%bb%99%e5%90%8c%e4%b8%80%e4%b8%aa%e5%b1%9e%e6%80%a7%e6%b7%bb%e5%8a%a0%e5%a4%9a%e9%87%8d%e7%ba%a6%e6%9d%9f%e5%ae%9e%e7%8e%b0%e5%a4%8d%e6%9d%82%e5%85%b3%e7%b3%bb" class="header-anchor"&gt;&lt;/a&gt;Case3: 给同一个属性添加&lt;strong&gt;多重约束&lt;/strong&gt;，实现复杂关系
 &lt;/h2&gt;&lt;p&gt;这个Case主要是为了纠正一个可能的误区：&lt;strong&gt;Autolayout里面，同一个属性，是可以加上多重约束的&lt;/strong&gt;，或者说，同一个View的同一个属性，可以参与到多个约束里面的。&lt;/p&gt;
 &lt;p&gt;先看看Case的功能：&lt;/p&gt;
-&lt;p&gt;&lt;img loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/12/autolayout-example-with-masonry5/blog_autolayout_example_with_masonry5_4.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class="gallery-image" data-flex-basis="476px" data-flex-grow="198" height="758" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2017/03/12/autolayout-example-with-masonry5/blog_autolayout_example_with_masonry5_4.jpg" width="1506"&gt;&lt;/p&gt;
 &lt;p&gt;注意到，右边绿色label的左边，不仅要大于左边蓝色label的右边，还要大于整体宽度的1/3，所以，是要&lt;strong&gt;同时满足多条约束条件的&lt;/strong&gt;。&lt;/p&gt;
 &lt;h3 id="区分观念frame布局和autolayout的不同"&gt;&lt;a href="#%e5%8c%ba%e5%88%86%e8%a7%82%e5%bf%b5frame%e5%b8%83%e5%b1%80%e5%92%8cautolayout%e7%9a%84%e4%b8%8d%e5%90%8c" class="header-anchor"&gt;&lt;/a&gt;区分观念：Frame布局和Autolayout的不同
 &lt;/h3&gt;&lt;p&gt;&lt;strong&gt;按照Frame布局&lt;/strong&gt;&lt;/p&gt;
@@ -286,7 +286,7 @@ StairView支持设置Label成阶梯状从上到下、从左到右分布，如下
 &lt;p&gt;Github地址：
 &lt;a class="link" href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="noopener"
  &gt;https://github.com/zekunyan/AutolayoutExampleWithMasonry&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Gif示例" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_1.gif"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Gif示例" class="gallery-image" data-flex-basis="134px" data-flex-grow="56" height="668" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_1.gif" width="375"&gt;&lt;/p&gt;
 &lt;h2 id="case-1-用约束优先级保证可移动view的内容可见性"&gt;&lt;a href="#case-1-%e7%94%a8%e7%ba%a6%e6%9d%9f%e4%bc%98%e5%85%88%e7%ba%a7%e4%bf%9d%e8%af%81%e5%8f%af%e7%a7%bb%e5%8a%a8view%e7%9a%84%e5%86%85%e5%ae%b9%e5%8f%af%e8%a7%81%e6%80%a7" class="header-anchor"&gt;&lt;/a&gt;Case 1: 用约束优先级保证可移动View的内容可见性
 &lt;/h2&gt;&lt;h3 id="实现功能"&gt;&lt;a href="#%e5%ae%9e%e7%8e%b0%e5%8a%9f%e8%83%bd" class="header-anchor"&gt;&lt;/a&gt;实现功能
 &lt;/h3&gt;&lt;p&gt;Case 1实现的功能就是，可以用手指拖动一个灰色的Tip控件，在红框containerView内移动，并且保持移动到红框边缘时，Tip控件的内容不会超出红框，保证内容的可见性。&lt;/p&gt;
@@ -308,7 +308,7 @@ StairView支持设置Label成阶梯状从上到下、从左到右分布，如下
 &lt;p&gt;至于保证Tip内容在可见范围内，就交给Autolayout处理吧~&lt;/p&gt;
 &lt;h3 id="关键原理"&gt;&lt;a href="#%e5%85%b3%e9%94%ae%e5%8e%9f%e7%90%86" class="header-anchor"&gt;&lt;/a&gt;关键原理
 &lt;/h3&gt;&lt;p&gt;用Autolayout实现的关键，就是&lt;strong&gt;善于利用约束的优先级&lt;/strong&gt;。先看看设置的约束示意图：&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Case 1: 用约束优先级保证可移动View的内容可见性" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_2.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Case 1: 用约束优先级保证可移动View的内容可见性" class="gallery-image" data-flex-basis="291px" data-flex-grow="121" height="591" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_2.png" width="717"&gt;&lt;/p&gt;
 &lt;p&gt;中间的tipLabel就是被移动的控件&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;褐色的两个约束，分别是Tip控件的centerX和centerY，与上级View的left和top的约束，用来对Tip定位&lt;/li&gt;
@@ -353,7 +353,7 @@ StairView支持设置Label成阶梯状从上到下、从左到右分布，如下
 &lt;/h3&gt;&lt;p&gt;之所以写这个例子，主要是想从概念上更加深入的理解Autolayout与传统的设置Frame的不同，即Autolayout里面的约束，其实是“动态的绑定”，是控件相互之间的位置关系绑定，约束是可以&lt;strong&gt;实时&lt;/strong&gt;保证这种绑定关系的。&lt;/p&gt;
 &lt;p&gt;传统的设置Frame，在View的内容、位置要变化时，是要手动设置的，是“一次性”的，而Autolayout，在确定了约束后，会实时的用约束的规则去更新Frame，所以可以避免这种手动设置。&lt;/p&gt;
 &lt;p&gt;所以，对于本例子来说，设置Frame的方式和Autolayout的方式对比如下：&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Case 2: Autolayout的约束=控件间位置关系的“绑定”" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_3.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Case 2: Autolayout的约束=控件间位置关系的“绑定”" class="gallery-image" data-flex-basis="691px" data-flex-grow="288" height="402" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_3.png" width="1159"&gt;&lt;/p&gt;
 &lt;p&gt;用Autolayout的话，只要把Attachment的位置设置为相对于TipLabel就可以了。&lt;/p&gt;
 &lt;h3 id="实现细节-1"&gt;&lt;a href="#%e5%ae%9e%e7%8e%b0%e7%bb%86%e8%8a%82-1" class="header-anchor"&gt;&lt;/a&gt;实现细节
 &lt;/h3&gt;&lt;p&gt;代码比较简单，如下：&lt;/p&gt;
@@ -373,7 +373,7 @@ StairView支持设置Label成阶梯状从上到下、从左到右分布，如下
 &lt;p&gt;但是仔细分析，应该是先设置View的位置到屏幕的左边看不见的区域，然后用动画平滑的再让View移动回原位。&lt;/p&gt;
 &lt;p&gt;就是说，只是从左边移动回来时，才让动画生效！问题就变成了，如何让&lt;strong&gt;约束分段执行&lt;/strong&gt;，或者说，&lt;strong&gt;控制约束的生效时机&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;步骤可以由下图表示：&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Case 3: 利用layoutIfNeeded控制约束的生效时机" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_4.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Case 3: 利用layoutIfNeeded控制约束的生效时机" class="gallery-image" data-flex-basis="980px" data-flex-grow="408" height="279" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2016/08/06/autolayout-example-with-masonry4/blog_autolayout_example_with_masonry4_4.png" width="1140"&gt;&lt;/p&gt;
 &lt;h3 id="实现关键"&gt;&lt;a href="#%e5%ae%9e%e7%8e%b0%e5%85%b3%e9%94%ae" class="header-anchor"&gt;&lt;/a&gt;实现关键
 &lt;/h3&gt;&lt;p&gt;步骤分析清楚了，那么问题就是如何让约束在修改后，“立即”生效，而不是等到系统自动在下次更新布局时被动的生效。&lt;/p&gt;
 &lt;p&gt;答案就是：利用**&lt;code&gt;layoutIfNeeded&lt;/code&gt;**&lt;/p&gt;
@@ -421,7 +421,7 @@ StairView支持设置Label成阶梯状从上到下、从左到右分布，如下
 &lt;p&gt;Github地址：
 &lt;a class="link" href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="noopener"
  &gt;https://github.com/zekunyan/AutolayoutExampleWithMasonry&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Gif示例" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_1.gif"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Gif示例" class="gallery-image" data-flex-basis="134px" data-flex-grow="55" height="565" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_1.gif" width="316"&gt;&lt;/p&gt;
 &lt;h2 id="case-1-parallax-header"&gt;&lt;a href="#case-1-parallax-header" class="header-anchor"&gt;&lt;/a&gt;Case 1: Parallax Header
 &lt;/h2&gt;&lt;p&gt;Parallax翻译过来就是“视差”，我个人觉得就是一种“联动”的效果，在许多应用里面都能见到。当前这个例子，就是最简单的一种。&lt;/p&gt;
 &lt;h3 id="原理"&gt;&lt;a href="#%e5%8e%9f%e7%90%86" class="header-anchor"&gt;&lt;/a&gt;原理
@@ -435,7 +435,7 @@ StairView支持设置Label成阶梯状从上到下、从左到右分布，如下
 &lt;li&gt;在代码里面监听UITableView的&lt;code&gt;contentOffset&lt;/code&gt;属性，当y小于0时，增加Parallax Header高度，使其产生联动效果。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;约束示意图如下：
-&lt;img alt="Parallax Header" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_6.png"&gt;&lt;/p&gt;
+&lt;img alt="Parallax Header" class="gallery-image" data-flex-basis="421px" data-flex-grow="175" height="427" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_6.png" width="750"&gt;&lt;/p&gt;
 &lt;h3 id="代码"&gt;&lt;a href="#%e4%bb%a3%e7%a0%81" class="header-anchor"&gt;&lt;/a&gt;代码
 &lt;/h3&gt;&lt;p&gt;创建Parallax Header的代码如下：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;_parallaxHeaderView = [UIImageView new];
@@ -509,7 +509,7 @@ StairView支持设置Label成阶梯状从上到下、从左到右分布，如下
 &lt;/ol&gt;
 &lt;h3 id="布局"&gt;&lt;a href="#%e5%b8%83%e5%b1%80" class="header-anchor"&gt;&lt;/a&gt;布局
 &lt;/h3&gt;&lt;p&gt;为了尽量简单，例子里面的Cell只有三个子控件，第一个UILabel是标题等调试信息，第二个UILabel用来显示多行文本，最后一个UIButton用来切换展开、收回的状态。大致的布局如下：&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Case2 UITableViewCell布局示意" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_3.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Case2 UITableViewCell布局示意" class="gallery-image" data-flex-basis="311px" data-flex-grow="129" height="772" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_3.png" width="1002"&gt;&lt;/p&gt;
 &lt;h4 id="布局的代码"&gt;&lt;a href="#%e5%b8%83%e5%b1%80%e7%9a%84%e4%bb%a3%e7%a0%81" class="header-anchor"&gt;&lt;/a&gt;布局的代码
 &lt;/h4&gt;&lt;p&gt;&lt;strong&gt;标题UIlabel&lt;/strong&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-ini" data-lang="ini"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;_titleLabel&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;[UILabel new];&lt;/span&gt;
@@ -609,7 +609,7 @@ StairView支持设置Label成阶梯状从上到下、从左到右分布，如下
 &lt;/h2&gt;&lt;p&gt;等间距，也就是View之间的X或Y轴上的坐标等差，在这里我只举出水平方向上的等间距，垂直方向上一个道理。&lt;/p&gt;
 &lt;h3 id="方法1利用透明等宽的占位view填充空白处实现等间距"&gt;&lt;a href="#%e6%96%b9%e6%b3%951%e5%88%a9%e7%94%a8%e9%80%8f%e6%98%8e%e7%ad%89%e5%ae%bd%e7%9a%84%e5%8d%a0%e4%bd%8dview%e5%a1%ab%e5%85%85%e7%a9%ba%e7%99%bd%e5%a4%84%e5%ae%9e%e7%8e%b0%e7%ad%89%e9%97%b4%e8%b7%9d" class="header-anchor"&gt;&lt;/a&gt;方法1：利用透明等宽的占位View填充空白处，实现等间距
 &lt;/h3&gt;&lt;p&gt;步骤很简单，就是循环创建真正要展示的View和占位View，布局如下：&lt;/p&gt;
-&lt;p&gt;&lt;img alt="利用占位View实现等间距" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_4.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="利用占位View实现等间距" class="gallery-image" data-flex-basis="603px" data-flex-grow="251" height="580" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_4.png" width="1458"&gt;&lt;/p&gt;
 &lt;p&gt;说明一下：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;占位View的宽度不能定死，这样外部的父级View宽度变化时，内部的View仍然可以保持等间距。&lt;/li&gt;
@@ -670,7 +670,7 @@ StairView支持设置Label成阶梯状从上到下、从左到右分布，如下
 &lt;p&gt;在上一篇&lt;a class="link" href="http://tutuge.me/2015/08/08/autolayout-example-with-masonry2/" target="_blank" rel="noopener"
  &gt;有趣的Autolayout示例2-Masonry实现&lt;/a&gt;的开头我也提到过，Autolayout最终都是体现在坐标系上，一切都会按照&lt;code&gt;viewA-attribute = viewB-attribute * multiplier + constant&lt;/code&gt;这种公式去计算，既然centerX不能跟父级的Width宽度一起加约束，那就换一个，如父级的&lt;strong&gt;右边界&lt;/strong&gt;，父级View的&lt;strong&gt;右边界&lt;/strong&gt;在父级本身的参照系下的Y坐标值不就等于其宽度吗~&lt;/p&gt;
 &lt;p&gt;所以，可以按照如下方式加约束：&lt;/p&gt;
-&lt;p&gt;&lt;img alt="按比例设置multiplier实现等间距" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_5.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="按比例设置multiplier实现等间距" class="gallery-image" data-flex-basis="474px" data-flex-grow="197" height="658" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/12/14/autolayout-example-with-masonry3/blog_autolayout_example_with_masonry3_5.png" width="1300"&gt;&lt;/p&gt;
 &lt;p&gt;对应的代码也会异常简单：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 循环创建
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;NSUInteger&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;ITEM_COUNT&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
@@ -702,7 +702,7 @@ StairView支持设置Label成阶梯状从上到下、从左到右分布，如下
 &lt;p&gt;Github地址：
 &lt;a class="link" href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="noopener"
  &gt;https://github.com/zekunyan/AutolayoutExampleWithMasonry&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Gif示例" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_1.gif"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Gif示例" class="gallery-image" data-flex-basis="134px" data-flex-grow="55" height="565" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_1.gif" width="316"&gt;&lt;/p&gt;
 &lt;h2 id="知识点"&gt;&lt;a href="#%e7%9f%a5%e8%af%86%e7%82%b9" class="header-anchor"&gt;&lt;/a&gt;知识点
 &lt;/h2&gt;&lt;p&gt;先讲讲两个知识点，很基础，但是很容易被忽略。&lt;/p&gt;
 &lt;h3 id="坐标系toprightoffset"&gt;&lt;a href="#%e5%9d%90%e6%a0%87%e7%b3%bbtoprightoffset" class="header-anchor"&gt;&lt;/a&gt;坐标系、top、right、offset
@@ -718,7 +718,7 @@ StairView支持设置Label成阶梯状从上到下、从左到右分布，如下
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;代码的意思很简单，就是view1的上下左右边距为padding对应的值。&lt;/p&gt;
 &lt;p&gt;但是，为什么bottom、right的offset是&lt;strong&gt;负数&lt;/strong&gt;呢？&lt;/p&gt;
 &lt;p&gt;其实无论是Autolayout还是直接写frame，最终的结果都是要把我们的控件按照正确的位置绘制在屏幕上，也就是说，在一个统一的坐标系下，如下：&lt;/p&gt;
-&lt;p&gt;&lt;img alt="坐标系" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_2.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="坐标系" class="gallery-image" data-flex-basis="294px" data-flex-grow="122" height="240" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_2.png" width="294"&gt;&lt;/p&gt;
 &lt;p&gt;而在Masonry里面，offset只是做了“加法”运算，举个例，上面的：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-css" data-lang="css"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;make&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;top&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;equalTo&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;superview&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;mas_top&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;with&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;offset&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;padding&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;top&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;其实等于下面的式子：&lt;/p&gt;
@@ -757,7 +757,7 @@ StairView支持设置Label成阶梯状从上到下、从左到右分布，如下
 &lt;h4 id="自我约束的cell"&gt;&lt;a href="#%e8%87%aa%e6%88%91%e7%ba%a6%e6%9d%9f%e7%9a%84cell" class="header-anchor"&gt;&lt;/a&gt;“自我约束”的Cell
 &lt;/h4&gt;&lt;p&gt;既然要能让系统自己计算出Cell的高度，我们在设置约束的时候，就要让约束整体是“完整”、“自我约束”的。（这个很难用语言描述。。。）Cell里面的每一个View的大小、位置，都可以从约束中得到体现，而Cell的整体大小，也是从子View的约束综合计算得出的。&lt;/p&gt;
 &lt;p&gt;如下面的Cell：&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Cell" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_3.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Cell" class="gallery-image" data-flex-basis="982px" data-flex-grow="409" height="137" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_3.png" width="561"&gt;&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;左上角的图片固定大小。&lt;/li&gt;
 &lt;li&gt;标题的Label只显示一行，固定高度。&lt;/li&gt;
@@ -765,7 +765,7 @@ StairView支持设置Label成阶梯状从上到下、从左到右分布，如下
 &lt;li&gt;两个Label宽度整体随着Cell的宽度变化。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;约束的设定如下：&lt;/p&gt;
-&lt;p&gt;&lt;img alt="约束示意" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_4.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="约束示意" class="gallery-image" data-flex-basis="422px" data-flex-grow="175" height="508" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_4.png" width="894"&gt;&lt;/p&gt;
 &lt;p&gt;关键点:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;内容Label的bottom和Cell的contentView的约束不可以省，因为cell的高度要由内部的约束决定，所以上下左右的约束一个不能少。&lt;/li&gt;
@@ -894,7 +894,7 @@ StairView支持设置Label成阶梯状从上到下、从左到右分布，如下
  &lt;/blockquote&gt;
 &lt;p&gt;简单来说，topLayoutGuide表示当前页面的上方被status bar、navigation bar遮挡的部分。同理，bottomLayoutGuide表示下方被遮挡的部分。&lt;/p&gt;
 &lt;p&gt;如下图:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="topLayoutGuide和bottomLayoutGuide" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_5.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="topLayoutGuide和bottomLayoutGuide" class="gallery-image" data-flex-basis="230px" data-flex-grow="96" height="1096" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_5.jpg" width="1054"&gt;&lt;/p&gt;
 &lt;h3 id="解决的问题"&gt;&lt;a href="#%e8%a7%a3%e5%86%b3%e7%9a%84%e9%97%ae%e9%a2%98" class="header-anchor"&gt;&lt;/a&gt;解决的问题
 &lt;/h3&gt;&lt;p&gt;有些时候，一个ViewController可能单独显示出来，也可能内嵌在UINavigationController里面显示出来。在这两种情况下，页面的“&lt;strong&gt;可视范围&lt;/strong&gt;”是不一样的，很明显，NavigationBar会遮挡住一部分，用了UITabBarController时，tabBar也会遮挡住下方一部分。再加上各种Bar都可以隐藏，情况会变得更复杂。&lt;/p&gt;
 &lt;p&gt;难道要为每种情况去写一份布局代码？&lt;/p&gt;
@@ -938,10 +938,10 @@ StairView支持设置Label成阶梯状从上到下、从左到右分布，如下
 &lt;h2 id="case-3-自定义baseline"&gt;&lt;a href="#case-3-%e8%87%aa%e5%ae%9a%e4%b9%89baseline" class="header-anchor"&gt;&lt;/a&gt;Case 3: 自定义baseline
 &lt;/h2&gt;&lt;p&gt;最后一个Case，讲讲baseline。&lt;/p&gt;
 &lt;p&gt;baseline，翻译过来就是“基线”，在Autolayout里面对应着**&lt;code&gt;NSLayoutFormatAlignAllBaseline&lt;/code&gt;**，也是一种对齐的标准。例如，UIButton的baseline就是内部的文字，如果一排button按照baseline对齐的话，就是下面这样：&lt;/p&gt;
-&lt;p&gt;&lt;img alt="按钮按照baseline对其" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_6.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="按钮按照baseline对其" class="gallery-image" data-flex-basis="490px" data-flex-grow="204" height="286" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_6.jpg" width="584"&gt;&lt;/p&gt;
 &lt;p&gt;对于自定义的View来说，baseline默认就是整个view的底部，如果想改变baseline的话，可以重写UIView的&lt;strong&gt;viewForBaselineLayout&lt;/strong&gt;，返回当成baseline的view即可。&lt;/p&gt;
 &lt;p&gt;如下面的自定义view：&lt;/p&gt;
-&lt;p&gt;&lt;img alt="自定义baseline" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_7.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="自定义baseline" class="gallery-image" data-flex-basis="348px" data-flex-grow="145" height="756" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/08/08/autolayout-example-with-masonry2/blog_autolayout_example_with_masonry2_7.jpg" width="1098"&gt;&lt;/p&gt;
 &lt;p&gt;很明显，baseline就是显示图片的UIImageView，代码也很简单:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-kotlin" data-lang="kotlin"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 自定义的View中
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 返回自定义的baseline的view
@@ -988,7 +988,7 @@ StairView支持设置Label成阶梯状从上到下、从左到右分布，如下
 本文举了3个比较有“特点”的Autolayout例子，源于微博上好友的提问，感觉比较有意思，也比较有代表性，就写了出来，分享给大家~
 至于为什么用Masonry，那是因为它好用啊！（被问到过有关Masonry的问题，就索性用它来实现吧=。=）。&lt;/p&gt;
 &lt;h3 id="效果图"&gt;&lt;a href="#%e6%95%88%e6%9e%9c%e5%9b%be" class="header-anchor"&gt;&lt;/a&gt;效果图
-&lt;/h3&gt;&lt;p&gt;&lt;img alt="效果图" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/05/23/autolayout-example-with-masonry/blog_autolayout_example_with_masonry_1.gif"&gt;&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;img alt="效果图" class="gallery-image" data-flex-basis="134px" data-flex-grow="55" height="565" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/05/23/autolayout-example-with-masonry/blog_autolayout_example_with_masonry_1.gif" width="316"&gt;&lt;/p&gt;
 &lt;h3 id="github地址"&gt;&lt;a href="#github%e5%9c%b0%e5%9d%80" class="header-anchor"&gt;&lt;/a&gt;Github地址
 &lt;/h3&gt;&lt;p&gt;&lt;a class="link" href="https://github.com/zekunyan/AutolayoutExampleWithMasonry" target="_blank" rel="noopener"
  &gt;https://github.com/zekunyan/AutolayoutExampleWithMasonry&lt;/a&gt;&lt;/p&gt;
@@ -1026,7 +1026,7 @@ StairView支持设置Label成阶梯状从上到下、从左到右分布，如下
 &lt;li&gt;显示的优先级由“Content Compression Resistance”属性的高低决定。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h3 id="约束示例图"&gt;&lt;a href="#%e7%ba%a6%e6%9d%9f%e7%a4%ba%e4%be%8b%e5%9b%be" class="header-anchor"&gt;&lt;/a&gt;约束示例图
-&lt;/h3&gt;&lt;p&gt;&lt;img alt="约束示例图" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/05/23/autolayout-example-with-masonry/blog_autolayout_example_with_masonry_2.png"&gt;&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;img alt="约束示例图" class="gallery-image" data-flex-basis="518px" data-flex-grow="216" height="972" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/05/23/autolayout-example-with-masonry/blog_autolayout_example_with_masonry_2.png" width="2100"&gt;&lt;/p&gt;
 &lt;h3 id="关键代码"&gt;&lt;a href="#%e5%85%b3%e9%94%ae%e4%bb%a3%e7%a0%81" class="header-anchor"&gt;&lt;/a&gt;关键代码
 &lt;/h3&gt;&lt;p&gt;关键的代码如下：（label1是左边的label，label2是右边的）&lt;/p&gt;
 &lt;h4 id="设置位置"&gt;&lt;a href="#%e8%ae%be%e7%bd%ae%e4%bd%8d%e7%bd%ae" class="header-anchor"&gt;&lt;/a&gt;设置位置
@@ -1075,7 +1075,7 @@ StairView支持设置Label成阶梯状从上到下、从左到右分布，如下
 &lt;/h3&gt;&lt;p&gt;灵活运用“Content Compression Resistance”和“Content Hugging”属性。&lt;/p&gt;
 &lt;h2 id="case-2-四个imageview整体居中可以任意显示隐藏"&gt;&lt;a href="#case-2-%e5%9b%9b%e4%b8%aaimageview%e6%95%b4%e4%bd%93%e5%b1%85%e4%b8%ad%e5%8f%af%e4%bb%a5%e4%bb%bb%e6%84%8f%e6%98%be%e7%a4%ba%e9%9a%90%e8%97%8f" class="header-anchor"&gt;&lt;/a&gt;Case 2: 四个ImageView整体居中，可以任意显示、隐藏
 &lt;/h2&gt;&lt;p&gt;先看看示例的截图：&lt;/p&gt;
-&lt;p&gt;&lt;img alt="效果图" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/05/23/autolayout-example-with-masonry/blog_autolayout_example_with_masonry_3.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="效果图" class="gallery-image" data-flex-basis="578px" data-flex-grow="240" height="230" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/05/23/autolayout-example-with-masonry/blog_autolayout_example_with_masonry_3.png" width="554"&gt;&lt;/p&gt;
 &lt;p&gt;下面的四个Switch控件分别控制上面对应位置的图片是否显示。&lt;/p&gt;
 &lt;h3 id="分析-1"&gt;&lt;a href="#%e5%88%86%e6%9e%90-1" class="header-anchor"&gt;&lt;/a&gt;分析
 &lt;/h3&gt;&lt;ol&gt;
@@ -1083,7 +1083,7 @@ StairView支持设置Label成阶梯状从上到下、从左到右分布，如下
 &lt;li&gt;然后就是显示与隐藏。在这里我直接控制图片ImageView的宽度，宽度为0的时候不就“隐藏”了吗。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h3 id="约束示例图-1"&gt;&lt;a href="#%e7%ba%a6%e6%9d%9f%e7%a4%ba%e4%be%8b%e5%9b%be-1" class="header-anchor"&gt;&lt;/a&gt;约束示例图
-&lt;/h3&gt;&lt;p&gt;&lt;img alt="约束示例图" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/05/23/autolayout-example-with-masonry/blog_autolayout_example_with_masonry_4.png"&gt;&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;img alt="约束示例图" class="gallery-image" data-flex-basis="479px" data-flex-grow="199" height="1022" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2015/05/23/autolayout-example-with-masonry/blog_autolayout_example_with_masonry_4.png" width="2040"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;解释&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;之所以这么设置，主要目的有以下几点：&lt;/p&gt;
 &lt;ol&gt;

@@ -11,7 +11,7 @@
 &lt;p&gt;所以我写了一个很小的脚本原型：不发明新的 Skill 格式，也不检查 &lt;code&gt;SKILL.md&lt;/code&gt; 内容，只做一件事——&lt;strong&gt;把自己的 Skills 集中放好，再让不同工具能找到它们。&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;完整脚本：&lt;a class="link" href="https://tutuge.me/assets/2026/08/12/agent-skills-manager/agent-skills-manager.sh" &gt;agent-skills-manager.sh&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;GitHub：仓库准备中，后续会补在这里。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="以 .agents/skills 为唯一维护源，直接扫描或通过原生目录软链接让不同工具发现" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/08/12/agent-skills-manager/skill-manager-map.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="以 .agents/skills 为唯一维护源，直接扫描或通过原生目录软链接让不同工具发现" class="gallery-image" data-flex-basis="391px" data-flex-grow="163" height="1960" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/08/12/agent-skills-manager/skill-manager-map.png" width="3200"&gt;&lt;/p&gt;
 &lt;h2 id="问题目录不统一不等于格式不统一"&gt;&lt;a href="#%e9%97%ae%e9%a2%98%e7%9b%ae%e5%bd%95%e4%b8%8d%e7%bb%9f%e4%b8%80%e4%b8%8d%e7%ad%89%e4%ba%8e%e6%a0%bc%e5%bc%8f%e4%b8%8d%e7%bb%9f%e4%b8%80" class="header-anchor"&gt;&lt;/a&gt;问题：目录不统一，不等于格式不统一
 &lt;/h2&gt;&lt;p&gt;现在主流工具对 &lt;code&gt;SKILL.md&lt;/code&gt; 的理解已经比较接近，不过发现目录各有一套。&lt;/p&gt;
 &lt;table&gt;
