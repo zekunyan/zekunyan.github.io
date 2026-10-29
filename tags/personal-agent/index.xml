@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Personal Agent on 土土哥的技术 Blog</title><link>https://tutuge.me/tags/personal-agent/</link><description>Recent content in Personal Agent on 土土哥的技术 Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>tutuge</copyright><lastBuildDate>Wed, 28 Oct 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://tutuge.me/tags/personal-agent/index.xml" rel="self" type="application/rss+xml"/><item><title>别只把它当聊天框：Personal Agent 的两种产品化路线</title><link>https://tutuge.me/2026/10/28/personal-agent/</link><pubDate>Thu, 29 Oct 2026 02:32:19 +0000</pubDate><guid>https://tutuge.me/2026/10/28/personal-agent/</guid><description>&lt;img src="https://tutuge.me/assets/2026/10/28/personal-agent/header.png" alt="Featured image of post 别只把它当聊天框：Personal Agent 的两种产品化路线" /&gt;&lt;h2 id="前言"&gt;&lt;a href="#%e5%89%8d%e8%a8%80" class="header-anchor"&gt;&lt;/a&gt;前言
+&lt;/h2&gt;&lt;p&gt;最近几个月，我每天早上的打开方式变了。&lt;/p&gt;
+&lt;p&gt;不用我开口，三份东西会自己准时到：港美股科技股汇总、GitHub 热门项目日报、AI 业界资讯。不是订阅推送，是我的 personal agent 按定时任务搜集、整理完，直接发到会话里，还顺手把网页版更新了。&lt;/p&gt;
+&lt;p&gt;邮箱也是类似。126 和 Gmail 里攒了多年的订阅、通知、营销邮件，以前我都是眼不见为净。这段时间是让 agent 连上邮箱，先按发件人域名拉一遍，再在本地按 From 头精确过滤，分批确认、分批删。几千封处理完，清爽是真清爽。&lt;/p&gt;
+&lt;p&gt;还有一些更琐碎的事，我交给了 Instinct。没有 App 要打开，没有新界面要学，就在 WhatsApp 里发一句话，它去查、去订、去整理，最后把结果发回来。比如让它按团队关心的方向整理一份 This week in AI 简报，它会先反问我更关心模型、工具还是行业，再去核对哪些是旧闻炒冷饭，最后给一份带来源链接的简报。&lt;/p&gt;
+&lt;p&gt;这三件事有个共同点：聊天框做不到，coding agent 也做不到。&lt;/p&gt;
+&lt;p&gt;聊天框是问答，我不问，它不动；coding agent 更不用说，它活在 repo 和终端里，我召唤它，它在工位里干活，干完就停了。但上面这些事，需要的是另一个东西：它得常驻，得记得我，得能连上我的邮箱、日历、消息，还得能在我没说话的时候主动把事办了。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Coding agent 是「你召唤它、它在工位里干活」；personal agent 新的地方不在模型，而在它常驻、记得你、能跨你的账户把事办完——而 Muse 和 Instinct，是从两个极端实现同一件事。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;这篇就想把这件事讲清楚：personal agent 到底新在哪，两种产品化路线分别适合谁，以及它的限制到底在哪里。&lt;/p&gt;
+&lt;h2 id="先分清它和聊天框coding-agent-不是一回事"&gt;&lt;a href="#%e5%85%88%e5%88%86%e6%b8%85%e5%ae%83%e5%92%8c%e8%81%8a%e5%a4%a9%e6%a1%86coding-agent-%e4%b8%8d%e6%98%af%e4%b8%80%e5%9b%9e%e4%ba%8b" class="header-anchor"&gt;&lt;/a&gt;先分清：它和聊天框、Coding Agent 不是一回事
+&lt;/h2&gt;&lt;p&gt;这两年名字实在太多了。大模型、Chat、Agent、Coding Agent、Personal Agent，混在一起很容易越聊越糊涂。我自己的分法是按「多了什么」来分，一层一层叠：&lt;/p&gt;
+&lt;table&gt;
+	&lt;thead&gt;
+			&lt;tr&gt;
+					&lt;th&gt;形态&lt;/th&gt;
+					&lt;th&gt;说白了是什么&lt;/th&gt;
+					&lt;th&gt;多出来的那一样&lt;/th&gt;
+			&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tbody&gt;
+			&lt;tr&gt;
+					&lt;td&gt;大模型&lt;/td&gt;
+					&lt;td&gt;大脑本身&lt;/td&gt;
+					&lt;td&gt;理解和生成&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;Chat 产品&lt;/td&gt;
+					&lt;td&gt;给大脑配了个对话界面&lt;/td&gt;
+					&lt;td&gt;你问它答，聊完就忘得差不多&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;通用 Agent&lt;/td&gt;
+					&lt;td&gt;能自己拆任务、调工具&lt;/td&gt;
+					&lt;td&gt;单次任务能闭环&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;Coding Agent&lt;/td&gt;
+					&lt;td&gt;垂直做代码的 Agent&lt;/td&gt;
+					&lt;td&gt;repo 上下文 + harness + 可验证的改动&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;Personal Agent&lt;/td&gt;
+					&lt;td&gt;常驻在你生活里的 Agent&lt;/td&gt;
+					&lt;td&gt;长期记忆 + 跨账户权限 + 主动触发 + 自己的身份&lt;/td&gt;
+			&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;img alt="能力叠加台阶：每升一级，只多一样东西" class="gallery-image" data-flex-basis="461px" data-flex-grow="192" height="1434" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/10/28/personal-agent/01-steps.png" width="2760"&gt;&lt;/p&gt;
+&lt;p&gt;所以判断一个产品是不是 personal agent，我一般问五个问题：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;是否常驻？我不打开它，它还在不在跑？&lt;/li&gt;
+&lt;li&gt;是否有长期记忆？下一次新会话，它还记不记得我的偏好和之前的事？&lt;/li&gt;
+&lt;li&gt;是否能跨账户代办？它能不能真的进我的邮箱、日历、消息里动手，而不只是给我建议？&lt;/li&gt;
+&lt;li&gt;是否会主动触发？是等我下指令，还是能按时间、按事件自己找我？&lt;/li&gt;
+&lt;li&gt;是否有它自己的身份？它有没有自己的邮箱、电话、钱包，能以「助理」的身份对外办事？&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;五个里占得越多，越接近 personal agent。只占一两个的，很多其实还是套了 Agent 名字的 Chat 产品。&lt;/p&gt;
+&lt;p&gt;至于为什么 2026 年秋天突然这么热，数字能说明一部分，但数字的口径得先说清，不然很容易被带偏：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Instinct&lt;/strong&gt;：2026 年 8 月 26 日 B 轮 2.5 亿美元、估值 25 亿美元；9 月 28 日 C 轮 10 亿美元、估值 100 亿美元，33 天翻了 4 倍，累计融资约 13.5 亿美元，公司只有 14 个人。用户数官方从未披露，只有 The Information 报道过「超 10 万」这一个口径。创始人在播客里说年化交易额近 10 亿美元、约 50% 来自旅行，这是单方说法，未经独立核实，听听就好。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Muse（Meta 出品，也就是我现在主要在用的这个）&lt;/strong&gt;：2026 年 9 月 8 日上线。扎克伯格在 10 月 21 日财报会上说美加已有超 1000 万人完成设置，这是公司自报；Sensor Tower 估算 40 天全球下载 1090 万、10 月 16 日 DAU 约 250 万，这是第三方估算。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;OpenClaw&lt;/strong&gt;：GitHub stars 392,737（2026 年 10 月 22 日实数），没有 VC、没有公司，靠非营利基金会运营。这个数字是可验证实数。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;同期的跟进者&lt;/strong&gt;：OpenAI 在 9 月 29 日发布了全天候助手 Dots；Manus 在 10 月 8 日融资超 5 亿美元（Reuters 报道），并推出带专属邮箱、电话、钱包的 Cue。至于 Manus 约 40 亿美元估值，那是「seeking」口径，不是 Reuters 确认的数字，引用时别混。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="2026 年 5 月至 10 月 personal agent 赛道事件时间线" class="gallery-image" data-flex-basis="507px" data-flex-grow="211" height="1305" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/10/28/personal-agent/02-timeline.png" width="2760"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Instinct 估值阶梯" class="gallery-image" data-flex-basis="470px" data-flex-grow="196" height="1407" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/10/28/personal-agent/03-valuation.png" width="2760"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="OpenClaw GitHub stars" class="gallery-image" data-flex-basis="471px" data-flex-grow="196" height="1405" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/10/28/personal-agent/04-stars.png" width="2760"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Muse 上线 40 天" class="gallery-image" data-flex-basis="470px" data-flex-grow="196" height="1407" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/10/28/personal-agent/05-muse-downloads.png" width="2760"&gt;&lt;/p&gt;
+&lt;p&gt;资本为什么这么急？逻辑其实不复杂：大家抢的不是聊天时长，是交易入口。订票、外卖、打车、购物这类日常交易是一个很大的池子，业界有分析估在 1 万亿美元量级。如果 agent 能路由其中 5%–10%，那就是 500 亿美元以上的交易额被它经手——注意，这是被路由的交易额，不是收入，真要算收入还得再乘一个抽佣比例，不同场景差得很远。这个地方最容易被营销材料偷换概念，写的时候我特意把口径留住。&lt;/p&gt;
+&lt;p&gt;热归热，热不等于适合我。下面先把边界划清楚。&lt;/p&gt;
+&lt;h2 id="先划边界这篇不讨论什么"&gt;&lt;a href="#%e5%85%88%e5%88%92%e8%be%b9%e7%95%8c%e8%bf%99%e7%af%87%e4%b8%8d%e8%ae%a8%e8%ae%ba%e4%bb%80%e4%b9%88" class="header-anchor"&gt;&lt;/a&gt;先划边界：这篇不讨论什么
+&lt;/h2&gt;&lt;p&gt;这个地方先说清楚，免得后面越写越大。&lt;/p&gt;
+&lt;p&gt;第一，本文不评测模型能力高低。哪个模型写代码更强、推理更快，那是另一篇文章的事，而且变化太快，写完就过时。&lt;/p&gt;
+&lt;p&gt;第二，本文不做购买和订阅建议。值不值得付费，取决于你自己的使用频率和你愿意交出多少权限，我给不了标准答案。&lt;/p&gt;
+&lt;p&gt;第三，本文不覆盖企业级 agent 平台。客服、销售、企业流程自动化那一套，约束、合规和评测体系完全不同，不在讨论范围内。&lt;/p&gt;
+&lt;p&gt;本文只讨论一件事：personal agent 这种「形态」，以及它现在的两种产品化路线。&lt;/p&gt;
+&lt;p&gt;还有一个更重要的前提：后面所有说「好用」的地方，都只适用于一个条件——你愿意把账户权限交给 agent。邮箱、日历、消息、支付，这些权限不交，它就退化成一个记得多一点的聊天框；交了，好用是真好用，风险也是真风险。这个取舍没有对错，只有适不适合自己，根据实际情况而定。&lt;/p&gt;
+&lt;h2 id="两种路线一个给你一个家一个直接住进你的短信里"&gt;&lt;a href="#%e4%b8%a4%e7%a7%8d%e8%b7%af%e7%ba%bf%e4%b8%80%e4%b8%aa%e7%bb%99%e4%bd%a0%e4%b8%80%e4%b8%aa%e5%ae%b6%e4%b8%80%e4%b8%aa%e7%9b%b4%e6%8e%a5%e4%bd%8f%e8%bf%9b%e4%bd%a0%e7%9a%84%e7%9f%ad%e4%bf%a1%e9%87%8c" class="header-anchor"&gt;&lt;/a&gt;两种路线：一个给你一个家，一个直接住进你的短信里
+&lt;/h2&gt;&lt;p&gt;如果只让我用一句话概括 Muse 和 Instinct 的区别，我会这么说：&lt;/p&gt;
+&lt;p&gt;Muse 是给你一个功能齐全的「家」，Instinct 是不给你任何新界面，直接住进你已有的消息 App 里。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="产品化定位：上手门槛 × 功能丰富度" class="gallery-image" data-flex-basis="445px" data-flex-grow="185" height="1486" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/10/28/personal-agent/07-quadrant.png" width="2760"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="三方六维雷达" class="gallery-image" data-flex-basis="370px" data-flex-grow="154" height="1786" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/10/28/personal-agent/08-radar.png" width="2760"&gt;&lt;/p&gt;
+&lt;h3 id="muse富内容路线"&gt;&lt;a href="#muse%e5%af%8c%e5%86%85%e5%ae%b9%e8%b7%af%e7%ba%bf" class="header-anchor"&gt;&lt;/a&gt;Muse：富内容路线
+&lt;/h3&gt;&lt;p&gt;Muse 走的是传统的、完整的产品化方案。该有的都有：&lt;/p&gt;
+&lt;p&gt;多端可登录，手机、电脑都能进；连接器很丰富，能连邮箱、日历、GitHub、Drive、Instagram 等一堆外部服务，也能存特定网站的账号密码，需要时自己去登录办事；和 Meta 旗下产品的交互兼容做得比较全。除了常规的 chat 会话，它还有「动态」「点子」「目标」「Web 构件」，还有一个完整的可视化、可交互的内置 Web 浏览器。&lt;/p&gt;
+&lt;p&gt;对我影响最大的其实是两点。一是每次新会话，它都有完整的生命周期记忆和偏好，不用我每次重新交代背景；二是主会话会定期基于 memory 主动触达我——不是群发提醒，是结合我正在跟进的目标和事情来找我。&lt;/p&gt;
+&lt;p&gt;说白了，Muse 更像一个工作台：东西都在里面，能力边界清楚，可扩展性也强。代价是你要接受一个新的入口，并且愿意在里面组织你的事情。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="路线 A 结构：中枢式" class="gallery-image" data-flex-basis="298px" data-flex-grow="124" height="2220" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/10/28/personal-agent/09-muse-hub.png" width="2760"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Muse 界面实拍" class="gallery-image" data-flex-basis="1122px" data-flex-grow="467" height="1710" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/10/28/personal-agent/muse.jpg" width="8000"&gt;&lt;/p&gt;
+&lt;h3 id="instinct超极简路线"&gt;&lt;a href="#instinct%e8%b6%85%e6%9e%81%e7%ae%80%e8%b7%af%e7%ba%bf" class="header-anchor"&gt;&lt;/a&gt;Instinct：超极简路线
+&lt;/h3&gt;&lt;p&gt;Instinct 刚好反过来。它没有独立 GUI 入口，直接对接 iMessage、WhatsApp、短信这些最基础的文本交互，上手门槛极低——会发短信就会用。&lt;/p&gt;
+&lt;p&gt;它的运行方式，我理解更像是极致的 goal 模式：你给一个目标，它自己拆解、执行，宗旨就是用 AI 把日常琐事、工作琐事自动化掉，办完回来交差。你不需要管它用了什么工具、开了哪个网页，过程基本不暴露。&lt;/p&gt;
+&lt;p&gt;这里有个容易漏的点。它这段时间也在长功能：专属邮箱、群聊助手、concierge 代打电话，今年秋天都上线了。但这些功能全部经消息通道完成，始终没有 GUI。所以准确的说法不是「它功能少」，而是「功能在膨胀，入口极简不变」。这反而更能说明它的产品判断：入口够不够简单，比功能多不多更优先。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="路线 B 结构：寄生式" class="gallery-image" data-flex-basis="405px" data-flex-grow="168" height="1635" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/10/28/personal-agent/10-instinct-parasite.png" width="2760"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Instinct 消息流实拍" class="gallery-image" data-flex-basis="755px" data-flex-grow="314" height="1860" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/10/28/personal-agent/instinct.jpg" width="5853"&gt;&lt;/p&gt;
+&lt;h3 id="openclaw共同原点"&gt;&lt;a href="#openclaw%e5%85%b1%e5%90%8c%e5%8e%9f%e7%82%b9" class="header-anchor"&gt;&lt;/a&gt;OpenClaw：共同原点
+&lt;/h3&gt;&lt;p&gt;聊这两家，绕不开 OpenClaw。&lt;/p&gt;
+&lt;p&gt;OpenClaw 是原点：自建、开源、极客自己折腾，自由度最高，门槛也最高，野蛮开荒阶段把「personal agent 能干什么」先跑通了。Muse 和 Instinct，本质上都是把 OpenClaw 验证过的形态，产品化给更广的人群——一个从功能完整度往下走，一个从把门槛降下来往下走，从两个极端往中间靠。&lt;/p&gt;
+&lt;p&gt;三者放在一起，大概是这样：&lt;/p&gt;
+&lt;table&gt;
+	&lt;thead&gt;
+			&lt;tr&gt;
+					&lt;th&gt;对比项&lt;/th&gt;
+					&lt;th&gt;Muse&lt;/th&gt;
+					&lt;th&gt;Instinct&lt;/th&gt;
+					&lt;th&gt;OpenClaw&lt;/th&gt;
+			&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tbody&gt;
+			&lt;tr&gt;
+					&lt;td&gt;入口&lt;/td&gt;
+					&lt;td&gt;独立 App / Web，多端&lt;/td&gt;
+					&lt;td&gt;短信 / iMessage / WhatsApp&lt;/td&gt;
+					&lt;td&gt;自建服务，自选客户端&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;部署&lt;/td&gt;
+					&lt;td&gt;托管，开箱即用&lt;/td&gt;
+					&lt;td&gt;托管，邀请制&lt;/td&gt;
+					&lt;td&gt;自己部署、自己运维&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;记忆&lt;/td&gt;
+					&lt;td&gt;全生命周期记忆 + 偏好&lt;/td&gt;
+					&lt;td&gt;有记忆，经对话积累&lt;/td&gt;
+					&lt;td&gt;自己配置和维护&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;扩展&lt;/td&gt;
+					&lt;td&gt;连接器 + skill / MCP，可存网站凭证&lt;/td&gt;
+					&lt;td&gt;基本封闭，官方给什么用什么&lt;/td&gt;
+					&lt;td&gt;完全开放，自己装 skill&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;主动性&lt;/td&gt;
+					&lt;td&gt;定时任务 + 基于 memory 主动触达&lt;/td&gt;
+					&lt;td&gt;按目标和事件主动跟进&lt;/td&gt;
+					&lt;td&gt;自己写触发逻辑&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;价格与可用性&lt;/td&gt;
+					&lt;td&gt;已公开可用&lt;/td&gt;
+					&lt;td&gt;仍邀请制，定价未完全公开&lt;/td&gt;
+					&lt;td&gt;开源免费，成本是自己的时间和机器&lt;/td&gt;
+			&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;再给三条我自己的排序，方便快速建立印象。注意这是带条件的判断，不是排行榜：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;控制权：OpenClaw &amp;gt; Muse &amp;gt; Instinct&lt;/li&gt;
+&lt;li&gt;容易上手：Instinct &amp;gt; Muse &amp;gt; OpenClaw&lt;/li&gt;
+&lt;li&gt;默认谨慎程度：Muse &amp;gt; OpenClaw &amp;gt; Instinct&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果你是那种什么都想自己捏在手里的人，OpenClaw 至今没有替代品；如果你只想发条消息就把事办了，Instinct 的路线更适合；如果你想要的是一个能长期组织事情、还能自己扩展的工作台，Muse 更接近这个定位。不一定哪个更好，看你更在意哪一头。&lt;/p&gt;
+&lt;h2 id="我是怎么用的五个具体场景"&gt;&lt;a href="#%e6%88%91%e6%98%af%e6%80%8e%e4%b9%88%e7%94%a8%e7%9a%84%e4%ba%94%e4%b8%aa%e5%85%b7%e4%bd%93%e5%9c%ba%e6%99%af" class="header-anchor"&gt;&lt;/a&gt;我是怎么用的：五个具体场景
+&lt;/h2&gt;&lt;p&gt;路线是产品视角，落到我自己的使用里，价值主要在五件事上。这里不罗列功能，按我实际的用法写：动机是什么、我怎么做、为什么这样设计。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Personal Agent 运行架构" class="gallery-image" data-flex-basis="584px" data-flex-grow="243" height="1134" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/10/28/personal-agent/06-architecture.png" width="2760"&gt;&lt;/p&gt;
+&lt;h3 id="主动性不是提醒是它自己在跑"&gt;&lt;a href="#%e4%b8%bb%e5%8a%a8%e6%80%a7%e4%b8%8d%e6%98%af%e6%8f%90%e9%86%92%e6%98%af%e5%ae%83%e8%87%aa%e5%b7%b1%e5%9c%a8%e8%b7%91" class="header-anchor"&gt;&lt;/a&gt;主动性：不是提醒，是它自己在跑
+&lt;/h3&gt;&lt;p&gt;动机很简单：股票、GitHub、AI 资讯这三类信息，我每天都看，但每天手动去刷一遍，时间碎得厉害。&lt;/p&gt;
+&lt;p&gt;我的做法是给 agent 定好三个定时任务，每天早上自动搜集、去重、整理成日报发给我，网页版同步更新。触发条件不只有时间：跟踪的标的出现异动、关注的项目有新动向，这类事件也会触发它来找我，但阈值我卡得比较死，不然会被打扰死。&lt;/p&gt;
+&lt;p&gt;为什么这样设计？因为 personal agent 和普通定时脚本的区别，不在「定时」，在它知道我关心什么、之前已经报过什么、哪些不用重复。没有记忆的定时任务只是 cron，有记忆的定时任务才开始像助理。&lt;/p&gt;
+&lt;h3 id="跨账户代办关键不是能连是批量处理时的确认节奏"&gt;&lt;a href="#%e8%b7%a8%e8%b4%a6%e6%88%b7%e4%bb%a3%e5%8a%9e%e5%85%b3%e9%94%ae%e4%b8%8d%e6%98%af%e8%83%bd%e8%bf%9e%e6%98%af%e6%89%b9%e9%87%8f%e5%a4%84%e7%90%86%e6%97%b6%e7%9a%84%e7%a1%ae%e8%ae%a4%e8%8a%82%e5%a5%8f" class="header-anchor"&gt;&lt;/a&gt;跨账户代办：关键不是能连，是批量处理时的确认节奏
+&lt;/h3&gt;&lt;p&gt;动机是邮箱。多年攒下来的邮件，靠手动一封封处理是不现实的。&lt;/p&gt;
+&lt;p&gt;我的做法前面提过：先连接器授权，读取走受控通道；查询先按域名粗筛，再在本地按 From 头精确过滤——这一步不能省，服务端搜索在不同邮箱集群上可靠性不一致，直接信它会漏删和误删；真正删除前，我会让它先报数、列样本，我确认了再分批执行，可恢复的先移回收站，永久删是另一次单独确认。&lt;/p&gt;
+&lt;p&gt;为什么这样设计？跨账户代办最危险的不是它做不到，是它做得太顺。批量操作一定要有「先对数、再动手」的节奏，不然一次错就是几千封的错。&lt;/p&gt;
+&lt;h3 id="多步研究与交付终点不是一段文字是一份能用的东西"&gt;&lt;a href="#%e5%a4%9a%e6%ad%a5%e7%a0%94%e7%a9%b6%e4%b8%8e%e4%ba%a4%e4%bb%98%e7%bb%88%e7%82%b9%e4%b8%8d%e6%98%af%e4%b8%80%e6%ae%b5%e6%96%87%e5%ad%97%e6%98%af%e4%b8%80%e4%bb%bd%e8%83%bd%e7%94%a8%e7%9a%84%e4%b8%9c%e8%a5%bf" class="header-anchor"&gt;&lt;/a&gt;多步研究与交付：终点不是一段文字，是一份能用的东西
+&lt;/h3&gt;&lt;p&gt;我现在让 agent 做调研，终点一般不是「给我总结一下」，而是直接产出交付物：一篇能打开的 HTML 解读页、一份带图表的对比文档、一张能贴进分享里的结构图。&lt;/p&gt;
+&lt;p&gt;动机是省掉中间那次转手。以前是 AI 给我一堆文字，我再自己排版做图；现在我把交付形式在任务里说清——配合生动图表、图里只留短标签和大数字、解释放图注——它直接按这个规格产出，我只做审校。&lt;/p&gt;
+&lt;p&gt;这个习惯我已经固定下来了：长文、分享、解读类交付，默认走这种图表化的 HTML 文档。效果比文字墙好很多，团队反馈也证实了这一点。个人博客这边是 Markdown，图表要换成静态图，道理一样：图讲结构，文字讲判断。&lt;/p&gt;
+&lt;h3 id="现实世界执行方便是真的但花钱的动作必须过人"&gt;&lt;a href="#%e7%8e%b0%e5%ae%9e%e4%b8%96%e7%95%8c%e6%89%a7%e8%a1%8c%e6%96%b9%e4%be%bf%e6%98%af%e7%9c%9f%e7%9a%84%e4%bd%86%e8%8a%b1%e9%92%b1%e7%9a%84%e5%8a%a8%e4%bd%9c%e5%bf%85%e9%a1%bb%e8%bf%87%e4%ba%ba" class="header-anchor"&gt;&lt;/a&gt;现实世界执行：方便是真的，但花钱的动作必须过人
+&lt;/h3&gt;&lt;p&gt;订位、购物、代打电话、订票，这些是 Instinct 这类产品讲得最多的故事，也是最容易让人兴奋的部分。我的态度是可以用，但有一条硬线：凡是涉及付款、下单、对外发送的动作，必须先弹确认卡，我点头才执行。&lt;/p&gt;
+&lt;p&gt;为什么？因为这类动作不可逆，而且错了的成本不在对话框里，在现实里。订错一顿饭是小事，订错机票、发错消息就不是了。审批闸门慢是慢一点，但它把「agent 自主」和「agent 自作主张」分开了。这个地方容易忽略：不要为了追求全自动，把确认环节当成体验问题优化掉，它其实是安全设计。&lt;/p&gt;
+&lt;p&gt;Instinct 的代打电话也是同理。体验上你只看到结果，过程里它怎么介绍自己、报不报你的信息，这些都要在第一次使用前想清楚，而不是办完才发现。&lt;/p&gt;
+&lt;h3 id="可扩展层和我已有的技能栈是同构的"&gt;&lt;a href="#%e5%8f%af%e6%89%a9%e5%b1%95%e5%b1%82%e5%92%8c%e6%88%91%e5%b7%b2%e6%9c%89%e7%9a%84%e6%8a%80%e8%83%bd%e6%a0%88%e6%98%af%e5%90%8c%e6%9e%84%e7%9a%84" class="header-anchor"&gt;&lt;/a&gt;可扩展层：和我已有的技能栈是同构的
+&lt;/h3&gt;&lt;p&gt;最后一点，对工程师读者可能最有共鸣：personal agent 的扩展层——skill、MCP、connector——和我已经在 coding agent 里用的那套东西是同构的。&lt;/p&gt;
+&lt;p&gt;我给 coding agent 写的 skill、接的 MCP、定的 Rules，思路完全可以迁移过来：一个能力一个文件、单一数据源、按需加载、用完可替换。区别只是场景从 repo 换成了邮箱、日历和网页，工具从 &lt;code&gt;git&lt;/code&gt; 和测试命令换成了连接器和浏览器。&lt;/p&gt;
+&lt;p&gt;所以上手 personal agent 对我来说没有太多学习成本，真正要重新想的是权限和边界：代码场景里错了可以 revert，生活场景里很多动作没有 revert。&lt;/p&gt;
+&lt;h2 id="限制这一节得说得坦白一点"&gt;&lt;a href="#%e9%99%90%e5%88%b6%e8%bf%99%e4%b8%80%e8%8a%82%e5%be%97%e8%af%b4%e5%be%97%e5%9d%a6%e7%99%bd%e4%b8%80%e7%82%b9" class="header-anchor"&gt;&lt;/a&gt;限制：这一节得说得坦白一点
+&lt;/h2&gt;&lt;p&gt;前面讲的都是它能做什么。这一节讲它现在还不行什么，而且我觉得这部分比前面更重要。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;安全，是绕不过去的第一条。&lt;/strong&gt; OpenClaw 在 2026 年出过 CVE-2026-25253，CVSS 8.8，属于一键可能导致远程代码执行的级别。更日常的风险在 skill 生态：不同审计机构对恶意 skill 的统计口径差得很远，数字从 341 到 1184 不等，我在这里只给区间，不给单点，因为给单点就是在假装精确。结论倒是明确的：你装的每一个 skill，都等于在自己的机器和账户上跑一段别人写的代码，装之前看源码这条老规矩，在 agent 时代只会更重要，不会过时。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="CVE 严重度与恶意 skill 审计区间" class="gallery-image" data-flex-basis="448px" data-flex-grow="186" height="1477" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/10/28/personal-agent/11-risk.png" width="2760"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;隐私，条款要自己看。&lt;/strong&gt; Instinct 早期条款里出现过授权范围过宽的表述，被媒体（MarketWatch 在 2026 年 9 月 28 日有记录）报道后做过修改；另一类常见问题是「数据用于训练」的开关默认开着，很多人装完根本不会去翻设置。这类产品你要交出去的是邮箱、消息、行程，几乎是你数字生活的全部，在点同意之前花十分钟看条款，不亏。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;可靠性，长链路就是会累积误差。&lt;/strong&gt; 一件事拆成二十步，每步 95% 对，整体也只剩下六成左右。现实里已经出现过部分电话任务最后转人工兜底的情况，产品方不一定会主动告诉你哪一步是人做的。所以现阶段我的用法是：越重要的事，越把它拆成带确认点的小段，而不是一句话托管到底。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;可用性和成本，别忽略门槛。&lt;/strong&gt; Instinct 仍是邀请制，不同区域能用的功能也不一样；Muse 的很多连接能力依赖海外服务生态，网络和账号本身就是门槛。成本也不只是订阅费，还包括你花在配置、纠错和善后上的时间，这个账营销材料不会帮你算。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;责任归属，目前还是模糊的。&lt;/strong&gt; Agent 订错了、买错了、发错了，算谁的？平台、模型方还是用户自己？现在各家的条款基本都倾向于把最终责任留给用户。知道这一点，再决定交多大的权限出去，心里会更有数。&lt;/p&gt;
+&lt;p&gt;总的来说，我现在的判断是：它更适合从低风险、高重复的事情开始——信息整理、批量处理、提醒跟进——先跑顺，再逐步往交易和对外沟通走。直接全量托管，我不建议，至少现阶段不建议。&lt;/p&gt;
+&lt;h2 id="总结"&gt;&lt;a href="#%e6%80%bb%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;总结
+&lt;/h2&gt;&lt;p&gt;把这篇收一下。&lt;/p&gt;
+&lt;p&gt;Personal agent 新的地方，不在模型更聪明了，而在形态变了：常驻、记得你、能跨你的账户把事办完。Coding agent 解决的是「我在工位上怎么干得更快」，personal agent 解决的是「工位之外的那些事，能不能不用我一直盯着」。&lt;/p&gt;
+&lt;p&gt;路线上，Muse 和 Instinct 没有谁取代谁的问题：一个用功能完整度换控制感，一个用够简单换托管感，OpenClaw 则留给愿意自己折腾的人。选哪个，根据你更在意控制、易用还是谨慎程度而定，不一定有唯一答案。&lt;/p&gt;
+&lt;p&gt;适用边界还是前言那句前提：愿意交权限，它就是助理；不愿意，它就是个记得多一点的聊天框。两种选择都合理。&lt;/p&gt;
+&lt;p&gt;我自己接下来想验证的只有一件事：把低风险场景的托管再往前推一步，比如行程和订位这类带确认闸门的全流程，看它的长链路可靠性到底能不能撑住。撑得住，再谈更多；撑不住，就退回现在这个用法，也没什么损失。&lt;/p&gt;
+&lt;h2 id="参考"&gt;&lt;a href="#%e5%8f%82%e8%80%83" class="header-anchor"&gt;&lt;/a&gt;参考
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Instinct 官网与产品说明：&lt;a class="link" href="https://instinct.com" target="_blank" rel="noopener"
+ &gt;instinct.com&lt;/a&gt;（专属邮箱、群聊、concierge 功能说明）&lt;/li&gt;
+&lt;li&gt;TechCrunch：&lt;a class="link" href="https://techcrunch.com/2026/08/26/viral-ai-startup-instinct-has-raised-350-million-at-a-2-5-billion-valuation/" target="_blank" rel="noopener"
+ &gt;Instinct B 轮（2026-08-26）&lt;/a&gt;与&lt;a class="link" href="https://techcrunch.com/2026/09/28/viral-ai-agent-instinct-raises-1b-series-c-at-a-10b-valuation/" target="_blank" rel="noopener"
+ &gt;C 轮（2026-09-28）&lt;/a&gt;融资报道&lt;/li&gt;
+&lt;li&gt;TechCrunch：&lt;a class="link" href="https://techcrunch.com/2026/09/09/viral-ai-assistant-instinct-now-has-its-own-email-address/" target="_blank" rel="noopener"
+ &gt;Instinct 专属邮箱上线（2026-09-09）&lt;/a&gt;、&lt;a class="link" href="https://techcrunch.com/2026/10/05/instinct-brings-its-ai-agent-to-group-chats-even-for-friends-without-an-account/" target="_blank" rel="noopener"
+ &gt;群聊功能（2026-10-05）&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;TechCrunch：&lt;a class="link" href="https://techcrunch.com/2026/09/29/openai-launches-dots-its-bubbly-agentic-avatar/" target="_blank" rel="noopener"
+ &gt;OpenAI 发布 Dots（2026-09-29）&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Reuters：&lt;a class="link" href="https://www.reuters.com/world/china/manus-raises-more-than-500-million-after-meta-exit-2026-10-08/" target="_blank" rel="noopener"
+ &gt;Manus 融资超 5 亿美元（2026-10-08）&lt;/a&gt;；约 40 亿美元估值为「seeking」口径，非 Reuters 确认数字&lt;/li&gt;
+&lt;li&gt;Meta 2026 年 Q3 财报会实录（Muse 美加超 1000 万设置量为公司自报口径，相关报道见 &lt;a class="link" href="https://www.medianama.com/2026/10/223-meta-earnings-call-smart-glasses-muse/" target="_blank" rel="noopener"
+ &gt;Medianama&lt;/a&gt;）&lt;/li&gt;
+&lt;li&gt;Sensor Tower：Muse 上线 40 天下载量与 DAU 估算（第三方估算口径）&lt;/li&gt;
+&lt;li&gt;The Information：Instinct 用户数「超 10 万」报道（官方未披露，此为唯一公开口径）&lt;/li&gt;
+&lt;li&gt;MarketWatch：Instinct 服务条款争议与修改报道（2026-09-28）&lt;/li&gt;
+&lt;li&gt;OpenClaw 官网、&lt;a class="link" href="https://github.com/openclaw/openclaw" target="_blank" rel="noopener"
+ &gt;GitHub 仓库&lt;/a&gt;与基金会说明；CVE-2026-25253 公开披露记录&lt;/li&gt;
+&lt;li&gt;a16z：Top 100 Gen AI Consumer Apps 最新报告（personal AI agent 相关论述）&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>
