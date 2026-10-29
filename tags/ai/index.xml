@@ -1,46 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>AI on 土土哥的技术 Blog</title><link>https://tutuge.me/tags/ai/</link><description>Recent content in AI on 土土哥的技术 Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>tutuge</copyright><lastBuildDate>Wed, 28 Oct 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://tutuge.me/tags/ai/index.xml" rel="self" type="application/rss+xml"/><item><title>Strata：把 125B Qwen3.8-Flash-Next 塞进一张 4090，本地大模型的 Next Level</title><link>https://tutuge.me/2026/10/28/strata-125b-4090/</link><pubDate>Wed, 28 Oct 2026 06:56:43 +0000</pubDate><guid>https://tutuge.me/2026/10/28/strata-125b-4090/</guid><description>&lt;img src="https://tutuge.me/assets/2026/10/28/strata-125b-4090/strata-diagram-wide.png" alt="Featured image of post Strata：把 125B Qwen3.8-Flash-Next 塞进一张 4090，本地大模型的 Next Level" /&gt;&lt;p&gt;先说这个项目的热度：Strata 9 月 24 日才建仓，截至 10 月 27 日，GitHub 上已有 34,012 star、3,646 fork，平均每天新增 1,000 star 上下。10 月上旬约 2 万，10 月 20 日前后约 2.9 万，最近一周又涨了 5,000 多，同期一共发了 60 个 release。&lt;/p&gt;
-&lt;p&gt;我在自己的游戏 PC 上用 Strata 跑起了 Qwen3.8-Flash-Next：125B 的 MoE 模型，IQ3_S 约 3-bit IQ型量化，惊呆了😄&lt;/p&gt;
-&lt;p&gt;跑起来之后问题只有一个：压到 3-bit，到底损失了多少？ 体感不算数，简单测一测吧~&lt;/p&gt;
-&lt;p&gt;对照组：Qoder 托管的同名生产版 Qwen3.8-Flash。同一个基座，一边开源预览权重 + 3-bit + 消费级显卡，一边云端满血版对比。&lt;/p&gt;
-&lt;h2 id="-125b-是怎么塞进游戏-pc-的"&gt;&lt;a href="#-125b-%e6%98%af%e6%80%8e%e4%b9%88%e5%a1%9e%e8%bf%9b%e6%b8%b8%e6%88%8f-pc-%e7%9a%84" class="header-anchor"&gt;&lt;/a&gt;⚙️ 125B 是怎么塞进游戏 PC 的
-&lt;/h2&gt;&lt;p&gt;先简单分析下项目的原理：秘诀在多级&amp;quot;缓存&amp;quot;的分工。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;BF16 权重 250 GB ──IQ3_S 量化──▶ 总量 83.6 GB ──按热度分层──▶ VRAM / RAM / SSD
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;每个 token：24,576 个 expert 只点亮 10 个 → 真正计算的只有 ≈6B 参数
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Strata 多层存储架构" class="gallery-image" data-flex-basis="675px" data-flex-grow="281" height="1607" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/10/28/strata-125b-4090/strata-diagram-wide.png" width="4522"&gt;&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;图：同一个模型，按「每个 token 用不用得上」拆开放，从左到右越走越慢、越大。&lt;/em&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;MoE 稀疏激活是前提&lt;/strong&gt;：每 token 只算约 5% 的参数，其余 expert 不必常驻显存&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;GPU 只放必算件 + 热点 expert 缓存&lt;/strong&gt;（7,948 个槽位，解码实测命中率 95.6–97.8%），没命中的由 CPU 在内存里并行补算&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;SSD 上 28.8 GB 的 n-gram 查找表&lt;/strong&gt;走 mmap，每 token 只读一行；再加 MTP 投机解码，草稿先行、验证跟上，速度 ≈2×&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="-评测设计"&gt;&lt;a href="#-%e8%af%84%e6%b5%8b%e8%ae%be%e8%ae%a1" class="header-anchor"&gt;&lt;/a&gt;📊 评测设计
-&lt;/h2&gt;&lt;p&gt;简单评测，仅作参考&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;同一 harness&lt;/strong&gt;：两侧都由 qodercli 驱动，参数逐字相同，只换 &lt;code&gt;-m&lt;/code&gt;；上下文统一 262,144、最大输出 32,768、思考预算 16,384，工具集封锁、MCP 强制为空&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Track A · 编程任务对照&lt;/strong&gt;：12 道 agentic 编程任务 × 每题 3 次 × 两侧 = &lt;strong&gt;72 次运行，0 作废&lt;/strong&gt;；双通道判分——确定性程序判分 + Kimi-K3 盲评&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Track B · 原始能力画像&lt;/strong&gt;（仅本地，直连 API）：长上下文 needle、工具调用、幻觉探测、严格格式&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;img alt="本地 vs 托管评测速览" class="gallery-image" data-flex-basis="303px" data-flex-grow="126" height="3048" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/10/28/strata-125b-4090/qwen-eval-diagram.png" width="3858"&gt;&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;图：评测速览——怎么测、结果如何，一张图看完。&lt;/em&gt;&lt;/p&gt;
-&lt;h2 id="-具体测了什么"&gt;&lt;a href="#-%e5%85%b7%e4%bd%93%e6%b5%8b%e4%ba%86%e4%bb%80%e4%b9%88" class="header-anchor"&gt;&lt;/a&gt;📋 具体测了什么
-&lt;/h2&gt;&lt;p&gt;12 道题都是日常工程活，不是选择题；跑题和判分全由脚本执行，不是人打分。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="12 道题一览" class="gallery-image" data-flex-basis="342px" data-flex-grow="142" height="2746" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/10/28/strata-125b-4090/qwen-12-questions-overview.png" width="3914"&gt;&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;图：12 道题一览——12 道题分别在测什么、怎么判分，一张图看完。&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;本地丢的 0.5 分出在 A05：不是漏检，是模型自己的测试比规格卡得更严。&lt;/p&gt;
-&lt;p&gt;顺带说一下这次评测的数据体量：72 次运行的完整沙盒快照一共 836 MB（本地 374 MB + 托管 462 MB），原始 stream 轨迹本地 2.7 MB、托管 3.0 MB。不过别被 836 MB 吓到：排除 A11 的 .build 编译中间产物后，两侧模型真正写出来的代码只有本地 178 KB、托管 474 KB——99% 都是编译噪声，打包分享记得排除 .build。&lt;/p&gt;
-&lt;h2 id="-结果基本打平"&gt;&lt;a href="#-%e7%bb%93%e6%9e%9c%e5%9f%ba%e6%9c%ac%e6%89%93%e5%b9%b3" class="header-anchor"&gt;&lt;/a&gt;🎯 结果：基本打平👍
-&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;确定性判分：本地 &lt;strong&gt;14.50 / 15&lt;/strong&gt; vs 托管 &lt;strong&gt;15.00 / 15&lt;/strong&gt;，Fisher 精确检验 &lt;strong&gt;p = 1.00&lt;/strong&gt;，无显著差异&lt;/li&gt;
-&lt;li&gt;盲评 &lt;strong&gt;272 : 273&lt;/strong&gt;（满分 275），11 组全部判平；12 题里有 4 题两侧代码&lt;strong&gt;逐字节相同&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;Track B 结果（合计 41/42）：needle &lt;strong&gt;12/12&lt;/strong&gt;（最长 236,536 tok = 原生窗口 90%）、工具调用 12/12、幻觉探测 10/10、严格格式 2/3&lt;/li&gt;
-&lt;li&gt;速度：prefill ≈2,414 tok/s 全程平坦；decode 真实负载 91–119 tok/s。代价是延迟——236K 上下文时首 token 要等 ≈98.5 s&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;两条通道都顶到了天花板，测不出差异 ≠ 差异不存在，只能说这套题库的分辨率不够。两侧的差异来源有四个（量化、权重版本、服务配置、YaRN），目前只初步平衡了服务配置，所以仅作参考。&lt;/p&gt;
-&lt;p&gt;还有两条边界得说清：盲评只覆盖了 11 道题，缺的正是 A05——别写成&amp;quot;12 题全部盲评&amp;quot;；Track A 上下文占用峰值才 23% 左右，长上下文的结论只来自 Track B，而且 Track B 只有本地侧、没有托管对照。&lt;/p&gt;
-&lt;h2 id="-往前看消费级pc的满血本地大模型时刻"&gt;&lt;a href="#-%e5%be%80%e5%89%8d%e7%9c%8b%e6%b6%88%e8%b4%b9%e7%ba%a7pc%e7%9a%84%e6%bb%a1%e8%a1%80%e6%9c%ac%e5%9c%b0%e5%a4%a7%e6%a8%a1%e5%9e%8b%e6%97%b6%e5%88%bb" class="header-anchor"&gt;&lt;/a&gt;🔭 往前看：消费级PC的「满血」本地大模型时刻
-&lt;/h2&gt;&lt;p&gt;一个过去只能跑在专业机房里的 125B 模型，现在跑在了一台游戏 PC 上。&lt;/p&gt;
-&lt;p&gt;MoE 让每 token 真正计算的参数只有约 6B，量化与分层 offloading 每一代都在变成熟，消费级内存容量和 CPU-GPU 互联也在往上走。Strata 这类为单一模型手写的专用引擎，极限优化后，非常有潜力！&lt;/p&gt;
-&lt;p&gt;下一代消费级 PC 上，「满血」可能不再是云端的专有名词——大模型在本地跑起来、数据不出家门、断网也能用，会从极客的折腾变成默认选项。云端的优势会收缩到真正的前沿规模和多模态，而日常的编码、写作、Agent 任务，会越来越多地发生在你桌子底下那台机器里，期待！&lt;/p&gt;</description></item><item><title>别只把它当聊天框：Personal Agent 的两种产品化路线</title><link>https://tutuge.me/2026/10/28/personal-agent/</link><pubDate>Thu, 29 Oct 2026 02:32:19 +0000</pubDate><guid>https://tutuge.me/2026/10/28/personal-agent/</guid><description>&lt;img src="https://tutuge.me/assets/2026/10/28/personal-agent/header.png" alt="Featured image of post 别只把它当聊天框：Personal Agent 的两种产品化路线" /&gt;&lt;h2 id="前言"&gt;&lt;a href="#%e5%89%8d%e8%a8%80" class="header-anchor"&gt;&lt;/a&gt;前言
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>AI on 土土哥的技术 Blog</title><link>https://tutuge.me/tags/ai/</link><description>Recent content in AI on 土土哥的技术 Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>tutuge</copyright><lastBuildDate>Thu, 29 Oct 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://tutuge.me/tags/ai/index.xml" rel="self" type="application/rss+xml"/><item><title>别只把它当聊天框：Personal Agent 的两种产品化路线</title><link>https://tutuge.me/2026/10/28/personal-agent/</link><pubDate>Thu, 29 Oct 2026 02:32:19 +0000</pubDate><guid>https://tutuge.me/2026/10/28/personal-agent/</guid><description>&lt;img src="https://tutuge.me/assets/2026/10/28/personal-agent/header.png" alt="Featured image of post 别只把它当聊天框：Personal Agent 的两种产品化路线" /&gt;&lt;h2 id="前言"&gt;&lt;a href="#%e5%89%8d%e8%a8%80" class="header-anchor"&gt;&lt;/a&gt;前言
 &lt;/h2&gt;&lt;p&gt;最近几个月，我每天早上的打开方式变了。&lt;/p&gt;
 &lt;p&gt;不用我开口，三份东西会自己准时到：港美股科技股汇总、GitHub 热门项目日报、AI 业界资讯。不是订阅推送，是我的 personal agent 按定时任务搜集、整理完，直接发到会话里，还顺手把网页版更新了。&lt;/p&gt;
 &lt;p&gt;邮箱也是类似。126 和 Gmail 里攒了多年的订阅、通知、营销邮件，以前我都是眼不见为净。这段时间是让 agent 连上邮箱，先按发件人域名拉一遍，再在本地按 From 头精确过滤，分批确认、分批删。几千封处理完，清爽是真清爽。&lt;/p&gt;
@@ -254,7 +212,49 @@
 &lt;li&gt;OpenClaw 官网、&lt;a class="link" href="https://github.com/openclaw/openclaw" target="_blank" rel="noopener"
  &gt;GitHub 仓库&lt;/a&gt;与基金会说明；CVE-2026-25253 公开披露记录&lt;/li&gt;
 &lt;li&gt;a16z：Top 100 Gen AI Consumer Apps 最新报告（personal AI agent 相关论述）&lt;/li&gt;
-&lt;/ul&gt;</description></item><item><title>别把所有规则都塞进 CLAUDE.md：兼容多种 AI 的项目 Rules 设计与维护</title><link>https://tutuge.me/2026/08/13/ai-project-rules/</link><pubDate>Wed, 12 Aug 2026 17:00:00 +0000</pubDate><guid>https://tutuge.me/2026/08/13/ai-project-rules/</guid><description>&lt;img src="https://tutuge.me/assets/2026/08/13/ai-project-rules/ai-project-rules-poster.png" alt="Featured image of post 别把所有规则都塞进 CLAUDE.md：兼容多种 AI 的项目 Rules 设计与维护" /&gt;&lt;h2 id="前言"&gt;&lt;a href="#%e5%89%8d%e8%a8%80" class="header-anchor"&gt;&lt;/a&gt;前言
+&lt;/ul&gt;</description></item><item><title>Strata：把 125B Qwen3.8-Flash-Next 塞进一张 4090，本地大模型的 Next Level</title><link>https://tutuge.me/2026/10/28/strata-125b-4090/</link><pubDate>Wed, 28 Oct 2026 06:56:43 +0000</pubDate><guid>https://tutuge.me/2026/10/28/strata-125b-4090/</guid><description>&lt;img src="https://tutuge.me/assets/2026/10/28/strata-125b-4090/strata-diagram-wide.png" alt="Featured image of post Strata：把 125B Qwen3.8-Flash-Next 塞进一张 4090，本地大模型的 Next Level" /&gt;&lt;p&gt;先说这个项目的热度：Strata 9 月 24 日才建仓，截至 10 月 27 日，GitHub 上已有 34,012 star、3,646 fork，平均每天新增 1,000 star 上下。10 月上旬约 2 万，10 月 20 日前后约 2.9 万，最近一周又涨了 5,000 多，同期一共发了 60 个 release。&lt;/p&gt;
+&lt;p&gt;我在自己的游戏 PC 上用 Strata 跑起了 Qwen3.8-Flash-Next：125B 的 MoE 模型，IQ3_S 约 3-bit IQ型量化，惊呆了😄&lt;/p&gt;
+&lt;p&gt;跑起来之后问题只有一个：压到 3-bit，到底损失了多少？ 体感不算数，简单测一测吧~&lt;/p&gt;
+&lt;p&gt;对照组：Qoder 托管的同名生产版 Qwen3.8-Flash。同一个基座，一边开源预览权重 + 3-bit + 消费级显卡，一边云端满血版对比。&lt;/p&gt;
+&lt;h2 id="-125b-是怎么塞进游戏-pc-的"&gt;&lt;a href="#-125b-%e6%98%af%e6%80%8e%e4%b9%88%e5%a1%9e%e8%bf%9b%e6%b8%b8%e6%88%8f-pc-%e7%9a%84" class="header-anchor"&gt;&lt;/a&gt;⚙️ 125B 是怎么塞进游戏 PC 的
+&lt;/h2&gt;&lt;p&gt;先简单分析下项目的原理：秘诀在多级&amp;quot;缓存&amp;quot;的分工。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;BF16 权重 250 GB ──IQ3_S 量化──▶ 总量 83.6 GB ──按热度分层──▶ VRAM / RAM / SSD
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;每个 token：24,576 个 expert 只点亮 10 个 → 真正计算的只有 ≈6B 参数
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="Strata 多层存储架构" class="gallery-image" data-flex-basis="675px" data-flex-grow="281" height="1607" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/10/28/strata-125b-4090/strata-diagram-wide.png" width="4522"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;图：同一个模型，按「每个 token 用不用得上」拆开放，从左到右越走越慢、越大。&lt;/em&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;MoE 稀疏激活是前提&lt;/strong&gt;：每 token 只算约 5% 的参数，其余 expert 不必常驻显存&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;GPU 只放必算件 + 热点 expert 缓存&lt;/strong&gt;（7,948 个槽位，解码实测命中率 95.6–97.8%），没命中的由 CPU 在内存里并行补算&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SSD 上 28.8 GB 的 n-gram 查找表&lt;/strong&gt;走 mmap，每 token 只读一行；再加 MTP 投机解码，草稿先行、验证跟上，速度 ≈2×&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="-评测设计"&gt;&lt;a href="#-%e8%af%84%e6%b5%8b%e8%ae%be%e8%ae%a1" class="header-anchor"&gt;&lt;/a&gt;📊 评测设计
+&lt;/h2&gt;&lt;p&gt;简单评测，仅作参考&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;同一 harness&lt;/strong&gt;：两侧都由 qodercli 驱动，参数逐字相同，只换 &lt;code&gt;-m&lt;/code&gt;；上下文统一 262,144、最大输出 32,768、思考预算 16,384，工具集封锁、MCP 强制为空&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Track A · 编程任务对照&lt;/strong&gt;：12 道 agentic 编程任务 × 每题 3 次 × 两侧 = &lt;strong&gt;72 次运行，0 作废&lt;/strong&gt;；双通道判分——确定性程序判分 + Kimi-K3 盲评&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Track B · 原始能力画像&lt;/strong&gt;（仅本地，直连 API）：长上下文 needle、工具调用、幻觉探测、严格格式&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="本地 vs 托管评测速览" class="gallery-image" data-flex-basis="303px" data-flex-grow="126" height="3048" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/10/28/strata-125b-4090/qwen-eval-diagram.png" width="3858"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;图：评测速览——怎么测、结果如何，一张图看完。&lt;/em&gt;&lt;/p&gt;
+&lt;h2 id="-具体测了什么"&gt;&lt;a href="#-%e5%85%b7%e4%bd%93%e6%b5%8b%e4%ba%86%e4%bb%80%e4%b9%88" class="header-anchor"&gt;&lt;/a&gt;📋 具体测了什么
+&lt;/h2&gt;&lt;p&gt;12 道题都是日常工程活，不是选择题；跑题和判分全由脚本执行，不是人打分。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="12 道题一览" class="gallery-image" data-flex-basis="342px" data-flex-grow="142" height="2746" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/10/28/strata-125b-4090/qwen-12-questions-overview.png" width="3914"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;图：12 道题一览——12 道题分别在测什么、怎么判分，一张图看完。&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;本地丢的 0.5 分出在 A05：不是漏检，是模型自己的测试比规格卡得更严。&lt;/p&gt;
+&lt;p&gt;顺带说一下这次评测的数据体量：72 次运行的完整沙盒快照一共 836 MB（本地 374 MB + 托管 462 MB），原始 stream 轨迹本地 2.7 MB、托管 3.0 MB。不过别被 836 MB 吓到：排除 A11 的 .build 编译中间产物后，两侧模型真正写出来的代码只有本地 178 KB、托管 474 KB——99% 都是编译噪声，打包分享记得排除 .build。&lt;/p&gt;
+&lt;h2 id="-结果基本打平"&gt;&lt;a href="#-%e7%bb%93%e6%9e%9c%e5%9f%ba%e6%9c%ac%e6%89%93%e5%b9%b3" class="header-anchor"&gt;&lt;/a&gt;🎯 结果：基本打平👍
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;确定性判分：本地 &lt;strong&gt;14.50 / 15&lt;/strong&gt; vs 托管 &lt;strong&gt;15.00 / 15&lt;/strong&gt;，Fisher 精确检验 &lt;strong&gt;p = 1.00&lt;/strong&gt;，无显著差异&lt;/li&gt;
+&lt;li&gt;盲评 &lt;strong&gt;272 : 273&lt;/strong&gt;（满分 275），11 组全部判平；12 题里有 4 题两侧代码&lt;strong&gt;逐字节相同&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Track B 结果（合计 41/42）：needle &lt;strong&gt;12/12&lt;/strong&gt;（最长 236,536 tok = 原生窗口 90%）、工具调用 12/12、幻觉探测 10/10、严格格式 2/3&lt;/li&gt;
+&lt;li&gt;速度：prefill ≈2,414 tok/s 全程平坦；decode 真实负载 91–119 tok/s。代价是延迟——236K 上下文时首 token 要等 ≈98.5 s&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;两条通道都顶到了天花板，测不出差异 ≠ 差异不存在，只能说这套题库的分辨率不够。两侧的差异来源有四个（量化、权重版本、服务配置、YaRN），目前只初步平衡了服务配置，所以仅作参考。&lt;/p&gt;
+&lt;p&gt;还有两条边界得说清：盲评只覆盖了 11 道题，缺的正是 A05——别写成&amp;quot;12 题全部盲评&amp;quot;；Track A 上下文占用峰值才 23% 左右，长上下文的结论只来自 Track B，而且 Track B 只有本地侧、没有托管对照。&lt;/p&gt;
+&lt;h2 id="-往前看消费级pc的满血本地大模型时刻"&gt;&lt;a href="#-%e5%be%80%e5%89%8d%e7%9c%8b%e6%b6%88%e8%b4%b9%e7%ba%a7pc%e7%9a%84%e6%bb%a1%e8%a1%80%e6%9c%ac%e5%9c%b0%e5%a4%a7%e6%a8%a1%e5%9e%8b%e6%97%b6%e5%88%bb" class="header-anchor"&gt;&lt;/a&gt;🔭 往前看：消费级PC的「满血」本地大模型时刻
+&lt;/h2&gt;&lt;p&gt;一个过去只能跑在专业机房里的 125B 模型，现在跑在了一台游戏 PC 上。&lt;/p&gt;
+&lt;p&gt;MoE 让每 token 真正计算的参数只有约 6B，量化与分层 offloading 每一代都在变成熟，消费级内存容量和 CPU-GPU 互联也在往上走。Strata 这类为单一模型手写的专用引擎，极限优化后，非常有潜力！&lt;/p&gt;
+&lt;p&gt;下一代消费级 PC 上，「满血」可能不再是云端的专有名词——大模型在本地跑起来、数据不出家门、断网也能用，会从极客的折腾变成默认选项。云端的优势会收缩到真正的前沿规模和多模态，而日常的编码、写作、Agent 任务，会越来越多地发生在你桌子底下那台机器里，期待！&lt;/p&gt;</description></item><item><title>别把所有规则都塞进 CLAUDE.md：兼容多种 AI 的项目 Rules 设计与维护</title><link>https://tutuge.me/2026/08/13/ai-project-rules/</link><pubDate>Wed, 12 Aug 2026 17:00:00 +0000</pubDate><guid>https://tutuge.me/2026/08/13/ai-project-rules/</guid><description>&lt;img src="https://tutuge.me/assets/2026/08/13/ai-project-rules/ai-project-rules-poster.png" alt="Featured image of post 别把所有规则都塞进 CLAUDE.md：兼容多种 AI 的项目 Rules 设计与维护" /&gt;&lt;h2 id="前言"&gt;&lt;a href="#%e5%89%8d%e8%a8%80" class="header-anchor"&gt;&lt;/a&gt;前言
 &lt;/h2&gt;&lt;p&gt;上一篇整理多个 AI 工具的 Skills 时，重点是“同一个 Skill 放在哪里，才能让不同工具都发现”。后来继续看项目里的 AI 协作配置，发现另一个问题其实更常见：Rules 文件越来越多。&lt;/p&gt;
 &lt;p&gt;根目录有 &lt;code&gt;CLAUDE.md&lt;/code&gt;，又补了 &lt;code&gt;AGENTS.md&lt;/code&gt;；Cursor 有 &lt;code&gt;.cursor/rules/&lt;/code&gt;，Copilot 有 &lt;code&gt;.github/copilot-instructions.md&lt;/code&gt;，某次 Code Review 发现一条遗漏，再往其中一个文件里加一句。过一阵子，文件确实变长了，但不知道哪些是每次都要遵守的硬约束，哪些只对某个目录有效，哪些本来应该放到 Skill 或 CI 里面。&lt;/p&gt;
 &lt;p&gt;这篇就结合一个虚拟业务模块的 Rules 设计，整理一下我现在对这件事的理解：&lt;strong&gt;Rules 不是给模型塞得越多越好，而是要像项目代码一样，有作用域、有职责、有验证，也会过时。&lt;/strong&gt;&lt;/p&gt;
