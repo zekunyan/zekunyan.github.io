@@ -1,4 +1,272 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>土土哥的技术 Blog</title><link>https://tutuge.me/</link><description>Recent content on 土土哥的技术 Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>tutuge</copyright><lastBuildDate>Thu, 29 Oct 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://tutuge.me/index.xml" rel="self" type="application/rss+xml"/><item><title>别只把它当聊天框：Personal Agent 的两种产品化路线</title><link>https://tutuge.me/2026/10/28/personal-agent/</link><pubDate>Thu, 29 Oct 2026 02:32:19 +0000</pubDate><guid>https://tutuge.me/2026/10/28/personal-agent/</guid><description>&lt;img src="https://tutuge.me/assets/2026/10/28/personal-agent/header.png" alt="Featured image of post 别只把它当聊天框：Personal Agent 的两种产品化路线" /&gt;&lt;h2 id="前言"&gt;&lt;a href="#%e5%89%8d%e8%a8%80" class="header-anchor"&gt;&lt;/a&gt;前言
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>土土哥的技术 Blog</title><link>https://tutuge.me/</link><description>Recent content on 土土哥的技术 Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>tutuge</copyright><lastBuildDate>Fri, 20 Nov 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://tutuge.me/index.xml" rel="self" type="application/rss+xml"/><item><title>ACP：Agent 的 LSP</title><link>https://tutuge.me/2026/11/20/acp-agent-lsp/</link><pubDate>Fri, 20 Nov 2026 07:59:20 +0000</pubDate><guid>https://tutuge.me/2026/11/20/acp-agent-lsp/</guid><description>&lt;img src="https://tutuge.me/assets/2026/11/20/acp-agent-lsp/cover.png" alt="Featured image of post ACP：Agent 的 LSP" /&gt;&lt;h2 id="前言"&gt;&lt;a href="#%e5%89%8d%e8%a8%80" class="header-anchor"&gt;&lt;/a&gt;前言
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;ACP 是 LSP 之于 Agent。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;MCP 回答了 Agent 能调什么，ACP 回答的是另一组问题：谁来驱动 Agent，prompt 怎么交进去，过程怎么流式回推，写文件之前怎么先确认一次，这一轮什么时候算结束。&lt;/p&gt;
+&lt;p&gt;当年 LSP 把编辑器和 language server 解耦，编辑器不用为每种语言重写一套补全和跳转。ACP 做的是同一件事，对象换成了 coding agent：宿主实现一次 Client，Agent 实现一次 Server，任意组合直接通。&lt;/p&gt;
+&lt;h2 id="问题没有统一协议时宿主--agent-是乘法"&gt;&lt;a href="#%e9%97%ae%e9%a2%98%e6%b2%a1%e6%9c%89%e7%bb%9f%e4%b8%80%e5%8d%8f%e8%ae%ae%e6%97%b6%e5%ae%bf%e4%b8%bb--agent-%e6%98%af%e4%b9%98%e6%b3%95" class="header-anchor"&gt;&lt;/a&gt;问题：没有统一协议时，宿主 × Agent 是乘法
+&lt;/h2&gt;&lt;p&gt;每个 Agent 的会话、流式输出、权限确认、diff 展示各不相同，宿主每接一个 Agent 就要重做一遍集成。&lt;/p&gt;
+&lt;p&gt;没有 LSP 之前，编辑器支持一门语言就要单独写一套插件，补全、跳转、诊断都跟语言绑死，组合一多就失控。LSP 之后规矩变了：编辑器只实现一次协议，language server 只实现一次协议，中间对上就行。&lt;/p&gt;
+&lt;p&gt;Agent 现在处在类似阶段：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;没有 ACP： M × N
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; 5 个宿主 × 8 个 Agent = 40 套定制集成
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; 会话、流式渲染、权限弹窗、diff 展示，每套重写
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;有了 ACP： M + N
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; 5 + 8 = 13 次实现
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; 宿主实现一次 Client，Agent 实现一次 Server
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;数字是示意，讲的是组合方式的变化。价值不只是省插件，更是选型自由：同一个 Agent 嵌进自研工具或内部平台，只要对面支持 ACP，Agent 侧不用改；反过来换 Agent，UI 和会话层也不用重做。&lt;/p&gt;
+&lt;p&gt;ACP 是一层协议，位置很具体：在宿主和 Agent 之间。下面先划边界，再讲它定义了什么，最后看一个最小 demo。&lt;/p&gt;
+&lt;h2 id="划边界acp-不管什么"&gt;&lt;a href="#%e5%88%92%e8%be%b9%e7%95%8cacp-%e4%b8%8d%e7%ae%a1%e4%bb%80%e4%b9%88" class="header-anchor"&gt;&lt;/a&gt;划边界：ACP 不管什么
+&lt;/h2&gt;&lt;p&gt;边界不划清，后面很容易把 ACP 当成万能层，什么都往里塞。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;不管工具。&lt;/strong&gt; ACP 不定义工具。Agent 内部能调什么工具、工具怎么实现，是 MCP 和 Agent 自己的事。ACP 只管会话怎么开、prompt 怎么交、过程怎么流回来、要权限时怎么问。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;不管模型。&lt;/strong&gt; Agent 内部怎么调模型、用哪个模型、上下文怎么拼，ACP 都不管。它看到的是会话和消息，不是推理过程本身。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;不是另一个 ACP。&lt;/strong&gt; IBM / BeeAI 有个同名的 Agent Communication Protocol，已经并入 A2A。本文的 ACP 只指 Zed 发起的 Agent Client Protocol，不要对错文档。&lt;/p&gt;
+&lt;p&gt;一句话收住：ACP 回答的是“谁来驱动 Agent、怎么管它”，不是“Agent 能调什么”。后一个问题是 MCP 的地盘，后面有一节专门对照。&lt;/p&gt;
+&lt;h2 id="acp-是什么一套跑在-stdio-上的-json-rpc-会话协议"&gt;&lt;a href="#acp-%e6%98%af%e4%bb%80%e4%b9%88%e4%b8%80%e5%a5%97%e8%b7%91%e5%9c%a8-stdio-%e4%b8%8a%e7%9a%84-json-rpc-%e4%bc%9a%e8%af%9d%e5%8d%8f%e8%ae%ae" class="header-anchor"&gt;&lt;/a&gt;ACP 是什么：一套跑在 stdio 上的 JSON-RPC 会话协议
+&lt;/h2&gt;&lt;p&gt;ACP 全称 Agent Client Protocol，标准化的是 Agent 宿主和 coding agent 之间的通信。协议里宿主统称 Client，可以是 code editor、IDE、编排应用、自研平台。&lt;/p&gt;
+&lt;p&gt;宿主把 Agent 当子进程拉起来，双方通过 stdin / stdout 交换 newline-delimited 的 JSON-RPC 2.0：一行一条 JSON，不开端口，不起 daemon，抓 stdout 就能 debug。&lt;/p&gt;
+&lt;p&gt;消息是双向的，这一点很关键。宿主调 Agent 的同时，Agent 也能反过来调宿主：要权限、读宿主里还没保存的文件、在宿主里开终端，都走反向请求。后面看报文时，这一点会很直观。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="四条协议各管一段" class="gallery-image" data-flex-basis="448px" data-flex-grow="186" height="1284" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/11/20/acp-agent-lsp/protocol-map.png" width="2400"&gt;&lt;/p&gt;
+&lt;p&gt;图 1：四条协议各管一段。AG-UI 管界面到宿主，ACP 管宿主到 Agent，MCP 管 Agent 到工具，A2A 管 Agent 到 Agent。四条都是公开标准，差别只在连的是谁，能叠着用，不是互相替代。同一次会话里几条线经常同时在跑，比如 &lt;code&gt;session/new&lt;/code&gt; 的参数里就带着 &lt;code&gt;mcpServers&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;几个关键事实：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;传输：&lt;/strong&gt; JSON-RPC 2.0、newline-delimited、stdio，不开端口。稳定版 &lt;code&gt;protocolVersion: 1&lt;/code&gt;；v2 是 2026-07-20 发布的草案，生产按 v1 写，不要按草案押注。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;来历：&lt;/strong&gt; Zed 在 2025-08-27 发布，Gemini CLI 是第一个参考实现；JetBrains 在 2025-10 加入共建；Registry 在 2026-01-28 上线。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SDK：&lt;/strong&gt; 覆盖 Rust / TypeScript / Python / Kotlin / Java，其中 Rust 与 TypeScript 在 2026-06 到 1.0。自己写宿主时，优先看这两个。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;生态量级：&lt;/strong&gt; Registry 里已经有几十个 Agent 和 Client，具体数字变化很快，不要记死一个数。&lt;sup id="fnref:1"&gt;&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref"&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;时间线：&lt;/p&gt;
+&lt;table&gt;
+	&lt;thead&gt;
+			&lt;tr&gt;
+					&lt;th&gt;时间&lt;/th&gt;
+					&lt;th&gt;事件&lt;/th&gt;
+			&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tbody&gt;
+			&lt;tr&gt;
+					&lt;td&gt;2025-08-27&lt;/td&gt;
+					&lt;td&gt;Zed 发布 ACP，Gemini CLI 是第一个参考实现&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;2025-10&lt;/td&gt;
+					&lt;td&gt;JetBrains 加入共建&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;2026-01-28&lt;/td&gt;
+					&lt;td&gt;Registry 上线，Agent 注册一次可被各宿主发现&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;2026-06&lt;/td&gt;
+					&lt;td&gt;Rust / TypeScript SDK 到 1.0&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;2026-07-20&lt;/td&gt;
+					&lt;td&gt;v2 草案发布，稳定版仍是 v1&lt;/td&gt;
+			&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id="一次会话怎么跑握手建会话一轮-prompt"&gt;&lt;a href="#%e4%b8%80%e6%ac%a1%e4%bc%9a%e8%af%9d%e6%80%8e%e4%b9%88%e8%b7%91%e6%8f%a1%e6%89%8b%e5%bb%ba%e4%bc%9a%e8%af%9d%e4%b8%80%e8%bd%ae-prompt" class="header-anchor"&gt;&lt;/a&gt;一次会话怎么跑：握手、建会话、一轮 prompt
+&lt;/h2&gt;&lt;p&gt;所有 ACP 会话都是同一个骨架。看懂这张时序图，协议的大部分内容就通了，剩下的大多是可选 capability。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="一次会话时序" class="gallery-image" data-flex-basis="393px" data-flex-grow="163" height="1464" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/11/20/acp-agent-lsp/session-sequence.png" width="2400"&gt;&lt;/p&gt;
+&lt;p&gt;图 2：一次会话时序。最容易误解的是第 3 步和第 6 步的关系：&lt;code&gt;session/prompt&lt;/code&gt; 是一个长开着的请求，Agent 一边处理一边用 &lt;code&gt;session/update&lt;/code&gt; 推进度，整轮结束才回响应和 &lt;code&gt;stopReason&lt;/code&gt;。权限和文件读写则是有 id 的反向请求，宿主必须回复，不回 Agent 就一直等。&lt;/p&gt;
+&lt;h3 id="报文长什么样四段就够了"&gt;&lt;a href="#%e6%8a%a5%e6%96%87%e9%95%bf%e4%bb%80%e4%b9%88%e6%a0%b7%e5%9b%9b%e6%ae%b5%e5%b0%b1%e5%a4%9f%e4%ba%86" class="header-anchor"&gt;&lt;/a&gt;报文长什么样：四段就够了
+&lt;/h3&gt;&lt;p&gt;下面四段按 v1 规范精简，关键点标在每段前面。&lt;/p&gt;
+&lt;p&gt;第一段，&lt;code&gt;initialize&lt;/code&gt;。先报家门，&lt;code&gt;id&lt;/code&gt; 为 0，没声明的 capability 就是不支持。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-json" data-lang="json"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Client -&amp;gt; Agent
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;jsonrpc&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;2.0&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;method&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;initialize&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;params&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;protocolVersion&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;clientCapabilities&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;fs&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;readTextFile&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;writeTextFile&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;terminal&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;clientInfo&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;name&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;my-client&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;version&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;0.1.0&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;}}}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Agent -&amp;gt; Client：回版本、能力、登录方式
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;jsonrpc&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;2.0&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;result&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;protocolVersion&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;agentCapabilities&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;loadSession&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;authMethods&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:[{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;opencode-login&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;name&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;Log in with OpenCode&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;}],&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;agentInfo&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;name&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;opencode&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;version&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;...&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;}}}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;第二段，&lt;code&gt;session/new&lt;/code&gt;。&lt;code&gt;cwd&lt;/code&gt; 必须是绝对路径，可带 &lt;code&gt;mcpServers&lt;/code&gt;。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-json" data-lang="json"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Client -&amp;gt; Agent，id=1
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;jsonrpc&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;2.0&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;method&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;session/new&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;params&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;cwd&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;/Users/you/acp-demo/demo_workspace&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;mcpServers&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:[]}}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Agent -&amp;gt; Client
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;jsonrpc&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;2.0&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;result&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;sessionId&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;sess_9f3...&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;}}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;第三段，&lt;code&gt;session/prompt&lt;/code&gt; 加 &lt;code&gt;session/update&lt;/code&gt;。请求长开，通知流式回推。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-json" data-lang="json"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Client -&amp;gt; Agent，id=2；这个请求一直开着，直到整轮结束
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;jsonrpc&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;2.0&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;method&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;session/prompt&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;params&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;sessionId&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;sess_9f3...&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;prompt&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:[{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;type&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;text&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;text&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;在当前目录新建 hello-acp.md ...&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;}]}}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Agent -&amp;gt; Client，通知（无 id）：plan
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;jsonrpc&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;2.0&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;method&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;session/update&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;params&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;sessionId&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;sess_9f3...&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;update&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;sessionUpdate&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;plan&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;entries&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:[&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;content&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;新建 hello-acp.md&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;status&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;in_progress&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;content&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;写入介绍&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;status&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;pending&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;}]}}}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Agent -&amp;gt; Client，通知（无 id）：tool_call
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;jsonrpc&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;2.0&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;method&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;session/update&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;params&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;sessionId&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;sess_9f3...&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;update&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;sessionUpdate&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;tool_call&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;toolCallId&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;call_1&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;title&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;Write hello-acp.md&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;kind&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;edit&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;status&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;pending&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;}}}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 整轮结束，id=2 的响应才回来
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;jsonrpc&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;2.0&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;result&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;stopReason&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;end_turn&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;}}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;第四段，&lt;code&gt;session/request_permission&lt;/code&gt;。Agent 反过来问宿主，两边各自编号。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-json" data-lang="json"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Agent -&amp;gt; Client，有自己的 id，必须回复
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;jsonrpc&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;2.0&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;method&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;session/request_permission&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;params&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;sessionId&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;sess_9f3...&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;toolCall&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;toolCallId&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;call_1&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;title&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;Write hello-acp.md&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;options&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:[&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;optionId&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;allow_once&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;name&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;Allow once&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;kind&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;allow_once&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;optionId&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;reject_once&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;name&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;Reject&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;kind&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;reject_once&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;}]}}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Client -&amp;gt; Agent：对应权限卡片，点 Allow once 才回这条
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;jsonrpc&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;2.0&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;result&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;outcome&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;outcome&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;selected&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;optionId&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;allow_once&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;}}}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这个地方要注意：第四段里 Agent 侧的 &lt;code&gt;id: 0&lt;/code&gt; 和第一段里宿主侧的 &lt;code&gt;id: 0&lt;/code&gt; 不冲突。stdio 是全双工的，两边各自编号。写宿主时容易踩的坑，是拿一个全局字典装所有响应，请求和反向请求会撞号。分开两个表就没有这件事了。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;session/update&lt;/code&gt; 常见的几种：&lt;code&gt;agent_message_chunk&lt;/code&gt; 是正文流式片段，逐段追加；&lt;code&gt;agent_thought_chunk&lt;/code&gt; 是思考片段，一般折叠；&lt;code&gt;plan&lt;/code&gt; 渲染成任务清单；&lt;code&gt;tool_call&lt;/code&gt; / &lt;code&gt;tool_call_update&lt;/code&gt; 带工具动作和 diff 内容块，编辑器里的 diff 视图就来自这里。完整 schema 以官网为准，这里只列常用的几种。&lt;/p&gt;
+&lt;h2 id="acp-vs-mcp管会话和管工具是嵌套不是二选一"&gt;&lt;a href="#acp-vs-mcp%e7%ae%a1%e4%bc%9a%e8%af%9d%e5%92%8c%e7%ae%a1%e5%b7%a5%e5%85%b7%e6%98%af%e5%b5%8c%e5%a5%97%e4%b8%8d%e6%98%af%e4%ba%8c%e9%80%89%e4%b8%80" class="header-anchor"&gt;&lt;/a&gt;ACP vs MCP：管会话和管工具，是嵌套不是二选一
+&lt;/h2&gt;&lt;p&gt;这一节只讲和 ACP 对照需要的部分。&lt;/p&gt;
+&lt;p&gt;MCP 是 Anthropic 在 2024-11 开源的，三个原语：Tools 是能做的事，带 JSON Schema 的函数，模型决定调用；Resources 是能读的数据，URI 寻址、只读，由应用决定何时塞进上下文；Prompts 是可复用的模板，用户显式触发，实际采用率最低，了解即可。&lt;/p&gt;
+&lt;p&gt;MCP 的传输同样是 JSON-RPC 2.0，两个协议在设计语言上接近，ACP 的 content blocks 还直接复用了 MCP 的类型。&lt;/p&gt;
+&lt;table&gt;
+	&lt;thead&gt;
+			&lt;tr&gt;
+					&lt;th&gt;对照&lt;/th&gt;
+					&lt;th&gt;ACP&lt;/th&gt;
+					&lt;th&gt;MCP&lt;/th&gt;
+			&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tbody&gt;
+			&lt;tr&gt;
+					&lt;td&gt;连接谁&lt;/td&gt;
+					&lt;td&gt;宿主（Client）↔ Coding Agent&lt;/td&gt;
+					&lt;td&gt;Agent ↔ 工具与数据（MCP Server）&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;回答的问题&lt;/td&gt;
+					&lt;td&gt;哪个 Agent，在哪个界面里跑，怎么管它&lt;/td&gt;
+					&lt;td&gt;这个 Agent 能碰什么、能调什么&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;Agent 的角色&lt;/td&gt;
+					&lt;td&gt;被驱动的一方（Server）&lt;/td&gt;
+					&lt;td&gt;消费工具的一方（Client）&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;核心方法&lt;/td&gt;
+					&lt;td&gt;&lt;code&gt;initialize&lt;/code&gt;、&lt;code&gt;session/new&lt;/code&gt;、&lt;code&gt;session/prompt&lt;/code&gt;、&lt;code&gt;session/update&lt;/code&gt;、&lt;code&gt;session/request_permission&lt;/code&gt;&lt;/td&gt;
+					&lt;td&gt;&lt;code&gt;initialize&lt;/code&gt;、&lt;code&gt;tools/call&lt;/code&gt;、&lt;code&gt;resources/read&lt;/code&gt;、&lt;code&gt;prompts/get&lt;/code&gt;&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;状态&lt;/td&gt;
+					&lt;td&gt;有状态，session 贯穿多轮&lt;/td&gt;
+					&lt;td&gt;以单次调用为主&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;传输&lt;/td&gt;
+					&lt;td&gt;stdio（v1），远程传输仍在规范中&lt;/td&gt;
+					&lt;td&gt;stdio / Streamable HTTP&lt;/td&gt;
+			&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;两者怎么拼，一句话就够：&lt;code&gt;session/new&lt;/code&gt; 可以携带一组 &lt;code&gt;mcpServers&lt;/code&gt;，外层 ACP 管会话，内层 MCP 管工具。后面 demo 里勾上 MCP 开关的那一步，看到的就是这个嵌套。&lt;/p&gt;
+&lt;h2 id="a2a-和-ag-ui只讲边界"&gt;&lt;a href="#a2a-%e5%92%8c-ag-ui%e5%8f%aa%e8%ae%b2%e8%be%b9%e7%95%8c" class="header-anchor"&gt;&lt;/a&gt;A2A 和 AG-UI：只讲边界
+&lt;/h2&gt;&lt;p&gt;这两条不展开，只把和 ACP 的边界划清，选型时不至于拿错。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;A2A：Agent ↔ Agent，黑盒委派。&lt;/strong&gt; Google 发起，解决跨框架、跨厂商的 Agent 怎么发现彼此、委派任务。核心是 Agent Card（JSON 数字名片）加 Task（有状态的工作单元）。对面是黑盒，不暴露内部记忆与工具，这是它敢跨公司用的前提。MCP 是纵向，Agent 到工具；A2A 是横向，Agent 到 Agent。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;AG-UI：Agent ↔ 用户界面，HTTP 事件流。&lt;/strong&gt; CopilotKit 发起，把 Agent 的运行过程标准化成一条 HTTP 事件流，任意前端都能渲染，1.0 已冻结。它最容易和 ACP 混：两者都在把过程流式推给界面、能反向要权限，但 AG-UI 走 HTTP、连任意框架的 Agent；ACP 是本地 stdio、一个宿主驱动一个 coding agent。范围不同，不要互相替代。&lt;/p&gt;
+&lt;p&gt;对应关系其实很整齐：&lt;code&gt;session/update&lt;/code&gt; 约等于 AG-UI 的事件流，&lt;code&gt;session/request_permission&lt;/code&gt; 约等于它的 interrupt，&lt;code&gt;fs/*&lt;/code&gt; 反调约等于 frontend tools。理解了一条，另外一条学起来很快。&lt;/p&gt;
+&lt;h2 id="最小-demo一个-bridgejs左栏干活右栏看协议"&gt;&lt;a href="#%e6%9c%80%e5%b0%8f-demo%e4%b8%80%e4%b8%aa-bridgejs%e5%b7%a6%e6%a0%8f%e5%b9%b2%e6%b4%bb%e5%8f%b3%e6%a0%8f%e7%9c%8b%e5%8d%8f%e8%ae%ae" class="header-anchor"&gt;&lt;/a&gt;最小 demo：一个 bridge.js，左栏干活，右栏看协议
+&lt;/h2&gt;&lt;p&gt;这是一个本地可跑的最小 demo，验证的是“换 Agent 只改一行”，不是生产系统。&lt;/p&gt;
+&lt;p&gt;实现很克制：Node.js 标准库、不装依赖，一个 &lt;code&gt;bridge.js&lt;/code&gt; 跑在 &lt;code&gt;localhost:8000&lt;/code&gt;。浏览器拉不起子进程，所以中间夹一层桥：对浏览器走 HTTP / SSE，对 Agent 走 stdio JSON-RPC。只有桥到 Agent 这一段是 ACP，浏览器那段不是。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="demo 架构" class="gallery-image" data-flex-basis="463px" data-flex-grow="192" height="1244" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://tutuge.me/assets/2026/11/20/acp-agent-lsp/demo-architecture.png" width="2400"&gt;&lt;/p&gt;
+&lt;p&gt;图 3：demo 架构。桥做两件事：吐页面，以及把 stdio 上的 JSON-RPC 转成 SSE 推给浏览器、把浏览器的 POST 写回 Agent 的 stdin。MCP 开关打开时，&lt;code&gt;session/new&lt;/code&gt; 会把一个叫 demo-time 的 MCP server 一并递给 Agent，Agent 自行拉起它。&lt;/p&gt;
+&lt;p&gt;前置条件是登录要自己先做完，桥不替登录：&lt;/p&gt;
+&lt;table&gt;
+	&lt;thead&gt;
+			&lt;tr&gt;
+					&lt;th&gt;Agent&lt;/th&gt;
+					&lt;th&gt;桥 spawn 的命令&lt;/th&gt;
+					&lt;th&gt;前置&lt;/th&gt;
+			&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tbody&gt;
+			&lt;tr&gt;
+					&lt;td&gt;opencode&lt;/td&gt;
+					&lt;td&gt;&lt;code&gt;opencode acp&lt;/code&gt;&lt;/td&gt;
+					&lt;td&gt;先 &lt;code&gt;opencode auth login&lt;/code&gt;&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;Qoder CLI&lt;/td&gt;
+					&lt;td&gt;&lt;code&gt;qoder --acp&lt;/code&gt;&lt;/td&gt;
+					&lt;td&gt;先跑一次 CLI 本体登录，IDE 登录不算&lt;/td&gt;
+			&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;跑起来就三步：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;启动 Agent，看握手亮起。&lt;/strong&gt; 选 opencode 点“启动 agent”，右栏 &lt;code&gt;initialize&lt;/code&gt;、&lt;code&gt;session/new&lt;/code&gt; 依次亮起，这两步由桥自动完成。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;点预设，看权限往返。&lt;/strong&gt; 点“新建 hello-acp.md”，权限卡片弹出时点 Allow once，Agent 才继续写盘。这就是 &lt;code&gt;session/request_permission&lt;/code&gt; 的一次完整往返，点 Reject 它就停。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;勾 MCP 开关，看嵌套。&lt;/strong&gt; 勾上 MCP 后再建会话，能在报文里看到 &lt;code&gt;session/new&lt;/code&gt; 把 demo-time 这个 MCP server 递进去。然后换 Qoder 再跑同一句，页面一行不改。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这个 demo 证明的不是 Agent 有多强，而是接口换人不用重做。Agent 强不强是另一回事，下一节就讲。&lt;/p&gt;
+&lt;h2 id="什么时候值得上什么时候先不用"&gt;&lt;a href="#%e4%bb%80%e4%b9%88%e6%97%b6%e5%80%99%e5%80%bc%e5%be%97%e4%b8%8a%e4%bb%80%e4%b9%88%e6%97%b6%e5%80%99%e5%85%88%e4%b8%8d%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;什么时候值得上，什么时候先不用
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;值得上：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;要把 coding agent 嵌进自己的产品：内部平台、IDE 插件、自研工具、App。&lt;/li&gt;
+&lt;li&gt;想保留换 Agent 的自由，不被某一家 CLI 的私有输出格式绑住。&lt;/li&gt;
+&lt;li&gt;需要结构化地拿到 plan、tool_call、diff、权限请求，而不是解析终端文本。&lt;/li&gt;
+&lt;li&gt;做多 Agent 编排的 UI 层：一个宿主驱动多个 ACP Agent。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;先不用：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;只是日常用现成 Harness 写代码：ACP 在底层跑着就行，不必自己实现宿主。&lt;/li&gt;
+&lt;li&gt;只需要 Agent 调工具：那是 MCP 的事，单独接 MCP server 即可。&lt;/li&gt;
+&lt;li&gt;需要远程、多租户：v1 只有本地 stdio，不要拿它押注，见限制一节。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;往工作流方向看，ACP 给的是驾驶座，不是工作流引擎。中间过程变成结构化事件、危险动作前有协议级的闸门，这两点对编排有用；但编排、状态、重试、审计要再搭一层。先把单步的会话和权限跑稳，再谈把多步流程压到它上面，不要一上来就先做平台。&lt;/p&gt;
+&lt;h2 id="限制这几条不写清接入时迟早踩到"&gt;&lt;a href="#%e9%99%90%e5%88%b6%e8%bf%99%e5%87%a0%e6%9d%a1%e4%b8%8d%e5%86%99%e6%b8%85%e6%8e%a5%e5%85%a5%e6%97%b6%e8%bf%9f%e6%97%a9%e8%b8%a9%e5%88%b0" class="header-anchor"&gt;&lt;/a&gt;限制：这几条不写清，接入时迟早踩到
+&lt;/h2&gt;&lt;p&gt;ACP 解决的是接口问题。接口之外的问题，它一个都不解决。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;管不了 Agent 能力强弱。&lt;/strong&gt; 效果差异来自 Agent 和模型本身。换协议不会让一个弱 Agent 变强，两个 Agent 跑同一句 prompt，产出质量该差还是差。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;支持 ACP 不等于支持全部 ACP。&lt;/strong&gt; 各家对可选 capability 的支持参差：有的不支持 &lt;code&gt;session/load&lt;/code&gt;，有的终端能力没开。接入前先看 &lt;code&gt;initialize&lt;/code&gt; 的响应，以它为准，不要看宣传页。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;头部 CLI 本体不支持 ACP。&lt;/strong&gt; Claude Code、Codex 本体不支持 ACP，走的是社区 adapter，现在是 &lt;code&gt;@agentclientprotocol/*&lt;/code&gt; 下的 &lt;code&gt;claude-agent-acp&lt;/code&gt; / &lt;code&gt;codex-acp&lt;/code&gt;。能用，但多一层就多测一层，升级时先测 adapter 再测本体。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;v1 只有本地 stdio。&lt;/strong&gt; 远程、多租户场景不要拿 v1 押注。真要远程，等规范把远程传输定下来，或者自己在桥那一层想清楚认证和隔离，不要假装 stdio 能直接搬到线上。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;不给编排语义。&lt;/strong&gt; ACP 不给 DAG、持久化、重试、达标判定。&lt;code&gt;stopReason&lt;/code&gt; 只说明这一轮结束了，不说明做对了。做没做对要靠宿主侧的验收，比如文件在不在、测试过不过，那是编排层的事。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="总结"&gt;&lt;a href="#%e6%80%bb%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;总结
+&lt;/h2&gt;&lt;p&gt;总的来说：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;ACP 是宿主和 Agent 之间的会话协议，位置对应 LSP 当年在编辑器和语言之间的位置，解耦靠的就是这一层。&lt;/li&gt;
+&lt;li&gt;它和 MCP 是嵌套关系：外层管会话和权限，内层管工具，日常选型时先分清自己缺的是哪一层。&lt;/li&gt;
+&lt;li&gt;值不值得自己实现宿主，取决于是否要嵌、是否要换 Agent；只是日常写代码的话，用现成 Harness 就够了。&lt;/li&gt;
+&lt;li&gt;今天落地按 v1、按本地 stdio、按 &lt;code&gt;initialize&lt;/code&gt; 的实际响应来；远程和编排等规范与上层实现都准备好再说。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="参考"&gt;&lt;a href="#%e5%8f%82%e8%80%83" class="header-anchor"&gt;&lt;/a&gt;参考
+&lt;/h2&gt;&lt;p&gt;只列官方链接，协议细节以官网最新版为准。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;ACP 官网与规范：&lt;a class="link" href="https://agentclientprotocol.com" target="_blank" rel="noopener"
+ &gt;agentclientprotocol.com&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;MCP 官网：&lt;a class="link" href="https://modelcontextprotocol.io" target="_blank" rel="noopener"
+ &gt;modelcontextprotocol.io&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;A2A 官网：&lt;a class="link" href="https://a2a-protocol.org" target="_blank" rel="noopener"
+ &gt;a2a-protocol.org&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;AG-UI 文档：&lt;a class="link" href="https://docs.ag-ui.com" target="_blank" rel="noopener"
+ &gt;docs.ag-ui.com&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;opencode ACP 文档：&lt;a class="link" href="https://opencode.ai/docs/cli/acp" target="_blank" rel="noopener"
+ &gt;opencode.ai/docs/cli/acp&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Qoder CLI ACP 文档：&lt;a class="link" href="https://docs.qoder.com/cli/acp" target="_blank" rel="noopener"
+ &gt;docs.qoder.com/cli/acp&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="footnotes" role="doc-endnotes"&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;Registry 数量口径说明：一个口径是 42 个（2026-10）；另一个口径是 curated Registry 约 40 个（2026-09-12），官网 agents 列表约 50 个（2026-11-06）、51 个（2026-11-14）。统计范围不同，且都在变化，所以正文只写“几十个”。要最新数字，直接去 ACP 官网看。&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink"&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</description></item><item><title>别只把它当聊天框：Personal Agent 的两种产品化路线</title><link>https://tutuge.me/2026/10/28/personal-agent/</link><pubDate>Thu, 29 Oct 2026 02:32:19 +0000</pubDate><guid>https://tutuge.me/2026/10/28/personal-agent/</guid><description>&lt;img src="https://tutuge.me/assets/2026/10/28/personal-agent/header.png" alt="Featured image of post 别只把它当聊天框：Personal Agent 的两种产品化路线" /&gt;&lt;h2 id="前言"&gt;&lt;a href="#%e5%89%8d%e8%a8%80" class="header-anchor"&gt;&lt;/a&gt;前言
 &lt;/h2&gt;&lt;p&gt;最近几个月，我每天早上的打开方式变了。&lt;/p&gt;
 &lt;p&gt;不用我开口，三份东西会自己准时到：港美股科技股汇总、GitHub 热门项目日报、AI 业界资讯。不是订阅推送，是我的 personal agent 按定时任务搜集、整理完，直接发到会话里，还顺手把网页版更新了。&lt;/p&gt;
 &lt;p&gt;邮箱也是类似。126 和 Gmail 里攒了多年的订阅、通知、营销邮件，以前我都是眼不见为净。这段时间是让 agent 连上邮箱，先按发件人域名拉一遍，再在本地按 From 头精确过滤，分批确认、分批删。几千封处理完，清爽是真清爽。&lt;/p&gt;
